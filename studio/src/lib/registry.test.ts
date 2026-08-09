@@ -29,12 +29,19 @@ describe("asset registry", () => {
     expect(registry.hair.component_groups.some((group) => group.gender === "male")).toBe(true);
     expect(registry.hair.random_pool.length).toBeGreaterThan(10);
     expect(registry.hair.galleries.length).toBe(9);
+    expect(registry.hair.first_bundle.id).toBe("female_chloe_seed_04_bangs04");
+    expect(registry.hair.first_bundle.components).toEqual([
+      "Chloe_hair_bangs_04",
+      "Chloe_hair_side_01",
+      "Chloe_hair_back_01",
+    ]);
   });
 
   it("registers cached static images without inventing missing previews", () => {
     const registry = parseRegistry(rawRegistry);
     expect(registry.assets.find((asset) => asset.category === "shoes")?.thumbnail_url)
       .toBe("/generated/thumbnails/shoes.png");
-    expect(registry.assets.find((asset) => asset.category === "hair")?.thumbnail_url).toBeNull();
+    expect(registry.assets.find((asset) => asset.category === "hair")?.thumbnail_url)
+      .toBe("/generated/thumbnails/hair.png");
   });
 });

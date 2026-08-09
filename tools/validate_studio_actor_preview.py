@@ -54,6 +54,8 @@ def main() -> int:
 
     eye_states: list[str] = []
     unskinned_eye_nodes: list[str] = []
+    hair_nodes: list[str] = []
+    unskinned_hair_nodes: list[str] = []
     legacy_nodes: list[str] = []
     for node in document.get("nodes", []):
         name = str(node.get("name", ""))
@@ -64,12 +66,20 @@ def main() -> int:
             eye_states.append(str(extras["assetsstudio_blink_state"]))
             if node.get("skin") is None:
                 unskinned_eye_nodes.append(name)
+        if isinstance(extras, dict) and extras.get("assetsstudio_component") == "hair":
+            hair_nodes.append(name)
+            if node.get("skin") is None:
+                unskinned_hair_nodes.append(name)
     if legacy_nodes:
         raise RuntimeError(f"legacy eye nodes remain in GLB: {legacy_nodes}")
     if sorted(eye_states) != ["closed", "closed", "half", "half", "open", "open"]:
         raise RuntimeError(f"unexpected mutually exclusive eye states: {eye_states}")
     if unskinned_eye_nodes:
         raise RuntimeError(f"eye-state nodes must be skinned to the Actor rig: {unskinned_eye_nodes}")
+    if hair_nodes != ["HairBundle_Female_Seed04"]:
+        raise RuntimeError(f"unexpected first hair bundle nodes: {hair_nodes}")
+    if unskinned_hair_nodes:
+        raise RuntimeError(f"hair nodes must be skinned to the Actor rig: {unskinned_hair_nodes}")
     if not document.get("animations"):
         raise RuntimeError("GLB has no animation")
 
@@ -82,10 +92,17 @@ def main() -> int:
         raise RuntimeError("preview manifest blink states changed")
     if tuple(face.get("blink_schedule", [])) != EXPECTED_BLINK_SCHEDULE:
         raise RuntimeError("preview manifest blink schedule changed")
+    hair = manifest.get("hair", {})
+    if hair.get("bundle_id") != "female_chloe_seed_04_bangs04":
+        raise RuntimeError("preview manifest has no first hair bundle")
+    if hair.get("head_bone") != "CC_Base_Head":
+        raise RuntimeError("preview manifest hair binding changed")
+    if manifest.get("components", {}).get("hair") != ["HairBundle_Female_Seed04"]:
+        raise RuntimeError("preview manifest hair component list changed")
 
     print(
         "ASSETSSTUDIO_ACTOR_PREVIEW_VALIDATION_PASS "
-        f"eye_states={len(eye_states)} materials={len(expected_materials)} animations={len(document['animations'])}"
+        f"eye_states={len(eye_states)} hair_nodes={len(hair_nodes)} materials={len(expected_materials)} animations={len(document['animations'])}"
     )
     return 0
 

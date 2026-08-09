@@ -1,7 +1,7 @@
 {
   "name": "assetsstudio-ui",
   "private": true,
-  "version": "0.4.0",
+  "version": "0.5.0",
   "type": "module",
   "scripts": {
     "predev": "npm run assets:prepare",
@@ -11,8 +11,10 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "assets:registry": "python ../tools/build_studio_registry.py",
+    "assets:hair": "powershell -ExecutionPolicy Bypass -File ../tools/build_first_hair_bundle.ps1",
+    "assets:hair:review": "powershell -ExecutionPolicy Bypass -File ../tools/render_first_hair_bundle_review.ps1",
     "assets:actor": "powershell -ExecutionPolicy Bypass -File ../tools/export_studio_actor_preview.ps1",
-    "assets:prepare": "npm run assets:registry && npm run assets:actor"
+    "assets:prepare": "npm run assets:hair && npm run assets:registry && npm run assets:actor"
   },
   "engines": {
     "node": ">=22"

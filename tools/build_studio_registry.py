@@ -13,10 +13,12 @@ OUTPUT_PATH = ROOT / "studio" / "src" / "generated" / "asset-registry.json"
 HAIR_COMPONENT_CATALOG = ROOT / "milestones" / "hair" / "hair_component_catalog_v1.json"
 HAIR_RANDOM_POOL = ROOT / "milestones" / "hair" / "hair_random_pool_v1.json"
 HAIR_GALLERY_CATALOG = ROOT / "milestones" / "hair" / "hair_gallery_catalog_v1.json"
+HAIR_FIRST_BUNDLE_RECIPE = ROOT / "milestones" / "hair" / "first_bundle_recipe_v1.json"
 THUMBNAIL_OUTPUT = ROOT / "studio" / "public" / "generated" / "thumbnails"
 
 
 THUMBNAIL_SOURCES = {
+    "hair": ROOT / "workspace" / "cache" / "hair" / "first_bundle" / "front.png",
     "face": ROOT / "milestones" / "body" / "eye_textures" / "eye_left.png",
     "tops": ROOT / "milestones" / "tops" / "actor_native_tshirt_v5" / "four_view_frame00_contact_sheet.png",
     "pants": ROOT / "milestones" / "pants" / "native_control_v0" / "four_view_frame00_contact_sheet.png",
@@ -81,12 +83,13 @@ def main() -> int:
         thumbnail_url = None
         thumbnail_kind = None
         if thumbnail_source is not None:
-            if not thumbnail_source.is_file():
+            if not thumbnail_source.is_file() and category != "hair":
                 raise FileNotFoundError(thumbnail_source)
-            thumbnail_name = f"{category}{thumbnail_source.suffix.lower()}"
-            shutil.copy2(thumbnail_source, THUMBNAIL_OUTPUT / thumbnail_name)
-            thumbnail_url = f"/generated/thumbnails/{thumbnail_name}"
-            thumbnail_kind = "texture" if category == "face" else "contact_sheet"
+            if thumbnail_source.is_file():
+                thumbnail_name = f"{category}{thumbnail_source.suffix.lower()}"
+                shutil.copy2(thumbnail_source, THUMBNAIL_OUTPUT / thumbnail_name)
+                thumbnail_url = f"/generated/thumbnails/{thumbnail_name}"
+                thumbnail_kind = "texture" if category == "face" else "contact_sheet"
         assets.append(
             {
                 "id": str(record["id"]),
@@ -109,16 +112,19 @@ def main() -> int:
     hair_components = json.loads(HAIR_COMPONENT_CATALOG.read_text(encoding="utf-8"))
     hair_pool = json.loads(HAIR_RANDOM_POOL.read_text(encoding="utf-8"))
     hair_galleries = json.loads(HAIR_GALLERY_CATALOG.read_text(encoding="utf-8"))
+    first_hair_bundle = json.loads(HAIR_FIRST_BUNDLE_RECIPE.read_text(encoding="utf-8"))
     if hair_components.get("schema") != "assetslab_hair_component_catalog_v1":
         raise RuntimeError("unexpected hair component catalog schema")
     if hair_pool.get("schema") != "assetslab_hair_random_pool_v1":
         raise RuntimeError("unexpected hair random pool schema")
     if hair_galleries.get("schema") != "assetslab_hair_gallery_catalog_v1":
         raise RuntimeError("unexpected hair gallery catalog schema")
+    if first_hair_bundle.get("schema") != "assetsstudio_hair_bundle_recipe_v1":
+        raise RuntimeError("unexpected first hair bundle recipe schema")
 
     payload = {
         "schema": "assetsstudio_asset_registry_v1",
-        "studio_version": "0.4.0",
+        "studio_version": "0.5.0",
         "updated": str(status["updated"]),
         "preview": {
             "model_url": "/generated/actor-composite-v1.glb",
@@ -127,6 +133,14 @@ def main() -> int:
         },
         "assets": assets,
         "hair": {
+            "first_bundle": {
+                "id": first_hair_bundle["id"],
+                "gender": first_hair_bundle["gender"],
+                "status": first_hair_bundle["status"],
+                "components": first_hair_bundle["components"],
+                "head_bone": first_hair_bundle["binding"]["bone"],
+                "known_issue": first_hair_bundle.get("known_issue"),
+            },
             "component_groups": [
                 {
                     "id": group["id"],

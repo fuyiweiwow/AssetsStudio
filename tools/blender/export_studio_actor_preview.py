@@ -34,6 +34,7 @@ def cli_args() -> argparse.Namespace:
     parser.add_argument("--face-blend", required=True, type=Path)
     parser.add_argument("--top-blend", required=True, type=Path)
     parser.add_argument("--pants-blend", required=True, type=Path)
+    parser.add_argument("--hair-blend", required=True, type=Path)
     parser.add_argument("--output", required=True, type=Path)
     return parser.parse_args(argv)
 
@@ -140,7 +141,6 @@ def convert_eye_to_head_skinned_mesh(
         scene.frame_set(scene.frame_start)
         armature.data.pose_position = "REST"
         bpy.context.view_layer.update()
-
         depsgraph = bpy.context.evaluated_depsgraph_get()
         evaluated = obj.evaluated_get(depsgraph)
         baked_mesh = bpy.data.meshes.new_from_object(
@@ -172,6 +172,23 @@ def convert_eye_to_head_skinned_mesh(
         armature.data.pose_position = previous_pose_position
         scene.frame_set(previous_frame)
         bpy.context.view_layer.update()
+
+
+def convert_hair_to_head_skinned_mesh(
+    obj: bpy.types.Object,
+    armature: bpy.types.Object,
+) -> None:
+    """Express the fitted hair as one Actor Head Bone skin for glTF."""
+
+    # The fitted source keeps most placement in its Bone Parent transform.
+    # Bake that evaluated REST-pose placement exactly as for the eye surfaces;
+    # merely replacing the parent with an Armature modifier collapses the hair
+    # back into source-local coordinates near the Actor's feet in glTF.
+    convert_eye_to_head_skinned_mesh(obj, armature)
+    modifier = next(modifier for modifier in obj.modifiers if modifier.type == "ARMATURE")
+    modifier.name = "AssetsStudioHairHeadSkin"
+    obj["assetsstudio_web_binding"] = "skinned_cc_base_head_v1"
+    obj["assetsstudio_bundle_id"] = "female_chloe_seed_04_bangs04"
 
 
 def create_blink_state_objects(eye: bpy.types.Object) -> list[bpy.types.Object]:
@@ -218,8 +235,9 @@ def main() -> int:
     face_blend = options.face_blend.resolve()
     top_blend = options.top_blend.resolve()
     pants_blend = options.pants_blend.resolve()
+    hair_blend = options.hair_blend.resolve()
     output = options.output.resolve()
-    for source in (base_blend, face_blend, top_blend, pants_blend):
+    for source in (base_blend, face_blend, top_blend, pants_blend, hair_blend):
         if not source.is_file():
             raise FileNotFoundError(source)
 
@@ -242,8 +260,11 @@ def main() -> int:
         eye_objects.extend(create_blink_state_objects(eye))
     top = append_object(top_blend, COMPONENT_OBJECTS["top"][0])
     pants = append_object(pants_blend, COMPONENT_OBJECTS["pants"][0])
+    hair = append_object(hair_blend, "HairCandidate_Blend")
+    hair.name = "HairBundle_Female_Seed04"
     retarget_armature_modifier(top, armature)
     retarget_armature_modifier(pants, armature)
+    convert_hair_to_head_skinned_mesh(hair, armature)
 
     shoe_names = sorted(
         obj.name
@@ -256,7 +277,7 @@ def main() -> int:
         **COMPONENT_OBJECTS,
         "face": [obj.name for obj in eye_objects] + COMPONENT_OBJECTS["face"][2:],
         "shoes": shoe_names,
-        "hair": [],
+        "hair": [hair.name],
     }
 
     selected: list[bpy.types.Object] = [armature]
@@ -314,6 +335,7 @@ def main() -> int:
             {"path": str(face_blend.relative_to(repository_root)), "sha256": sha256(face_blend)},
             {"path": str(top_blend.relative_to(repository_root)), "sha256": sha256(top_blend)},
             {"path": str(pants_blend.relative_to(repository_root)), "sha256": sha256(pants_blend)},
+            {"path": str(hair_blend.relative_to(repository_root)), "sha256": sha256(hair_blend)},
         ],
         "output": {"path": output.name, "bytes": output.stat().st_size, "sha256": sha256(output)},
         "components": component_names,
@@ -332,8 +354,14 @@ def main() -> int:
             "blink_states": ["open", "half", "closed"],
             "blink_schedule": ["open", "half", "closed", "half", "open", "open", "open", "open"],
         },
+        "hair": {
+            "bundle_id": "female_chloe_seed_04_bangs04",
+            "components": ["Chloe_hair_bangs_04", "Chloe_hair_side_01", "Chloe_hair_back_01"],
+            "head_bone": "CC_Base_Head",
+            "status": "provisional_user_review_required",
+        },
         "known_limitations": {
-            "hair": "No validated Actor hair bundle is included in the first composite GLB.",
+            "hair": "The first fixed female bundle is provisional; a small center-part scalp seam remains under review.",
             "top": "The provisional right shoulder/sleeve issue remains visible by design.",
             "pants": "The provisional visual-review status remains unchanged.",
         },

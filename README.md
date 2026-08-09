@@ -61,7 +61,9 @@ npm.cmd install
 npm.cmd run dev
 ```
 
-Studio 不是可以双击或复制 `file://` 地址打开的单个离线 HTML；浏览器的 ES Module、GLB 和 JSON 加载需要本机 HTTP 服务。请使用上述启动入口，再访问 `http://127.0.0.1:4173/`。`npm run dev` 的预启动步骤会从正式状态生成六类前端注册表和本地静态缩略图缓存，并把当前 Actor、短袖、短裤和鞋导出为被 Git 忽略的本地 GLB；发型尚未装入首个组合 GLB，页面会明确禁用该开关。需要只重建本地预览时可运行 `npm.cmd run assets:prepare`。
+Studio 不是可以双击或复制 `file://` 地址打开的单个离线 HTML；浏览器的 ES Module、GLB 和 JSON 加载需要本机 HTTP 服务。请使用上述启动入口，再访问 `http://127.0.0.1:4173/`。`npm run dev` 的预启动步骤会从正式状态生成六类前端注册表和本地静态缩略图缓存，并把当前 Actor、首套固定女性发型、短袖、短裤和鞋导出为被 Git 忽略的本地 GLB。发型目前为 `provisional`，头顶中分处有一条小缝，必须由用户人工审查后才能晋级。需要只重建本地预览时可运行 `npm.cmd run assets:prepare`。
+
+首套发型可单独执行 `npm.cmd run assets:hair` 重建并验证；执行 `npm.cmd run assets:hair:review` 会在 `workspace/cache/hair/first_bundle/walk_review/` 生成四方向 Walk GIF，便于不打开 Blend 文件完成审查。
 
 页面分为“资产工作台 / 组合预览 / Actor 基准”三个入口。资产工作台提供可横向浏览的静态资产仓库；有正式审查图的资产会在启动时缓存缩略图，没有可信图片的资产保持“待生成”。3D 预览支持滚轮缩放、拖动旋转和“放大预览”工作区。Actor 基准页专门检查模型、骨骼、Walk、眨眼及服饰装配，不与参数编辑混用。当前模型、骨骼和动画各只有一套经过登记的选项；多模型导入、自动绑定和动画重定向仍是后续功能。
 

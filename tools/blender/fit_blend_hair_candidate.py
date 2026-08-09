@@ -11,7 +11,7 @@ import bpy
 from mathutils import Vector
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-import extract_hair_style_candidate as fit_tools
+import hair_fit_support as fit_tools
 
 
 def cli_args() -> argparse.Namespace:

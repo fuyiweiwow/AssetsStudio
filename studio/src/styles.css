@@ -252,6 +252,9 @@ dl { margin: 0; } dl div { padding: 8px 0; border-top: 1px solid #282f3f; } dt {
 .gender-switcher { margin-top: 11px; }.gender-switcher button { flex: 1; }
 .catalog-stats { margin-top: 8px; }.catalog-stats div { text-align: center; }.catalog-stats strong { color: #f0b08a; font-size: .9rem; }
 .catalog-list, .recipe-components, .recipe-summary { display: grid; gap: 5px; margin-top: 10px; }
+.first-bundle-card { position: relative; display: grid; gap: 3px; margin-top: 10px; padding: 10px; border: 1px solid #6e5364; border-radius: 9px; background: #28212c; }
+.first-bundle-card span, .first-bundle-card small { color: #8390a3; font-size: .52rem; }.first-bundle-card strong { overflow: hidden; padding-right: 72px; color: #f0d6df; font-size: .62rem; text-overflow: ellipsis; white-space: nowrap; }
+.first-bundle-card em { position: absolute; top: 9px; right: 9px; padding: 3px 5px; border-radius: 5px; color: #ffc48e; background: #543a2b; font-size: .48rem; font-style: normal; }
 .catalog-list div, .recipe-components div, .recipe-summary div { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 7px 8px; border: 1px solid #252d3c; border-radius: 7px; background: #131823; }
 .catalog-list span, .recipe-components span, .recipe-summary span { color: #748197; font-size: .55rem; }.catalog-list strong, .recipe-components strong, .recipe-summary strong { overflow: hidden; color: #bec7d5; font-size: .57rem; text-overflow: ellipsis; white-space: nowrap; }
 .gallery-records { margin-top: 10px; border-top: 1px solid #2a3242; padding-top: 8px; }

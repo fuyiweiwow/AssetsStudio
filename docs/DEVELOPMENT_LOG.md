@@ -20,6 +20,7 @@
 | 2026-08-09 | implementation/fix | F003/workbench/preview | 将资产工作台与最终组合预览拆分，恢复发型目录与确定性配方入口，并把网页眼睛改为 Head Bone 蒙皮导出 | 八类工作流、单独/Actor 预览和正式组合控制台已建立；旧 GLB 眼睛无 Skin 的验证缺口已封堵，等待用户人工审查 |
 | 2026-08-09 | fix | F001/launcher | 让双击启动器识别已运行的 AssetsStudio，并在无关程序占用端口时提前停止 | 修复重复双击导致 `Port 4173 is already in use`；避免失败前重复执行 Actor GLB 重建 |
 | 2026-08-09 | implementation | F003/baseline/library | 新增 Actor 基准验收页、可放大 3D 工作区和本地静态缩略图资产仓库 | 把基本模型检查从参数工作流中分离；复用里程碑审查图让资产可快速辨认，并保持缓存可重建、不提交 Git |
+| 2026-08-09 | implementation/fix | F004/hair | 按历史推荐 `seed_04_bangs04` 重建首套女性发型，绑定到 `CC_Base_Head` 并接入网页、缩略图和四方向 Walk GIF | 复用既有 Actor 贴合参数而不重新测量；修复 Bone Parent 导出造成发型落在脚边的问题，拒绝两个失败头皮补片；当前头顶中分小缝保留为人工审查项 |
 
 ## 记录规则
 

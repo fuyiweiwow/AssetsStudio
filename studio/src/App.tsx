@@ -209,7 +209,7 @@ function App() {
           <button type="button" className={workspaceView === "review" ? "active" : ""} onClick={() => setWorkspaceView("review")}>组合预览</button>
           <button type="button" className={workspaceView === "baseline" ? "active" : ""} onClick={() => { setWorkspaceView("baseline"); setView("front"); }}>Actor 基准</button>
         </nav>
-        <div className="topbar-meta"><span className="build-pill">F003 · v{registry.studio_version}</span><span className="storage-pill"><i /> 本地资产</span></div>
+        <div className="topbar-meta"><span className="build-pill">F004 · v{registry.studio_version}</span><span className="storage-pill"><i /> 本地资产</span></div>
       </header>
 
       <div className={`studio-grid ${workspaceView !== "workbench" ? "review-layout" : ""}`}>
@@ -226,7 +226,7 @@ function App() {
               <div className="warning"><span>短袖</span><strong>已知袖管问题</strong></div>
               <div className="warning"><span>短裤</span><strong>待人工审查</strong></div>
               <div className={availableGroups.has("shoes") ? "pass" : "fail"}><span>鞋子</span><strong>{availableGroups.has("shoes") ? "已装入" : "缺失"}</strong></div>
-              <div className="pending"><span>发型</span><strong>尚未生成 bundle</strong></div>
+              <div className={availableGroups.has("hair") ? "warning" : "pending"}><span>发型</span><strong>{availableGroups.has("hair") ? "首套待人工审查" : "尚未生成 bundle"}</strong></div>
             </div>
             <p className="baseline-note">绿色表示网页端具备检查条件，不等于美术验收通过。</p>
             <button type="button" className="rail-primary-action" onClick={() => setWorkspaceView("workbench")}>返回资产工作台</button>
@@ -331,6 +331,12 @@ function App() {
                 <>
                   <section className="inspector-section">
                     <div className="section-heading"><div><p className="eyebrow">HAIR LIBRARY</p><h3>发型组件与 Gallery</h3></div><span>{hairPoolCount} 入池</span></div>
+                    <div className="first-bundle-card">
+                      <span>当前网页 Bundle</span>
+                      <strong>{registry.hair.first_bundle.id}</strong>
+                      <small>{registry.hair.first_bundle.components.join(" / ")}</small>
+                      <em>待人工审查</em>
+                    </div>
                     <div className="gender-switcher" aria-label="发型性别">
                       {(["female", "male"] as HairGender[]).map((gender) => <button type="button" key={gender} className={hairGender === gender ? "active" : ""} onClick={() => { setHairGender(gender); setHairRecipe(drawHairRecipe(registry.hair.random_pool, gender, hairSeed)); }}>{gender === "female" ? "女性" : "男性"}</button>)}
                     </div>
@@ -345,7 +351,7 @@ function App() {
                     <label className="field-label">随机种子<input type="number" value={hairSeed} onChange={(event) => setHairSeed(Number(event.target.value) || 0)} /></label>
                     <button type="button" className="console-primary" onClick={drawRecipe}>按当前 seed 抽取配方</button>
                     <div className="recipe-components">{hairRecipe.components.map((item) => <div key={item.component_id}><span>{item.role}</span><strong>{item.object}</strong></div>)}</div>
-                    <div className="capability-note"><strong>配方已可用，几何生成尚未接入</strong><p>下一阶段由本地 Blender 作业把该配方生成 Actor bundle；当前不会用假模型代替。</p></div>
+                    <div className="capability-note"><strong>首套固定 Bundle 已装入</strong><p>当前 3D 预览固定显示 seed_04；这里抽取的其他配方仍只生成可追溯选择，不会伪装成已生成模型。</p></div>
                     <button type="button" className="console-primary disabled-action" disabled>生成 Actor 预览 · 待作业桥接</button>
                   </section>
                 </>
@@ -377,7 +383,7 @@ function App() {
                 <div className="section-heading"><div><p className="eyebrow">VISIBILITY</p><h3>逐项排查</h3></div><span>{availableGroups.size}/5</span></div>
                 <div className="toggle-list">{VISIBILITY_GROUPS.map((group) => { const available = availableGroups.has(group); return <button type="button" className={`toggle-row ${reviewVisibility[group] ? "on" : "off"}`} key={group} onClick={() => toggleReviewComponent(group)} disabled={!available}><span>{TOGGLE_LABELS[group]}</span>{!available ? <small>未装入 GLB</small> : <i><b /></i>}</button>; })}</div>
               </section>
-              <section className="inspector-section baseline-known-issues"><p className="eyebrow">KNOWN ISSUES</p><h3>本轮不掩盖的问题</h3><ul><li>短袖肩部与袖管仍是模型缺陷。</li><li>发型尚未装入当前组合 GLB。</li><li>短裤是否闪烁由本页动画人工确认。</li></ul></section>
+              <section className="inspector-section baseline-known-issues"><p className="eyebrow">KNOWN ISSUES</p><h3>本轮不掩盖的问题</h3><ul><li>短袖肩部与袖管仍是模型缺陷。</li><li>{availableGroups.has("hair") ? "首套发型中分处仍有细小头皮缝，等待人工审查。" : "发型尚未装入当前组合 GLB。"}</li><li>短裤是否闪烁由本页动画人工确认。</li></ul></section>
               <button type="button" className="review-entry-button secondary" onClick={() => setWorkspaceView("workbench")}>返回资产工作台</button>
             </>
           )}

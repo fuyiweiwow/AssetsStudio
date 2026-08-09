@@ -60,6 +60,14 @@ export interface HairGalleryRecord {
 }
 
 export interface HairRegistry {
+  first_bundle: {
+    id: string;
+    gender: HairGender;
+    status: "provisional";
+    components: string[];
+    head_bone: string;
+    known_issue: string | null;
+  };
   component_groups: HairComponentGroup[];
   random_pool: HairPoolComponent[];
   galleries: HairGalleryRecord[];
@@ -114,7 +122,8 @@ export function parseRegistry(value: unknown): AssetRegistry {
   if (!isRecord(value.preview) || typeof value.preview.model_url !== "string") {
     throw new Error("资产注册表缺少预览模型合同");
   }
-  if (!isRecord(value.hair) || !Array.isArray(value.hair.component_groups)
+  if (!isRecord(value.hair) || !isRecord(value.hair.first_bundle) || !Array.isArray(value.hair.first_bundle.components)
+      || !Array.isArray(value.hair.component_groups)
       || !Array.isArray(value.hair.random_pool) || !Array.isArray(value.hair.galleries)) {
     throw new Error("资产注册表缺少发型工作流数据");
   }

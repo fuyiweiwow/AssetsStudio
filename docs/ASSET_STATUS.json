@@ -17,7 +17,9 @@
       "id": "hair_component_pool_v1",
       "category": "hair",
       "status": "source_contract",
-      "path": "milestones/hair/hair_random_pool_v1.json"
+      "path": "milestones/hair/hair_random_pool_v1.json",
+      "first_bundle": "milestones/hair/first_bundle_recipe_v1.json",
+      "known_issue": "female seed_04 web bundle is provisional; small center-part scalp seam requires user review"
     },
     {
       "id": "face_actor_v2_blink",

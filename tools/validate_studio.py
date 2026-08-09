@@ -26,9 +26,11 @@ REQUIRED = [
     "docs/features/F001-studio-shell-asset-registry-actor-preview.md",
     "docs/features/F002-actor-assembly-workflow.md",
     "docs/features/F003-asset-workbench-composite-review.md",
+    "docs/features/F004-first-hair-bundle-integration.md",
     "schemas/asset-registry.v1.schema.json",
     "schemas/recipe.v1.schema.json",
     "schemas/run.v1.schema.json",
+    "schemas/hair-bundle-recipe.v1.schema.json",
     "studio/package.json",
     "studio/package-lock.json",
     "studio/src/generated/asset-registry.json",
@@ -39,6 +41,10 @@ REQUIRED = [
     "tools/blender/export_studio_actor_preview.py",
     "tools/export_studio_actor_preview.ps1",
     "tools/validate_studio_actor_preview.py",
+    "tools/build_first_hair_bundle.ps1",
+    "tools/render_first_hair_bundle_review.ps1",
+    "tools/validate_first_hair_bundle.py",
+    "tools/blender/hair_fit_support.py",
     "docs/templates/FEATURE_TEMPLATE.md",
     "docs/templates/ADR_TEMPLATE.md",
     "milestones/body/chibi_actor_mixamo_walk_v1.blend",
@@ -58,6 +64,7 @@ REQUIRED = [
     "milestones/hair/sources/male/colin_hair_source.blend",
     "milestones/hair/hair_component_catalog_v1.json",
     "milestones/hair/hair_random_pool_v1.json",
+    "milestones/hair/first_bundle_recipe_v1.json",
     "references/face/miku_chibi_source/miku_chibi_source.fbx",
     "references/face/miku_chibi_source/reference_manifest.json",
     "tools/blender/render_accurig_chibi_walk_test.py",
@@ -193,6 +200,9 @@ def main() -> int:
         path = ROOT / str(record["path"])
         if not path.is_file():
             raise FileNotFoundError(path)
+        first_bundle = record.get("first_bundle")
+        if first_bundle and not (ROOT / str(first_bundle)).is_file():
+            raise FileNotFoundError(ROOT / str(first_bundle))
 
     hair_catalog = json.loads(
         (ROOT / "milestones/hair/hair_component_catalog_v1.json").read_text(encoding="utf-8")
@@ -207,6 +217,16 @@ def main() -> int:
     missing_hair_sources = [path for path in sorted(hair_sources) if not (ROOT / path).is_file()]
     if missing_hair_sources:
         raise RuntimeError("missing catalogued hair sources:\n" + "\n".join(missing_hair_sources))
+
+    hair_bundle = json.loads(
+        (ROOT / "milestones/hair/first_bundle_recipe_v1.json").read_text(encoding="utf-8")
+    )
+    if hair_bundle.get("schema") != "assetsstudio_hair_bundle_recipe_v1":
+        raise RuntimeError("unexpected first hair bundle recipe schema")
+    if hair_bundle.get("status") != "provisional":
+        raise RuntimeError("first hair bundle must remain provisional until user review")
+    if hair_bundle.get("binding", {}).get("bone") != "CC_Base_Head":
+        raise RuntimeError("first hair bundle must bind to CC_Base_Head")
 
     face_contract = json.loads(
         (ROOT / "milestones/body/face_contract_v2.json").read_text(encoding="utf-8")
