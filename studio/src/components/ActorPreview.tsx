@@ -2,8 +2,9 @@ import { Component, Suspense, useEffect, useRef, type ErrorInfo, type ReactNode 
 import { Grid, Html, OrbitControls, useAnimations, useGLTF } from "@react-three/drei";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
+import type { PreviewFocus } from "../lib/preview-focus";
 import type { VisibilityGroup } from "../lib/registry";
-import { componentForObject, preparePreviewScene } from "../lib/scene-preparation";
+import { applyPreviewVisibility, blinkStateAt, preparePreviewScene, type BlinkState } from "../lib/scene-preparation";
 
 export type CameraView = "front" | "right" | "back" | "left" | "free";
 export type VisibilityState = Record<VisibilityGroup, boolean>;
@@ -14,9 +15,11 @@ interface ActorPreviewProps {
   playing: boolean;
   normalizedTime: number;
   visibility: VisibilityState;
+  focus: PreviewFocus;
   onTimeChange: (value: number) => void;
   onDuration: (duration: number, animationName: string) => void;
   onModelError: () => void;
+  onOrbitStart: () => void;
 }
 
 interface BoundaryProps {
@@ -64,22 +67,22 @@ function PreviewFallback({ label }: { label: string }) {
   );
 }
 
-const VIEW_POSITIONS: Record<Exclude<CameraView, "free">, [number, number, number]> = {
-  front: [0, 1.33, 5.05],
-  right: [5.05, 1.33, 0],
-  back: [0, 1.33, -5.05],
-  left: [-5.05, 1.33, 0],
-};
-
-function CameraRig({ view }: { view: CameraView }) {
+function CameraRig({ view, focus }: { view: CameraView; focus: PreviewFocus }) {
   const { camera } = useThree();
   useEffect(() => {
     if (view === "free") return;
-    const [x, y, z] = VIEW_POSITIONS[view];
+    const [targetX, targetY, targetZ] = focus.target;
+    const positions: Record<Exclude<CameraView, "free">, [number, number, number]> = {
+      front: [targetX, targetY, targetZ + focus.distance],
+      right: [targetX + focus.distance, targetY, targetZ],
+      back: [targetX, targetY, targetZ - focus.distance],
+      left: [targetX - focus.distance, targetY, targetZ],
+    };
+    const [x, y, z] = positions[view];
     camera.position.set(x, y, z);
-    camera.lookAt(0, 1.33, 0);
+    camera.lookAt(...focus.target);
     camera.updateProjectionMatrix();
-  }, [camera, view]);
+  }, [camera, focus, view]);
   return null;
 }
 
@@ -90,7 +93,7 @@ function ActorModel({
   visibility,
   onTimeChange,
   onDuration,
-}: Omit<ActorPreviewProps, "view" | "onModelError">) {
+}: Omit<ActorPreviewProps, "view" | "focus" | "onModelError" | "onOrbitStart">) {
   const gltf = useGLTF(modelUrl);
   // A regular Object3D.clone(true) does not preserve SkinnedMesh -> bone
   // references. F001 mounts one GLB instance, so using the loader-owned scene
@@ -99,16 +102,14 @@ function ActorModel({
   const { actions, names, mixer } = useAnimations(gltf.animations, scene);
   const action = names.length > 0 ? actions[names[0]] : undefined;
   const lastReport = useRef(0);
+  const currentBlink = useRef<BlinkState>("open");
 
   useEffect(() => {
     preparePreviewScene(scene);
   }, [scene]);
 
   useEffect(() => {
-    scene.traverse((object: THREE.Object3D) => {
-      const component = componentForObject(object);
-      if (component) object.visible = visibility[component];
-    });
+    applyPreviewVisibility(scene, visibility, currentBlink.current);
   }, [scene, visibility]);
 
   useEffect(() => {
@@ -132,16 +133,24 @@ function ActorModel({
     if (!action || playing) return;
     action.time = THREE.MathUtils.clamp(normalizedTime, 0, 1) * action.getClip().duration;
     mixer.update(0);
-  }, [action, mixer, normalizedTime, playing]);
+    currentBlink.current = blinkStateAt(normalizedTime);
+    applyPreviewVisibility(scene, visibility, currentBlink.current);
+  }, [action, mixer, normalizedTime, playing, scene, visibility]);
 
   useFrame((_, delta) => {
     if (!action || !playing) return;
     mixer.update(delta);
+    const duration = action.getClip().duration || 1;
+    const normalized = (action.time % duration) / duration;
+    const nextBlink = blinkStateAt(normalized);
+    if (nextBlink !== currentBlink.current) {
+      currentBlink.current = nextBlink;
+      applyPreviewVisibility(scene, visibility, nextBlink);
+    }
     lastReport.current += delta;
     if (lastReport.current > 0.08) {
       lastReport.current = 0;
-      const duration = action.getClip().duration || 1;
-      onTimeChange((action.time % duration) / duration);
+      onTimeChange(normalized);
     }
   });
 
@@ -184,14 +193,16 @@ export function ActorPreview(props: ActorPreviewProps) {
           fadeStrength={1.5}
           infiniteGrid
         />
-        <CameraRig view={props.view} />
+        <CameraRig view={props.view} focus={props.focus} />
         <OrbitControls
+          key={props.focus.target.join(":")}
           makeDefault
-          enabled={props.view === "free"}
-          target={[0, 1.33, 0]}
-          minDistance={2.2}
-          maxDistance={7}
+          enabled
+          target={props.focus.target}
+          minDistance={1.1}
+          maxDistance={8}
           enablePan={false}
+          onStart={props.onOrbitStart}
         />
       </Canvas>
     </PreviewErrorBoundary>

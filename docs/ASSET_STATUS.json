@@ -20,10 +20,10 @@
       "path": "milestones/hair/hair_random_pool_v1.json"
     },
     {
-      "id": "face_actor_v1",
+      "id": "face_actor_v2_blink",
       "category": "face",
       "status": "technical_baseline",
-      "path": "milestones/body/face_contract_v1.json"
+      "path": "milestones/body/face_contract_v2.json"
     },
     {
       "id": "top_actor_native_tshirt_v5",

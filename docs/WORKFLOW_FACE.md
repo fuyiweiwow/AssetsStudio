@@ -1,18 +1,30 @@
-# 五官当前工作流：Actor 内嵌3D组件与3渲2
+# 五官当前工作流：头部贴合 EyeAssembly、眨眼与3渲2
 
 ## 当前合同
 
 五官不再拥有独立的 `milestones/face/` 运行时或渲染里程碑。当前唯一正式合同是：
 
-- Face 合同：`milestones/body/face_contract_v1.json`
-- Actor：`milestones/body/chibi_actor_mixamo_walk_v1.blend`
+- Face 合同：`milestones/body/face_contract_v2.json`
+- 身体/Walk 保留基线：`milestones/body/chibi_actor_mixamo_walk_v1.blend`
+- 当前 Face Actor：`milestones/body/chibi_actor_eye_assembly_v2.blend`
 - 头骨：`Armature/CC_Base_Head`
-- 眼睛对象：`EyePackageV1_AlmondFrame_L/R`、`EyePackageV1_Lens_L/R`
-- 眼睛源纹理：`milestones/body/eye_textures/eye_left.png`、`eye_right.png`
+- 眼睛对象：`EyeAssemblyV1_Front_L/R`
+- 眼睛状态：`open / half / closed`
+- 确定性眨眼：`open → half → closed → half → open`，随后保持睁眼直到下一轮 Walk
+- 眼睛源纹理：`milestones/body/eye_textures/eye_*.png`
 - 3D耳朵对象：`MikuEar_L_SourceV1`、`MikuEar_R_SourceV1`
 - 耳朵原始来源：`references/face/miku_chibi_source/miku_chibi_source.fbx`
 
-眼睛和耳朵均已父级到 `CC_Base_Head`。原始 Miku FBX 是包含完整角色的私有来源文件，只用于可复现地提取耳朵，不能作为运行时耳朵直接载入。
+眼睛和耳朵均已父级到 `CC_Base_Head`。眼睛使用同一套贴合头部浅曲面切换三种状态材质，不再使用旧 `EyePackageV1` 的框架/镜片叠层。原始 Miku FBX 是包含完整角色的私有来源文件，只用于可复现地提取耳朵，不能作为运行时耳朵直接载入。
+
+## 重建与眨眼审查
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\tools\build_actor_eye_assembly.ps1
+powershell -ExecutionPolicy Bypass -File .\tools\render_actor_eye_blink_review.ps1
+```
+
+第一条命令从保留的 Actor/Walk 基线生成 Face v2，并验证眼睛是否 Bone Parent 到 `CC_Base_Head`、是否包含三态材质、frame 1 到 31 是否随头部移动。第二条命令输出四方向 × 8 帧眨眼审查材料到 `workspace/face/eye_assembly_v2/`；它不改变身体采样。
 
 ## Actor 3渲2闭环
 
@@ -21,7 +33,7 @@
 ```powershell
 & E:\Env\Blender\blender.exe --factory-startup --background `
   --python .\tools\blender\render_accurig_chibi_walk_test.py -- `
-  --input-blend .\milestones\body\chibi_actor_mixamo_walk_v1.blend `
+  --input-blend .\milestones\body\chibi_actor_eye_assembly_v2.blend `
   --output .\workspace\actor_3to2\render `
   --frame-count 8 --soft-toon-lighting
 ```
@@ -42,7 +54,8 @@ python .\tools\validate_actor_3to2_pixels.py `
 
 ## 保留的能力
 
-- 当前 Actor 的眼睛、眉眼外观和3D耳朵随骨骼动作渲染。
+- 当前 Actor 的 EyeAssembly、眉眼外观和3D耳朵随骨骼动作渲染。
+- open/half/closed 三态和确定性眨眼可在 Blender 审查输出与 Studio 交互预览中复现。
 - `render_accurig_chibi_walk_test.py` 可选择受限 Face style bundle，用于后续随机化研究。
 - `replace_with_miku_source_ears.py` 保留耳朵来源重建能力。
 - `render_actor_clothing_eevee.py` 让衣物和鞋使用同一 Actor、Face 和动作合同生成审查帧。
@@ -50,9 +63,8 @@ python .\tools\validate_actor_3to2_pixels.py `
 ## 已退休内容
 
 - `milestones/face/base_features_v1/`：旧2D男女 Face/耳朵帧。
-- `milestones/face/eye_assembly_v1/`：旧 ImageGen half/closed 眼睛装配测试。
 - `milestones/face/runtime_chibi_eyes_ears_walk_v1/`：旧2D运行时证明包。
-- Face 随机化 contact sheet、Gallery 和 eye assembly 测试脚本。
+- Face 随机化 contact sheet 与旧 Gallery。
 
 它们留在 AssetsLab 历史中，不是当前 Actor 的正式输入。
 

@@ -15,6 +15,8 @@
 | 2026-08-09 | cleanup | hair/face | 统一男女发型源文件命名，移动耳朵提取来源，删除旧五官渲染和失效脚本 | 正式分支只保留当前 Actor 3 渲 2 所需组成部分；删除项仍可从 Git/AssetsLab 恢复 |
 | 2026-08-09 | implementation | F001/studio | 建立 React + Three.js Studio 外壳、六类资产注册表、版本化 Schema 和可复现 Actor 组合 GLB 导出 | 首个页面已显示真实 Actor、Walk、短袖、短裤和鞋；发型因尚无已验证 Actor bundle 明确保持未装入状态 |
 | 2026-08-09 | fix | F001/preview | 根据用户首轮审查修复 GLB 骨骼场景深拷贝、短裤近共面闪烁和离线启动误区 | 五官、衣物与鞋改为共享同一 GLTF 骨架；短裤增加仅限网页深度稳定；新增双击启动入口；用户决定将袖管模型缺陷延期到服装里程碑，F001 不做 workaround |
+| 2026-08-09 | fix | face/F001 | 复查原项目眼睛历史并将误迁移的 `EyePackageV1` 替换为头部贴合 EyeAssembly 三态 | 保留身体/Walk v1，不覆盖基线；新增 Face v2 Blend、open/half/closed 纹理、重建/验证/四向眨眼脚本，Studio 恢复确定性眨眼 |
+| 2026-08-09 | implementation | F002/workflow | 用模型→骨骼→动画→拼装→结果五步工作流替换无效左侧资产 Tab | 当前单模型/单骨骼/单动画如实显示；组件选择定位镜头；增加播放、暂停、停止、时间轴和直接拖动自由观察 |
 
 ## 记录规则
 

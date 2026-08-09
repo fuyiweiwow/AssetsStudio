@@ -6,7 +6,8 @@
 - 原演员：`milestones/body/actor_accurig_input.fbx`
 - Walk：`milestones/body/animation_sources/mixamo_standard_walk.fbx`
 - Run：`milestones/body/animation_sources/mixamo_run.fbx`
-- Face 合同：`milestones/body/face_contract_v1.json`
+- Face 合同：`milestones/body/face_contract_v2.json`
+- 当前 Face Actor 变体：`milestones/body/chibi_actor_eye_assembly_v2.blend`（身体/Walk v1 保留不覆盖）
 - 网格：`ChibiBaseMesh_AccuRIG_InputMesh`
 - 骨架：`Armature`
 - Walk 审查帧：`1, 11, 21, 31, 41, 51, 61, 71`

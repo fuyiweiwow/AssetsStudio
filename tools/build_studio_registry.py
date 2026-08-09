@@ -1,4 +1,4 @@
-"""Build the checked-in F001 registry from the authoritative asset status."""
+"""Build the checked-in Studio registry from the authoritative asset status."""
 
 from __future__ import annotations
 
@@ -82,7 +82,7 @@ def main() -> int:
 
     payload = {
         "schema": "assetsstudio_asset_registry_v1",
-        "studio_version": "0.1.0",
+        "studio_version": "0.2.0",
         "updated": str(status["updated"]),
         "preview": {
             "model_url": "/generated/actor-composite-v1.glb",

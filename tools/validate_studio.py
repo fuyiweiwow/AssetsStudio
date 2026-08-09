@@ -24,6 +24,7 @@ REQUIRED = [
     "docs/decisions/0001-development-record-system.md",
     "docs/decisions/0002-asset-lifecycle-sync-policy.md",
     "docs/features/F001-studio-shell-asset-registry-actor-preview.md",
+    "docs/features/F002-actor-assembly-workflow.md",
     "schemas/asset-registry.v1.schema.json",
     "schemas/recipe.v1.schema.json",
     "schemas/run.v1.schema.json",
@@ -31,10 +32,12 @@ REQUIRED = [
     "studio/package-lock.json",
     "studio/src/generated/asset-registry.json",
     "studio/src/App.tsx",
+    "studio/src/components/WorkflowRail.tsx",
     "start-studio.cmd",
     "tools/build_studio_registry.py",
     "tools/blender/export_studio_actor_preview.py",
     "tools/export_studio_actor_preview.ps1",
+    "tools/validate_studio_actor_preview.py",
     "docs/templates/FEATURE_TEMPLATE.md",
     "docs/templates/ADR_TEMPLATE.md",
     "milestones/body/chibi_actor_mixamo_walk_v1.blend",
@@ -42,9 +45,14 @@ REQUIRED = [
     "milestones/body/release_manifest.json",
     "milestones/body/animation_sources/mixamo_standard_walk.fbx",
     "milestones/body/animation_sources/mixamo_run.fbx",
-    "milestones/body/face_contract_v1.json",
+    "milestones/body/face_contract_v2.json",
+    "milestones/body/chibi_actor_eye_assembly_v2.blend",
     "milestones/body/eye_textures/eye_left.png",
     "milestones/body/eye_textures/eye_right.png",
+    "milestones/body/eye_textures/eye_half_left.png",
+    "milestones/body/eye_textures/eye_half_right.png",
+    "milestones/body/eye_textures/eye_closed_left.png",
+    "milestones/body/eye_textures/eye_closed_right.png",
     "milestones/hair/sources/female/chloe_hair_source.blend",
     "milestones/hair/sources/male/colin_hair_source.blend",
     "milestones/hair/hair_component_catalog_v1.json",
@@ -55,6 +63,12 @@ REQUIRED = [
     "tools/process_actor_3to2_pixels.py",
     "tools/validate_actor_3to2_pixels.py",
     "tools/blender/actor_asset_render_utils.py",
+    "tools/blender/build_actor_eye_assembly.py",
+    "tools/blender/validate_actor_eye_assembly.py",
+    "tools/blender/render_actor_eye_blink_review.py",
+    "tools/build_actor_eye_assembly.ps1",
+    "tools/render_actor_eye_blink_review.ps1",
+    "tools/validate_actor_eye_blink_review.py",
     "milestones/tops/actor_native_tshirt_v5/actor_native_tshirt_body_component_v5_upperarm_coverage.blend",
     "milestones/tops/actor_native_tshirt_v5/manifest.json",
     "milestones/pants/native_control_v0/native_control_shorts_v0.blend",
@@ -83,8 +97,8 @@ REQUIRED_TEXT_MARKERS = {
         "## 旧 ImageGen 男女图的处理",
     ],
     "docs/PRODUCT_TECH_BASELINE.md": [
-        "状态：`draft_for_discussion`",
-        "## 当前需要讨论确认的问题",
+        "状态：`accepted_baseline`",
+        "## 已确认的第一版技术边界",
     ],
     "docs/REMOVALS.md": ["## 新记录要求"],
     "docs/decisions/0002-asset-lifecycle-sync-policy.md": [
@@ -94,6 +108,12 @@ REQUIRED_TEXT_MARKERS = {
     ],
     "docs/features/F001-studio-shell-asset-registry-actor-preview.md": [
         "功能 ID：`F001`",
+        "状态：`in_progress`",
+        "## 技术选型",
+        "## 验收条件",
+    ],
+    "docs/features/F002-actor-assembly-workflow.md": [
+        "功能 ID：`F002`",
         "状态：`in_progress`",
         "## 技术选型",
         "## 验收条件",
@@ -182,16 +202,19 @@ def main() -> int:
         raise RuntimeError("missing catalogued hair sources:\n" + "\n".join(missing_hair_sources))
 
     face_contract = json.loads(
-        (ROOT / "milestones/body/face_contract_v1.json").read_text(encoding="utf-8")
+        (ROOT / "milestones/body/face_contract_v2.json").read_text(encoding="utf-8")
     )
     face_paths = [
-        str(face_contract["actor_blend"]),
-        str(face_contract["eye_textures"]["left"]),
-        str(face_contract["eye_textures"]["right"]),
+        str(face_contract["source_actor_blend"]),
+        str(face_contract["actor_face_blend"]),
+        *[str(path) for path in face_contract["eye_textures"].values() if isinstance(path, str)],
         str(face_contract["ear_source"]["file"]),
         str(face_contract["actor_3to2_pipeline"]["render"]),
         str(face_contract["actor_3to2_pipeline"]["pixel_process"]),
         str(face_contract["actor_3to2_pipeline"]["validate"]),
+        str(face_contract["rebuild"]),
+        str(face_contract["review"]),
+        str(face_contract["validate"]),
     ]
     missing_face_paths = [path for path in face_paths if not (ROOT / path).is_file()]
     if missing_face_paths:

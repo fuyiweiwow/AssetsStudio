@@ -17,10 +17,8 @@ import bpy
 COMPONENT_OBJECTS = {
     "body": ["ChibiBaseMesh_AccuRIG_InputMesh"],
     "face": [
-        "EyePackageV1_AlmondFrame_L",
-        "EyePackageV1_AlmondFrame_R",
-        "EyePackageV1_Lens_L",
-        "EyePackageV1_Lens_R",
+        "EyeAssemblyV1_Front_L",
+        "EyeAssemblyV1_Front_R",
         "MikuEar_L_SourceV1",
         "MikuEar_R_SourceV1",
     ],
@@ -33,6 +31,7 @@ def cli_args() -> argparse.Namespace:
     argv = sys.argv[sys.argv.index("--") + 1 :] if "--" in sys.argv else []
     parser = argparse.ArgumentParser()
     parser.add_argument("--base-blend", required=True, type=Path)
+    parser.add_argument("--face-blend", required=True, type=Path)
     parser.add_argument("--top-blend", required=True, type=Path)
     parser.add_argument("--pants-blend", required=True, type=Path)
     parser.add_argument("--output", required=True, type=Path)
@@ -91,12 +90,57 @@ def remove_reference_shoe_meshes() -> None:
             bpy.data.objects.remove(obj, do_unlink=True)
 
 
+def remove_legacy_eye_objects() -> None:
+    for obj in list(bpy.data.objects):
+        if obj.name.startswith(("EyePackageV1_", "EyePackageV2_", "EyeBlinkV1_")):
+            bpy.data.objects.remove(obj, do_unlink=True)
+
+
 def retarget_armature_modifier(obj: bpy.types.Object, armature: bpy.types.Object) -> None:
     modifiers = [modifier for modifier in obj.modifiers if modifier.type == "ARMATURE"]
     if not modifiers:
         raise RuntimeError(f"preview component has no armature modifier: {obj.name}")
     for modifier in modifiers:
         modifier.object = armature
+
+
+def retarget_eye_assembly(
+    obj: bpy.types.Object,
+    armature: bpy.types.Object,
+    actor_mesh: bpy.types.Object,
+) -> None:
+    world = obj.matrix_world.copy()
+    obj.parent = armature
+    obj.parent_type = "BONE"
+    obj.parent_bone = "CC_Base_Head"
+    obj.matrix_world = world
+    for modifier in obj.modifiers:
+        if modifier.type == "SHRINKWRAP":
+            modifier.target = actor_mesh
+
+
+def create_blink_state_objects(eye: bpy.types.Object) -> list[bpy.types.Object]:
+    side = "L" if eye.name.endswith("_L") else "R"
+    eye["assetsstudio_blink_state"] = "open"
+    eye.pop("assetslab_texture", None)
+    exported = [eye]
+    for state in ("half", "closed"):
+        material = bpy.data.materials.get(f"EyeAssemblyV1_{state.title()}_{side}")
+        if material is None:
+            raise RuntimeError(f"missing eye blink material for {state}/{side}")
+        state_object = eye.copy()
+        state_object.data = eye.data.copy()
+        state_object.name = f"EyeAssemblyV1_{state.title()}_{side}_PreviewState"
+        state_object.data.name = state_object.name + "Mesh"
+        state_object.data.materials.clear()
+        state_object.data.materials.append(material)
+        for polygon in state_object.data.polygons:
+            polygon.material_index = 0
+        state_object["assetsstudio_blink_state"] = state
+        state_object.pop("assetslab_texture", None)
+        bpy.context.scene.collection.objects.link(state_object)
+        exported.append(state_object)
+    return exported
 
 
 def tag_component(component: str, object_names: list[str]) -> list[bpy.types.Object]:
@@ -116,10 +160,11 @@ def tag_component(component: str, object_names: list[str]) -> list[bpy.types.Obj
 def main() -> int:
     options = cli_args()
     base_blend = options.base_blend.resolve()
+    face_blend = options.face_blend.resolve()
     top_blend = options.top_blend.resolve()
     pants_blend = options.pants_blend.resolve()
     output = options.output.resolve()
-    for source in (base_blend, top_blend, pants_blend):
+    for source in (base_blend, face_blend, top_blend, pants_blend):
         if not source.is_file():
             raise FileNotFoundError(source)
 
@@ -128,8 +173,17 @@ def main() -> int:
     armature = bpy.data.objects.get("Armature")
     if armature is None or armature.type != "ARMATURE":
         raise RuntimeError("base preview scene has no authoritative Armature")
+    actor_mesh = bpy.data.objects.get(COMPONENT_OBJECTS["body"][0])
+    if actor_mesh is None or actor_mesh.type != "MESH":
+        raise RuntimeError("base preview scene has no authoritative Actor mesh")
 
     remove_reference_shoe_meshes()
+    remove_legacy_eye_objects()
+    eye_sources = [append_object(face_blend, name) for name in COMPONENT_OBJECTS["face"][:2]]
+    eye_objects: list[bpy.types.Object] = []
+    for eye in eye_sources:
+        retarget_eye_assembly(eye, armature, actor_mesh)
+        eye_objects.extend(create_blink_state_objects(eye))
     top = append_object(top_blend, COMPONENT_OBJECTS["top"][0])
     pants = append_object(pants_blend, COMPONENT_OBJECTS["pants"][0])
     retarget_armature_modifier(top, armature)
@@ -142,7 +196,12 @@ def main() -> int:
     )
     if len(shoe_names) != 16:
         raise RuntimeError(f"expected 16 fitted shoe parts, found {len(shoe_names)}")
-    component_names = {**COMPONENT_OBJECTS, "shoes": shoe_names, "hair": []}
+    component_names = {
+        **COMPONENT_OBJECTS,
+        "face": [obj.name for obj in eye_objects] + COMPONENT_OBJECTS["face"][2:],
+        "shoes": shoe_names,
+        "hair": [],
+    }
 
     selected: list[bpy.types.Object] = [armature]
     for component, names in component_names.items():
@@ -196,6 +255,7 @@ def main() -> int:
         },
         "sources": [
             {"path": str(base_blend.relative_to(repository_root)), "sha256": sha256(base_blend)},
+            {"path": str(face_blend.relative_to(repository_root)), "sha256": sha256(face_blend)},
             {"path": str(top_blend.relative_to(repository_root)), "sha256": sha256(top_blend)},
             {"path": str(pants_blend.relative_to(repository_root)), "sha256": sha256(pants_blend)},
         ],
@@ -209,6 +269,13 @@ def main() -> int:
                 "fps": int(scene.render.fps),
             }
         ],
+        "model": {"id": "body_actor_v1", "object": COMPONENT_OBJECTS["body"][0]},
+        "rig": {"id": "accurig_actor_v1", "object": armature.name, "head_bone": "CC_Base_Head"},
+        "face": {
+            "assembly": "EyeAssemblyV1",
+            "blink_states": ["open", "half", "closed"],
+            "blink_schedule": ["open", "half", "closed", "half", "open", "open", "open", "open"],
+        },
         "known_limitations": {
             "hair": "No validated Actor hair bundle is included in the first composite GLB.",
             "top": "The provisional right shoulder/sleeve issue remains visible by design.",

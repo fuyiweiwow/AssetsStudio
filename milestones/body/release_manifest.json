@@ -13,6 +13,13 @@
     "right": "eye_textures/eye_right.png",
     "packed_into_blend": true
   },
+  "face_upgrade": {
+    "source_actor": "chibi_actor_mixamo_walk_v1.blend",
+    "actor_face_blend": "chibi_actor_eye_assembly_v2.blend",
+    "contract": "face_contract_v2.json",
+    "eye_assembly": "EyeAssemblyV1",
+    "blink_states": ["open", "half", "closed"]
+  },
   "ear_source": {
     "file": "references/face/miku_chibi_source/miku_chibi_source.fbx",
     "source_mesh": "head_org_0_0_node",

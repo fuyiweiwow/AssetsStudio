@@ -6,7 +6,7 @@
 | --- | --- | --- | --- |
 | 身体与动作 | `milestones/body/chibi_actor_mixamo_walk_v1.blend` | `accepted` | Actor V1，AccuRIG 骨架，Mixamo Walk 已绑定；Run 源保留 |
 | 发型 | `milestones/hair/hair_component_catalog_v1.json` + `hair_random_pool_v1.json` | `source_contract` | Chloe/Colin 组件化源、base 必选规则和离线随机池 |
-| 五官 | `milestones/body/face_contract_v1.json` + Actor V1 内嵌对象 | `technical_baseline` | 眼睛、眉眼关系和3D耳朵随 `CC_Base_Head` 保留；旧2D/里程碑渲染测试已删除，3渲2能力由当前工具链验证 |
+| 五官 | `milestones/body/face_contract_v2.json` + `chibi_actor_eye_assembly_v2.blend` | `technical_baseline` | EyeAssembly 浅曲面与3D耳朵随 `CC_Base_Head`；open/half/closed 确定性眨眼已恢复，等待用户审查后再晋级 |
 | 短袖 | `milestones/tops/actor_native_tshirt_v5/` | `provisional` | Actor 自身拓扑派生的单网格短袖；整体可用，但右肩/右袖突出仍是已知缺陷 |
 | 短裤 | `milestones/pants/native_control_v0/` | `provisional` | Blender-native Actor 表面派生方案；用户视觉评价优于旧 GarmentCode 转移，自动严格门仍会误报/报警 |
 | 鞋 | `milestones/shoes/cartoon_sneaker_v10/` | `accepted` | 用户确认可作为里程碑；加长鞋头/鞋跟、1.8 倍径向包络、Foot/ToeBase 刚性分区 |

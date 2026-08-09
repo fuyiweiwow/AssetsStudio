@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import * as THREE from "three";
-import { preparePreviewScene } from "./scene-preparation";
+import { applyPreviewVisibility, blinkStateAt, preparePreviewScene } from "./scene-preparation";
 
 describe("preview scene preparation", () => {
   it("keeps the loader-owned scene identity so skinned meshes share its bones", () => {
@@ -21,5 +21,33 @@ describe("preview scene preparation", () => {
     expect((pants.material as THREE.Material).polygonOffset).toBe(true);
     expect((top.material as THREE.Material).polygonOffset).toBe(false);
     expect(pants.renderOrder).toBe(2);
+  });
+
+  it("reproduces the retained open-half-closed blink schedule", () => {
+    expect([0, 0.13, 0.26, 0.38, 0.51].map(blinkStateAt)).toEqual([
+      "open",
+      "half",
+      "closed",
+      "half",
+      "open",
+    ]);
+  });
+
+  it("shows exactly one eye state while respecting face visibility", () => {
+    const scene = new THREE.Group();
+    for (const state of ["open", "half", "closed"] as const) {
+      const eye = new THREE.Mesh(new THREE.BoxGeometry(), new THREE.MeshStandardMaterial());
+      eye.userData.assetsstudio_component = "face";
+      eye.userData.assetsstudio_blink_state = state;
+      eye.name = state;
+      scene.add(eye);
+    }
+    const visibility = { hair: true, face: true, top: true, pants: true, shoes: true };
+
+    applyPreviewVisibility(scene, visibility, "closed");
+    expect(scene.children.map((child) => child.visible)).toEqual([false, false, true]);
+
+    applyPreviewVisibility(scene, { ...visibility, face: false }, "open");
+    expect(scene.children.every((child) => !child.visible)).toBe(true);
   });
 });

@@ -1,6 +1,6 @@
 {
   "schema": "assetsstudio_asset_registry_v1",
-  "studio_version": "0.1.0",
+  "studio_version": "0.2.0",
   "updated": "2026-08-09",
   "preview": {
     "model_url": "/generated/actor-composite-v1.glb",
@@ -29,11 +29,11 @@
       "visibility_group": "hair"
     },
     {
-      "id": "face_actor_v1",
+      "id": "face_actor_v2_blink",
       "category": "face",
       "label": "五官与耳朵",
       "status": "technical_baseline",
-      "source_path": "milestones/body/face_contract_v1.json",
+      "source_path": "milestones/body/face_contract_v2.json",
       "workflow": "docs/WORKFLOW_FACE.md",
       "known_issue": null,
       "visibility_group": "face"
