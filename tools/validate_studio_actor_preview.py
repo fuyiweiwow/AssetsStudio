@@ -53,6 +53,7 @@ def main() -> int:
         raise RuntimeError(f"GLB is missing eye-state materials: {sorted(missing_materials)}")
 
     eye_states: list[str] = []
+    unskinned_eye_nodes: list[str] = []
     legacy_nodes: list[str] = []
     for node in document.get("nodes", []):
         name = str(node.get("name", ""))
@@ -61,10 +62,14 @@ def main() -> int:
         extras = node.get("extras", {})
         if isinstance(extras, dict) and extras.get("assetsstudio_blink_state"):
             eye_states.append(str(extras["assetsstudio_blink_state"]))
+            if node.get("skin") is None:
+                unskinned_eye_nodes.append(name)
     if legacy_nodes:
         raise RuntimeError(f"legacy eye nodes remain in GLB: {legacy_nodes}")
     if sorted(eye_states) != ["closed", "closed", "half", "half", "open", "open"]:
         raise RuntimeError(f"unexpected mutually exclusive eye states: {eye_states}")
+    if unskinned_eye_nodes:
+        raise RuntimeError(f"eye-state nodes must be skinned to the Actor rig: {unskinned_eye_nodes}")
     if not document.get("animations"):
         raise RuntimeError("GLB has no animation")
 

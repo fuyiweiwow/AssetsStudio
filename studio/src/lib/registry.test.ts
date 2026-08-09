@@ -22,4 +22,12 @@ describe("asset registry", () => {
     expect(top?.status).toBe("provisional");
     expect(top?.known_issue).toMatch(/shoulder\/sleeve/);
   });
+
+  it("carries the retained hair workflow instead of a generic accessory placeholder", () => {
+    const registry = parseRegistry(rawRegistry);
+    expect(registry.hair.component_groups.some((group) => group.gender === "female")).toBe(true);
+    expect(registry.hair.component_groups.some((group) => group.gender === "male")).toBe(true);
+    expect(registry.hair.random_pool.length).toBeGreaterThan(10);
+    expect(registry.hair.galleries.length).toBe(9);
+  });
 });

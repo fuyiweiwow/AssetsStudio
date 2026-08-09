@@ -50,4 +50,18 @@ describe("preview scene preparation", () => {
     applyPreviewVisibility(scene, { ...visibility, face: false }, "open");
     expect(scene.children.every((child) => !child.visible)).toBe(true);
   });
+
+  it("hides only the Actor surface for isolated asset preview", () => {
+    const scene = new THREE.Group();
+    const body = new THREE.Mesh(new THREE.BoxGeometry(), new THREE.MeshStandardMaterial());
+    body.userData.assetsstudio_component = "body";
+    const top = new THREE.Mesh(new THREE.BoxGeometry(), new THREE.MeshStandardMaterial());
+    top.userData.assetsstudio_component = "top";
+    scene.add(body, top);
+    const visibility = { hair: false, face: false, top: true, pants: false, shoes: false };
+
+    applyPreviewVisibility(scene, visibility, "open", false);
+    expect(body.visible).toBe(false);
+    expect(top.visible).toBe(true);
+  });
 });

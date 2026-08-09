@@ -34,6 +34,11 @@ export function componentForObject(object: THREE.Object3D): VisibilityGroup | nu
   return null;
 }
 
+export function isActorBody(object: THREE.Object3D): boolean {
+  return object.userData.assetsstudio_component === "body"
+    || object.name.toLowerCase().includes("chibibasemesh");
+}
+
 export function preparePreviewScene(scene: THREE.Group): THREE.Group {
   scene.traverse((object: THREE.Object3D) => {
     const blinkState = object.userData.assetsstudio_blink_state;
@@ -63,8 +68,13 @@ export function applyPreviewVisibility(
   scene: THREE.Group,
   visibility: Record<VisibilityGroup, boolean>,
   blinkState: BlinkState,
+  showBody = true,
 ) {
   scene.traverse((object: THREE.Object3D) => {
+    if (isActorBody(object)) {
+      object.visible = showBody;
+      return;
+    }
     const component = componentForObject(object);
     if (!component) return;
     const objectBlinkState = object.userData.assetsstudio_blink_state;

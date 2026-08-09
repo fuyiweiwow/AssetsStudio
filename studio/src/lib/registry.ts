@@ -25,6 +25,42 @@ export interface AssetRegistry {
     storage_policy: "local";
   };
   assets: AssetRecord[];
+  hair: HairRegistry;
+}
+
+export type HairGender = "female" | "male";
+
+export interface HairComponentGroup {
+  id: string;
+  gender: HairGender;
+  role: string;
+  status: "recommended" | "experimental";
+  objects: string[];
+}
+
+export interface HairPoolComponent {
+  component_id: string;
+  group_id: string;
+  gender: HairGender;
+  role: string;
+  object: string;
+  pool: true;
+  preset: false;
+}
+
+export interface HairGalleryRecord {
+  id: string;
+  gender: HairGender;
+  title: string;
+  category: string;
+  status: string;
+  description: string;
+}
+
+export interface HairRegistry {
+  component_groups: HairComponentGroup[];
+  random_pool: HairPoolComponent[];
+  galleries: HairGalleryRecord[];
 }
 
 const STATUSES = new Set<AssetStatus>([
@@ -72,6 +108,10 @@ export function parseRegistry(value: unknown): AssetRegistry {
 
   if (!isRecord(value.preview) || typeof value.preview.model_url !== "string") {
     throw new Error("资产注册表缺少预览模型合同");
+  }
+  if (!isRecord(value.hair) || !Array.isArray(value.hair.component_groups)
+      || !Array.isArray(value.hair.random_pool) || !Array.isArray(value.hair.galleries)) {
+    throw new Error("资产注册表缺少发型工作流数据");
   }
   return value as unknown as AssetRegistry;
 }

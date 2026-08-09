@@ -15,6 +15,7 @@ interface ActorPreviewProps {
   playing: boolean;
   normalizedTime: number;
   visibility: VisibilityState;
+  showBody: boolean;
   focus: PreviewFocus;
   onTimeChange: (value: number) => void;
   onDuration: (duration: number, animationName: string) => void;
@@ -68,22 +69,36 @@ function PreviewFallback({ label }: { label: string }) {
 }
 
 function CameraRig({ view, focus }: { view: CameraView; focus: PreviewFocus }) {
-  const { camera } = useThree();
+  const { camera, controls } = useThree();
+  const pendingView = useRef(true);
   useEffect(() => {
-    if (view === "free") return;
+    pendingView.current = true;
+  }, [focus, view]);
+  useFrame(() => {
+    if (view === "free" || !pendingView.current) return;
     const [targetX, targetY, targetZ] = focus.target;
-    const positions: Record<Exclude<CameraView, "free">, [number, number, number]> = {
-      front: [targetX, targetY, targetZ + focus.distance],
-      right: [targetX + focus.distance, targetY, targetZ],
-      back: [targetX, targetY, targetZ - focus.distance],
-      left: [targetX - focus.distance, targetY, targetZ],
-    };
-    const [x, y, z] = positions[view];
+    const [x, y, z] = [targetX, targetY, targetZ + focus.distance];
     camera.position.set(x, y, z);
     camera.lookAt(...focus.target);
     camera.updateProjectionMatrix();
-  }, [camera, focus, view]);
+    const orbit = controls as { target?: THREE.Vector3; update?: () => void } | null;
+    orbit?.target?.set(...focus.target);
+    orbit?.update?.();
+    pendingView.current = false;
+  });
   return null;
+}
+
+function FixedViewOrientation({ view, children }: { view: CameraView; children: ReactNode }) {
+  const lastRotation = useRef(0);
+  const rotations: Record<Exclude<CameraView, "free">, number> = {
+    front: 0,
+    right: -Math.PI / 2,
+    back: Math.PI,
+    left: Math.PI / 2,
+  };
+  if (view !== "free") lastRotation.current = rotations[view];
+  return <group rotation={[0, lastRotation.current, 0]}>{children}</group>;
 }
 
 function ActorModel({
@@ -91,6 +106,7 @@ function ActorModel({
   playing,
   normalizedTime,
   visibility,
+  showBody,
   onTimeChange,
   onDuration,
 }: Omit<ActorPreviewProps, "view" | "focus" | "onModelError" | "onOrbitStart">) {
@@ -109,8 +125,8 @@ function ActorModel({
   }, [scene]);
 
   useEffect(() => {
-    applyPreviewVisibility(scene, visibility, currentBlink.current);
-  }, [scene, visibility]);
+    applyPreviewVisibility(scene, visibility, currentBlink.current, showBody);
+  }, [scene, showBody, visibility]);
 
   useEffect(() => {
     if (!action) {
@@ -134,10 +150,14 @@ function ActorModel({
     action.time = THREE.MathUtils.clamp(normalizedTime, 0, 1) * action.getClip().duration;
     mixer.update(0);
     currentBlink.current = blinkStateAt(normalizedTime);
-    applyPreviewVisibility(scene, visibility, currentBlink.current);
-  }, [action, mixer, normalizedTime, playing, scene, visibility]);
+    applyPreviewVisibility(scene, visibility, currentBlink.current, showBody);
+  }, [action, mixer, normalizedTime, playing, scene, showBody, visibility]);
 
   useFrame((_, delta) => {
+    // The loader-owned scene is shared with the animation mixer. Reassert the
+    // presentation contract every frame so an isolated preview cannot be
+    // undone by a late mixer/loader update.
+    applyPreviewVisibility(scene, visibility, currentBlink.current, showBody);
     if (!action || !playing) return;
     mixer.update(delta);
     const duration = action.getClip().duration || 1;
@@ -145,7 +165,7 @@ function ActorModel({
     const nextBlink = blinkStateAt(normalized);
     if (nextBlink !== currentBlink.current) {
       currentBlink.current = nextBlink;
-      applyPreviewVisibility(scene, visibility, nextBlink);
+      applyPreviewVisibility(scene, visibility, nextBlink, showBody);
     }
     lastReport.current += delta;
     if (lastReport.current > 0.08) {
@@ -178,7 +198,7 @@ export function ActorPreview(props: ActorPreviewProps) {
             </Html>
           }
         >
-          <ActorModel {...props} />
+          <FixedViewOrientation view={props.view}><ActorModel {...props} /></FixedViewOrientation>
         </Suspense>
         <Grid
           args={[8, 8]}

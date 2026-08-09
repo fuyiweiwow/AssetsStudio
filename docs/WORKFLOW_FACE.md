@@ -17,6 +17,8 @@
 
 眼睛和耳朵均已父级到 `CC_Base_Head`。眼睛使用同一套贴合头部浅曲面切换三种状态材质，不再使用旧 `EyePackageV1` 的框架/镜片叠层。原始 Miku FBX 是包含完整角色的私有来源文件，只用于可复现地提取耳朵，不能作为运行时耳朵直接载入。
 
+Blender 权威 Face 保持 Bone Parent 合同；导出 Studio GLB 时，脚本先在 REST pose 烘焙同一贴合曲面，再把所有眼睛顶点 100% 赋权给 `CC_Base_Head`。网页端必须得到带 `skin` 的 SkinnedMesh，不能把普通 Bone Child 节点当作已完成网页绑定。`tools/validate_studio_actor_preview.py` 会拒绝任何没有 `skin` 的眨眼状态节点。
+
 ## 重建与眨眼审查
 
 ```powershell

@@ -9,6 +9,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 STATUS_PATH = ROOT / "docs" / "ASSET_STATUS.json"
 OUTPUT_PATH = ROOT / "studio" / "src" / "generated" / "asset-registry.json"
+HAIR_COMPONENT_CATALOG = ROOT / "milestones" / "hair" / "hair_component_catalog_v1.json"
+HAIR_RANDOM_POOL = ROOT / "milestones" / "hair" / "hair_random_pool_v1.json"
+HAIR_GALLERY_CATALOG = ROOT / "milestones" / "hair" / "hair_gallery_catalog_v1.json"
 
 
 CATEGORY_METADATA = {
@@ -80,9 +83,19 @@ def main() -> int:
     if missing_categories:
         raise RuntimeError("asset registry is missing categories: " + ", ".join(missing_categories))
 
+    hair_components = json.loads(HAIR_COMPONENT_CATALOG.read_text(encoding="utf-8"))
+    hair_pool = json.loads(HAIR_RANDOM_POOL.read_text(encoding="utf-8"))
+    hair_galleries = json.loads(HAIR_GALLERY_CATALOG.read_text(encoding="utf-8"))
+    if hair_components.get("schema") != "assetslab_hair_component_catalog_v1":
+        raise RuntimeError("unexpected hair component catalog schema")
+    if hair_pool.get("schema") != "assetslab_hair_random_pool_v1":
+        raise RuntimeError("unexpected hair random pool schema")
+    if hair_galleries.get("schema") != "assetslab_hair_gallery_catalog_v1":
+        raise RuntimeError("unexpected hair gallery catalog schema")
+
     payload = {
         "schema": "assetsstudio_asset_registry_v1",
-        "studio_version": "0.2.0",
+        "studio_version": "0.3.0",
         "updated": str(status["updated"]),
         "preview": {
             "model_url": "/generated/actor-composite-v1.glb",
@@ -90,6 +103,20 @@ def main() -> int:
             "storage_policy": "local",
         },
         "assets": assets,
+        "hair": {
+            "component_groups": [
+                {
+                    "id": group["id"],
+                    "gender": group["gender"],
+                    "role": group["role"],
+                    "status": group["status"],
+                    "objects": group["objects"],
+                }
+                for group in hair_components.get("component_groups", [])
+            ],
+            "random_pool": hair_pool.get("components", []),
+            "galleries": hair_galleries.get("galleries", []),
+        },
     }
     OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     OUTPUT_PATH.write_text(

@@ -1,6 +1,6 @@
 {
   "schema": "assetsstudio_asset_registry_v1",
-  "studio_version": "0.2.0",
+  "studio_version": "0.3.0",
   "updated": "2026-08-09",
   "preview": {
     "model_url": "/generated/actor-composite-v1.glb",
@@ -68,5 +68,400 @@
       "known_issue": null,
       "visibility_group": "shoes"
     }
-  ]
+  ],
+  "hair": {
+    "component_groups": [
+      {
+        "id": "female_front_bangs",
+        "gender": "female",
+        "role": "front_bangs",
+        "status": "recommended",
+        "objects": [
+          "Chloe_hair_bangs_01",
+          "Chloe_hair_bangs_02",
+          "Chloe_hair_bangs_03",
+          "Chloe_hair_bangs_04",
+          "Chloe_hair_bangs_05"
+        ]
+      },
+      {
+        "id": "female_side",
+        "gender": "female",
+        "role": "side_coverage",
+        "status": "recommended",
+        "objects": [
+          "Chloe_hair_side_01",
+          "Chloe_hair_side_02",
+          "Chloe_hair_side_03",
+          "Chloe_hair_side_04",
+          "Chloe_hair_side_05"
+        ]
+      },
+      {
+        "id": "female_base_cap",
+        "gender": "female",
+        "role": "base_cap",
+        "status": "recommended",
+        "objects": [
+          "Chloe_hair_back_01"
+        ]
+      },
+      {
+        "id": "female_back_attachment",
+        "gender": "female",
+        "role": "back_attachment",
+        "status": "experimental",
+        "objects": [
+          "Chloe_hair_back_02",
+          "Chloe_hair_back_03"
+        ]
+      },
+      {
+        "id": "female_back_experimental",
+        "gender": "female",
+        "role": "experimental_back_shell",
+        "status": "experimental",
+        "objects": [
+          "Chloe_hair_back_04",
+          "Chloe_hair_back_05",
+          "Chloe_hair_back_06",
+          "Chloe_hair_back_07",
+          "Chloe_hair_back_08",
+          "Chloe_hair_back_09"
+        ]
+      },
+      {
+        "id": "male_front_bangs",
+        "gender": "male",
+        "role": "front_bangs",
+        "status": "experimental",
+        "objects": [
+          "Colin_hair_bangs_01",
+          "Colin_hair_bangs_02",
+          "Colin_hair_bangs_03",
+          "Colin_hair_bangs_04",
+          "Colin_hair_bangs_05",
+          "Colin_hair_bangs_06",
+          "Colin_hair_bangs_07",
+          "Colin_hair_bangs_08"
+        ]
+      },
+      {
+        "id": "male_side",
+        "gender": "male",
+        "role": "side_coverage",
+        "status": "recommended",
+        "objects": [
+          "Colin_hair_side_01",
+          "Colin_hair_side_02"
+        ]
+      },
+      {
+        "id": "male_back_section",
+        "gender": "male",
+        "role": "back_section",
+        "status": "recommended",
+        "objects": [
+          "Colin_hair_back_01",
+          "Colin_hair_back_02",
+          "Colin_hair_back_03",
+          "Colin_hair_back_04",
+          "Colin_hair_back_05"
+        ]
+      },
+      {
+        "id": "male_back_experimental",
+        "gender": "male",
+        "role": "experimental_back_shell",
+        "status": "recommended",
+        "objects": [
+          "Colin_hair_back_06"
+        ]
+      },
+      {
+        "id": "male_base_cap",
+        "gender": "male",
+        "role": "base_cap",
+        "status": "experimental",
+        "objects": [
+          "Colin_hair_base_01",
+          "Colin_hair_base_02"
+        ]
+      }
+    ],
+    "random_pool": [
+      {
+        "component_id": "female_base_cap:Chloe_hair_back_01",
+        "group_id": "female_base_cap",
+        "gender": "female",
+        "role": "base_cap",
+        "object": "Chloe_hair_back_01",
+        "pool": true,
+        "preset": false
+      },
+      {
+        "component_id": "female_front_bangs:Chloe_hair_bangs_01",
+        "group_id": "female_front_bangs",
+        "gender": "female",
+        "role": "front_bangs",
+        "object": "Chloe_hair_bangs_01",
+        "pool": true,
+        "preset": false
+      },
+      {
+        "component_id": "female_front_bangs:Chloe_hair_bangs_02",
+        "group_id": "female_front_bangs",
+        "gender": "female",
+        "role": "front_bangs",
+        "object": "Chloe_hair_bangs_02",
+        "pool": true,
+        "preset": false
+      },
+      {
+        "component_id": "female_front_bangs:Chloe_hair_bangs_03",
+        "group_id": "female_front_bangs",
+        "gender": "female",
+        "role": "front_bangs",
+        "object": "Chloe_hair_bangs_03",
+        "pool": true,
+        "preset": false
+      },
+      {
+        "component_id": "female_front_bangs:Chloe_hair_bangs_04",
+        "group_id": "female_front_bangs",
+        "gender": "female",
+        "role": "front_bangs",
+        "object": "Chloe_hair_bangs_04",
+        "pool": true,
+        "preset": false
+      },
+      {
+        "component_id": "female_front_bangs:Chloe_hair_bangs_05",
+        "group_id": "female_front_bangs",
+        "gender": "female",
+        "role": "front_bangs",
+        "object": "Chloe_hair_bangs_05",
+        "pool": true,
+        "preset": false
+      },
+      {
+        "component_id": "female_side:Chloe_hair_side_01",
+        "group_id": "female_side",
+        "gender": "female",
+        "role": "side_coverage",
+        "object": "Chloe_hair_side_01",
+        "pool": true,
+        "preset": false
+      },
+      {
+        "component_id": "female_side:Chloe_hair_side_02",
+        "group_id": "female_side",
+        "gender": "female",
+        "role": "side_coverage",
+        "object": "Chloe_hair_side_02",
+        "pool": true,
+        "preset": false
+      },
+      {
+        "component_id": "female_side:Chloe_hair_side_03",
+        "group_id": "female_side",
+        "gender": "female",
+        "role": "side_coverage",
+        "object": "Chloe_hair_side_03",
+        "pool": true,
+        "preset": false
+      },
+      {
+        "component_id": "female_side:Chloe_hair_side_04",
+        "group_id": "female_side",
+        "gender": "female",
+        "role": "side_coverage",
+        "object": "Chloe_hair_side_04",
+        "pool": true,
+        "preset": false
+      },
+      {
+        "component_id": "female_side:Chloe_hair_side_05",
+        "group_id": "female_side",
+        "gender": "female",
+        "role": "side_coverage",
+        "object": "Chloe_hair_side_05",
+        "pool": true,
+        "preset": false
+      },
+      {
+        "component_id": "male_base_cap:Colin_hair_base_01",
+        "group_id": "male_base_cap",
+        "gender": "male",
+        "role": "base_cap",
+        "object": "Colin_hair_base_01",
+        "pool": true,
+        "preset": false
+      },
+      {
+        "component_id": "male_base_cap:Colin_hair_base_02",
+        "group_id": "male_base_cap",
+        "gender": "male",
+        "role": "base_cap",
+        "object": "Colin_hair_base_02",
+        "pool": true,
+        "preset": false
+      },
+      {
+        "component_id": "male_side:Colin_hair_side_01",
+        "group_id": "male_side",
+        "gender": "male",
+        "role": "side_coverage",
+        "object": "Colin_hair_side_01",
+        "pool": true,
+        "preset": false
+      },
+      {
+        "component_id": "male_side:Colin_hair_side_02",
+        "group_id": "male_side",
+        "gender": "male",
+        "role": "side_coverage",
+        "object": "Colin_hair_side_02",
+        "pool": true,
+        "preset": false
+      },
+      {
+        "component_id": "male_back_section:Colin_hair_back_01",
+        "group_id": "male_back_section",
+        "gender": "male",
+        "role": "back_section",
+        "object": "Colin_hair_back_01",
+        "pool": true,
+        "preset": false
+      },
+      {
+        "component_id": "male_back_section:Colin_hair_back_02",
+        "group_id": "male_back_section",
+        "gender": "male",
+        "role": "back_section",
+        "object": "Colin_hair_back_02",
+        "pool": true,
+        "preset": false
+      },
+      {
+        "component_id": "male_back_section:Colin_hair_back_03",
+        "group_id": "male_back_section",
+        "gender": "male",
+        "role": "back_section",
+        "object": "Colin_hair_back_03",
+        "pool": true,
+        "preset": false
+      },
+      {
+        "component_id": "male_back_section:Colin_hair_back_04",
+        "group_id": "male_back_section",
+        "gender": "male",
+        "role": "back_section",
+        "object": "Colin_hair_back_04",
+        "pool": true,
+        "preset": false
+      },
+      {
+        "component_id": "male_back_section:Colin_hair_back_05",
+        "group_id": "male_back_section",
+        "gender": "male",
+        "role": "back_section",
+        "object": "Colin_hair_back_05",
+        "pool": true,
+        "preset": false
+      }
+    ],
+    "galleries": [
+      {
+        "id": "female_base",
+        "gender": "female",
+        "title": "女性（基础）",
+        "path": "chloe_gallery/base_gallery.html",
+        "preview": "chloe_gallery/seed_01_baseline/pixel/front_pixel.png",
+        "category": "女性 / 基础",
+        "status": "基础",
+        "description": "女性基础发型基准，用于确认演员头部和发型层的贴合关系。"
+      },
+      {
+        "id": "female_recommended",
+        "gender": "female",
+        "title": "女性（推荐）",
+        "path": "chloe_gallery/gallery.html",
+        "preview": "chloe_gallery/seed_04_bangs04/pixel/front_pixel.png",
+        "category": "女性 / 推荐",
+        "status": "推荐",
+        "description": "女性 Chloe 发型推荐池，包含直刘海、侧分刘海和侧发变化；与 female_more 源核验后确认几何重复。"
+      },
+      {
+        "id": "female_experimental",
+        "gender": "female",
+        "title": "女性（实验）",
+        "path": "female_experimental_gallery/experimental_gallery.html",
+        "preview": "female_experimental_gallery/bun_back01_back03/pixel/front_pixel.png",
+        "category": "女性 / 实验",
+        "status": "实验",
+        "description": "女性后发替换与双丸子头实验，仍需处理头顶露白，不进入正式随机池。"
+      },
+      {
+        "id": "female_hair_audit",
+        "gender": "female",
+        "title": "女性（全后发实验）",
+        "path": "female_experimental_gallery/all_back_gallery.html",
+        "preview": "female_experimental_gallery/full_back_03/pixel/front_pixel.png",
+        "category": "女性 / 实验",
+        "status": "实验",
+        "description": "Chloe 全部 9 个后发组件的替换审查页，包含双丸子头候选。"
+      },
+      {
+        "id": "male_base",
+        "gender": "male",
+        "title": "男性（基础）",
+        "path": "male_gallery/gallery.html",
+        "preview": "male_gallery/seed_back01/pixel/front_pixel.png",
+        "category": "男性 / 基础",
+        "status": "基础",
+        "description": "男性完整后发基础池，当前保留 5 个有效候选。"
+      },
+      {
+        "id": "male_recommended",
+        "gender": "male",
+        "title": "男性（刘海推荐）",
+        "path": "male_gallery/assembly_gallery.html",
+        "preview": "male_gallery/assembly_seed_02/pixel/front_pixel.png",
+        "category": "男性 / 推荐",
+        "status": "推荐",
+        "description": "男性独立刘海、侧发和后发组装结果，共 3 个候选；仍需人工确认接缝、耳朵遮挡和动画表现。"
+      },
+      {
+        "id": "male_base_components",
+        "gender": "male",
+        "title": "男性（base 组件装配实验）",
+        "path": "male_base_gallery/gallery.html",
+        "preview": "male_base_gallery/base_seed_02/pixel/front_pixel.png",
+        "category": "男性 / 组件装配",
+        "status": "实验",
+        "description": "强制包含 Colin_hair_base_01/02 后的组件装配审查；当前用于确认 base 覆盖范围和头皮接缝。"
+      },
+      {
+        "id": "male_full",
+        "gender": "male",
+        "title": "男性（完整池）",
+        "path": "male_gallery/full_gallery.html",
+        "preview": "male_gallery/assembly_seed_02/pixel/front_pixel.png",
+        "category": "男性 / 完整池",
+        "status": "推荐",
+        "description": "男性基础后发 5 个候选与刘海组装 3 个候选的合并核验页。"
+      },
+      {
+        "id": "male_bangs_audit",
+        "gender": "male",
+        "title": "男性（全刘海实验）",
+        "path": "male_gallery/all_bangs_gallery.html",
+        "preview": "male_gallery/full_bangs_08/pixel/front_pixel.png",
+        "category": "男性 / 实验",
+        "status": "实验",
+        "description": "男性全部 8 个刘海组件的统一贴合审查页，尚未全部进入推荐池。"
+      }
+    ]
+  }
 }

@@ -1,45 +1,40 @@
-export type WorkflowStepId = "model" | "rig" | "animation" | "assembly" | "preview";
+import { CATEGORY_GLYPHS, type AssetCategory } from "../lib/registry";
+
+export type WorkflowStepId = "model" | "rig" | "animation" | AssetCategory;
 
 interface WorkflowRailProps {
   activeStep: WorkflowStepId;
-  assemblyCount: number;
   animationLabel: string;
-  previewReady: boolean;
+  loadedCategories: ReadonlySet<AssetCategory>;
   onSelect: (step: WorkflowStepId) => void;
 }
 
-const STEP_COPY: Array<{ id: WorkflowStepId; label: string; glyph: string }> = [
-  { id: "model", label: "选择模型", glyph: "模" },
-  { id: "rig", label: "选择骨骼", glyph: "骨" },
-  { id: "animation", label: "选择动画", glyph: "动" },
-  { id: "assembly", label: "拼装部件", glyph: "装" },
-  { id: "preview", label: "结果预览", glyph: "览" },
+const STRUCTURE_STEPS: Array<{ id: WorkflowStepId; label: string; glyph: string; summary: string }> = [
+  { id: "model", label: "模型", glyph: "模", summary: "Actor V1 · 当前唯一模型" },
+  { id: "rig", label: "骨骼", glyph: "骨", summary: "AccuRIG · 已绑定" },
+  { id: "animation", label: "动画", glyph: "动", summary: "Walk · 当前动作" },
 ];
 
-export function WorkflowRail({
-  activeStep,
-  assemblyCount,
-  animationLabel,
-  previewReady,
-  onSelect,
-}: WorkflowRailProps) {
-  const summaries: Record<WorkflowStepId, string> = {
-    model: "Actor V1 · 当前唯一模型",
-    rig: "AccuRIG · 已绑定",
-    animation: animationLabel,
-    assembly: `${assemblyCount} 个组件已装入`,
-    preview: previewReady ? "交互预览已连接" : "等待本地 GLB",
-  };
+const ASSET_STEPS: Array<{ id: AssetCategory; label: string }> = [
+  { id: "hair", label: "发型" },
+  { id: "face", label: "五官" },
+  { id: "tops", label: "上衣" },
+  { id: "pants", label: "裤子" },
+  { id: "shoes", label: "鞋子" },
+];
 
+export function WorkflowRail({ activeStep, animationLabel, loadedCategories, onSelect }: WorkflowRailProps) {
   return (
-    <aside className="workflow-rail" aria-label="Actor 装配工作流">
+    <aside className="workflow-rail" aria-label="资产工作流">
       <div className="rail-heading">
-        <span className="eyebrow">ASSEMBLY WORKFLOW</span>
-        <h2>角色生成流程</h2>
-        <span className="asset-count">5 步</span>
+        <span className="eyebrow">ASSET WORKBENCH</span>
+        <h2>资产工作流</h2>
+        <span className="asset-count">8 类</span>
       </div>
-      <ol className="workflow-list">
-        {STEP_COPY.map((step, index) => (
+
+      <p className="rail-section-label">结构与动作</p>
+      <ol className="workflow-list compact">
+        {STRUCTURE_STEPS.map((step) => (
           <li key={step.id}>
             <button
               type="button"
@@ -47,21 +42,35 @@ export function WorkflowRail({
               aria-current={activeStep === step.id ? "step" : undefined}
               onClick={() => onSelect(step.id)}
             >
-              <span className="step-index">{index + 1}</span>
               <span className="asset-glyph" aria-hidden="true">{step.glyph}</span>
-              <span className="asset-copy">
-                <strong>{step.label}</strong>
-                <small>{summaries[step.id]}</small>
-              </span>
+              <span className="asset-copy"><strong>{step.label}</strong><small>{step.id === "animation" ? animationLabel : step.summary}</small></span>
               <span className="step-state">✓</span>
             </button>
           </li>
         ))}
       </ol>
-      <div className="rail-footnote">
-        <span className="pulse-dot" />
-        当前先实现单模型、单骨骼、单动画
-      </div>
+
+      <p className="rail-section-label">外观资产</p>
+      <ol className="workflow-list compact">
+        {ASSET_STEPS.map((step) => {
+          const loaded = loadedCategories.has(step.id);
+          return (
+            <li key={step.id}>
+              <button
+                type="button"
+                className={`workflow-step ${activeStep === step.id ? "selected" : ""}`}
+                aria-current={activeStep === step.id ? "step" : undefined}
+                onClick={() => onSelect(step.id)}
+              >
+                <span className="asset-glyph" aria-hidden="true">{CATEGORY_GLYPHS[step.id]}</span>
+                <span className="asset-copy"><strong>{step.label}</strong><small>{loaded ? "已装入交互预览" : "源合同 · 待生成预览"}</small></span>
+                <span className={`step-state ${loaded ? "" : "pending"}`}>{loaded ? "✓" : "○"}</span>
+              </button>
+            </li>
+          );
+        })}
+      </ol>
+      <div className="rail-footnote"><span className="pulse-dot" />配件（帽子/眼镜等）将在主资产合同稳定后加入</div>
     </aside>
   );
 }

@@ -184,3 +184,63 @@ dl { margin: 0; } dl div { padding: 8px 0; border-top: 1px solid #282f3f; } dt {
   .inspector { display: block; }.inspector-section + .inspector-section { margin-top: 10px; }
   .statusbar { flex-wrap: wrap; }.statusbar-right { width: 100%; margin-left: 0; }
 }
+
+/* F003: separate asset production from final composite review. */
+.workspace-tabs, .mode-switcher, .gender-switcher {
+  display: flex; gap: 4px; padding: 4px; border: 1px solid var(--line); border-radius: 11px; background: #151a25;
+}
+.workspace-tabs button, .mode-switcher button, .gender-switcher button {
+  border: 0; border-radius: 8px; padding: 7px 13px; background: transparent; color: #7f8aa0; font-size: .68rem; cursor: pointer;
+}
+.workspace-tabs button.active, .mode-switcher button.active, .gender-switcher button.active {
+  color: #fff; background: linear-gradient(135deg, #76505f, #3f4c68); box-shadow: 0 3px 10px #0005;
+}
+.preview-toolbar-actions { display: flex; align-items: center; justify-content: flex-end; gap: 8px; flex-wrap: wrap; }
+.preview-subtitle { margin: 4px 0 0; color: #6f7b90; font-size: .59rem; }
+.mode-switcher button { padding: 6px 9px; }
+.rail-section-label { margin: 10px 8px 6px; color: #68758a; font-size: .55rem; font-weight: 700; letter-spacing: .13em; text-transform: uppercase; }
+.workflow-list.compact { gap: 3px; }
+.workflow-list.compact .workflow-step { padding: 6px 8px; }
+.workflow-list.compact .asset-glyph { width: 34px; height: 34px; }
+.step-state.pending { color: #7b879a; }
+.preview-empty-card {
+  position: absolute; z-index: 4; left: 50%; top: 50%; width: min(320px, 78%); transform: translate(-50%, -50%);
+  padding: 18px; border: 1px solid #705a49; border-radius: 13px; text-align: center; background: #171b24e8; box-shadow: 0 16px 50px #0009;
+}
+.preview-empty-card strong { font-size: .78rem; }.preview-empty-card p { margin: 7px 0 0; color: #929bad; font-size: .63rem; line-height: 1.55; }
+.formal-console { display: block; }
+.console-header-card { background: linear-gradient(145deg, #202738, #181d28); }
+.console-header-card h2 { margin: 4px 0 0; font-size: 1.05rem; }
+.workflow-facts, .catalog-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; }
+.workflow-facts div, .catalog-stats div { display: grid; gap: 3px; padding: 8px; border-radius: 8px; background: #131823; }
+.workflow-facts span, .catalog-stats span { color: #68758a; font-size: .52rem; }.workflow-facts strong, .catalog-stats strong { color: #c3ccda; font-size: .62rem; }
+.gender-switcher { margin-top: 11px; }.gender-switcher button { flex: 1; }
+.catalog-stats { margin-top: 8px; }.catalog-stats div { text-align: center; }.catalog-stats strong { color: #f0b08a; font-size: .9rem; }
+.catalog-list, .recipe-components, .recipe-summary { display: grid; gap: 5px; margin-top: 10px; }
+.catalog-list div, .recipe-components div, .recipe-summary div { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 7px 8px; border: 1px solid #252d3c; border-radius: 7px; background: #131823; }
+.catalog-list span, .recipe-components span, .recipe-summary span { color: #748197; font-size: .55rem; }.catalog-list strong, .recipe-components strong, .recipe-summary strong { overflow: hidden; color: #bec7d5; font-size: .57rem; text-overflow: ellipsis; white-space: nowrap; }
+.gallery-records { margin-top: 10px; border-top: 1px solid #2a3242; padding-top: 8px; }
+.gallery-records summary { color: #aeb9ca; font-size: .61rem; cursor: pointer; }
+.gallery-records article { margin-top: 7px; padding: 8px; border-radius: 7px; background: #131823; }.gallery-records article strong { font-size: .61rem; }.gallery-records article span { float: right; color: #d4a279; font-size: .52rem; }.gallery-records article p { margin: 5px 0 0; color: #748197; font-size: .55rem; line-height: 1.4; }
+.field-label { display: grid; gap: 5px; margin-top: 10px; color: #8995a9; font-size: .58rem; }
+.field-label input { width: 100%; border: 1px solid #3b465b; border-radius: 8px; padding: 8px 9px; color: #d8dfeb; background: #111620; }
+.console-primary, .review-entry-button, .rail-primary-action { width: 100%; margin-top: 9px; border: 1px solid #8b586a; border-radius: 9px; padding: 9px 11px; background: linear-gradient(135deg, #704957, #3f4e6b); color: #fff; font-size: .65rem; cursor: pointer; }
+.disabled-action { opacity: .42; cursor: default; }
+.capability-note { margin-top: 10px; padding: 9px 10px; border-left: 3px solid #6688ad; border-radius: 6px; background: #1b2938; }.capability-note strong { color: #b8d2ee; font-size: .62rem; }.capability-note p { margin: 4px 0 0; color: #8092a7; font-size: .57rem; line-height: 1.45; }
+.review-entry-button { margin-top: 10px; display: flex; justify-content: space-between; align-items: center; padding: 12px 14px; font-size: .7rem; }
+.review-entry-button.secondary { border-color: #46536a; background: #202838; }
+.review-summary-rail .recipe-summary { margin-top: 4px; }.review-summary-rail .rail-primary-action { margin-top: 18px; }
+.review-layout .preview-frame { min-height: 520px; }
+
+@media (max-width: 1120px) {
+  .workspace-tabs { order: 3; width: 100%; justify-content: center; }
+  .topbar { flex-wrap: wrap; gap: 10px; }
+  .formal-console { display: grid; }
+  .review-entry-button { align-self: start; margin-top: 0; }
+}
+
+@media (max-width: 760px) {
+  .workspace-tabs { order: 2; width: auto; }.topbar-meta { order: 3; }
+  .preview-toolbar-actions { justify-content: flex-start; }.mode-switcher { width: 100%; }.mode-switcher button { flex: 1; }
+  .workflow-list.compact { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}

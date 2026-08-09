@@ -25,6 +25,7 @@ REQUIRED = [
     "docs/decisions/0002-asset-lifecycle-sync-policy.md",
     "docs/features/F001-studio-shell-asset-registry-actor-preview.md",
     "docs/features/F002-actor-assembly-workflow.md",
+    "docs/features/F003-asset-workbench-composite-review.md",
     "schemas/asset-registry.v1.schema.json",
     "schemas/recipe.v1.schema.json",
     "schemas/run.v1.schema.json",
@@ -116,6 +117,12 @@ REQUIRED_TEXT_MARKERS = {
         "功能 ID：`F002`",
         "状态：`in_progress`",
         "## 技术选型",
+        "## 验收条件",
+    ],
+    "docs/features/F003-asset-workbench-composite-review.md": [
+        "功能 ID：`F003`",
+        "状态：`in_progress`",
+        "## 分类边界",
         "## 验收条件",
     ],
 }

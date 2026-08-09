@@ -3,20 +3,19 @@ import { describe, expect, it, vi } from "vitest";
 import { WorkflowRail } from "./WorkflowRail";
 
 describe("WorkflowRail", () => {
-  it("turns the former passive asset rail into five actionable workflow steps", () => {
+  it("separates structure and first-class asset workflows", () => {
     const onSelect = vi.fn();
     render(
       <WorkflowRail
         activeStep="model"
-        assemblyCount={4}
         animationLabel="Walk"
-        previewReady
+        loadedCategories={new Set(["body", "face", "tops", "pants", "shoes"])}
         onSelect={onSelect}
       />,
     );
 
-    expect(screen.getAllByRole("button")).toHaveLength(5);
-    fireEvent.click(screen.getByRole("button", { name: /拼装部件/ }));
-    expect(onSelect).toHaveBeenCalledWith("assembly");
+    expect(screen.getAllByRole("button")).toHaveLength(8);
+    fireEvent.click(screen.getByRole("button", { name: /发型/ }));
+    expect(onSelect).toHaveBeenCalledWith("hair");
   });
 });

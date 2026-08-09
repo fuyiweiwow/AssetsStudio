@@ -119,6 +119,61 @@ def retarget_eye_assembly(
             modifier.target = actor_mesh
 
 
+def convert_eye_to_head_skinned_mesh(
+    obj: bpy.types.Object,
+    armature: bpy.types.Object,
+) -> None:
+    """Bake the fitted surface and export it as a real glTF skinned mesh.
+
+    Blender bone-parented objects follow the head correctly in the source
+    scene, but the glTF exporter serializes them as ordinary bone children.
+    In this Actor the resulting nodes carry very large local transforms and no
+    skin, which does not reproduce the Blender placement reliably in Three.js.
+    A one-bone skin expresses the same intent in glTF without a web-only pose
+    workaround.
+    """
+
+    scene = bpy.context.scene
+    previous_pose_position = armature.data.pose_position
+    previous_frame = scene.frame_current
+    try:
+        scene.frame_set(scene.frame_start)
+        armature.data.pose_position = "REST"
+        bpy.context.view_layer.update()
+
+        depsgraph = bpy.context.evaluated_depsgraph_get()
+        evaluated = obj.evaluated_get(depsgraph)
+        baked_mesh = bpy.data.meshes.new_from_object(
+            evaluated,
+            preserve_all_data_layers=True,
+            depsgraph=depsgraph,
+        )
+        baked_mesh.name = obj.data.name + "_WebBaked"
+        old_mesh = obj.data
+        world = obj.matrix_world.copy()
+        obj.data = baked_mesh
+        for modifier in list(obj.modifiers):
+            obj.modifiers.remove(modifier)
+        obj.parent = None
+        obj.parent_type = "OBJECT"
+        obj.parent_bone = ""
+        obj.matrix_world = world
+        obj.parent = armature
+        obj.matrix_world = world
+        obj.vertex_groups.clear()
+        head_group = obj.vertex_groups.new(name="CC_Base_Head")
+        head_group.add(range(len(obj.data.vertices)), 1.0, "REPLACE")
+        modifier = obj.modifiers.new(name="AssetsStudioHeadSkin", type="ARMATURE")
+        modifier.object = armature
+        obj["assetsstudio_web_binding"] = "skinned_cc_base_head_v1"
+        if old_mesh.users == 0:
+            bpy.data.meshes.remove(old_mesh)
+    finally:
+        armature.data.pose_position = previous_pose_position
+        scene.frame_set(previous_frame)
+        bpy.context.view_layer.update()
+
+
 def create_blink_state_objects(eye: bpy.types.Object) -> list[bpy.types.Object]:
     side = "L" if eye.name.endswith("_L") else "R"
     eye["assetsstudio_blink_state"] = "open"
@@ -183,6 +238,7 @@ def main() -> int:
     eye_objects: list[bpy.types.Object] = []
     for eye in eye_sources:
         retarget_eye_assembly(eye, armature, actor_mesh)
+        convert_eye_to_head_skinned_mesh(eye, armature)
         eye_objects.extend(create_blink_state_objects(eye))
     top = append_object(top_blend, COMPONENT_OBJECTS["top"][0])
     pants = append_object(pants_blend, COMPONENT_OBJECTS["pants"][0])
