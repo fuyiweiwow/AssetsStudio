@@ -14,7 +14,7 @@ TOOLS_DIR = Path(__file__).resolve().parent
 if str(TOOLS_DIR) not in sys.path:
     sys.path.insert(0, str(TOOLS_DIR))
 
-from build_actor_derived_tshirt import render_review  # noqa: E402
+from actor_asset_render_utils import render_review  # noqa: E402
 
 RIGHT_PARTS = ("shoes.baseright", "shoes.009", "shoes.010", "shoes.023", "shoes.001", "shoes.005", "shoes", "shoes.021")
 LEFT_PARTS = ("shoes.baseleft", "shoes.016", "shoes.017", "shoes.022", "shoes.019", "shoes.020", "shoes.028", "shoes.029")

@@ -16,11 +16,8 @@ CARDS = [
     {
         "title": "Body / Actor V1 walk",
         "status": "accepted",
-        "note": "Actor V1, AccuRIG skeleton and the retained four-direction walk runtime proof.",
-        "media": [
-            "milestones/face/runtime_chibi_eyes_ears_walk_v1/front.gif",
-            "milestones/face/runtime_chibi_eyes_ears_walk_v1/right.gif",
-        ],
+        "note": "Actor V1 and AccuRIG skeleton are authoritative. Generate fresh local 3-to-2 previews through the documented workflow; historical rendered proofs are not checked in.",
+        "media": [],
         "doc": "docs/WORKFLOW_BODY.md",
     },
     {
@@ -37,11 +34,8 @@ CARDS = [
     {
         "title": "Face / eyes, brows and ears",
         "status": "technical baseline",
-        "note": "Fixed face-layer registration, verified ears and retained blink-state source assets.",
-        "media": [
-            "milestones/face/base_features_v1/male/face_walk_4way.png",
-            "milestones/face/base_features_v1/male/ear_walk_4way.png",
-        ],
+        "note": "Eyes and two 3D ears are embedded in Actor V1 and bound to CC_Base_Head. Old 2D and eye-assembly test outputs are retired.",
+        "media": [],
         "doc": "docs/WORKFLOW_FACE.md",
     },
     {

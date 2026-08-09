@@ -15,6 +15,7 @@ ROOT = Path(__file__).resolve().parents[1]
 REQUIRED = [
     "PRINCIPLES.md",
     "docs/DEVELOPMENT.md",
+    "docs/ART_DIRECTION.md",
     "docs/PRODUCT_TECH_BASELINE.md",
     "docs/DEVELOPMENT_LOG.md",
     "docs/REMOVALS.md",
@@ -30,16 +31,19 @@ REQUIRED = [
     "milestones/body/release_manifest.json",
     "milestones/body/animation_sources/mixamo_standard_walk.fbx",
     "milestones/body/animation_sources/mixamo_run.fbx",
-    "milestones/body/ear_source/miku_chibi_ear_source.fbx",
+    "milestones/body/face_contract_v1.json",
     "milestones/body/eye_textures/eye_left.png",
     "milestones/body/eye_textures/eye_right.png",
-    "milestones/hair/Blender-Chloe_Hair.blend",
-    "milestones/hair/male_source/Blend_Hair.blend",
+    "milestones/hair/sources/female/chloe_hair_source.blend",
+    "milestones/hair/sources/male/colin_hair_source.blend",
     "milestones/hair/hair_component_catalog_v1.json",
     "milestones/hair/hair_random_pool_v1.json",
-    "milestones/face/runtime_chibi_eyes_ears_walk_v1/runtime_manifest.json",
-    "milestones/face/eye_assembly_v1/crops_half/imagegen_eye_assembly_L.png",
-    "milestones/face/eye_assembly_v1/crops_closed/imagegen_eye_assembly_L.png",
+    "references/face/miku_chibi_source/miku_chibi_source.fbx",
+    "references/face/miku_chibi_source/reference_manifest.json",
+    "tools/blender/render_accurig_chibi_walk_test.py",
+    "tools/process_actor_3to2_pixels.py",
+    "tools/validate_actor_3to2_pixels.py",
+    "tools/blender/actor_asset_render_utils.py",
     "milestones/tops/actor_native_tshirt_v5/actor_native_tshirt_body_component_v5_upperarm_coverage.blend",
     "milestones/tops/actor_native_tshirt_v5/manifest.json",
     "milestones/pants/native_control_v0/native_control_shorts_v0.blend",
@@ -62,6 +66,11 @@ REQUIRED_TEXT_MARKERS = {
         "## 保存与时间线",
         "## 完成定义",
     ],
+    "docs/ART_DIRECTION.md": [
+        "状态：`accepted_direction`",
+        "## 核心方向",
+        "## 旧 ImageGen 男女图的处理",
+    ],
     "docs/PRODUCT_TECH_BASELINE.md": [
         "状态：`draft_for_discussion`",
         "## 当前需要讨论确认的问题",
@@ -80,6 +89,25 @@ REQUIRED_TEXT_MARKERS = {
 }
 
 
+FORBIDDEN_PATHS = [
+    "milestones/face",
+    "milestones/hair/Blender-Chloe_Hair.blend",
+    "milestones/hair/male_source",
+    "milestones/body/ear_source",
+    "tools/process_accurig_walk_pixels.py",
+    "tools/validate_pixel_runtime_package.py",
+    "tools/validate_chibi_face_randomization.py",
+    "tools/run_chibi_face_randomization_preview.ps1",
+    "tools/build_chibi_face_variant_contact_sheet.py",
+    "tools/build_chibi_face_randomization_gallery.py",
+    "tools/blender/build_eye_assembly_v1.py",
+    "tools/blender/render_eye_assembly_blink_walk.py",
+    "tools/blender/render_procedural_anime_eye_on_accurig.py",
+    "tools/blender/validate_eye_assembly_v1.py",
+    "tools/blender/build_actor_derived_tshirt.py",
+]
+
+
 MARKDOWN_LINK_RE = re.compile(r"\[[^\]]+\]\(([^)]+)\)")
 
 
@@ -87,6 +115,10 @@ def main() -> int:
     missing = [path for path in REQUIRED if not (ROOT / path).is_file()]
     if missing:
         raise RuntimeError("missing required milestone files:\n" + "\n".join(missing))
+
+    obsolete = [path for path in FORBIDDEN_PATHS if (ROOT / path).exists()]
+    if obsolete:
+        raise RuntimeError("obsolete asset paths must remain removed:\n" + "\n".join(obsolete))
 
     for relative_path, markers in REQUIRED_TEXT_MARKERS.items():
         content = (ROOT / relative_path).read_text(encoding="utf-8")
@@ -106,6 +138,36 @@ def main() -> int:
         path = ROOT / str(record["path"])
         if not path.is_file():
             raise FileNotFoundError(path)
+
+    hair_catalog = json.loads(
+        (ROOT / "milestones/hair/hair_component_catalog_v1.json").read_text(encoding="utf-8")
+    )
+    hair_sources = {
+        str(group["source_blend"])
+        for group in hair_catalog.get("component_groups", [])
+        if isinstance(group, dict) and group.get("source_blend")
+    }
+    if not hair_sources:
+        raise RuntimeError("hair component catalog has no source Blend files")
+    missing_hair_sources = [path for path in sorted(hair_sources) if not (ROOT / path).is_file()]
+    if missing_hair_sources:
+        raise RuntimeError("missing catalogued hair sources:\n" + "\n".join(missing_hair_sources))
+
+    face_contract = json.loads(
+        (ROOT / "milestones/body/face_contract_v1.json").read_text(encoding="utf-8")
+    )
+    face_paths = [
+        str(face_contract["actor_blend"]),
+        str(face_contract["eye_textures"]["left"]),
+        str(face_contract["eye_textures"]["right"]),
+        str(face_contract["ear_source"]["file"]),
+        str(face_contract["actor_3to2_pipeline"]["render"]),
+        str(face_contract["actor_3to2_pipeline"]["pixel_process"]),
+        str(face_contract["actor_3to2_pipeline"]["validate"]),
+    ]
+    missing_face_paths = [path for path in face_paths if not (ROOT / path).is_file()]
+    if missing_face_paths:
+        raise RuntimeError("missing Actor face contract dependencies:\n" + "\n".join(missing_face_paths))
 
     for manifest in ROOT.rglob("*.json"):
         json.loads(manifest.read_text(encoding="utf-8"))

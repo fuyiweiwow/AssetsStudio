@@ -60,14 +60,14 @@ try {
         if ($genderName -eq "female") {
             $front = @($items | Where-Object { $_.role -eq "front_bangs" })
             foreach ($b in $base) { foreach ($f in $front) { foreach ($s in $side) {
-                Invoke-HairPreview $genderName @($b.object, $f.object, $s.object) "milestones\hair\Blender-Chloe_Hair.blend" "Chloe_head_dummy" $true
+                Invoke-HairPreview $genderName @($b.object, $f.object, $s.object) "milestones\hair\sources\female\chloe_hair_source.blend" "Chloe_head_dummy" $true
             }}}
         } else {
             $back = @($items | Where-Object { $_.role -eq "back_section" })
             foreach ($b in $base) { foreach ($s in $side) {
-                Invoke-HairPreview $genderName @($b.object, $s.object) "milestones\hair\male_source\Blend_Hair.blend" "Colin_head_dummy" $false
+                Invoke-HairPreview $genderName @($b.object, $s.object) "milestones\hair\sources\male\colin_hair_source.blend" "Colin_head_dummy" $false
                 foreach ($k in $back) {
-                    Invoke-HairPreview $genderName @($b.object, $s.object, $k.object) "milestones\hair\male_source\Blend_Hair.blend" "Colin_head_dummy" $false
+                    Invoke-HairPreview $genderName @($b.object, $s.object, $k.object) "milestones\hair\sources\male\colin_hair_source.blend" "Colin_head_dummy" $false
                 }
             }}
         }

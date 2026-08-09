@@ -9,6 +9,7 @@ AssetsStudio 是从 AssetsLab 的长实验分支整理出的正式资产工作�
 - 开发原则：[`PRINCIPLES.md`](PRINCIPLES.md)
 - 开发管理基准：[`docs/DEVELOPMENT.md`](docs/DEVELOPMENT.md)
 - 产品与技术基线讨论稿：[`docs/PRODUCT_TECH_BASELINE.md`](docs/PRODUCT_TECH_BASELINE.md)
+- 美术方向基准：[`docs/ART_DIRECTION.md`](docs/ART_DIRECTION.md)
 - 总里程碑清单：[`docs/MILESTONES.md`](docs/MILESTONES.md)
 - 迁移边界：[`docs/MIGRATION.md`](docs/MIGRATION.md)
 - 静态审查页：[`gallery/index.html`](gallery/index.html)
@@ -19,8 +20,8 @@ AssetsStudio 是从 AssetsLab 的长实验分支整理出的正式资产工作�
 ```text
 milestones/
   body/       Actor V1、Walk/Run、眼睛贴图与耳朵源
-  hair/       Chloe/Colin 源发型、组件 catalog 与随机池
-  face/       固定五官运行时、Face 基础层与眨眼状态资源
+  hair/       `sources/female|male` 源发型、组件 catalog 与随机池
+  body/       Actor、骨架、动作、眼睛纹理、内嵌3D耳朵与 Face 合同
   tops/       当前短袖候选
   pants/      当前 Blender-native 短裤里程碑
   shoes/      已确认的卡通运动鞋 v10

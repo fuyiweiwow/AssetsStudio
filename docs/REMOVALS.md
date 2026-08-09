@@ -9,6 +9,9 @@
 | 2026-08-09 | 鞋 v1-v9 与第一套高帮参考鞋 | 未迁入 AssetsStudio | v10 已得到人工认可，旧版本存在尺寸与穿模问题 | `milestones/shoes/cartoon_sneaker_v10/` | `AssetsLab` 工作树与历史 |
 | 2026-08-09 | 重复 PNG 帧、第三方虚拟环境、模拟缓存 | 未迁入 AssetsStudio | 可再生成、体积大、与正式里程碑无关 | 当前工具脚本与 `workspace/` | `AssetsLab` 本地工作树；必要时重新生成 |
 | 2026-08-09 | 短裤 `HUMAN_REVIEW.md` 中指向 `../clothes_native_control_v0_actor_eevee/` 的旧链接 | 删除过时引用 | 迁移后审查文件已与模型放在同一里程碑目录，旧路径全部失效 | 指向 `milestones/pants/native_control_v0/` 内现有 GIF、contact sheet 和报告 | Git 提交 `36721d0`；文件本体仍在当前里程碑目录 |
+| 2026-08-09 | `milestones/face/`（316 个旧 2D 帧、眼睛装配测试和里程碑渲染文件，约 2.85 MB） | 从正式分支删除 | 内容来自已停止的 2D 直生成和五官实验，不能代表当前 Actor；继续保留会让 Gallery 和自动流程误选旧结果 | `milestones/body/face_contract_v1.json`、Actor 内嵌 3D 眼睛/耳朵、按需生成的 `workspace/` 审查输出 | 本次清理前 Git 历史；`AssetsLab` 历史工作树 |
+| 2026-08-09 | 旧五官随机化、眼睛装配脚本及 `build_actor_derived_tshirt.py` | 从正式分支删除 | 依赖已退休的候选或把通用渲染辅助函数藏在旧短袖实验中，不符合当前单一工作流 | `tools/blender/actor_asset_render_utils.py`、`render_accurig_chibi_walk_test.py`、`process_actor_3to2_pixels.py`、`validate_actor_3to2_pixels.py` | 本次清理前 Git 历史；`AssetsLab` 历史工作树 |
+| 2026-08-09 | 旧 ImageGen 男女风格图/步行图 | 不迁入正式分支 | 图像结构已经偏离当前 Actor，不能再作为几何或验收模板 | `docs/ART_DIRECTION.md` 保存抽象美术意图；F001 后从当前 Actor 生成新规范图并人工确认 | `AssetsLab` 历史与本机旧文件 |
 
 ## 新记录要求
 

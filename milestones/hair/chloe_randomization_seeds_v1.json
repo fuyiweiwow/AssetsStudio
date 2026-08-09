@@ -1,7 +1,7 @@
 {
   "schema": "assetslab_chloe_hair_randomization_seeds_v1",
   "source_files": {
-    "hair_blend": "milestones/hair/Blender-Chloe_Hair.blend",
+    "hair_blend": "milestones/hair/sources/female/chloe_hair_source.blend",
     "actor_blend": "milestones/body/chibi_actor_mixamo_walk_v1.blend",
     "fit_script": "tools/blender/fit_blend_hair_candidate.py",
     "gallery_script": "tools/build_hair_randomization_gallery.py"

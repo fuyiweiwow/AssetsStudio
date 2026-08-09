@@ -14,8 +14,10 @@
     "packed_into_blend": true
   },
   "ear_source": {
-    "file": "ear_source/miku_chibi_ear_source.fbx",
-    "use": "The two source ear components were extracted from head_org_0_0_node and parented to CC_Base_Head."
+    "file": "references/face/miku_chibi_source/miku_chibi_source.fbx",
+    "source_mesh": "head_org_0_0_node",
+    "embedded_objects": ["MikuEar_L_SourceV1", "MikuEar_R_SourceV1"],
+    "use": "The two source ear components were extracted and parented to Armature/CC_Base_Head. The full source FBX is not a runtime asset."
   },
   "walk_adjustments": {
     "arm_trajectory": "analytic two-bone retiming; lateral 0.58, longitudinal 1.30, right longitudinal multiplier 1.327",

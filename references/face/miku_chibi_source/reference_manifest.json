@@ -1,0 +1,15 @@
+{
+  "schema": "assetsstudio_reference_source_v1",
+  "id": "miku_chibi_source_for_actor_ears",
+  "status": "private_source_only",
+  "file": "references/face/miku_chibi_source/miku_chibi_source.fbx",
+  "license": "not documented in the migrated source package",
+  "runtime_policy": "do_not_ship_or_load_directly",
+  "use": {
+    "source_mesh": "head_org_0_0_node",
+    "extracted_components": ["left_ear", "right_ear"],
+    "embedded_actor_objects": ["MikuEar_L_SourceV1", "MikuEar_R_SourceV1"],
+    "binding": "Armature/CC_Base_Head"
+  },
+  "notes": "This FBX is a full source character with 59 mesh objects, not an ear-only runtime asset. Keep the repository private until licensing is clarified."
+}

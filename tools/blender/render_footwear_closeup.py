@@ -13,8 +13,7 @@ TOOLS_DIR = Path(__file__).resolve().parent
 if str(TOOLS_DIR) not in sys.path:
     sys.path.insert(0, str(TOOLS_DIR))
 
-from render_eye_assembly_blink_walk import configure_lighting  # noqa: E402
-from render_procedural_anime_eye_on_accurig import make_camera  # noqa: E402
+from actor_asset_render_utils import configure_lighting, make_camera  # noqa: E402
 
 
 def cli_args() -> argparse.Namespace:

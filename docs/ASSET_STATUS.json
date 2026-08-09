@@ -23,7 +23,7 @@
       "id": "face_actor_v1",
       "category": "face",
       "status": "technical_baseline",
-      "path": "milestones/face/runtime_chibi_eyes_ears_walk_v1/runtime_manifest.json"
+      "path": "milestones/body/face_contract_v1.json"
     },
     {
       "id": "top_actor_native_tshirt_v5",
@@ -47,4 +47,3 @@
     }
   ]
 }
-

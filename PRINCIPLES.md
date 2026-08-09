@@ -13,8 +13,9 @@
 1. 本文件；
 2. `docs/DEVELOPMENT.md`；
 3. `docs/PRODUCT_TECH_BASELINE.md`；
-4. `docs/MILESTONES.md` 与 `docs/ASSET_STATUS.json`；
-5. 本次功能对应的 `docs/features/*.md` 和资产工作流。
+4. `docs/ART_DIRECTION.md`；
+5. `docs/MILESTONES.md` 与 `docs/ASSET_STATUS.json`；
+6. 本次功能对应的 `docs/features/*.md` 和资产工作流。
 
 聊天记录和记忆不能替代仓库文档。上下文压缩、换机器或换开发者后，应当只靠仓库恢复当前结论。
 

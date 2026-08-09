@@ -6,6 +6,7 @@
 - 原演员：`milestones/body/actor_accurig_input.fbx`
 - Walk：`milestones/body/animation_sources/mixamo_standard_walk.fbx`
 - Run：`milestones/body/animation_sources/mixamo_run.fbx`
+- Face 合同：`milestones/body/face_contract_v1.json`
 - 网格：`ChibiBaseMesh_AccuRIG_InputMesh`
 - 骨架：`Armature`
 - Walk 审查帧：`1, 11, 21, 31, 41, 51, 61, 71`
@@ -28,3 +29,6 @@
 - 眼睛、耳朵、眉毛和未来头饰继续跟随 `CC_Base_Head`。
 - 衣物与鞋的 GIF 必须使用同一组 8 个动作帧。
 
+## 3渲2
+
+Actor 到四方向 PNG、像素帧、Sprite Sheet 和 GIF 的当前最小闭环记录在 `docs/WORKFLOW_FACE.md`。权威组件是 Actor `.blend`、`render_accurig_chibi_walk_test.py`、`process_actor_3to2_pixels.py` 和 `validate_actor_3to2_pixels.py`；所有测试输出进入 `workspace/`。

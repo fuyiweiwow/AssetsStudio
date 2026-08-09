@@ -7,6 +7,7 @@
 - 最近更新：2026-08-09
 - 关联里程碑：body、hair、face、tops、pants、shoes
 - 关联 ADR：ADR-0001、ADR-0002
+- 美术方向：`docs/ART_DIRECTION.md`
 
 ## 需求证据
 
@@ -83,6 +84,7 @@ F001 先建立可信的可视化与数据入口：让 Studio 能回答“当前�
 - [ ] 正、右、背、左四个固定视角可重复切换。
 - [ ] 至少形成一套 Actor + 当前上衣 + 当前短裤 +当前鞋的组合预览。
 - [ ] 页面明确显示短袖/短裤的 `provisional` 状态和已知缺陷。
+- [ ] 页面和导出预览符合 Q 版日漫 JRPG 美术方向，不以旧2D ImageGen 图替代当前 Actor。
 - [ ] 自动测试覆盖资产状态映射和缺失文件错误状态。
 - [ ] 用户通过页面截图或录屏/GIF完成人工审查。
 - [ ] `python tools/validate_studio.py` 通过，开发文档与时间线同步。

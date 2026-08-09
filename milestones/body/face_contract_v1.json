@@ -1,0 +1,38 @@
+{
+  "schema": "assetsstudio_actor_face_contract_v1",
+  "status": "current_actor_component",
+  "actor_blend": "milestones/body/chibi_actor_mixamo_walk_v1.blend",
+  "head_bone": "CC_Base_Head",
+  "embedded_objects": {
+    "eyes": [
+      "EyePackageV1_AlmondFrame_L",
+      "EyePackageV1_AlmondFrame_R",
+      "EyePackageV1_Lens_L",
+      "EyePackageV1_Lens_R"
+    ],
+    "ears": [
+      "MikuEar_L_SourceV1",
+      "MikuEar_R_SourceV1"
+    ]
+  },
+  "eye_textures": {
+    "left": "milestones/body/eye_textures/eye_left.png",
+    "right": "milestones/body/eye_textures/eye_right.png",
+    "packed_into_actor_blend": true,
+    "brow_style": "packed_current_actor_appearance"
+  },
+  "ear_source": {
+    "file": "references/face/miku_chibi_source/miku_chibi_source.fbx",
+    "source_mesh": "head_org_0_0_node",
+    "policy": "source_only_do_not_load_in_runtime"
+  },
+  "actor_3to2_pipeline": {
+    "render": "tools/blender/render_accurig_chibi_walk_test.py",
+    "pixel_process": "tools/process_actor_3to2_pixels.py",
+    "validate": "tools/validate_actor_3to2_pixels.py",
+    "directions": ["front", "right", "back", "left"],
+    "default_frames": 8,
+    "intermediate_resolution": 256
+  },
+  "retired_outputs": "The former milestones/face tree contained obsolete 2D tests and rendered proofs and is intentionally removed."
+}

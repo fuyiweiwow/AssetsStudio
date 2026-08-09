@@ -22,7 +22,7 @@ TOOLS_DIR = Path(__file__).resolve().parent
 if str(TOOLS_DIR) not in sys.path:
     sys.path.insert(0, str(TOOLS_DIR))
 
-from build_actor_derived_tshirt import make_material, render_review  # noqa: E402
+from actor_asset_render_utils import make_material, render_review  # noqa: E402
 
 
 def cli_args() -> argparse.Namespace:

@@ -10,6 +10,9 @@
 | 2026-08-09 | cleanup | pants docs | 修复短裤人工审查文档中的迁移前失效链接 | 确保正式审查入口只引用仓库内当前文件 |
 | 2026-08-09 | requirements | product/storage | 明确 Actor 页面预览、生成追溯、本地优先存储和 BomboAdventure 资产孵化器目标 | 将“即时预览”拆为交互预览与 Blender 生成预览，并提出 ADR-0002 供确认 |
 | 2026-08-09 | decision | product/storage | 用户确认两级预览、本地优先同步、发布包隔离和人形优先插件化 | ADR-0002 晋级为 `accepted`，建立 F001 功能文档 |
+| 2026-08-09 | art direction | product/visual | 确立 Q 版日漫 JRPG 美术方向，以《零之使魔》和《闪之轨迹》作为抽象风格坐标 | 统一后续 Actor、发型、五官、服饰和 3 渲 2 审查语言；不复制具体受版权保护设计 |
+| 2026-08-09 | audit | body/face | 用当前 Actor、Walk 动画和内嵌 3D 眼睛/耳朵完成四方向 3 渲 2 复现测试 | 证明五官工作流不依赖旧 `milestones/face/` 2D 测试资产，可以安全收敛为 Actor Face 合同 |
+| 2026-08-09 | cleanup | hair/face | 统一男女发型源文件命名，移动耳朵提取来源，删除旧五官渲染和失效脚本 | 正式分支只保留当前 Actor 3 渲 2 所需组成部分；删除项仍可从 Git/AssetsLab 恢复 |
 
 ## 记录规则
 

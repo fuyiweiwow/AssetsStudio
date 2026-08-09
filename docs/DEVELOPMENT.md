@@ -11,6 +11,7 @@
 | --- | --- | --- |
 | `PRINCIPLES.md` | 不轻易变化的开发原则 | 原则确实变化时 |
 | `docs/PRODUCT_TECH_BASELINE.md` | 产品目标、阶段范围和当前技术基线 | 需求讨论或架构基线变化时 |
+| `docs/ART_DIRECTION.md` | 当前美术风格、Actor结构基准与视觉验收边界 | 美术方向或视觉基准变化时 |
 | `docs/features/*.md` | 每个主要功能的当前设计与历史 | 开始功能、改变方案、完成验收时 |
 | `docs/decisions/*.md` | 跨功能或难以逆转的技术决定（ADR） | 决定被提出、接受、替代或撤销时 |
 | `docs/DEVELOPMENT_LOG.md` | 重要开发检查点时间线 | 每个有意义检查点 |

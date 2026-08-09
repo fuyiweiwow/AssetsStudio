@@ -2,8 +2,8 @@
 
 ## 权威输入
 
-- 女性源：`milestones/hair/Blender-Chloe_Hair.blend`
-- 男性源：`milestones/hair/male_source/Blend_Hair.blend`
+- 女性源：`milestones/hair/sources/female/chloe_hair_source.blend`
+- 男性源：`milestones/hair/sources/male/colin_hair_source.blend`
 - 组件目录：`milestones/hair/hair_component_catalog_v1.json`
 - 正式随机池：`milestones/hair/hair_random_pool_v1.json`
 - Gallery 注册表：`milestones/hair/hair_gallery_catalog_v1.json`
@@ -31,4 +31,3 @@
 - 正、右、背、左都不能露头皮、穿耳或缺后脑覆盖。
 - 候选记录 seed、组件 ID、源 Blend 和生成参数。
 - 只有人工认可的组件才能写入正式随机池；只有人工认可的组合才能固化为运行时 bundle。
-
