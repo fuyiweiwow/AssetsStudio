@@ -19,3 +19,4 @@ ADR 用于记录影响多个功能、未来替换成本高或需要长期解释�
 | ADR | 状态 | 决定 |
 | --- | --- | --- |
 | `0001-development-record-system.md` | `accepted` | 用功能文档、ADR、开发时间线、删除记录和 Git 共同构成追溯系统 |
+| `0002-asset-lifecycle-sync-policy.md` | `proposed` | 生成资产默认本地，只有根源、里程碑和发布内容显式同步 |
