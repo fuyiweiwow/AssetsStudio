@@ -198,11 +198,18 @@ dl { margin: 0; } dl div { padding: 8px 0; border-top: 1px solid #282f3f; } dt {
 .preview-toolbar-actions { display: flex; align-items: center; justify-content: flex-end; gap: 8px; flex-wrap: wrap; }
 .preview-subtitle { margin: 4px 0 0; color: #6f7b90; font-size: .59rem; }
 .mode-switcher button { padding: 6px 9px; }
-.expand-preview-button {
+.collapse-preview-button, .expand-preview-button {
   border: 1px solid #52617a; border-radius: 9px; padding: 7px 10px;
   color: #c8d2e1; background: #202838; font-size: .65rem; cursor: pointer;
 }
-.expand-preview-button:hover { border-color: #8c6476; background: #302633; }
+.collapse-preview-button:hover, .expand-preview-button:hover { border-color: #8c6476; background: #302633; }
+.has-collapsed-workflow-preview .studio-grid { grid-template-columns: 240px minmax(280px, .68fr) minmax(420px, 1.32fr); }
+.preview-column.preview-collapsed { justify-content: flex-start; }
+.preview-collapsed .asset-shelf { margin-top: 18px; }
+.preview-collapsed .preview-toolbar-actions { max-width: 280px; }
+@media (max-width: 1120px) {
+  .has-collapsed-workflow-preview .studio-grid { grid-template-columns: 230px minmax(440px, 1fr); }
+}
 .preview-column.preview-expanded {
   position: fixed; inset: 10px; z-index: 60; min-width: 0; padding: 18px;
   border: 1px solid #4a566d; border-radius: 18px; background: #0f131bf7;

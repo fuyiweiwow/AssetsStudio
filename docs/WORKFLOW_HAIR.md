@@ -13,7 +13,7 @@
 
 ## 首套 Actor Bundle
 
-当前只接入一套固定女性候选 `female_chloe_seed_04_bangs04`，组件为 `Chloe_hair_back_01 + Chloe_hair_side_01 + Chloe_hair_bangs_04`，沿用既有 `q_height_ratio=1.15`、`width_ratio=1.18`。它在网页 GLB 中转换为 100% `CC_Base_Head` 单骨蒙皮，以保证跟随 Walk 而不独立漂浮。
+当前只接入一套固定女性候选 `female_chloe_seed_04_bangs04_v2`，组件为 `Chloe_hair_back_01 + Chloe_hair_side_01 + Chloe_hair_bangs_04`，沿用既有 `q_height_ratio=1.15`、`width_ratio=1.18`。它在网页 GLB 中转换为 100% `CC_Base_Head` 单骨蒙皮，以保证跟随 Walk 而不独立漂浮。
 
 ```powershell
 cd .\studio
@@ -21,9 +21,9 @@ npm.cmd run assets:hair
 npm.cmd run assets:hair:review
 ```
 
-第一个命令在 `workspace/cache/hair/first_bundle/` 生成或复用候选 Blend、manifest 和四视图，并执行组件/参数/骨骼合同验证。第二个命令生成四方向 Walk GIF。缓存可清理、可重建，不提交 Git；配方、脚本和验证器随 Git 保存。
+第一个命令在 `workspace/cache/hair/first_bundle_v2/` 生成或复用候选 Blend、manifest、四视图和中心头皮投影覆盖报告，并执行组件/参数/骨骼合同验证。第二个命令生成 512px、浅色 Actor 的四方向 Walk GIF。缓存可清理、可重建，不提交 Git；配方、脚本和验证器随 Git 保存。
 
-当前候选状态为 `provisional`：整体位置与头骨动画已通过自动和网页检查，头顶中分处仍有一条小的头皮缝，等待用户人工审查。源头皮补片会形成巨大半球，平滑补片曾使 Blender 崩溃，两者均已拒绝且未进入正式流程；不得用网页遮挡物掩盖该问题。
+当前候选状态为 `provisional`。v1 的亮缝不是左右发片断开，而是中心发片局部落到 Actor 头皮后方；v2 仅对中心前冠区域做平滑向前位移，仍使用原 10467 顶点网格，不增加头皮盖片或网页遮挡。投影检测从 105 个暴露采样点降为 0，覆盖率为 100%，最终外观仍等待用户人工审查。源头皮补片会形成巨大半球，平滑补片曾使 Blender 崩溃，两者均已拒绝且未进入正式流程。
 
 ## 两种随机化
 

@@ -8,5 +8,6 @@
 | `F002` | Actor 五步装配工作流 | `in_progress` | [`F002-actor-assembly-workflow.md`](F002-actor-assembly-workflow.md) |
 | `F003` | 资产工作台与组合预览分层 | `in_progress` | [`F003-asset-workbench-composite-review.md`](F003-asset-workbench-composite-review.md) |
 | `F004` | 首套发型 Bundle 接入 | `in_progress` | [`F004-first-hair-bundle-integration.md`](F004-first-hair-bundle-integration.md) |
+| `F005` | 工作流作用域仓库与可折叠预览 | `in_progress` | [`F005-workflow-scoped-library-collapsible-preview.md`](F005-workflow-scoped-library-collapsible-preview.md) |
 
 允许状态：`proposed`、`in_progress`、`provisional`、`accepted`、`paused`、`retired`。

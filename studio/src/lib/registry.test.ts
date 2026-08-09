@@ -29,7 +29,7 @@ describe("asset registry", () => {
     expect(registry.hair.component_groups.some((group) => group.gender === "male")).toBe(true);
     expect(registry.hair.random_pool.length).toBeGreaterThan(10);
     expect(registry.hair.galleries.length).toBe(9);
-    expect(registry.hair.first_bundle.id).toBe("female_chloe_seed_04_bangs04");
+    expect(registry.hair.first_bundle.id).toBe("female_chloe_seed_04_bangs04_v2");
     expect(registry.hair.first_bundle.components).toEqual([
       "Chloe_hair_bangs_04",
       "Chloe_hair_side_01",
@@ -43,5 +43,8 @@ describe("asset registry", () => {
       .toBe("/generated/thumbnails/shoes.png");
     expect(registry.assets.find((asset) => asset.category === "hair")?.thumbnail_url)
       .toBe("/generated/thumbnails/hair.png");
+    expect(registry.assets.find((asset) => asset.category === "tops")?.thumbnail_kind).toBe("fixed_front");
+    expect(registry.assets.find((asset) => asset.category === "pants")?.thumbnail_kind).toBe("fixed_front");
+    expect(registry.assets.find((asset) => asset.category === "shoes")?.thumbnail_kind).toBe("fixed_front");
   });
 });

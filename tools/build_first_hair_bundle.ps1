@@ -17,6 +17,7 @@ $actorBlend = Join-Path $projectRoot $recipe.actor_blend
 $outputDirectory = Join-Path $projectRoot $recipe.cache.directory
 $outputBlend = Join-Path $outputDirectory $recipe.cache.blend
 $manifest = Join-Path $outputDirectory "manifest.json"
+$coverage = Join-Path $outputDirectory "front_coverage.json"
 $requiredOutputs = @(
     $outputBlend,
     $manifest,
@@ -31,6 +32,7 @@ $inputs = @(
     $actorBlend,
     (Join-Path $projectRoot "tools\blender\fit_blend_hair_candidate.py"),
     (Join-Path $projectRoot "tools\blender\hair_fit_support.py")
+    (Join-Path $projectRoot "tools\blender\analyze_front_surface_coverage.py")
 )
 
 $needsBuild = $Force -or ($requiredOutputs | Where-Object { -not (Test-Path -LiteralPath $_ -PathType Leaf) } | Select-Object -First 1)
@@ -59,6 +61,18 @@ if ($needsBuild) {
     "--width-ratio", ([double]$recipe.fit.width_ratio).ToString($culture),
     "--color"
 ) + @($recipe.material.rgba | ForEach-Object { ([double]$_).ToString($culture) })
+    if ($null -ne $recipe.repair) {
+        if ($recipe.repair.method -ne "front_center_overlap") {
+            throw "Unsupported first hair bundle repair method: $($recipe.repair.method)"
+        }
+        $arguments += @(
+            "--repair-front-center-overlap",
+            "--front-overlap-half-width", ([double]$recipe.repair.half_width).ToString($culture),
+            "--front-overlap-head-top-offset", ([double]$recipe.repair.head_top_offset).ToString($culture),
+            "--front-overlap-half-height", ([double]$recipe.repair.half_height).ToString($culture),
+            "--front-overlap-offset", ([double]$recipe.repair.front_offset).ToString($culture)
+        )
+    }
 
     & $blender @arguments
     if ($LASTEXITCODE -ne 0) {
@@ -67,12 +81,27 @@ if ($needsBuild) {
 } else {
     Write-Output "ASSETSSTUDIO_HAIR_BUNDLE_CACHE_HIT output=$outputBlend"
 }
+$coverageNeedsBuild = $needsBuild -or -not (Test-Path -LiteralPath $coverage -PathType Leaf)
+if (-not $coverageNeedsBuild) {
+    $coverageNeedsBuild = (Get-Item -LiteralPath $coverage).LastWriteTimeUtc -lt (Get-Item -LiteralPath $outputBlend).LastWriteTimeUtc
+}
+if ($coverageNeedsBuild) {
+    & $blender --factory-startup --background --python-exit-code 1 `
+        --python (Join-Path $projectRoot "tools\blender\analyze_front_surface_coverage.py") -- `
+        --blend $outputBlend `
+        --fitted-object HairCandidate_Blend `
+        --body-object ChibiBaseMesh_AccuRIG_InputMesh `
+        --output $coverage
+    if ($LASTEXITCODE -ne 0) {
+        throw "First hair bundle coverage analysis failed with exit code $LASTEXITCODE"
+    }
+}
 foreach ($path in $requiredOutputs) {
     if (-not (Test-Path -LiteralPath $path -PathType Leaf)) {
         throw "First hair bundle output is missing: $path"
     }
 }
-python (Join-Path $projectRoot "tools\validate_first_hair_bundle.py") --recipe $recipePath --manifest $manifest
+python (Join-Path $projectRoot "tools\validate_first_hair_bundle.py") --recipe $recipePath --manifest $manifest --coverage $coverage
 if ($LASTEXITCODE -ne 0) {
     throw "First hair bundle validation failed with exit code $LASTEXITCODE"
 }

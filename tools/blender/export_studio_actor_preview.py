@@ -35,6 +35,7 @@ def cli_args() -> argparse.Namespace:
     parser.add_argument("--top-blend", required=True, type=Path)
     parser.add_argument("--pants-blend", required=True, type=Path)
     parser.add_argument("--hair-blend", required=True, type=Path)
+    parser.add_argument("--hair-recipe", required=True, type=Path)
     parser.add_argument("--output", required=True, type=Path)
     return parser.parse_args(argv)
 
@@ -236,6 +237,10 @@ def main() -> int:
     top_blend = options.top_blend.resolve()
     pants_blend = options.pants_blend.resolve()
     hair_blend = options.hair_blend.resolve()
+    hair_recipe_path = options.hair_recipe.resolve()
+    hair_recipe = json.loads(hair_recipe_path.read_text(encoding="utf-8"))
+    if hair_recipe.get("schema") != "assetsstudio_hair_bundle_recipe_v1":
+        raise RuntimeError("unexpected hair bundle recipe schema")
     output = options.output.resolve()
     for source in (base_blend, face_blend, top_blend, pants_blend, hair_blend):
         if not source.is_file():
@@ -336,6 +341,7 @@ def main() -> int:
             {"path": str(top_blend.relative_to(repository_root)), "sha256": sha256(top_blend)},
             {"path": str(pants_blend.relative_to(repository_root)), "sha256": sha256(pants_blend)},
             {"path": str(hair_blend.relative_to(repository_root)), "sha256": sha256(hair_blend)},
+            {"path": str(hair_recipe_path.relative_to(repository_root)), "sha256": sha256(hair_recipe_path)},
         ],
         "output": {"path": output.name, "bytes": output.stat().st_size, "sha256": sha256(output)},
         "components": component_names,
@@ -355,13 +361,14 @@ def main() -> int:
             "blink_schedule": ["open", "half", "closed", "half", "open", "open", "open", "open"],
         },
         "hair": {
-            "bundle_id": "female_chloe_seed_04_bangs04",
-            "components": ["Chloe_hair_bangs_04", "Chloe_hair_side_01", "Chloe_hair_back_01"],
-            "head_bone": "CC_Base_Head",
+            "bundle_id": hair_recipe["id"],
+            "components": hair_recipe["components"],
+            "head_bone": hair_recipe["binding"]["bone"],
+            "repair": hair_recipe.get("repair"),
             "status": "provisional_user_review_required",
         },
         "known_limitations": {
-            "hair": "The first fixed female bundle is provisional; a small center-part scalp seam remains under review.",
+            "hair": hair_recipe.get("known_issue"),
             "top": "The provisional right shoulder/sleeve issue remains visible by design.",
             "pants": "The provisional visual-review status remains unchanged.",
         },

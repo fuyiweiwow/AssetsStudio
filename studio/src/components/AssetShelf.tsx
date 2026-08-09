@@ -12,7 +12,7 @@ export function AssetShelf({ assets, activeCategory, loadedCategories, onSelect 
     <section className="asset-shelf" aria-label="资产静态图库">
       <div className="asset-shelf-heading">
         <div><p className="eyebrow">ASSET LIBRARY</p><h3>资产仓库</h3></div>
-        <span>静态缓存 · 点击进入工作流</span>
+        <span>当前工作流 · 静态缓存</span>
       </div>
       <div className="asset-card-row">
         {assets.map((asset) => (

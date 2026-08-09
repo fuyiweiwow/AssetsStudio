@@ -14,7 +14,7 @@ export interface AssetRecord {
   known_issue: string | null;
   visibility_group: VisibilityGroup | null;
   thumbnail_url: string | null;
-  thumbnail_kind: "contact_sheet" | "texture" | null;
+  thumbnail_kind: "fixed_front" | "texture" | null;
 }
 
 export interface AssetRegistry {

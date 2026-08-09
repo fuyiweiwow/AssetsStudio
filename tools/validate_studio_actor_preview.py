@@ -16,6 +16,7 @@ def cli_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument("--glb", required=True, type=Path)
     parser.add_argument("--manifest", required=True, type=Path)
+    parser.add_argument("--hair-recipe", required=True, type=Path)
     return parser.parse_args()
 
 
@@ -41,6 +42,7 @@ def main() -> int:
     options = cli_args()
     document = glb_json(options.glb.resolve())
     manifest = json.loads(options.manifest.resolve().read_text(encoding="utf-8"))
+    hair_recipe = json.loads(options.hair_recipe.resolve().read_text(encoding="utf-8"))
 
     names = [str(material.get("name", "")) for material in document.get("materials", [])]
     expected_materials = {
@@ -93,10 +95,14 @@ def main() -> int:
     if tuple(face.get("blink_schedule", [])) != EXPECTED_BLINK_SCHEDULE:
         raise RuntimeError("preview manifest blink schedule changed")
     hair = manifest.get("hair", {})
-    if hair.get("bundle_id") != "female_chloe_seed_04_bangs04":
+    if hair.get("bundle_id") != hair_recipe.get("id"):
         raise RuntimeError("preview manifest has no first hair bundle")
-    if hair.get("head_bone") != "CC_Base_Head":
+    if hair.get("head_bone") != hair_recipe.get("binding", {}).get("bone"):
         raise RuntimeError("preview manifest hair binding changed")
+    if hair.get("components") != hair_recipe.get("components"):
+        raise RuntimeError("preview manifest hair recipe components changed")
+    if hair.get("repair") != hair_recipe.get("repair"):
+        raise RuntimeError("preview manifest hair repair contract changed")
     if manifest.get("components", {}).get("hair") != ["HairBundle_Female_Seed04"]:
         raise RuntimeError("preview manifest hair component list changed")
 

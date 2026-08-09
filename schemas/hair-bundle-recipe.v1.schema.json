@@ -23,6 +23,18 @@
       },
       "additionalProperties": false
     },
+    "repair": {
+      "type": "object",
+      "required": ["method", "half_width", "head_top_offset", "half_height", "front_offset"],
+      "properties": {
+        "method": { "const": "front_center_overlap" },
+        "half_width": { "type": "number", "exclusiveMinimum": 0 },
+        "head_top_offset": { "type": "number", "minimum": 0 },
+        "half_height": { "type": "number", "exclusiveMinimum": 0 },
+        "front_offset": { "type": "number", "exclusiveMinimum": 0 }
+      },
+      "additionalProperties": false
+    },
     "material": {
       "type": "object",
       "required": ["rgba"],

@@ -7,7 +7,9 @@ $projectRoot = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
 $blender = (Resolve-Path -LiteralPath $BlenderPath).Path
 $outputDirectory = Join-Path $projectRoot "studio\public\generated"
 $output = Join-Path $outputDirectory "actor-composite-v1.glb"
-$hairBlend = Join-Path $projectRoot "workspace\cache\hair\first_bundle\actor_hair_seed_04.blend"
+$hairRecipePath = Join-Path $projectRoot "milestones\hair\first_bundle_recipe_v1.json"
+$hairRecipe = Get-Content -LiteralPath $hairRecipePath -Raw -Encoding UTF8 | ConvertFrom-Json
+$hairBlend = Join-Path (Join-Path $projectRoot $hairRecipe.cache.directory) $hairRecipe.cache.blend
 
 New-Item -ItemType Directory -Force -Path $outputDirectory | Out-Null
 
@@ -25,6 +27,7 @@ if (-not (Test-Path -LiteralPath $hairBlend -PathType Leaf)) {
     --top-blend (Join-Path $projectRoot "milestones\tops\actor_native_tshirt_v5\actor_native_tshirt_body_component_v5_upperarm_coverage.blend") `
     --pants-blend (Join-Path $projectRoot "milestones\pants\native_control_v0\native_control_shorts_v0.blend") `
     --hair-blend $hairBlend `
+    --hair-recipe $hairRecipePath `
     --output $output
 
 if ($LASTEXITCODE -ne 0) {
@@ -36,7 +39,8 @@ if (-not (Test-Path -LiteralPath $output -PathType Leaf)) {
 
 python (Join-Path $projectRoot "tools\validate_studio_actor_preview.py") `
     --glb $output `
-    --manifest ([System.IO.Path]::ChangeExtension($output, ".manifest.json"))
+    --manifest ([System.IO.Path]::ChangeExtension($output, ".manifest.json")) `
+    --hair-recipe $hairRecipePath
 if ($LASTEXITCODE -ne 0) {
     throw "Actor preview contract validation failed with exit code $LASTEXITCODE"
 }

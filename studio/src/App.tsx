@@ -6,6 +6,7 @@ import { WorkflowRail, type WorkflowStepId } from "./components/WorkflowRail";
 import { drawHairRecipe, type HairRecipe } from "./lib/hair-recipe";
 import { getPreviewFocus } from "./lib/preview-focus";
 import { getPreviewState, type PreviewAvailability } from "./lib/preview-state";
+import { workflowAssets } from "./lib/workflow-assets";
 import {
   parseRegistry,
   STATUS_LABELS,
@@ -89,6 +90,7 @@ function isAssetStep(step: WorkflowStepId): step is AssetCategory {
 function App() {
   const [workspaceView, setWorkspaceView] = useState<WorkspaceView>("workbench");
   const [previewExpanded, setPreviewExpanded] = useState(false);
+  const [collapsedWorkflowPreviews, setCollapsedWorkflowPreviews] = useState<Partial<Record<WorkflowStepId, boolean>>>({});
   const [activeStep, setActiveStep] = useState<WorkflowStepId>("model");
   const [previewMode, setPreviewMode] = useState<AssetPreviewMode>("actor");
   const [view, setView] = useState<CameraView>("front");
@@ -127,6 +129,8 @@ function App() {
   const selectedAsset: AssetRecord = isAssetStep(activeStep)
     ? assetsByCategory.get(activeStep) ?? bodyAsset
     : bodyAsset;
+  const activeShelfAssets = useMemo(() => workflowAssets(registry.assets, activeStep), [activeStep]);
+  const workflowPreviewCollapsed = workspaceView === "workbench" && Boolean(collapsedWorkflowPreviews[activeStep]);
 
   const availableGroups = useMemo(() => {
     const groups = new Set<VisibilityGroup>();
@@ -185,6 +189,11 @@ function App() {
     setView("front");
   }
 
+  function toggleWorkflowPreview() {
+    setPreviewExpanded(false);
+    setCollapsedWorkflowPreviews((current) => ({ ...current, [activeStep]: !current[activeStep] }));
+  }
+
   function toggleReviewComponent(group: VisibilityGroup) {
     setReviewVisibility((current) => ({ ...current, [group]: !current[group] }));
   }
@@ -198,7 +207,7 @@ function App() {
   const hairPoolCount = registry.hair.random_pool.filter((item) => item.gender === hairGender).length;
 
   return (
-    <main className={`studio-shell ${previewExpanded ? "has-expanded-preview" : ""}`}>
+    <main className={`studio-shell ${previewExpanded ? "has-expanded-preview" : ""} ${workflowPreviewCollapsed ? "has-collapsed-workflow-preview" : ""}`}>
       <header className="topbar">
         <div className="brand-lockup">
           <div className="brand-mark" aria-hidden="true"><span>AS</span></div>
@@ -209,7 +218,7 @@ function App() {
           <button type="button" className={workspaceView === "review" ? "active" : ""} onClick={() => setWorkspaceView("review")}>组合预览</button>
           <button type="button" className={workspaceView === "baseline" ? "active" : ""} onClick={() => { setWorkspaceView("baseline"); setView("front"); }}>Actor 基准</button>
         </nav>
-        <div className="topbar-meta"><span className="build-pill">F004 · v{registry.studio_version}</span><span className="storage-pill"><i /> 本地资产</span></div>
+        <div className="topbar-meta"><span className="build-pill">F005 · v{registry.studio_version}</span><span className="storage-pill"><i /> 本地资产</span></div>
       </header>
 
       <div className={`studio-grid ${workspaceView !== "workbench" ? "review-layout" : ""}`}>
@@ -246,7 +255,7 @@ function App() {
           </aside>
         )}
 
-        <section className={`preview-column ${previewExpanded ? "preview-expanded" : ""}`} aria-label={workspaceView === "workbench" ? "资产工作流预览" : workspaceView === "review" ? "组合预览" : "Actor 基准验收"}>
+        <section className={`preview-column ${previewExpanded ? "preview-expanded" : ""} ${workflowPreviewCollapsed ? "preview-collapsed" : ""}`} aria-label={workspaceView === "workbench" ? "资产工作流预览" : workspaceView === "review" ? "组合预览" : "Actor 基准验收"}>
           <div className="preview-toolbar">
             <div>
               <p className="eyebrow">{previewEyebrow}</p>
@@ -254,31 +263,36 @@ function App() {
               <p className="preview-subtitle">{previewSubtitle}</p>
             </div>
             <div className="preview-toolbar-actions">
-              {workspaceView === "workbench" && isAssetStep(activeStep) && (
-                <div className="mode-switcher" aria-label="资产预览模式">
-                  <button type="button" className={previewMode === "isolated" ? "active" : ""} onClick={() => setPreviewMode("isolated")}>单独展示</button>
-                  <button type="button" className={previewMode === "actor" ? "active" : ""} onClick={() => setPreviewMode("actor")}>Actor 搭配</button>
-                </div>
+              {workspaceView === "workbench" && (
+                <button type="button" className="collapse-preview-button" aria-expanded={!workflowPreviewCollapsed} onClick={toggleWorkflowPreview}>{workflowPreviewCollapsed ? "显示预览" : "隐藏预览"}</button>
               )}
-              <button type="button" className="expand-preview-button" onClick={() => setPreviewExpanded((current) => !current)}>{previewExpanded ? "退出放大" : "放大预览"}</button>
-              <div className="view-switcher" aria-label="相机视角">
-                {(Object.keys(VIEW_LABELS) as CameraView[]).map((item) => (
-                  <button type="button" className={view === item ? "active" : ""} key={item} onClick={() => setView(item)}>{VIEW_LABELS[item]}</button>
-                ))}
-              </div>
+              {!workflowPreviewCollapsed && <>
+                {workspaceView === "workbench" && isAssetStep(activeStep) && (
+                  <div className="mode-switcher" aria-label="资产预览模式">
+                    <button type="button" className={previewMode === "isolated" ? "active" : ""} onClick={() => setPreviewMode("isolated")}>单独展示</button>
+                    <button type="button" className={previewMode === "actor" ? "active" : ""} onClick={() => setPreviewMode("actor")}>Actor 搭配</button>
+                  </div>
+                )}
+                <button type="button" className="expand-preview-button" onClick={() => setPreviewExpanded((current) => !current)}>{previewExpanded ? "退出放大" : "放大预览"}</button>
+                <div className="view-switcher" aria-label="相机视角">
+                  {(Object.keys(VIEW_LABELS) as CameraView[]).map((item) => (
+                    <button type="button" className={view === item ? "active" : ""} key={item} onClick={() => setView(item)}>{VIEW_LABELS[item]}</button>
+                  ))}
+                </div>
+              </>}
             </div>
           </div>
 
           {workspaceView === "workbench" && (
             <AssetShelf
-              assets={registry.assets}
+              assets={activeShelfAssets}
               activeCategory={isAssetStep(activeStep) ? activeStep : "body"}
               loadedCategories={loadedCategories}
               onSelect={(category) => selectWorkflowStep(category)}
             />
           )}
 
-          <div className="preview-frame">
+          {!workflowPreviewCollapsed && <div className="preview-frame">
             <div className="frame-corner corner-tl" /><div className="frame-corner corner-tr" /><div className="frame-corner corner-bl" /><div className="frame-corner corner-br" />
             {availability === "available" ? (
               <ActorPreview modelUrl={registry.preview.model_url} view={view} playing={playing} normalizedTime={timeline} visibility={activeVisibility} showBody={showBody} focus={previewFocus} onTimeChange={handleTimeChange} onDuration={handleDuration} onModelError={() => setAvailability("error")} onOrbitStart={() => setView("free")} />
@@ -288,14 +302,14 @@ function App() {
             )}
             <div className="frame-badge">拖动旋转 · 滚轮缩放</div>
             <div className="axis-legend" aria-hidden="true"><span className="axis-y">Y</span><span className="axis-x">X</span><span className="axis-z">Z</span></div>
-          </div>
+          </div>}
 
-          <div className={`preview-notice notice-${missingInCurrentView ? "warning" : previewState.tone}`}>
+          {!workflowPreviewCollapsed && <div className={`preview-notice notice-${missingInCurrentView ? "warning" : previewState.tone}`}>
             <span className="notice-icon">{missingInCurrentView ? "!" : previewState.tone === "ready" ? "✓" : "!"}</span>
             <div><strong>{missingInCurrentView ? "仅有源合同，尚无网页模型" : previewState.title}</strong><p>{missingInCurrentView ? "这不是生成失败；当前组合 GLB 还没有该资产的已验证 bundle。" : previewState.message}</p></div>
-          </div>
+          </div>}
 
-          <div className="transport-panel">
+          {!workflowPreviewCollapsed && <div className="transport-panel">
             <div className="transport-actions">
               <button type="button" className="transport-button primary" onClick={() => setPlaying((current) => { playingRef.current = !current; return !current; })} disabled={availability !== "available" || duration === 0}>{playing ? "暂停" : "播放"}</button>
               <button type="button" className="transport-button" onClick={() => { playingRef.current = false; setPlaying(false); setTimeline(0); }} disabled={availability !== "available" || duration === 0}>停止</button>
@@ -303,7 +317,7 @@ function App() {
             <div className="timeline-copy"><strong>{animationName}</strong><span>{formatSeconds(timeline * duration)} / {formatSeconds(duration)}</span></div>
             <input aria-label="动画时间" type="range" min="0" max="1" step="0.001" value={timeline} onChange={(event) => { playingRef.current = false; setPlaying(false); setTimeline(Number(event.target.value)); }} disabled={availability !== "available" || duration === 0} />
             <span className="loop-chip">LOOP</span>
-          </div>
+          </div>}
         </section>
 
         <aside className="inspector formal-console" aria-label={workspaceView === "workbench" ? "资产工作流控制台" : workspaceView === "review" ? "组合控制台" : "Actor 基准控制台"}>
@@ -383,7 +397,7 @@ function App() {
                 <div className="section-heading"><div><p className="eyebrow">VISIBILITY</p><h3>逐项排查</h3></div><span>{availableGroups.size}/5</span></div>
                 <div className="toggle-list">{VISIBILITY_GROUPS.map((group) => { const available = availableGroups.has(group); return <button type="button" className={`toggle-row ${reviewVisibility[group] ? "on" : "off"}`} key={group} onClick={() => toggleReviewComponent(group)} disabled={!available}><span>{TOGGLE_LABELS[group]}</span>{!available ? <small>未装入 GLB</small> : <i><b /></i>}</button>; })}</div>
               </section>
-              <section className="inspector-section baseline-known-issues"><p className="eyebrow">KNOWN ISSUES</p><h3>本轮不掩盖的问题</h3><ul><li>短袖肩部与袖管仍是模型缺陷。</li><li>{availableGroups.has("hair") ? "首套发型中分处仍有细小头皮缝，等待人工审查。" : "发型尚未装入当前组合 GLB。"}</li><li>短裤是否闪烁由本页动画人工确认。</li></ul></section>
+              <section className="inspector-section baseline-known-issues"><p className="eyebrow">KNOWN ISSUES</p><h3>本轮不掩盖的问题</h3><ul><li>短袖肩部与袖管仍是模型缺陷。</li><li>{availableGroups.has("hair") ? "首套发型 v2 已通过中心闭缝检测，仍等待人工外观确认。" : "发型尚未装入当前组合 GLB。"}</li><li>短裤是否闪烁由本页动画人工确认。</li></ul></section>
               <button type="button" className="review-entry-button secondary" onClick={() => setWorkspaceView("workbench")}>返回资产工作台</button>
             </>
           )}

@@ -90,6 +90,15 @@ def cli_args() -> argparse.Namespace:
         action="store_true",
         help="assign hair color to a narrow side/rear scalp region on the actor mesh",
     )
+    parser.add_argument(
+        "--repair-front-center-overlap",
+        action="store_true",
+        help="push a bounded crown patch toward the front so it remains outside the head surface",
+    )
+    parser.add_argument("--front-overlap-half-width", type=float, default=0.10)
+    parser.add_argument("--front-overlap-head-top-offset", type=float, default=0.26)
+    parser.add_argument("--front-overlap-half-height", type=float, default=0.09)
+    parser.add_argument("--front-overlap-offset", type=float, default=0.035)
     parser.add_argument("--cap-bottom-offset", type=float, default=0.64)
     parser.add_argument("--cap-surface-offset", type=float, default=0.025)
     parser.add_argument("--rotation-z", type=float, default=0.0)
@@ -655,6 +664,61 @@ def paint_side_scalp(
     return painted
 
 
+def repair_front_center_overlap(
+    tile: bpy.types.Object,
+    head_center: Vector,
+    head_top: float,
+    half_width: float,
+    head_top_offset: float,
+    half_height: float,
+    front_offset: float,
+) -> dict[str, float | int]:
+    """Move only a smooth front-crown patch ahead of the fitted body surface.
+
+    Foreign fitted shells can be visually closed yet sit a few millimetres
+    behind the target head.  A projection then shows a scalp-coloured seam.
+    This bounded deformation repairs the real fitted mesh instead of adding a
+    cap, painting the body, or hiding the defect in the renderer.
+    """
+    if min(half_width, half_height, front_offset) <= 0.0:
+        raise RuntimeError("front-center overlap parameters must be positive")
+    center_z = head_top - head_top_offset
+    world_to_local = tile.matrix_world.inverted()
+    tile.data = tile.data.copy()
+    moved = 0
+    maximum_shift = 0.0
+    for vertex in tile.data.vertices:
+        point = tile.matrix_world @ vertex.co
+        dx = abs(point.x - head_center.x)
+        dz = abs(point.z - center_z)
+        if dx >= half_width or dz >= half_height or point.y >= head_center.y:
+            continue
+        x_weight = 1.0 - dx / half_width
+        z_weight = 1.0 - dz / half_height
+        # Smoothstep keeps the deformation tangent-continuous at the boundary.
+        x_weight = x_weight * x_weight * (3.0 - 2.0 * x_weight)
+        z_weight = z_weight * z_weight * (3.0 - 2.0 * z_weight)
+        shift = front_offset * x_weight * z_weight
+        if shift <= 1e-6:
+            continue
+        point.y -= shift
+        vertex.co = world_to_local @ point
+        moved += 1
+        maximum_shift = max(maximum_shift, shift)
+    tile.data.update()
+    if moved == 0:
+        raise RuntimeError("front-center overlap repair selected no vertices")
+    return {
+        "moved_vertices": moved,
+        "center_x": float(head_center.x),
+        "center_z": float(center_z),
+        "half_width": half_width,
+        "half_height": half_height,
+        "front_offset": front_offset,
+        "maximum_shift": maximum_shift,
+    }
+
+
 def main() -> int:
     options = cli_args()
     bpy.ops.wm.open_mainfile(filepath=str(options.actor_blend.resolve()))
@@ -690,6 +754,7 @@ def main() -> int:
     source_cap = None
     side_locks = []
     painted_scalp_faces = 0
+    front_center_overlap = None
     if not options.keep_source_materials:
         material = fit_tools.make_material(tuple(options.color))
         tile.data.materials.clear()
@@ -753,6 +818,17 @@ def main() -> int:
                 float(fit["head_top"]),
                 material,
             )
+        if options.repair_front_center_overlap:
+            head_center, _, head_top = fit_tools.head_target(armature, body)
+            front_center_overlap = repair_front_center_overlap(
+                tile,
+                head_center,
+                head_top,
+                options.front_overlap_half_width,
+                options.front_overlap_head_top_offset,
+                options.front_overlap_half_height,
+                options.front_overlap_offset,
+            )
     fit_tools.configure_render(bpy.context.scene)
     output_dir = options.output_dir.resolve()
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -776,6 +852,7 @@ def main() -> int:
         "source_scalp_cap": source_cap.name if source_cap else None,
         "side_locks": [lock.name for lock in side_locks],
         "painted_scalp_faces": painted_scalp_faces,
+        "front_center_overlap": front_center_overlap,
         "vertices": len(tile.data.vertices),
         "polygons": len(tile.data.polygons),
         "repaired_images": repaired_images,

@@ -26,7 +26,7 @@ const assets: AssetRecord[] = [
     known_issue: null,
     visibility_group: "shoes",
     thumbnail_url: "/generated/thumbnails/shoes.png",
-    thumbnail_kind: "contact_sheet",
+    thumbnail_kind: "fixed_front",
   },
 ];
 

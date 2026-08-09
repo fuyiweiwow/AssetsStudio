@@ -5,7 +5,7 @@
 | 类别 | 当前版本 | 状态 | 结论 |
 | --- | --- | --- | --- |
 | 身体与动作 | `milestones/body/chibi_actor_mixamo_walk_v1.blend` | `accepted` | Actor V1，AccuRIG 骨架，Mixamo Walk 已绑定；Run 源保留 |
-| 发型 | `milestones/hair/hair_component_catalog_v1.json` + `hair_random_pool_v1.json` + `first_bundle_recipe_v1.json` | `source_contract` | Chloe/Colin 组件化源、base 必选规则和离线随机池；首套女性 `seed_04_bangs04` 已作为 `provisional` 网页候选接入，头顶中缝待人工审查 |
+| 发型 | `milestones/hair/hair_component_catalog_v1.json` + `hair_random_pool_v1.json` + `first_bundle_recipe_v1.json` | `source_contract` | Chloe/Colin 组件化源、base 必选规则和离线随机池；首套女性 `seed_04_bangs04_v2` 已修复中心发片落入头皮的问题并通过投影覆盖验证，仍为 `provisional` 待人工审查 |
 | 五官 | `milestones/body/face_contract_v2.json` + `chibi_actor_eye_assembly_v2.blend` | `technical_baseline` | EyeAssembly 浅曲面与3D耳朵随 `CC_Base_Head`；open/half/closed 确定性眨眼已恢复，等待用户审查后再晋级 |
 | 短袖 | `milestones/tops/actor_native_tshirt_v5/` | `provisional` | Actor 自身拓扑派生的单网格短袖；整体可用，但右肩/右袖突出仍是已知缺陷 |
 | 短裤 | `milestones/pants/native_control_v0/` | `provisional` | Blender-native Actor 表面派生方案；用户视觉评价优于旧 GarmentCode 转移，自动严格门仍会误报/报警 |
