@@ -6,6 +6,9 @@ AssetsStudio 是从 AssetsLab 的长实验分支整理出的正式资产工作�
 
 ## 当前入口
 
+- 开发原则：[`PRINCIPLES.md`](PRINCIPLES.md)
+- 开发管理基准：[`docs/DEVELOPMENT.md`](docs/DEVELOPMENT.md)
+- 产品与技术基线讨论稿：[`docs/PRODUCT_TECH_BASELINE.md`](docs/PRODUCT_TECH_BASELINE.md)
 - 总里程碑清单：[`docs/MILESTONES.md`](docs/MILESTONES.md)
 - 迁移边界：[`docs/MIGRATION.md`](docs/MIGRATION.md)
 - 静态审查页：[`gallery/index.html`](gallery/index.html)
@@ -45,3 +48,5 @@ python .\tools\build_studio_gallery.py
 ```
 
 生成新候选时输出到 `workspace/`。只有人工审核通过后，才替换对应 `milestones/<category>/` 内容并更新 `docs/ASSET_STATUS.json`。
+
+开始 Studio 功能开发前，必须先按 `PRINCIPLES.md` 的顺序阅读开发基准、产品技术基线、里程碑和对应功能文档。技术变化、内容删除与重要保存检查点必须同步更新仓库内的追溯记录。
