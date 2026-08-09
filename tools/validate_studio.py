@@ -21,6 +21,8 @@ REQUIRED = [
     "docs/features/README.md",
     "docs/decisions/README.md",
     "docs/decisions/0001-development-record-system.md",
+    "docs/decisions/0002-asset-lifecycle-sync-policy.md",
+    "docs/features/F001-studio-shell-asset-registry-actor-preview.md",
     "docs/templates/FEATURE_TEMPLATE.md",
     "docs/templates/ADR_TEMPLATE.md",
     "milestones/body/chibi_actor_mixamo_walk_v1.blend",
@@ -65,6 +67,16 @@ REQUIRED_TEXT_MARKERS = {
         "## 当前需要讨论确认的问题",
     ],
     "docs/REMOVALS.md": ["## 新记录要求"],
+    "docs/decisions/0002-asset-lifecycle-sync-policy.md": [
+        "状态：`accepted`",
+        "## 清理规则",
+        "## Git 与云端边界",
+    ],
+    "docs/features/F001-studio-shell-asset-registry-actor-preview.md": [
+        "功能 ID：`F001`",
+        "## 技术选型",
+        "## 验收条件",
+    ],
 }
 
 

@@ -9,6 +9,7 @@
 | 2026-08-09 | governance | development | 建立开发原则、功能文档/ADR 模板、删除审计和产品技术讨论稿 | 防止上下文丢失、重复实验和正式分支持续膨胀 |
 | 2026-08-09 | cleanup | pants docs | 修复短裤人工审查文档中的迁移前失效链接 | 确保正式审查入口只引用仓库内当前文件 |
 | 2026-08-09 | requirements | product/storage | 明确 Actor 页面预览、生成追溯、本地优先存储和 BomboAdventure 资产孵化器目标 | 将“即时预览”拆为交互预览与 Blender 生成预览，并提出 ADR-0002 供确认 |
+| 2026-08-09 | decision | product/storage | 用户确认两级预览、本地优先同步、发布包隔离和人形优先插件化 | ADR-0002 晋级为 `accepted`，建立 F001 功能文档 |
 
 ## 记录规则
 

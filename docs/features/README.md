@@ -4,6 +4,6 @@
 
 | 功能 ID | 名称 | 状态 | 文档 |
 | --- | --- | --- | --- |
-| 待建立 | Studio 外壳与资产注册表 | 等待产品与技术基线确认 | 待 Phase 1 启动时创建 |
+| `F001` | Studio 外壳、资产注册表与 Actor 预览 | `proposed` | [`F001-studio-shell-asset-registry-actor-preview.md`](F001-studio-shell-asset-registry-actor-preview.md) |
 
 允许状态：`proposed`、`in_progress`、`provisional`、`accepted`、`paused`、`retired`。
