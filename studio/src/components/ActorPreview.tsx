@@ -1,8 +1,9 @@
-import { Component, Suspense, useEffect, useMemo, useRef, type ErrorInfo, type ReactNode } from "react";
+import { Component, Suspense, useEffect, useRef, type ErrorInfo, type ReactNode } from "react";
 import { Grid, Html, OrbitControls, useAnimations, useGLTF } from "@react-three/drei";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import type { VisibilityGroup } from "../lib/registry";
+import { componentForObject, preparePreviewScene } from "../lib/scene-preparation";
 
 export type CameraView = "front" | "right" | "back" | "left" | "free";
 export type VisibilityState = Record<VisibilityGroup, boolean>;
@@ -82,20 +83,6 @@ function CameraRig({ view }: { view: CameraView }) {
   return null;
 }
 
-function componentForObject(object: THREE.Object3D): VisibilityGroup | null {
-  const tagged = object.userData.assetsstudio_component;
-  if (tagged === "hair" || tagged === "face" || tagged === "top" || tagged === "pants" || tagged === "shoes") {
-    return tagged;
-  }
-  const name = object.name.toLowerCase();
-  if (name.includes("tshirt")) return "top";
-  if (name.includes("shorts")) return "pants";
-  if (name.includes("sneaker")) return "shoes";
-  if (name.includes("eye") || name.includes("ear")) return "face";
-  if (name.includes("hair")) return "hair";
-  return null;
-}
-
 function ActorModel({
   modelUrl,
   playing,
@@ -105,10 +92,17 @@ function ActorModel({
   onDuration,
 }: Omit<ActorPreviewProps, "view" | "onModelError">) {
   const gltf = useGLTF(modelUrl);
-  const scene = useMemo(() => gltf.scene.clone(true), [gltf.scene]);
+  // A regular Object3D.clone(true) does not preserve SkinnedMesh -> bone
+  // references. F001 mounts one GLB instance, so using the loader-owned scene
+  // directly keeps Actor, face, garments and shoes on the same skeleton.
+  const scene = gltf.scene;
   const { actions, names, mixer } = useAnimations(gltf.animations, scene);
   const action = names.length > 0 ? actions[names[0]] : undefined;
   const lastReport = useRef(0);
+
+  useEffect(() => {
+    preparePreviewScene(scene);
+  }, [scene]);
 
   useEffect(() => {
     scene.traverse((object: THREE.Object3D) => {

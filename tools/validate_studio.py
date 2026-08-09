@@ -31,6 +31,7 @@ REQUIRED = [
     "studio/package-lock.json",
     "studio/src/generated/asset-registry.json",
     "studio/src/App.tsx",
+    "start-studio.cmd",
     "tools/build_studio_registry.py",
     "tools/blender/export_studio_actor_preview.py",
     "tools/export_studio_actor_preview.ps1",

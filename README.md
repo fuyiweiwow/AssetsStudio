@@ -52,13 +52,16 @@ python .\tools\build_studio_gallery.py
 
 第一版 Studio 是 Windows 单用户本地工具。Node.js 与 Blender 可用后：
 
+- 最简单：双击仓库根目录的 `start-studio.cmd`，保持弹出的命令窗口开启；脚本会在服务就绪后打开浏览器。
+- 命令行方式：
+
 ```powershell
 cd .\studio
 npm.cmd install
 npm.cmd run dev
 ```
 
-然后打开 `http://127.0.0.1:4173/`。`npm run dev` 的预启动步骤会从正式状态生成六类前端注册表，并把当前 Actor、短袖、短裤和鞋导出为被 Git 忽略的本地 GLB；发型尚未装入首个组合 GLB，页面会明确禁用该开关。需要只重建本地预览时可运行 `npm.cmd run assets:prepare`。
+Studio 不是可以双击或复制 `file://` 地址打开的单个离线 HTML；浏览器的 ES Module、GLB 和 JSON 加载需要本机 HTTP 服务。请使用上述启动入口，再访问 `http://127.0.0.1:4173/`。`npm run dev` 的预启动步骤会从正式状态生成六类前端注册表，并把当前 Actor、短袖、短裤和鞋导出为被 Git 忽略的本地 GLB；发型尚未装入首个组合 GLB，页面会明确禁用该开关。需要只重建本地预览时可运行 `npm.cmd run assets:prepare`。
 
 生成新候选时输出到 `workspace/`。只有人工审核通过后，才替换对应 `milestones/<category>/` 内容并更新 `docs/ASSET_STATUS.json`。
 
