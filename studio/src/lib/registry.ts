@@ -13,6 +13,8 @@ export interface AssetRecord {
   workflow: string;
   known_issue: string | null;
   visibility_group: VisibilityGroup | null;
+  thumbnail_url: string | null;
+  thumbnail_kind: "contact_sheet" | "texture" | null;
 }
 
 export interface AssetRegistry {
@@ -96,6 +98,9 @@ export function parseRegistry(value: unknown): AssetRegistry {
       if (typeof item[key] !== "string" || item[key].length === 0) {
         throw new Error(`资产记录 ${index} 缺少 ${key}`);
       }
+    }
+    if (item.thumbnail_url !== null && typeof item.thumbnail_url !== "string") {
+      throw new Error(`资产记录 ${index} 的 thumbnail_url 无效`);
     }
     return item as unknown as AssetRecord;
   });

@@ -30,4 +30,11 @@ describe("asset registry", () => {
     expect(registry.hair.random_pool.length).toBeGreaterThan(10);
     expect(registry.hair.galleries.length).toBe(9);
   });
+
+  it("registers cached static images without inventing missing previews", () => {
+    const registry = parseRegistry(rawRegistry);
+    expect(registry.assets.find((asset) => asset.category === "shoes")?.thumbnail_url)
+      .toBe("/generated/thumbnails/shoes.png");
+    expect(registry.assets.find((asset) => asset.category === "hair")?.thumbnail_url).toBeNull();
+  });
 });

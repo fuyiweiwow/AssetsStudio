@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import rawRegistry from "./generated/asset-registry.json";
 import { ActorPreview, PreviewFallback, type CameraView, type VisibilityState } from "./components/ActorPreview";
+import { AssetShelf } from "./components/AssetShelf";
 import { WorkflowRail, type WorkflowStepId } from "./components/WorkflowRail";
 import { drawHairRecipe, type HairRecipe } from "./lib/hair-recipe";
 import { getPreviewFocus } from "./lib/preview-focus";
@@ -39,7 +40,7 @@ const CATEGORY_TO_GROUP: Partial<Record<AssetCategory, VisibilityGroup>> = {
 };
 const EMPTY_VISIBILITY: VisibilityState = { hair: false, face: false, top: false, pants: false, shoes: false };
 
-type WorkspaceView = "workbench" | "review";
+type WorkspaceView = "workbench" | "review" | "baseline";
 type AssetPreviewMode = "isolated" | "actor";
 
 interface PreviewManifest {
@@ -87,6 +88,7 @@ function isAssetStep(step: WorkflowStepId): step is AssetCategory {
 
 function App() {
   const [workspaceView, setWorkspaceView] = useState<WorkspaceView>("workbench");
+  const [previewExpanded, setPreviewExpanded] = useState(false);
   const [activeStep, setActiveStep] = useState<WorkflowStepId>("model");
   const [previewMode, setPreviewMode] = useState<AssetPreviewMode>("actor");
   const [view, setView] = useState<CameraView>("front");
@@ -108,6 +110,14 @@ function App() {
     registry.preview.manifest_url,
   );
   const previewState = getPreviewState(availability);
+
+  useEffect(() => {
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") setPreviewExpanded(false);
+    }
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   const assetsByCategory = useMemo(
     () => new Map(registry.assets.map((asset) => [asset.category, asset])),
@@ -141,13 +151,24 @@ function App() {
     const group = CATEGORY_TO_GROUP[activeStep];
     return group ? { ...EMPTY_VISIBILITY, [group]: true } : EMPTY_VISIBILITY;
   }, [activeStep, reviewVisibility]);
-  const activeVisibility = workspaceView === "review" ? reviewVisibility : workbenchVisibility;
-  const showBody = workspaceView === "review" || !isAssetStep(activeStep) || previewMode === "actor";
-  const focusedCategory: AssetCategory = workspaceView === "review" ? "body" : isAssetStep(activeStep) ? activeStep : "body";
+  const activeVisibility = workspaceView === "workbench" ? workbenchVisibility : reviewVisibility;
+  const showBody = workspaceView !== "workbench" || !isAssetStep(activeStep) || previewMode === "actor";
+  const focusedCategory: AssetCategory = workspaceView === "workbench" && isAssetStep(activeStep) ? activeStep : "body";
   const previewFocus = getPreviewFocus(focusedCategory);
   const selectedGroup = isAssetStep(activeStep) ? CATEGORY_TO_GROUP[activeStep] : undefined;
   const selectedPreviewMissing = Boolean(selectedGroup && !availableGroups.has(selectedGroup));
   const missingInCurrentView = workspaceView === "workbench" && selectedPreviewMissing;
+  const previewTitle = workspaceView === "baseline"
+    ? "Actor 基准验收"
+    : workspaceView === "review"
+      ? "当前搭配组合预览"
+      : `${selectedAsset.label}工作流预览`;
+  const previewEyebrow = workspaceView === "baseline" ? "ACTOR BASELINE" : workspaceView === "review" ? "FINAL COMPOSITE" : "WORKFLOW PREVIEW";
+  const previewSubtitle = workspaceView === "baseline"
+    ? "只检查模型装配、骨骼动画和网页显示，不在这里调整资产参数。"
+    : workspaceView === "review"
+      ? "显示所有当前选择，用于最终搭配检查。"
+      : "仅检查当前资产；不会改变正式里程碑。";
 
   const handleDuration = useCallback((nextDuration: number, name: string) => {
     setDuration(nextDuration);
@@ -177,7 +198,7 @@ function App() {
   const hairPoolCount = registry.hair.random_pool.filter((item) => item.gender === hairGender).length;
 
   return (
-    <main className="studio-shell">
+    <main className={`studio-shell ${previewExpanded ? "has-expanded-preview" : ""}`}>
       <header className="topbar">
         <div className="brand-lockup">
           <div className="brand-mark" aria-hidden="true"><span>AS</span></div>
@@ -186,13 +207,30 @@ function App() {
         <nav className="workspace-tabs" aria-label="Studio 主界面">
           <button type="button" className={workspaceView === "workbench" ? "active" : ""} onClick={() => setWorkspaceView("workbench")}>资产工作台</button>
           <button type="button" className={workspaceView === "review" ? "active" : ""} onClick={() => setWorkspaceView("review")}>组合预览</button>
+          <button type="button" className={workspaceView === "baseline" ? "active" : ""} onClick={() => { setWorkspaceView("baseline"); setView("front"); }}>Actor 基准</button>
         </nav>
         <div className="topbar-meta"><span className="build-pill">F003 · v{registry.studio_version}</span><span className="storage-pill"><i /> 本地资产</span></div>
       </header>
 
-      <div className={`studio-grid ${workspaceView === "review" ? "review-layout" : ""}`}>
+      <div className={`studio-grid ${workspaceView !== "workbench" ? "review-layout" : ""}`}>
         {workspaceView === "workbench" ? (
           <WorkflowRail activeStep={activeStep} animationLabel={manifest?.animations[0]?.name ?? "Walk · 正在读取"} loadedCategories={loadedCategories} onSelect={selectWorkflowStep} />
+        ) : workspaceView === "baseline" ? (
+          <aside className="workflow-rail baseline-rail" aria-label="Actor 基准检查清单">
+            <div className="rail-heading"><span className="eyebrow">ACCEPTANCE BASELINE</span><h2>基准检查</h2><span className="asset-count">v0.1</span></div>
+            <div className="baseline-checklist">
+              <div className="pass"><span>身体模型</span><strong>已装入</strong></div>
+              <div className="pass"><span>AccuRIG 骨骼</span><strong>已绑定</strong></div>
+              <div className="pass"><span>Walk 动画</span><strong>{duration > 0 ? "可播放" : "读取中"}</strong></div>
+              <div className={availableGroups.has("face") ? "pass" : "fail"}><span>眼睛与眨眼</span><strong>{availableGroups.has("face") ? "可检查" : "缺失"}</strong></div>
+              <div className="warning"><span>短袖</span><strong>已知袖管问题</strong></div>
+              <div className="warning"><span>短裤</span><strong>待人工审查</strong></div>
+              <div className={availableGroups.has("shoes") ? "pass" : "fail"}><span>鞋子</span><strong>{availableGroups.has("shoes") ? "已装入" : "缺失"}</strong></div>
+              <div className="pending"><span>发型</span><strong>尚未生成 bundle</strong></div>
+            </div>
+            <p className="baseline-note">绿色表示网页端具备检查条件，不等于美术验收通过。</p>
+            <button type="button" className="rail-primary-action" onClick={() => setWorkspaceView("workbench")}>返回资产工作台</button>
+          </aside>
         ) : (
           <aside className="workflow-rail review-summary-rail" aria-label="当前组合摘要">
             <div className="rail-heading"><span className="eyebrow">COMPOSITE REVIEW</span><h2>当前搭配</h2><span className="asset-count">Actor V1</span></div>
@@ -208,12 +246,12 @@ function App() {
           </aside>
         )}
 
-        <section className="preview-column" aria-label={workspaceView === "review" ? "组合预览" : "资产工作流预览"}>
+        <section className={`preview-column ${previewExpanded ? "preview-expanded" : ""}`} aria-label={workspaceView === "workbench" ? "资产工作流预览" : workspaceView === "review" ? "组合预览" : "Actor 基准验收"}>
           <div className="preview-toolbar">
             <div>
-              <p className="eyebrow">{workspaceView === "review" ? "FINAL COMPOSITE" : "WORKFLOW PREVIEW"}</p>
-              <h2>{workspaceView === "review" ? "当前搭配组合预览" : `${selectedAsset.label}工作流预览`}</h2>
-              <p className="preview-subtitle">{workspaceView === "review" ? "显示所有当前选择，用于最终搭配检查。" : "仅检查当前资产；不会改变正式里程碑。"}</p>
+              <p className="eyebrow">{previewEyebrow}</p>
+              <h2>{previewTitle}</h2>
+              <p className="preview-subtitle">{previewSubtitle}</p>
             </div>
             <div className="preview-toolbar-actions">
               {workspaceView === "workbench" && isAssetStep(activeStep) && (
@@ -222,6 +260,7 @@ function App() {
                   <button type="button" className={previewMode === "actor" ? "active" : ""} onClick={() => setPreviewMode("actor")}>Actor 搭配</button>
                 </div>
               )}
+              <button type="button" className="expand-preview-button" onClick={() => setPreviewExpanded((current) => !current)}>{previewExpanded ? "退出放大" : "放大预览"}</button>
               <div className="view-switcher" aria-label="相机视角">
                 {(Object.keys(VIEW_LABELS) as CameraView[]).map((item) => (
                   <button type="button" className={view === item ? "active" : ""} key={item} onClick={() => setView(item)}>{VIEW_LABELS[item]}</button>
@@ -229,6 +268,15 @@ function App() {
               </div>
             </div>
           </div>
+
+          {workspaceView === "workbench" && (
+            <AssetShelf
+              assets={registry.assets}
+              activeCategory={isAssetStep(activeStep) ? activeStep : "body"}
+              loadedCategories={loadedCategories}
+              onSelect={(category) => selectWorkflowStep(category)}
+            />
+          )}
 
           <div className="preview-frame">
             <div className="frame-corner corner-tl" /><div className="frame-corner corner-tr" /><div className="frame-corner corner-bl" /><div className="frame-corner corner-br" />
@@ -258,7 +306,7 @@ function App() {
           </div>
         </section>
 
-        <aside className="inspector formal-console" aria-label={workspaceView === "review" ? "组合控制台" : "资产工作流控制台"}>
+        <aside className="inspector formal-console" aria-label={workspaceView === "workbench" ? "资产工作流控制台" : workspaceView === "review" ? "组合控制台" : "Actor 基准控制台"}>
           {workspaceView === "workbench" ? (
             <>
               <section className="inspector-section console-header-card">
@@ -312,7 +360,7 @@ function App() {
 
               <button type="button" className="review-entry-button" onClick={() => { setWorkspaceView("review"); setView("front"); }}>查看当前组合预览 <span>→</span></button>
             </>
-          ) : (
+          ) : workspaceView === "review" ? (
             <>
               <section className="inspector-section console-header-card"><p className="eyebrow">COMPOSITE CONTROL</p><h2>组合显示</h2><p className="step-help">这里只审查当前搭配，不修改单项资产参数。</p></section>
               <section className="inspector-section">
@@ -321,6 +369,16 @@ function App() {
               </section>
               <section className="inspector-section direction-card"><p className="eyebrow">REVIEW CONTRACT</p><h3>网页预览 ≠ 最终验收</h3><p>Three.js 用于搭配和快速问题定位；晋级仍需 Blender 正侧背 GIF 与人工审查。</p></section>
               <button type="button" className="review-entry-button secondary" onClick={() => setWorkspaceView("workbench")}>返回当前资产工作流</button>
+            </>
+          ) : (
+            <>
+              <section className="inspector-section console-header-card"><p className="eyebrow">BASELINE CONTROL</p><h2>网页端装配基准</h2><p className="step-help">请依次检查正面、左右侧、背面，并播放或拖动时间轴定位穿模。</p></section>
+              <section className="inspector-section">
+                <div className="section-heading"><div><p className="eyebrow">VISIBILITY</p><h3>逐项排查</h3></div><span>{availableGroups.size}/5</span></div>
+                <div className="toggle-list">{VISIBILITY_GROUPS.map((group) => { const available = availableGroups.has(group); return <button type="button" className={`toggle-row ${reviewVisibility[group] ? "on" : "off"}`} key={group} onClick={() => toggleReviewComponent(group)} disabled={!available}><span>{TOGGLE_LABELS[group]}</span>{!available ? <small>未装入 GLB</small> : <i><b /></i>}</button>; })}</div>
+              </section>
+              <section className="inspector-section baseline-known-issues"><p className="eyebrow">KNOWN ISSUES</p><h3>本轮不掩盖的问题</h3><ul><li>短袖肩部与袖管仍是模型缺陷。</li><li>发型尚未装入当前组合 GLB。</li><li>短裤是否闪烁由本页动画人工确认。</li></ul></section>
+              <button type="button" className="review-entry-button secondary" onClick={() => setWorkspaceView("workbench")}>返回资产工作台</button>
             </>
           )}
         </aside>

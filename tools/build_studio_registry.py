@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import shutil
 from pathlib import Path
 
 
@@ -12,6 +13,15 @@ OUTPUT_PATH = ROOT / "studio" / "src" / "generated" / "asset-registry.json"
 HAIR_COMPONENT_CATALOG = ROOT / "milestones" / "hair" / "hair_component_catalog_v1.json"
 HAIR_RANDOM_POOL = ROOT / "milestones" / "hair" / "hair_random_pool_v1.json"
 HAIR_GALLERY_CATALOG = ROOT / "milestones" / "hair" / "hair_gallery_catalog_v1.json"
+THUMBNAIL_OUTPUT = ROOT / "studio" / "public" / "generated" / "thumbnails"
+
+
+THUMBNAIL_SOURCES = {
+    "face": ROOT / "milestones" / "body" / "eye_textures" / "eye_left.png",
+    "tops": ROOT / "milestones" / "tops" / "actor_native_tshirt_v5" / "four_view_frame00_contact_sheet.png",
+    "pants": ROOT / "milestones" / "pants" / "native_control_v0" / "four_view_frame00_contact_sheet.png",
+    "shoes": ROOT / "milestones" / "shoes" / "cartoon_sneaker_v10" / "four_view_contact_sheet.png",
+}
 
 
 CATEGORY_METADATA = {
@@ -53,6 +63,7 @@ def main() -> int:
     if status.get("schema") != "assetsstudio_asset_status_v1":
         raise RuntimeError(f"unexpected asset status schema: {STATUS_PATH}")
 
+    THUMBNAIL_OUTPUT.mkdir(parents=True, exist_ok=True)
     assets = []
     seen_categories: set[str] = set()
     for record in status.get("milestones", []):
@@ -66,6 +77,16 @@ def main() -> int:
             raise RuntimeError(f"duplicate category in asset status: {category}")
         seen_categories.add(category)
         metadata = CATEGORY_METADATA[category]
+        thumbnail_source = THUMBNAIL_SOURCES.get(category)
+        thumbnail_url = None
+        thumbnail_kind = None
+        if thumbnail_source is not None:
+            if not thumbnail_source.is_file():
+                raise FileNotFoundError(thumbnail_source)
+            thumbnail_name = f"{category}{thumbnail_source.suffix.lower()}"
+            shutil.copy2(thumbnail_source, THUMBNAIL_OUTPUT / thumbnail_name)
+            thumbnail_url = f"/generated/thumbnails/{thumbnail_name}"
+            thumbnail_kind = "texture" if category == "face" else "contact_sheet"
         assets.append(
             {
                 "id": str(record["id"]),
@@ -76,6 +97,8 @@ def main() -> int:
                 "workflow": metadata["workflow"],
                 "known_issue": record.get("known_issue"),
                 "visibility_group": metadata["visibility_group"],
+                "thumbnail_url": thumbnail_url,
+                "thumbnail_kind": thumbnail_kind,
             }
         )
 
@@ -95,7 +118,7 @@ def main() -> int:
 
     payload = {
         "schema": "assetsstudio_asset_registry_v1",
-        "studio_version": "0.3.0",
+        "studio_version": "0.4.0",
         "updated": str(status["updated"]),
         "preview": {
             "model_url": "/generated/actor-composite-v1.glb",
