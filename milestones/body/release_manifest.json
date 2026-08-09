@@ -1,0 +1,30 @@
+{
+  "schema": "assetslab_chibi_actor_release_v1",
+  "status": "current_baseline",
+  "blender_version": "4.5.0",
+  "actor_blend": "chibi_actor_mixamo_walk_v1.blend",
+  "actor_input": "actor_accurig_input.fbx",
+  "animation_sources": {
+    "walk": "animation_sources/mixamo_standard_walk.fbx",
+    "run": "animation_sources/mixamo_run.fbx"
+  },
+  "face_textures": {
+    "left": "eye_textures/eye_left.png",
+    "right": "eye_textures/eye_right.png",
+    "packed_into_blend": true
+  },
+  "ear_source": {
+    "file": "ear_source/miku_chibi_ear_source.fbx",
+    "use": "The two source ear components were extracted from head_org_0_0_node and parented to CC_Base_Head."
+  },
+  "walk_adjustments": {
+    "arm_trajectory": "analytic two-bone retiming; lateral 0.58, longitudinal 1.30, right longitudinal multiplier 1.327",
+    "finger_animation": "24 finger bones frozen at first-frame rotation",
+    "leg_stride": "analytic two-bone retiming; negative-Y rear stride is 80% to reduce the side-view rear-foot projection",
+    "ear_placement": "Miku-derived ears uniformly scaled to 85%; total world -Y forward offset 0.145; outer rim pivots toward face around the root, world-Z 40 degrees; root band is projected to the side-head surface with 0.006 outward separation"
+  },
+  "known_limitations": [
+    "Side-view rear-foot silhouette can still appear longer because of stride projection and overlap, though the rear-stride 80% retiming reduces it.",
+    "This package intentionally contains the selected walk baseline only. Run is preserved as a source FBX for the next retarget pass."
+  ]
+}

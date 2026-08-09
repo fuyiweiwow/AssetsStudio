@@ -1,0 +1,34 @@
+{
+  "schema": "assetslab_native_shorts_control_v1",
+  "source_actor": "milestones\\body\\chibi_actor_mixamo_walk_v1.blend",
+  "source_mesh": "ChibiBaseMesh_AccuRIG_InputMesh",
+  "garment_object": "NativeControlShorts",
+  "selected_source_vertices": 1152,
+  "selected_faces": 1078,
+  "bounds_local": {
+    "min": [
+      -32.23704528808594,
+      -25.80740737915039,
+      39.379547119140625
+    ],
+    "max": [
+      32.2370491027832,
+      23.98341178894043,
+      75.43546295166016
+    ]
+  },
+  "selection": {
+    "lower_z": 0.4,
+    "upper_z": 0.738,
+    "max_abs_x": 0.4,
+    "surface_offset": 0.012,
+    "solidify_thickness": 0.006
+  },
+  "animation_binding": {
+    "armature": "Armature",
+    "modifier": "NativeControlShorts_Armature",
+    "copied_vertex_groups": 63
+  },
+  "status": "gate1_pending",
+  "next_gate": "render static four views and 8-frame front/right GIF before any GarmentCode branch"
+}

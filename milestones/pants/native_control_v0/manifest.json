@@ -1,0 +1,44 @@
+{
+  "schema": "assetslab_actor_clothing_eevee_render_v1",
+  "blend": "milestones\\pants\\native_control_v0\\native_control_shorts_v0.blend",
+  "action": "Mixamo_Armature.001|mixamo.com|Layer0_on_Armature",
+  "sample_frames": [
+    1,
+    11,
+    21,
+    31,
+    41,
+    51,
+    61,
+    71
+  ],
+  "directions": [
+    "front",
+    "right",
+    "back",
+    "left"
+  ],
+  "resolution": 256,
+  "engine": "BLENDER_EEVEE_NEXT",
+  "face_style": {
+    "id": 1,
+    "name": "bright_tall",
+    "parameters": {
+      "name": "bright_tall",
+      "eye_width": 0.96,
+      "eye_height": 1.12,
+      "eye_raise": 0.075,
+      "brow_raise": 0.095,
+      "brow_arch": 0.06,
+      "brow_tilt": 0.015,
+      "brow_colour": [
+        0.2,
+        0.07,
+        0.04,
+        1.0
+      ]
+    }
+  },
+  "highlight_object": "NativeControlShorts",
+  "highlight_color": "0.08,0.3,0.85,1"
+}

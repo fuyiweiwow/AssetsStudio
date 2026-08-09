@@ -1,0 +1,47 @@
+# AssetsStudio
+
+AssetsStudio 是从 AssetsLab 的长实验分支整理出的正式资产工作区。它只保存可继续使用的里程碑、重建脚本、人工审查素材和当前工作流；失败参数扫掠与重复试验仍留在原 `AssetsLab` Git 历史中。
+
+当前工作流实际依赖的模型文件会随仓库上传，包括 `.blend`、`.fbx`、动作源、眼睛贴图和鞋源模型，换机后不需要回到 AssetsLab 找模型。第三方鞋源包未附明确许可证，因此远程仓库默认保持私有。
+
+## 当前入口
+
+- 总里程碑清单：[`docs/MILESTONES.md`](docs/MILESTONES.md)
+- 迁移边界：[`docs/MIGRATION.md`](docs/MIGRATION.md)
+- 静态审查页：[`gallery/index.html`](gallery/index.html)
+- 机器可读状态：[`docs/ASSET_STATUS.json`](docs/ASSET_STATUS.json)
+
+## 目录
+
+```text
+milestones/
+  body/       Actor V1、Walk/Run、眼睛贴图与耳朵源
+  hair/       Chloe/Colin 源发型、组件 catalog 与随机池
+  face/       固定五官运行时、Face 基础层与眨眼状态资源
+  tops/       当前短袖候选
+  pants/      当前 Blender-native 短裤里程碑
+  shoes/      已确认的卡通运动鞋 v10
+references/   外部参考源与来源清单
+tools/        仅保留当前重建、渲染、随机化与 Gallery 工具
+docs/         总文档和各类别唯一工作流
+gallery/      无需 Blender 即可查看的人工审查入口
+workspace/    本地实验输出，不提交 Git
+```
+
+## 状态词义
+
+- `accepted`：用户已明确认可，可作为下一阶段正式基线。
+- `provisional`：当前最值得继续的版本，但仍带已知视觉缺陷。
+- `source_contract`：源资产、随机池或生成接口已经固定，但没有单个“最终造型”。
+- `technical_baseline`：技术闭环通过，不等同于最终美术验收。
+
+不要通过自动碰撞统计把 `provisional` 自动提升为 `accepted`。所有衣物与鞋子必须保留人工 GIF 审查。
+
+## 快速检查
+
+```powershell
+python .\tools\validate_studio.py
+python .\tools\build_studio_gallery.py
+```
+
+生成新候选时输出到 `workspace/`。只有人工审核通过后，才替换对应 `milestones/<category>/` 内容并更新 `docs/ASSET_STATUS.json`。

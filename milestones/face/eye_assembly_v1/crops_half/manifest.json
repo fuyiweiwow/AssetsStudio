@@ -1,0 +1,28 @@
+{
+  "schema": "assetslab_imagegen_eye_assembly_crops_v1",
+  "source": "milestones\\face\\eye_assembly_v1\\imagegen_eye_brows_half.png",
+  "canvas": [
+    496,
+    609
+  ],
+  "sides": {
+    "L": {
+      "source_alpha_bbox": [
+        100,
+        386,
+        515,
+        828
+      ],
+      "output": "milestones\\face\\eye_assembly_v1\\crops_half\\imagegen_eye_assembly_L.png"
+    },
+    "R": {
+      "source_alpha_bbox": [
+        741,
+        392,
+        1156,
+        829
+      ],
+      "output": "milestones\\face\\eye_assembly_v1\\crops_half\\imagegen_eye_assembly_R.png"
+    }
+  }
+}

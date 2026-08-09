@@ -1,0 +1,243 @@
+{
+  "generator": "process_base_features.py",
+  "generator_version": 8,
+  "sources": {
+    "face": "historical://AssetsLab/raw_face_base_v1_4x4.png",
+    "ear": "historical://AssetsLab/raw_ear_base_v1_4x4.png"
+  },
+  "cell_size": [
+    64,
+    64
+  ],
+  "directions": [
+    "front",
+    "right",
+    "back",
+    "left"
+  ],
+  "frame_count_per_direction": 8,
+  "layers": [
+    "ear",
+    "face"
+  ],
+  "head_registration": "per_gender_per_direction_per_frame_alpha_bbox",
+  "feature_y_anchor": "head_top_plus_15_plus_layer_direction_offset",
+  "face_scale_mode": "fixed_target_size_for_view_consistency",
+  "front_face_layout": "mirrored_left_half_centered",
+  "front_back_ear_layout": "mirrored_left_half_centered_at_head_edges",
+  "source_frame_policy": "canonical_direction_cell_repeated_across_walk_frames",
+  "side_ear_layout": "inset_under_head_edge_with_ear_layer_above_head",
+  "feature_y_offsets": {
+    "face_front": 5,
+    "face_side": 1,
+    "face_back": 5,
+    "ear_front": 5,
+    "ear_side": 4,
+    "ear_back": 5
+  },
+  "face_limits": {
+    "front": [
+      20,
+      8
+    ],
+    "side": [
+      7,
+      9
+    ],
+    "back": [
+      0,
+      0
+    ]
+  },
+  "ear_limits": {
+    "front": [
+      32,
+      12
+    ],
+    "back": [
+      34,
+      12
+    ],
+    "side": [
+      8,
+      12
+    ]
+  },
+  "no_nose": true,
+  "no_mouth": true,
+  "randomization_ready": false,
+  "frame_names": {
+    "male": {
+      "face": [
+        [
+          "walk_row0_frame0.png",
+          "walk_row0_frame1.png",
+          "walk_row0_frame2.png",
+          "walk_row0_frame3.png",
+          "walk_row0_frame4.png",
+          "walk_row0_frame5.png",
+          "walk_row0_frame6.png",
+          "walk_row0_frame7.png"
+        ],
+        [
+          "walk_row1_frame0.png",
+          "walk_row1_frame1.png",
+          "walk_row1_frame2.png",
+          "walk_row1_frame3.png",
+          "walk_row1_frame4.png",
+          "walk_row1_frame5.png",
+          "walk_row1_frame6.png",
+          "walk_row1_frame7.png"
+        ],
+        [
+          "walk_row2_frame0.png",
+          "walk_row2_frame1.png",
+          "walk_row2_frame2.png",
+          "walk_row2_frame3.png",
+          "walk_row2_frame4.png",
+          "walk_row2_frame5.png",
+          "walk_row2_frame6.png",
+          "walk_row2_frame7.png"
+        ],
+        [
+          "walk_row3_frame0.png",
+          "walk_row3_frame1.png",
+          "walk_row3_frame2.png",
+          "walk_row3_frame3.png",
+          "walk_row3_frame4.png",
+          "walk_row3_frame5.png",
+          "walk_row3_frame6.png",
+          "walk_row3_frame7.png"
+        ]
+      ],
+      "ear": [
+        [
+          "walk_row0_frame0.png",
+          "walk_row0_frame1.png",
+          "walk_row0_frame2.png",
+          "walk_row0_frame3.png",
+          "walk_row0_frame4.png",
+          "walk_row0_frame5.png",
+          "walk_row0_frame6.png",
+          "walk_row0_frame7.png"
+        ],
+        [
+          "walk_row1_frame0.png",
+          "walk_row1_frame1.png",
+          "walk_row1_frame2.png",
+          "walk_row1_frame3.png",
+          "walk_row1_frame4.png",
+          "walk_row1_frame5.png",
+          "walk_row1_frame6.png",
+          "walk_row1_frame7.png"
+        ],
+        [
+          "walk_row2_frame0.png",
+          "walk_row2_frame1.png",
+          "walk_row2_frame2.png",
+          "walk_row2_frame3.png",
+          "walk_row2_frame4.png",
+          "walk_row2_frame5.png",
+          "walk_row2_frame6.png",
+          "walk_row2_frame7.png"
+        ],
+        [
+          "walk_row3_frame0.png",
+          "walk_row3_frame1.png",
+          "walk_row3_frame2.png",
+          "walk_row3_frame3.png",
+          "walk_row3_frame4.png",
+          "walk_row3_frame5.png",
+          "walk_row3_frame6.png",
+          "walk_row3_frame7.png"
+        ]
+      ]
+    },
+    "female": {
+      "face": [
+        [
+          "walk_row0_frame0.png",
+          "walk_row0_frame1.png",
+          "walk_row0_frame2.png",
+          "walk_row0_frame3.png",
+          "walk_row0_frame4.png",
+          "walk_row0_frame5.png",
+          "walk_row0_frame6.png",
+          "walk_row0_frame7.png"
+        ],
+        [
+          "walk_row1_frame0.png",
+          "walk_row1_frame1.png",
+          "walk_row1_frame2.png",
+          "walk_row1_frame3.png",
+          "walk_row1_frame4.png",
+          "walk_row1_frame5.png",
+          "walk_row1_frame6.png",
+          "walk_row1_frame7.png"
+        ],
+        [
+          "walk_row2_frame0.png",
+          "walk_row2_frame1.png",
+          "walk_row2_frame2.png",
+          "walk_row2_frame3.png",
+          "walk_row2_frame4.png",
+          "walk_row2_frame5.png",
+          "walk_row2_frame6.png",
+          "walk_row2_frame7.png"
+        ],
+        [
+          "walk_row3_frame0.png",
+          "walk_row3_frame1.png",
+          "walk_row3_frame2.png",
+          "walk_row3_frame3.png",
+          "walk_row3_frame4.png",
+          "walk_row3_frame5.png",
+          "walk_row3_frame6.png",
+          "walk_row3_frame7.png"
+        ]
+      ],
+      "ear": [
+        [
+          "walk_row0_frame0.png",
+          "walk_row0_frame1.png",
+          "walk_row0_frame2.png",
+          "walk_row0_frame3.png",
+          "walk_row0_frame4.png",
+          "walk_row0_frame5.png",
+          "walk_row0_frame6.png",
+          "walk_row0_frame7.png"
+        ],
+        [
+          "walk_row1_frame0.png",
+          "walk_row1_frame1.png",
+          "walk_row1_frame2.png",
+          "walk_row1_frame3.png",
+          "walk_row1_frame4.png",
+          "walk_row1_frame5.png",
+          "walk_row1_frame6.png",
+          "walk_row1_frame7.png"
+        ],
+        [
+          "walk_row2_frame0.png",
+          "walk_row2_frame1.png",
+          "walk_row2_frame2.png",
+          "walk_row2_frame3.png",
+          "walk_row2_frame4.png",
+          "walk_row2_frame5.png",
+          "walk_row2_frame6.png",
+          "walk_row2_frame7.png"
+        ],
+        [
+          "walk_row3_frame0.png",
+          "walk_row3_frame1.png",
+          "walk_row3_frame2.png",
+          "walk_row3_frame3.png",
+          "walk_row3_frame4.png",
+          "walk_row3_frame5.png",
+          "walk_row3_frame6.png",
+          "walk_row3_frame7.png"
+        ]
+      ]
+    }
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "schema": "assetsstudio_asset_status_v1",
+  "updated": "2026-08-09",
+  "source": {
+    "repository": "git@github.com:fuyiweiwow/AssetsLab.git",
+    "branch": "clothes_test",
+    "commit": "1745bcf"
+  },
+  "milestones": [
+    {
+      "id": "body_actor_v1_walk",
+      "category": "body",
+      "status": "accepted",
+      "path": "milestones/body/chibi_actor_mixamo_walk_v1.blend"
+    },
+    {
+      "id": "hair_component_pool_v1",
+      "category": "hair",
+      "status": "source_contract",
+      "path": "milestones/hair/hair_random_pool_v1.json"
+    },
+    {
+      "id": "face_actor_v1",
+      "category": "face",
+      "status": "technical_baseline",
+      "path": "milestones/face/runtime_chibi_eyes_ears_walk_v1/runtime_manifest.json"
+    },
+    {
+      "id": "top_actor_native_tshirt_v5",
+      "category": "tops",
+      "status": "provisional",
+      "path": "milestones/tops/actor_native_tshirt_v5/manifest.json",
+      "known_issue": "pose-dependent right shoulder/sleeve protrusion"
+    },
+    {
+      "id": "pants_native_control_v0",
+      "category": "pants",
+      "status": "provisional",
+      "path": "milestones/pants/native_control_v0/manifest.json",
+      "known_issue": "strict geometry report is not a production-quality visual verdict"
+    },
+    {
+      "id": "shoes_cartoon_sneaker_v10",
+      "category": "shoes",
+      "status": "accepted",
+      "path": "milestones/shoes/cartoon_sneaker_v10/manifest.json"
+    }
+  ]
+}
+

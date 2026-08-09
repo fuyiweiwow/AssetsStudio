@@ -1,0 +1,229 @@
+{
+  "schema": "assetslab_actor_native_single_body_component_tshirt_v1",
+  "actor_blend": "milestones\\body\\chibi_actor_mixamo_walk_v1.blend",
+  "source_garment": null,
+  "construction": "single mesh extracted from Actor torso plus upper-arm surfaces; original Actor armature weights",
+  "parameters": {
+    "actor_blend": "milestones\\body\\chibi_actor_mixamo_walk_v1.blend",
+    "output": "milestones\\tops\\actor_native_tshirt_v5",
+    "bottom_z": 0.7,
+    "top_z": 1.48,
+    "torso_half_width": 0.5,
+    "sleeve_fraction": 0.8,
+    "clearance": 0.012,
+    "shell_thickness": 0.008,
+    "resolution": 256
+  },
+  "selected_face_counts": {
+    "torso_faces": 1733,
+    "left_sleeve_faces": 142,
+    "right_sleeve_faces": 153,
+    "hem_vertices_flattened": 72,
+    "cuff_vertices_flattened": 40,
+    "tiny_islands_removed": 2
+  },
+  "final_face_count": 2026,
+  "frame_count_per_direction": 8,
+  "directions": [
+    "front",
+    "right",
+    "back",
+    "left"
+  ],
+  "status": "review_required",
+  "candidate_blend": "milestones\\tops\\actor_native_tshirt_v5\\actor_native_tshirt_body_component_v5_upperarm_coverage.blend",
+  "frames": [
+    {
+      "direction": "front",
+      "sample_index": 0,
+      "source_frame": 1,
+      "path": "front_00.png"
+    },
+    {
+      "direction": "front",
+      "sample_index": 1,
+      "source_frame": 11,
+      "path": "front_01.png"
+    },
+    {
+      "direction": "front",
+      "sample_index": 2,
+      "source_frame": 21,
+      "path": "front_02.png"
+    },
+    {
+      "direction": "front",
+      "sample_index": 3,
+      "source_frame": 31,
+      "path": "front_03.png"
+    },
+    {
+      "direction": "front",
+      "sample_index": 4,
+      "source_frame": 41,
+      "path": "front_04.png"
+    },
+    {
+      "direction": "front",
+      "sample_index": 5,
+      "source_frame": 51,
+      "path": "front_05.png"
+    },
+    {
+      "direction": "front",
+      "sample_index": 6,
+      "source_frame": 61,
+      "path": "front_06.png"
+    },
+    {
+      "direction": "front",
+      "sample_index": 7,
+      "source_frame": 71,
+      "path": "front_07.png"
+    },
+    {
+      "direction": "right",
+      "sample_index": 0,
+      "source_frame": 1,
+      "path": "right_00.png"
+    },
+    {
+      "direction": "right",
+      "sample_index": 1,
+      "source_frame": 11,
+      "path": "right_01.png"
+    },
+    {
+      "direction": "right",
+      "sample_index": 2,
+      "source_frame": 21,
+      "path": "right_02.png"
+    },
+    {
+      "direction": "right",
+      "sample_index": 3,
+      "source_frame": 31,
+      "path": "right_03.png"
+    },
+    {
+      "direction": "right",
+      "sample_index": 4,
+      "source_frame": 41,
+      "path": "right_04.png"
+    },
+    {
+      "direction": "right",
+      "sample_index": 5,
+      "source_frame": 51,
+      "path": "right_05.png"
+    },
+    {
+      "direction": "right",
+      "sample_index": 6,
+      "source_frame": 61,
+      "path": "right_06.png"
+    },
+    {
+      "direction": "right",
+      "sample_index": 7,
+      "source_frame": 71,
+      "path": "right_07.png"
+    },
+    {
+      "direction": "back",
+      "sample_index": 0,
+      "source_frame": 1,
+      "path": "back_00.png"
+    },
+    {
+      "direction": "back",
+      "sample_index": 1,
+      "source_frame": 11,
+      "path": "back_01.png"
+    },
+    {
+      "direction": "back",
+      "sample_index": 2,
+      "source_frame": 21,
+      "path": "back_02.png"
+    },
+    {
+      "direction": "back",
+      "sample_index": 3,
+      "source_frame": 31,
+      "path": "back_03.png"
+    },
+    {
+      "direction": "back",
+      "sample_index": 4,
+      "source_frame": 41,
+      "path": "back_04.png"
+    },
+    {
+      "direction": "back",
+      "sample_index": 5,
+      "source_frame": 51,
+      "path": "back_05.png"
+    },
+    {
+      "direction": "back",
+      "sample_index": 6,
+      "source_frame": 61,
+      "path": "back_06.png"
+    },
+    {
+      "direction": "back",
+      "sample_index": 7,
+      "source_frame": 71,
+      "path": "back_07.png"
+    },
+    {
+      "direction": "left",
+      "sample_index": 0,
+      "source_frame": 1,
+      "path": "left_00.png"
+    },
+    {
+      "direction": "left",
+      "sample_index": 1,
+      "source_frame": 11,
+      "path": "left_01.png"
+    },
+    {
+      "direction": "left",
+      "sample_index": 2,
+      "source_frame": 21,
+      "path": "left_02.png"
+    },
+    {
+      "direction": "left",
+      "sample_index": 3,
+      "source_frame": 31,
+      "path": "left_03.png"
+    },
+    {
+      "direction": "left",
+      "sample_index": 4,
+      "source_frame": 41,
+      "path": "left_04.png"
+    },
+    {
+      "direction": "left",
+      "sample_index": 5,
+      "source_frame": 51,
+      "path": "left_05.png"
+    },
+    {
+      "direction": "left",
+      "sample_index": 6,
+      "source_frame": 61,
+      "path": "left_06.png"
+    },
+    {
+      "direction": "left",
+      "sample_index": 7,
+      "source_frame": 71,
+      "path": "left_07.png"
+    }
+  ]
+}

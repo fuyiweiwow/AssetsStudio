@@ -1,0 +1,95 @@
+{
+  "schema": "assetslab_hair_gallery_catalog_v1",
+  "galleries": [
+    {
+      "id": "female_base",
+      "gender": "female",
+      "title": "女性（基础）",
+      "path": "chloe_gallery/base_gallery.html",
+      "preview": "chloe_gallery/seed_01_baseline/pixel/front_pixel.png",
+      "category": "女性 / 基础",
+      "status": "基础",
+      "description": "女性基础发型基准，用于确认演员头部和发型层的贴合关系。"
+    },
+    {
+      "id": "female_recommended",
+      "gender": "female",
+      "title": "女性（推荐）",
+      "path": "chloe_gallery/gallery.html",
+      "preview": "chloe_gallery/seed_04_bangs04/pixel/front_pixel.png",
+      "category": "女性 / 推荐",
+      "status": "推荐",
+      "description": "女性 Chloe 发型推荐池，包含直刘海、侧分刘海和侧发变化；与 female_more 源核验后确认几何重复。"
+    },
+    {
+      "id": "female_experimental",
+      "gender": "female",
+      "title": "女性（实验）",
+      "path": "female_experimental_gallery/experimental_gallery.html",
+      "preview": "female_experimental_gallery/bun_back01_back03/pixel/front_pixel.png",
+      "category": "女性 / 实验",
+      "status": "实验",
+      "description": "女性后发替换与双丸子头实验，仍需处理头顶露白，不进入正式随机池。"
+    },
+    {
+      "id": "female_hair_audit",
+      "gender": "female",
+      "title": "女性（全后发实验）",
+      "path": "female_experimental_gallery/all_back_gallery.html",
+      "preview": "female_experimental_gallery/full_back_03/pixel/front_pixel.png",
+      "category": "女性 / 实验",
+      "status": "实验",
+      "description": "Chloe 全部 9 个后发组件的替换审查页，包含双丸子头候选。"
+    },
+    {
+      "id": "male_base",
+      "gender": "male",
+      "title": "男性（基础）",
+      "path": "male_gallery/gallery.html",
+      "preview": "male_gallery/seed_back01/pixel/front_pixel.png",
+      "category": "男性 / 基础",
+      "status": "基础",
+      "description": "男性完整后发基础池，当前保留 5 个有效候选。"
+    },
+    {
+      "id": "male_recommended",
+      "gender": "male",
+      "title": "男性（刘海推荐）",
+      "path": "male_gallery/assembly_gallery.html",
+      "preview": "male_gallery/assembly_seed_02/pixel/front_pixel.png",
+      "category": "男性 / 推荐",
+      "status": "推荐",
+      "description": "男性独立刘海、侧发和后发组装结果，共 3 个候选；仍需人工确认接缝、耳朵遮挡和动画表现。"
+    },
+    {
+      "id": "male_base_components",
+      "gender": "male",
+      "title": "男性（base 组件装配实验）",
+      "path": "male_base_gallery/gallery.html",
+      "preview": "male_base_gallery/base_seed_02/pixel/front_pixel.png",
+      "category": "男性 / 组件装配",
+      "status": "实验",
+      "description": "强制包含 Colin_hair_base_01/02 后的组件装配审查；当前用于确认 base 覆盖范围和头皮接缝。"
+    },
+    {
+      "id": "male_full",
+      "gender": "male",
+      "title": "男性（完整池）",
+      "path": "male_gallery/full_gallery.html",
+      "preview": "male_gallery/assembly_seed_02/pixel/front_pixel.png",
+      "category": "男性 / 完整池",
+      "status": "推荐",
+      "description": "男性基础后发 5 个候选与刘海组装 3 个候选的合并核验页。"
+    },
+    {
+      "id": "male_bangs_audit",
+      "gender": "male",
+      "title": "男性（全刘海实验）",
+      "path": "male_gallery/all_bangs_gallery.html",
+      "preview": "male_gallery/full_bangs_08/pixel/front_pixel.png",
+      "category": "男性 / 实验",
+      "status": "实验",
+      "description": "男性全部 8 个刘海组件的统一贴合审查页，尚未全部进入推荐池。"
+    }
+  ]
+}

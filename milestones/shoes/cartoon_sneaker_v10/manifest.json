@@ -1,0 +1,311 @@
+{
+  "schema": "assetslab_actor_cartoon_sneaker_fbx_v1",
+  "source_reference_fbx": "references\\shoes\\cartoon_sneaker\\source\\Shoessneakers.fbx",
+  "source_parts": [
+    "shoes.baseright",
+    "shoes.009",
+    "shoes.010",
+    "shoes.023",
+    "shoes.001",
+    "shoes.005",
+    "shoes",
+    "shoes.021"
+  ],
+  "source_pair_parts": {
+    "right": [
+      "shoes.baseright",
+      "shoes.009",
+      "shoes.010",
+      "shoes.023",
+      "shoes.001",
+      "shoes.005",
+      "shoes",
+      "shoes.021"
+    ],
+    "left": [
+      "shoes.baseleft",
+      "shoes.016",
+      "shoes.017",
+      "shoes.022",
+      "shoes.019",
+      "shoes.020",
+      "shoes.028",
+      "shoes.029"
+    ]
+  },
+  "construction": "FBX cartoon sneaker parts transformed to Actor foot envelope and bound to Foot/ToeBase",
+  "fit_parameters": {
+    "toe_extra": 0.16,
+    "heel_extra": 0.06,
+    "extra_width": 0.028,
+    "extra_height": 0.025,
+    "radial_width_scale": 1.8,
+    "radial_height_scale": 1.8,
+    "toe_radial_width_scale": 1.0,
+    "toe_radial_height_scale": 1.0,
+    "toe_zone_end": 0.0,
+    "weight_mode": "rigid_foot_toe"
+  },
+  "reference_bounds": {
+    "min": [
+      -0.6926448345184326,
+      -2.4591197967529297,
+      0.5099166035652161
+    ],
+    "max": [
+      2.1891462802886963,
+      -0.44846558570861816,
+      2.6898138523101807
+    ]
+  },
+  "actor_targets": {
+    "L": {
+      "center_x": 0.20442845672369003,
+      "center_y": -0.04561914056539536,
+      "bottom_z": -0.006000152307706003,
+      "length": 0.3558474493026733,
+      "width": 0.3046424299478531,
+      "height": 0.1951414271914189,
+      "foot_width": 0.16924579441547394,
+      "foot_height": 0.1084119039952327,
+      "min_x": 0.11980555951595306,
+      "max_x": 0.289051353931427,
+      "min_y": -0.06354286521673203,
+      "max_y": 0.07230458408594131,
+      "min_z": -1.5230770600282995e-07,
+      "max_z": 0.1084117516875267
+    },
+    "R": {
+      "center_x": -0.20442839339375496,
+      "center_y": -0.04561905860900879,
+      "bottom_z": -0.005999838853284473,
+      "length": 0.35584731519222257,
+      "width": 0.30464212149381636,
+      "height": 0.19514122507167714,
+      "foot_width": 0.1692456230521202,
+      "foot_height": 0.10841179170648729,
+      "min_x": -0.28905120491981506,
+      "max_x": -0.11980558186769485,
+      "min_y": -0.06354271620512009,
+      "max_y": 0.07230459898710251,
+      "min_z": 1.6114671552713844e-07,
+      "max_z": 0.10841195285320282
+    }
+  },
+  "created_objects": [
+    "ActorCartoonSneaker_L_shoes.baseright",
+    "ActorCartoonSneaker_L_shoes.009",
+    "ActorCartoonSneaker_L_shoes.010",
+    "ActorCartoonSneaker_L_shoes.023",
+    "ActorCartoonSneaker_L_shoes.001",
+    "ActorCartoonSneaker_L_shoes.005",
+    "ActorCartoonSneaker_L_shoes",
+    "ActorCartoonSneaker_L_shoes.021",
+    "ActorCartoonSneaker_R_shoes.baseright",
+    "ActorCartoonSneaker_R_shoes.009",
+    "ActorCartoonSneaker_R_shoes.010",
+    "ActorCartoonSneaker_R_shoes.023",
+    "ActorCartoonSneaker_R_shoes.001",
+    "ActorCartoonSneaker_R_shoes.005",
+    "ActorCartoonSneaker_R_shoes",
+    "ActorCartoonSneaker_R_shoes.021"
+  ],
+  "rig_status": "foot_and_toebase_armature_modifiers",
+  "texture_status": "embedded_fbx_materials_uv_present_no_external_texture_pack",
+  "frames": [
+    {
+      "direction": "front",
+      "sample_index": 0,
+      "source_frame": 1,
+      "path": "front_00.png"
+    },
+    {
+      "direction": "front",
+      "sample_index": 1,
+      "source_frame": 11,
+      "path": "front_01.png"
+    },
+    {
+      "direction": "front",
+      "sample_index": 2,
+      "source_frame": 21,
+      "path": "front_02.png"
+    },
+    {
+      "direction": "front",
+      "sample_index": 3,
+      "source_frame": 31,
+      "path": "front_03.png"
+    },
+    {
+      "direction": "front",
+      "sample_index": 4,
+      "source_frame": 41,
+      "path": "front_04.png"
+    },
+    {
+      "direction": "front",
+      "sample_index": 5,
+      "source_frame": 51,
+      "path": "front_05.png"
+    },
+    {
+      "direction": "front",
+      "sample_index": 6,
+      "source_frame": 61,
+      "path": "front_06.png"
+    },
+    {
+      "direction": "front",
+      "sample_index": 7,
+      "source_frame": 71,
+      "path": "front_07.png"
+    },
+    {
+      "direction": "right",
+      "sample_index": 0,
+      "source_frame": 1,
+      "path": "right_00.png"
+    },
+    {
+      "direction": "right",
+      "sample_index": 1,
+      "source_frame": 11,
+      "path": "right_01.png"
+    },
+    {
+      "direction": "right",
+      "sample_index": 2,
+      "source_frame": 21,
+      "path": "right_02.png"
+    },
+    {
+      "direction": "right",
+      "sample_index": 3,
+      "source_frame": 31,
+      "path": "right_03.png"
+    },
+    {
+      "direction": "right",
+      "sample_index": 4,
+      "source_frame": 41,
+      "path": "right_04.png"
+    },
+    {
+      "direction": "right",
+      "sample_index": 5,
+      "source_frame": 51,
+      "path": "right_05.png"
+    },
+    {
+      "direction": "right",
+      "sample_index": 6,
+      "source_frame": 61,
+      "path": "right_06.png"
+    },
+    {
+      "direction": "right",
+      "sample_index": 7,
+      "source_frame": 71,
+      "path": "right_07.png"
+    },
+    {
+      "direction": "back",
+      "sample_index": 0,
+      "source_frame": 1,
+      "path": "back_00.png"
+    },
+    {
+      "direction": "back",
+      "sample_index": 1,
+      "source_frame": 11,
+      "path": "back_01.png"
+    },
+    {
+      "direction": "back",
+      "sample_index": 2,
+      "source_frame": 21,
+      "path": "back_02.png"
+    },
+    {
+      "direction": "back",
+      "sample_index": 3,
+      "source_frame": 31,
+      "path": "back_03.png"
+    },
+    {
+      "direction": "back",
+      "sample_index": 4,
+      "source_frame": 41,
+      "path": "back_04.png"
+    },
+    {
+      "direction": "back",
+      "sample_index": 5,
+      "source_frame": 51,
+      "path": "back_05.png"
+    },
+    {
+      "direction": "back",
+      "sample_index": 6,
+      "source_frame": 61,
+      "path": "back_06.png"
+    },
+    {
+      "direction": "back",
+      "sample_index": 7,
+      "source_frame": 71,
+      "path": "back_07.png"
+    },
+    {
+      "direction": "left",
+      "sample_index": 0,
+      "source_frame": 1,
+      "path": "left_00.png"
+    },
+    {
+      "direction": "left",
+      "sample_index": 1,
+      "source_frame": 11,
+      "path": "left_01.png"
+    },
+    {
+      "direction": "left",
+      "sample_index": 2,
+      "source_frame": 21,
+      "path": "left_02.png"
+    },
+    {
+      "direction": "left",
+      "sample_index": 3,
+      "source_frame": 31,
+      "path": "left_03.png"
+    },
+    {
+      "direction": "left",
+      "sample_index": 4,
+      "source_frame": 41,
+      "path": "left_04.png"
+    },
+    {
+      "direction": "left",
+      "sample_index": 5,
+      "source_frame": 51,
+      "path": "left_05.png"
+    },
+    {
+      "direction": "left",
+      "sample_index": 6,
+      "source_frame": 61,
+      "path": "left_06.png"
+    },
+    {
+      "direction": "left",
+      "sample_index": 7,
+      "source_frame": 71,
+      "path": "left_07.png"
+    }
+  ],
+  "status": "review_required",
+  "candidate_blend": "milestones\\shoes\\cartoon_sneaker_v10\\actor_cartoon_sneaker_fbx_v10_length_expanded.blend"
+}

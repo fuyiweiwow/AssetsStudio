@@ -1,0 +1,40 @@
+{
+  "schema": "assetslab_cartoon_sneaker_reference_manifest_v1",
+  "source_archive": "E:/Env/Assets/cartoon-sneakers-stylized-3d-shoes.zip",
+  "source_file": "source/Shoessneakers.fbx",
+  "primary_view": "four_view_rendered_from_imported_fbx",
+  "expected_primary_parts": {
+    "count": 8,
+    "labels": ["shoe_body", "sole", "sole_trim", "tongue", "laces", "pull_tab", "bottom_sole"]
+  },
+  "structural_parts": [
+    "shoes.baseright",
+    "shoes.009",
+    "shoes.010",
+    "shoes.023",
+    "shoes.001",
+    "shoes.005",
+    "shoes",
+    "shoes.021"
+  ],
+  "pair_mirror_parts": {
+    "right": ["shoes.baseright", "shoes.009", "shoes.010", "shoes.023", "shoes.001", "shoes.005", "shoes", "shoes.021"],
+    "left": ["shoes.baseleft", "shoes.016", "shoes.017", "shoes.022", "shoes.019", "shoes.020", "shoes.028", "shoes.029"]
+  },
+  "texture_regions": [],
+  "material_source": "FBX embedded materials; no external texture files supplied",
+  "uv_status": "UVMap present on imported mesh objects",
+  "armature_status": "none",
+  "actor_target_bones": ["CC_Base_L_Foot", "CC_Base_R_Foot", "CC_Base_L_ToeBase", "CC_Base_R_ToeBase"],
+  "fit_assessment": {
+    "actor_foot_profile": "short low-volume foot with limited visible forefoot",
+    "reference_profile": "cartoon sneaker with compact sole, rounded toe, and moderate ankle collar",
+    "initial_assessment": "more suitable than the previous broad high-top shoe; validate lace visibility and ankle opening"
+  },
+  "validation_thresholds": {
+    "front_mask_iou_min": 0.85,
+    "part_count_exact": true,
+    "manual_review_required": true
+  },
+  "status": "reference_inspected_and_bound_as_review_candidate"
+}

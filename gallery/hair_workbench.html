@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AssetsStudio Hair Design Review</title>
+  <style>
+    :root { color-scheme: dark; font-family: ui-rounded, system-ui, sans-serif; background: #17151d; color: #f7eee8; }
+    body { margin: 0; padding: 16px; background: radial-gradient(circle at top, #493329, #17151d 62%); }
+    main { max-width: 1080px; margin: auto; }
+    h1 { margin: 0 0 5px; font-size: clamp(1.45rem, 6vw, 2.35rem); }
+    h2 { margin: 0 0 8px; font-size: 1.05rem; }
+    .lead, .hint, .meta, footer { color: #d5b9ad; line-height: 1.45; font-size: .84rem; }
+    .lead { margin: 0 0 16px; }
+    .bar, .panel, .saved { border: 1px solid #765247; border-radius: 14px; background: #2a2024ee; box-shadow: 0 8px 24px #0006; }
+    .bar { display: flex; flex-wrap: wrap; gap: 8px; padding: 10px; margin-bottom: 12px; }
+    .workspace { display: grid; grid-template-columns: minmax(300px, 350px) minmax(0, 1fr); gap: 12px; align-items: start; }
+    .left-column, .right-column { min-width: 0; }
+    .right-column { max-width: 720px; }
+    button, select { border: 1px solid #765247; border-radius: 9px; padding: 7px 10px; background: #201a21; color: #f7eee8; font: inherit; }
+    button { cursor: pointer; }
+    button.active, button.primary { background: #b86649; border-color: #e59a73; color: #fff4ec; }
+    button:disabled, select:disabled { opacity: .45; cursor: default; }
+    .controls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    .controls label { color: #d5b9ad; font-size: .82rem; }
+    .notice { flex: 1 1 100%; min-height: 1.2em; color: #f0c2a5; font-size: .8rem; }
+    .panel { padding: 13px; margin-bottom: 12px; }
+    .slot-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 9px; }
+    .slot { padding: 10px; border: 1px solid #5d4140; border-radius: 10px; }
+    .slot.required { border-color: #d1805e; }
+    .slot-header { display: flex; justify-content: space-between; gap: 8px; align-items: center; margin-bottom: 7px; }
+    .slot-title { font-weight: 600; }
+    .required-mark { color: #f0a27c; font-size: .72rem; }
+    .slot-modes { display: flex; gap: 5px; margin-bottom: 7px; }
+    .slot-modes button { padding: 4px 7px; font-size: .72rem; }
+    .slot select { width: 100%; box-sizing: border-box; }
+    .preview { display: grid; grid-template-columns: minmax(0, 1fr) 180px; gap: 10px; }
+    .views { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 5px; min-width: 0; overflow: hidden; }
+    figure { min-width: 0; margin: 0; color: #d5b9ad; text-align: center; font-size: .72rem; overflow: hidden; }
+    figure img { display: block; width: 100%; max-width: 100%; max-height: 185px; aspect-ratio: 1; object-fit: contain; image-rendering: pixelated; background: #151219; border-radius: 7px; }
+    .details { padding: 10px; border-left: 1px solid #5d4140; }
+    .details p { margin: 6px 0; }
+    .object-list { color: #f0c2a5; word-break: break-word; }
+    #preview-signature { overflow-wrap: anywhere; word-break: break-word; line-height: 1.35; }
+    .status { display: inline-block; padding: 3px 8px; border-radius: 99px; background: #4c6072; font-size: .72rem; }
+    .status.pending { background: #75613b; }
+    .links { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+    a { color: #ffc7a3; }
+    .saved { padding: 13px; margin-top: 12px; }
+    .review-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+    .review-status { color: #f0c2a5; font-size: .8rem; min-height: 1.2em; }
+    .saved-list { display: grid; gap: 7px; }
+    .saved-item { display: flex; flex-wrap: wrap; gap: 7px; align-items: center; padding: 8px; border-radius: 8px; background: #201a21; font-size: .78rem; }
+    .saved-item .objects { flex: 1 1 260px; color: #d5b9ad; word-break: break-word; }
+    .hidden { display: none !important; }
+    footer { margin-top: 14px; }
+    @media (max-width: 820px) { .workspace { grid-template-columns: minmax(0, 1fr); } .right-column { max-width: none; } .preview { grid-template-columns: minmax(0, 1fr); } .details { border-left: 0; border-top: 1px solid #5d4140; } .views { grid-template-columns: repeat(2, minmax(0, 1fr)); } figure img { width: min(100%, 160px); max-height: 160px; margin-inline: auto; } }
+    @media (max-width: 480px) { body { padding: 10px; } .views { gap: 4px; } figure img { width: min(100%, 132px); max-height: 132px; } }
+  </style>
+</head>
+<body><main>
+  <h1>AssetsStudio 发型设计与随机池评审</h1>
+  <p class="lead">每个部件都可以从随机池随机或从随机池手选。base 必须存在；保存的设计不会自动加入随机池。当前只展示已经由 Blender 生成的组合预览。</p>
+  <div class="workspace">
+    <div class="left-column">
+      <section class="bar">
+        <div class="controls">
+          <label>性别 <button type="button" class="gender active" data-gender="female">女性</button><button type="button" class="gender" data-gender="male">男性</button></label>
+          <button type="button" class="toggle active" id="random-toggle" aria-pressed="true">随机未锁定：开</button>
+          <button type="button" class="primary" id="generate">生成组合预览</button>
+          <button type="button" id="save">保存设计</button>
+          <button type="button" id="export">导出设计 JSON</button>
+          <a href="../index.html">返回 Gallery</a>
+          <span class="notice" id="action-status">等待操作</span>
+        </div>
+      </section>
+      <section class="panel">
+        <h2>组件槽位</h2>
+        <p class="hint">随机池当前包含 <span id="pool-count">0</span> 个组件；“手选”仍然只允许选择随机池成员，预定义设计不会进入随机池。</p>
+        <div class="slot-grid" id="slots"></div>
+      </section>
+    </div>
+    <div class="right-column">
+      <section class="panel preview">
+        <div>
+          <h2 id="preview-title">等待组合预览</h2>
+          <div class="views">
+            <figure><img id="front" alt="正面预览"><figcaption>正面</figcaption></figure>
+            <figure><img id="right" alt="右侧预览"><figcaption>右侧</figcaption></figure>
+            <figure><img id="back" alt="背面预览"><figcaption>背面</figcaption></figure>
+            <figure><img id="left" alt="左侧预览"><figcaption>左侧</figcaption></figure>
+          </div>
+        </div>
+        <aside class="details">
+          <span class="status pending" id="preview-status">未生成</span>
+          <p id="preview-gender">性别：—</p>
+          <p class="object-list" id="preview-objects">组件：—</p>
+          <p class="meta" id="preview-signature">组合签名：—</p>
+          <div class="links"><a id="sheet-link" class="hidden" target="_blank" rel="noreferrer">像素四视图</a><a id="gallery-link" class="hidden" target="_blank" rel="noreferrer">对应 Gallery</a></div>
+          <p class="hint" id="preview-note">选择组件后点击“生成组合预览”。</p>
+        </aside>
+      </section>
+      <section class="panel">
+        <h2>种子评审</h2>
+        <p class="hint">当前组合可先保存为本机种子候选。加入候选不会立即修改正式随机池，销毁只删除本机候选记录。</p>
+        <div class="review-actions">
+          <button type="button" class="primary" id="accept-pool">加入随机池候选</button>
+          <button type="button" id="discard-candidate">销毁候选记录</button>
+        </div>
+        <p class="review-status" id="review-status"></p>
+        <div class="saved-list" id="review-list"><p class="hint">暂无本机随机池候选。</p></div>
+      </section>
+      <section class="saved">
+        <h2>已保存设计（不属于随机池）</h2>
+        <div class="saved-list" id="saved-list"><p class="hint">尚未保存设计。</p></div>
+      </section>
+    </div>
+  </div>
+  <footer>数据来源：hair_random_pool_v1.json 与候选 manifest；设计记录保存在当前浏览器 localStorage。</footer>
+</main>
+<script>
+const DATA = {"candidates":[],"pool":[{"component_id":"female_base_cap:Chloe_hair_back_01","group_id":"female_base_cap","gender":"female","role":"base_cap","object":"Chloe_hair_back_01","pool":true,"preset":false},{"component_id":"female_front_bangs:Chloe_hair_bangs_01","group_id":"female_front_bangs","gender":"female","role":"front_bangs","object":"Chloe_hair_bangs_01","pool":true,"preset":false},{"component_id":"female_front_bangs:Chloe_hair_bangs_02","group_id":"female_front_bangs","gender":"female","role":"front_bangs","object":"Chloe_hair_bangs_02","pool":true,"preset":false},{"component_id":"female_front_bangs:Chloe_hair_bangs_03","group_id":"female_front_bangs","gender":"female","role":"front_bangs","object":"Chloe_hair_bangs_03","pool":true,"preset":false},{"component_id":"female_front_bangs:Chloe_hair_bangs_04","group_id":"female_front_bangs","gender":"female","role":"front_bangs","object":"Chloe_hair_bangs_04","pool":true,"preset":false},{"component_id":"female_front_bangs:Chloe_hair_bangs_05","group_id":"female_front_bangs","gender":"female","role":"front_bangs","object":"Chloe_hair_bangs_05","pool":true,"preset":false},{"component_id":"female_side:Chloe_hair_side_01","group_id":"female_side","gender":"female","role":"side_coverage","object":"Chloe_hair_side_01","pool":true,"preset":false},{"component_id":"female_side:Chloe_hair_side_02","group_id":"female_side","gender":"female","role":"side_coverage","object":"Chloe_hair_side_02","pool":true,"preset":false},{"component_id":"female_side:Chloe_hair_side_03","group_id":"female_side","gender":"female","role":"side_coverage","object":"Chloe_hair_side_03","pool":true,"preset":false},{"component_id":"female_side:Chloe_hair_side_04","group_id":"female_side","gender":"female","role":"side_coverage","object":"Chloe_hair_side_04","pool":true,"preset":false},{"component_id":"female_side:Chloe_hair_side_05","group_id":"female_side","gender":"female","role":"side_coverage","object":"Chloe_hair_side_05","pool":true,"preset":false},{"component_id":"male_base_cap:Colin_hair_base_01","group_id":"male_base_cap","gender":"male","role":"base_cap","object":"Colin_hair_base_01","pool":true,"preset":false},{"component_id":"male_base_cap:Colin_hair_base_02","group_id":"male_base_cap","gender":"male","role":"base_cap","object":"Colin_hair_base_02","pool":true,"preset":false},{"component_id":"male_side:Colin_hair_side_01","group_id":"male_side","gender":"male","role":"side_coverage","object":"Colin_hair_side_01","pool":true,"preset":false},{"component_id":"male_side:Colin_hair_side_02","group_id":"male_side","gender":"male","role":"side_coverage","object":"Colin_hair_side_02","pool":true,"preset":false},{"component_id":"male_back_section:Colin_hair_back_01","group_id":"male_back_section","gender":"male","role":"back_section","object":"Colin_hair_back_01","pool":true,"preset":false},{"component_id":"male_back_section:Colin_hair_back_02","group_id":"male_back_section","gender":"male","role":"back_section","object":"Colin_hair_back_02","pool":true,"preset":false},{"component_id":"male_back_section:Colin_hair_back_03","group_id":"male_back_section","gender":"male","role":"back_section","object":"Colin_hair_back_03","pool":true,"preset":false},{"component_id":"male_back_section:Colin_hair_back_04","group_id":"male_back_section","gender":"male","role":"back_section","object":"Colin_hair_back_04","pool":true,"preset":false},{"component_id":"male_back_section:Colin_hair_back_05","group_id":"male_back_section","gender":"male","role":"back_section","object":"Colin_hair_back_05","pool":true,"preset":false}]};
+const STORAGE_KEY = 'assetslab_hair_design_reviews_v1';
+const REVIEW_STORAGE_KEY = 'assetslab_hair_seed_pool_candidates_v1';
+const SLOT_DEFS = [
+  { role: 'base_cap', label: 'Base', required: true },
+  { role: 'front_bangs', label: '前发 / 刘海', required: false },
+  { role: 'side_coverage', label: '侧发', required: false },
+  { role: 'back_section', label: '后脑发段', required: false },
+  { role: 'back_attachment', label: '后部附件', required: false }
+];
+let gender = 'female';
+let slotState = {};
+let current = null;
+let randomUnlockedEnabled = true;
+
+const byId = (id) => document.getElementById(id);
+const objectLabel = (name) => name.replace(/^Chloe_hair_|^Colin_hair_/, '');
+const poolFor = (role) => DATA.pool.filter((item) => item.gender === gender && item.role === role && item.pool && !item.preset);
+const objectKey = (objects) => [...objects].sort().join('|');
+
+function initializeSlots() {
+  slotState = {};
+  for (const slot of SLOT_DEFS) {
+    const options = poolFor(slot.role);
+    slotState[slot.role] = { selection_mode: 'random_pool', component_id: options[0]?.component_id || '', locked: false };
+  }
+}
+
+function componentFor(role) {
+  const state = slotState[role];
+  return DATA.pool.find((item) => item.component_id === state?.component_id) || null;
+}
+
+function selectedObjects() {
+  return SLOT_DEFS.map((slot) => componentFor(slot.role)?.object).filter(Boolean);
+}
+
+function selectionKey() {
+  return SLOT_DEFS.map((slot) => `${slot.role}:${slotState[slot.role]?.component_id || 'none'}`).join('|');
+}
+
+function findCandidate(objects) {
+  const key = objectKey(objects);
+  return DATA.candidates.find((item) => item.gender === gender && objectKey(item.objects) === key) || null;
+}
+
+function randomOption(options, optional) {
+  if (!options.length || (optional && Math.random() < 0.25)) return null;
+  return options[Math.floor(Math.random() * options.length)];
+}
+
+function renderSlots() {
+  byId('pool-count').textContent = DATA.pool.filter((item) => item.gender === gender && item.pool && !item.preset).length;
+  byId('slots').innerHTML = SLOT_DEFS.map((slot) => {
+    const state = slotState[slot.role];
+    const options = poolFor(slot.role);
+    const optionsHtml = (slot.required ? options : [{ component_id: '', object: '' }].concat(options)).map((item) => {
+      const selected = item.component_id === state.component_id ? ' selected' : '';
+      const label = item.object ? objectLabel(item.object) : '不使用';
+      return `<option value="${item.component_id}"${selected}>${label}</option>`;
+    }).join('');
+    const disabled = options.length ? '' : ' disabled';
+    const selectDisabled = state.selection_mode === 'random_pool' ? ' disabled' : '';
+    return `<div class="slot${slot.required ? ' required' : ''}">
+      <div class="slot-header"><span class="slot-title">${slot.label}</span>${slot.required ? '<span class="required-mark">必选</span>' : ''}</div>
+      <div class="slot-modes">
+        <button type="button" class="slot-mode${state.selection_mode === 'random_pool' ? ' active' : ''}" data-role="${slot.role}" data-slot-mode="random_pool">随机池随机</button>
+        <button type="button" class="slot-mode${state.selection_mode === 'pool_pick' ? ' active' : ''}" data-role="${slot.role}" data-slot-mode="pool_pick">随机池手选</button>
+      </div>
+      <select data-role="${slot.role}"${disabled}${selectDisabled}>${optionsHtml}</select>
+    </div>`;
+  }).join('');
+  for (const button of document.querySelectorAll('[data-slot-mode]')) button.addEventListener('click', () => {
+    slotState[button.dataset.role].selection_mode = button.dataset.slotMode;
+    slotState[button.dataset.role].locked = button.dataset.slotMode === 'pool_pick';
+    renderSlots();
+    byId('action-status').textContent = `${button.dataset.role} 已切换为${button.dataset.slotMode === 'pool_pick' ? '手选' : '随机'}；点击“生成组合预览”后更新。`;
+  });
+  for (const select of document.querySelectorAll('.slot select')) select.addEventListener('change', () => {
+    slotState[select.dataset.role].component_id = select.value;
+    byId('action-status').textContent = `${select.dataset.role} 已手动选择。`;
+    showCurrent();
+  });
+}
+
+function randomizeUnlocked() {
+  const before = selectionKey();
+  let attempts = 0;
+  for (const slot of SLOT_DEFS) {
+    const state = slotState[slot.role];
+    if (state.locked) continue;
+    state.component_id = randomOption(poolFor(slot.role), !slot.required)?.component_id || '';
+  }
+  while (selectionKey() === before && attempts < 8) {
+    attempts += 1;
+    for (const slot of SLOT_DEFS) {
+      const state = slotState[slot.role];
+      if (!state.locked) state.component_id = randomOption(poolFor(slot.role), !slot.required)?.component_id || '';
+    }
+  }
+  const changed = SLOT_DEFS.filter((slot) => slotState[slot.role].component_id !== before.split('|').find((item) => item.startsWith(`${slot.role}:`))?.split(':').slice(1).join(':')).length;
+  renderSlots();
+  showCurrent();
+  const unlocked = SLOT_DEFS.filter((slot) => !slotState[slot.role].locked).length;
+  byId('action-status').textContent = changed ? `已随机更新 ${changed} 个未锁定部件并生成组合预览。` : (unlocked ? '随机池结果与上次相同，已保留当前组合。' : '所有部件都已手选锁定，没有可随机的部件。');
+}
+
+function updateRandomToggle() {
+  const toggle = byId('random-toggle');
+  toggle.classList.toggle('active', randomUnlockedEnabled);
+  toggle.setAttribute('aria-pressed', String(randomUnlockedEnabled));
+  toggle.textContent = `随机未锁定：${randomUnlockedEnabled ? '开' : '关'}`;
+}
+
+function generatePreview() {
+  if (randomUnlockedEnabled) {
+    randomizeUnlocked();
+  } else {
+    showCurrent();
+    byId('action-status').textContent = '已按当前手选组件生成预览。';
+  }
+}
+
+function showCurrent() {
+  const objects = selectedObjects();
+  const record = objects.length ? findCandidate(objects) : null;
+  current = { schema: 'assetslab_hair_design_review_v1', design_id: `draft_${Date.now()}`, gender, seed: Math.floor(Math.random() * 2147483647), slots: JSON.parse(JSON.stringify(slotState)), record, lifecycle: 'draft' };
+  byId('preview-title').textContent = record ? `${record.id.split('/').pop()} · ${record.status}` : '当前组合尚未生成预览';
+  byId('preview-status').textContent = record ? record.status : '待生成';
+  byId('preview-status').classList.toggle('pending', !record);
+  byId('preview-gender').textContent = `性别：${gender === 'female' ? '女性' : '男性'}`;
+  byId('preview-objects').textContent = `组件：${objects.map(objectLabel).join(' / ') || '—'}`;
+  byId('preview-signature').textContent = `组合签名：${selectionKey()}`;
+  for (const direction of ['front', 'right', 'back', 'left']) {
+    byId(direction).src = record ? record[direction] : '';
+    byId(direction).alt = record ? `${record.id} ${direction}` : '尚未生成预览';
+  }
+  const sheet = byId('sheet-link');
+  sheet.classList.toggle('hidden', !record || !record.sheet);
+  if (record?.sheet) sheet.href = record.sheet;
+  const gallery = byId('gallery-link');
+  gallery.classList.toggle('hidden', !record || !record.gallery);
+  if (record?.gallery) gallery.href = record.gallery;
+  byId('preview-note').textContent = record ? '已命中已有 Blender 组合预览，可以保存为设计。' : '当前只保存了组件选择；自动合成完成后才能显示四方向预览。';
+}
+
+function saveCurrent() {
+  if (!current || !componentFor('base_cap')) return;
+  const reviews = savedReviews();
+  const saved = { ...current, design_id: `design_${gender}_${Date.now()}`, lifecycle: 'saved', preset: true, pool: false, preview: current.record ? { raw_four_view: current.record.sheet, gallery: current.record.gallery } : null, saved_at: new Date().toISOString() };
+  reviews.unshift(saved);
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(reviews.slice(0, 30)));
+  renderSaved();
+}
+
+function reviewCandidates() {
+  try { return JSON.parse(localStorage.getItem(REVIEW_STORAGE_KEY) || '[]'); } catch { return []; }
+}
+
+function acceptPoolCandidate() {
+  if (!current || !componentFor('base_cap')) {
+    byId('review-status').textContent = '缺少必选 base，不能加入候选池。';
+    return;
+  }
+  const candidates = reviewCandidates();
+  const objects = selectedObjects();
+  const candidate = {
+    schema: 'assetslab_hair_seed_pool_candidate_v1',
+    candidate_id: `seed_${gender}_${Date.now()}`,
+    gender,
+    seed: current.seed,
+    slots: JSON.parse(JSON.stringify(current.slots)),
+    objects,
+    preview: current.record ? { raw_four_view: current.record.sheet || current.record.front, gallery: current.record.gallery || null } : null,
+    lifecycle: 'pool_candidate',
+    created_at: new Date().toISOString()
+  };
+  candidates.unshift(candidate);
+  localStorage.setItem(REVIEW_STORAGE_KEY, JSON.stringify(candidates.slice(0, 50)));
+  current.review_candidate_id = candidate.candidate_id;
+  byId('review-status').textContent = `已加入本机随机池候选：${candidate.candidate_id}`;
+  renderReviewCandidates();
+}
+
+function discardCandidate() {
+  if (!current) {
+    byId('review-status').textContent = '当前没有可销毁的候选记录。';
+    return;
+  }
+  const candidateId = current.review_candidate_id;
+  if (candidateId) {
+    const remaining = reviewCandidates().filter((candidate) => candidate.candidate_id !== candidateId);
+    localStorage.setItem(REVIEW_STORAGE_KEY, JSON.stringify(remaining));
+    renderReviewCandidates();
+  }
+  current = null;
+  for (const direction of ['front', 'right', 'back', 'left']) byId(direction).src = '';
+  byId('preview-title').textContent = '候选已销毁';
+  byId('preview-status').textContent = '已销毁';
+  byId('preview-status').classList.add('pending');
+  byId('preview-gender').textContent = '性别：—';
+  byId('preview-objects').textContent = '组件：—';
+  byId('preview-signature').textContent = '组合签名：—';
+  byId('sheet-link').classList.add('hidden');
+  byId('gallery-link').classList.add('hidden');
+  byId('preview-note').textContent = '只删除了本机候选记录；没有删除正式随机池或缓存源文件。';
+  byId('review-status').textContent = candidateId ? `候选记录已销毁：${candidateId}` : '当前候选草稿已销毁。';
+}
+
+function savedReviews() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); } catch { return []; }
+}
+
+function renderSaved() {
+  const list = byId('saved-list');
+  const reviews = savedReviews();
+  list.innerHTML = '';
+  if (!reviews.length) { list.innerHTML = '<p class="hint">尚未保存设计。</p>'; return; }
+  for (const review of reviews) {
+    const item = document.createElement('div'); item.className = 'saved-item';
+    const title = document.createElement('strong'); title.textContent = `${review.gender === 'female' ? '女性' : '男性'} · ${review.design_id}`;
+    const objects = document.createElement('span'); objects.className = 'objects'; objects.textContent = Object.values(review.slots).map((slot) => slot.component_id).filter(Boolean).join(' / ');
+    item.append(title, objects);
+    if (review.record?.gallery) { const link = document.createElement('a'); link.href = review.record.gallery; link.target = '_blank'; link.textContent = 'Gallery'; item.append(link); }
+    list.append(item);
+  }
+}
+
+function renderReviewCandidates() {
+  const list = byId('review-list');
+  const candidates = reviewCandidates();
+  list.innerHTML = '';
+  if (!candidates.length) { list.innerHTML = '<p class="hint">暂无本机随机池候选。</p>'; return; }
+  for (const candidate of candidates) {
+    const item = document.createElement('div'); item.className = 'saved-item';
+    const title = document.createElement('strong'); title.textContent = `${candidate.gender === 'female' ? '女性' : '男性'} · ${candidate.candidate_id}`;
+    const objects = document.createElement('span'); objects.className = 'objects'; objects.textContent = (candidate.objects || []).map(objectLabel).join(' / ');
+    item.append(title, objects);
+    if (candidate.preview?.gallery) { const link = document.createElement('a'); link.href = candidate.preview.gallery; link.target = '_blank'; link.textContent = 'Gallery'; item.append(link); }
+    list.append(item);
+  }
+}
+
+function exportDesigns() {
+  const blob = new Blob([JSON.stringify(savedReviews(), null, 2)], { type: 'application/json' });
+  const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = 'assetslab_hair_designs.json'; link.click(); URL.revokeObjectURL(link.href);
+}
+
+for (const button of document.querySelectorAll('[data-gender]')) button.addEventListener('click', () => {
+  gender = button.dataset.gender;
+  for (const item of document.querySelectorAll('[data-gender]')) item.classList.toggle('active', item === button);
+  initializeSlots(); renderSlots(); showCurrent();
+});
+byId('random-toggle').addEventListener('click', () => {
+  randomUnlockedEnabled = !randomUnlockedEnabled;
+  updateRandomToggle();
+  byId('action-status').textContent = randomUnlockedEnabled ? '已开启随机未锁定；点击生成按钮时会重抽未锁定部件。' : '已关闭随机未锁定；点击生成按钮时使用当前手选组件。';
+});
+byId('generate').addEventListener('click', generatePreview);
+byId('save').addEventListener('click', saveCurrent);
+byId('export').addEventListener('click', exportDesigns);
+byId('accept-pool').addEventListener('click', acceptPoolCandidate);
+byId('discard-candidate').addEventListener('click', discardCandidate);
+initializeSlots(); renderSlots(); showCurrent(); renderSaved(); renderReviewCandidates();
+updateRandomToggle();
+</script>
+</body></html>
