@@ -18,6 +18,7 @@
 | 2026-08-09 | fix | face/F001 | 复查原项目眼睛历史并将误迁移的 `EyePackageV1` 替换为头部贴合 EyeAssembly 三态 | 保留身体/Walk v1，不覆盖基线；新增 Face v2 Blend、open/half/closed 纹理、重建/验证/四向眨眼脚本，Studio 恢复确定性眨眼 |
 | 2026-08-09 | implementation | F002/workflow | 用模型→骨骼→动画→拼装→结果五步工作流替换无效左侧资产 Tab | 当前单模型/单骨骼/单动画如实显示；组件选择定位镜头；增加播放、暂停、停止、时间轴和直接拖动自由观察 |
 | 2026-08-09 | implementation/fix | F003/workbench/preview | 将资产工作台与最终组合预览拆分，恢复发型目录与确定性配方入口，并把网页眼睛改为 Head Bone 蒙皮导出 | 八类工作流、单独/Actor 预览和正式组合控制台已建立；旧 GLB 眼睛无 Skin 的验证缺口已封堵，等待用户人工审查 |
+| 2026-08-09 | fix | F001/launcher | 让双击启动器识别已运行的 AssetsStudio，并在无关程序占用端口时提前停止 | 修复重复双击导致 `Port 4173 is already in use`；避免失败前重复执行 Actor GLB 重建 |
 
 ## 记录规则
 

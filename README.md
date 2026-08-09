@@ -52,7 +52,7 @@ python .\tools\build_studio_gallery.py
 
 第一版 Studio 是 Windows 单用户本地工具。Node.js 与 Blender 可用后：
 
-- 最简单：双击仓库根目录的 `start-studio.cmd`，保持弹出的命令窗口开启；脚本会在服务就绪后打开浏览器。
+- 最简单：双击仓库根目录的 `start-studio.cmd`，保持弹出的命令窗口开启；脚本会在服务就绪后打开浏览器。重复双击不会再次启动服务：若检测到 AssetsStudio 已在 `4173` 端口运行，脚本会直接打开现有页面；若该端口被其他程序占用，会明确提示并停止。
 - 命令行方式：
 
 ```powershell
