@@ -13,6 +13,7 @@
 | 2026-08-09 | art direction | product/visual | 确立 Q 版日漫 JRPG 美术方向，以《零之使魔》和《闪之轨迹》作为抽象风格坐标 | 统一后续 Actor、发型、五官、服饰和 3 渲 2 审查语言；不复制具体受版权保护设计 |
 | 2026-08-09 | audit | body/face | 用当前 Actor、Walk 动画和内嵌 3D 眼睛/耳朵完成四方向 3 渲 2 复现测试 | 证明五官工作流不依赖旧 `milestones/face/` 2D 测试资产，可以安全收敛为 Actor Face 合同 |
 | 2026-08-09 | cleanup | hair/face | 统一男女发型源文件命名，移动耳朵提取来源，删除旧五官渲染和失效脚本 | 正式分支只保留当前 Actor 3 渲 2 所需组成部分；删除项仍可从 Git/AssetsLab 恢复 |
+| 2026-08-09 | implementation | F001/studio | 建立 React + Three.js Studio 外壳、六类资产注册表、版本化 Schema 和可复现 Actor 组合 GLB 导出 | 首个页面已显示真实 Actor、Walk、短袖、短裤和鞋；发型因尚无已验证 Actor bundle 明确保持未装入状态 |
 
 ## 记录规则
 

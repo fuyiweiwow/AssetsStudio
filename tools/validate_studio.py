@@ -24,6 +24,16 @@ REQUIRED = [
     "docs/decisions/0001-development-record-system.md",
     "docs/decisions/0002-asset-lifecycle-sync-policy.md",
     "docs/features/F001-studio-shell-asset-registry-actor-preview.md",
+    "schemas/asset-registry.v1.schema.json",
+    "schemas/recipe.v1.schema.json",
+    "schemas/run.v1.schema.json",
+    "studio/package.json",
+    "studio/package-lock.json",
+    "studio/src/generated/asset-registry.json",
+    "studio/src/App.tsx",
+    "tools/build_studio_registry.py",
+    "tools/blender/export_studio_actor_preview.py",
+    "tools/export_studio_actor_preview.ps1",
     "docs/templates/FEATURE_TEMPLATE.md",
     "docs/templates/ADR_TEMPLATE.md",
     "milestones/body/chibi_actor_mixamo_walk_v1.blend",
@@ -83,6 +93,7 @@ REQUIRED_TEXT_MARKERS = {
     ],
     "docs/features/F001-studio-shell-asset-registry-actor-preview.md": [
         "功能 ID：`F001`",
+        "状态：`in_progress`",
         "## 技术选型",
         "## 验收条件",
     ],
@@ -109,6 +120,22 @@ FORBIDDEN_PATHS = [
 
 
 MARKDOWN_LINK_RE = re.compile(r"\[[^\]]+\]\(([^)]+)\)")
+
+
+def is_local_output(path: Path) -> bool:
+    relative = path.relative_to(ROOT)
+    parts = relative.parts
+    if "__pycache__" in parts:
+        return True
+    if parts and parts[0] == "workspace":
+        return True
+    local_roots = (
+        ("studio", "node_modules"),
+        ("studio", "dist"),
+        ("studio", "coverage"),
+        ("studio", "public", "generated"),
+    )
+    return any(parts[: len(prefix)] == prefix for prefix in local_roots)
 
 
 def main() -> int:
@@ -169,12 +196,31 @@ def main() -> int:
     if missing_face_paths:
         raise RuntimeError("missing Actor face contract dependencies:\n" + "\n".join(missing_face_paths))
 
+    registry = json.loads(
+        (ROOT / "studio/src/generated/asset-registry.json").read_text(encoding="utf-8")
+    )
+    if registry.get("schema") != "assetsstudio_asset_registry_v1":
+        raise RuntimeError("unexpected Studio asset registry schema")
+    registry_records = registry.get("assets", [])
+    registry_projection = [
+        (record.get("id"), record.get("category"), record.get("status"), record.get("source_path"))
+        for record in registry_records
+    ]
+    status_projection = [
+        (record.get("id"), record.get("category"), record.get("status"), record.get("path"))
+        for record in records
+    ]
+    if registry_projection != status_projection:
+        raise RuntimeError("Studio registry is stale; run python tools/build_studio_registry.py")
+
     for manifest in ROOT.rglob("*.json"):
+        if is_local_output(manifest) or ".git" in manifest.parts:
+            continue
         json.loads(manifest.read_text(encoding="utf-8"))
 
     broken_links = []
     for document in ROOT.rglob("*.md"):
-        if ".git" in document.parts:
+        if ".git" in document.parts or is_local_output(document):
             continue
         content = document.read_text(encoding="utf-8")
         for raw_target in MARKDOWN_LINK_RE.findall(content):
@@ -190,13 +236,19 @@ def main() -> int:
     stale_roots = ("E:\\\\WorkProject\\\\AssetsLab", "D:\\\\Apps\\\\CodeXApp\\\\Tests\\\\AssetsLab")
     stale = []
     for manifest in ROOT.rglob("*.json"):
+        if is_local_output(manifest) or ".git" in manifest.parts:
+            continue
         content = manifest.read_text(encoding="utf-8")
         if any(root in content for root in stale_roots):
             stale.append(str(manifest.relative_to(ROOT)))
     if stale:
         raise RuntimeError("stale AssetsLab absolute paths:\n" + "\n".join(stale))
 
-    files = sorted(path for path in ROOT.rglob("*") if path.is_file() and ".git" not in path.parts)
+    files = sorted(
+        path
+        for path in ROOT.rglob("*")
+        if path.is_file() and ".git" not in path.parts and not is_local_output(path)
+    )
     total = sum(path.stat().st_size for path in files)
     largest = max(files, key=lambda path: path.stat().st_size)
     if largest.stat().st_size >= 100 * 1024 * 1024:

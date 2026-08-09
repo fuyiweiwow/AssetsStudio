@@ -48,6 +48,18 @@ python .\tools\validate_studio.py
 python .\tools\build_studio_gallery.py
 ```
 
+## 启动 Studio（F001）
+
+第一版 Studio 是 Windows 单用户本地工具。Node.js 与 Blender 可用后：
+
+```powershell
+cd .\studio
+npm.cmd install
+npm.cmd run dev
+```
+
+然后打开 `http://127.0.0.1:4173/`。`npm run dev` 的预启动步骤会从正式状态生成六类前端注册表，并把当前 Actor、短袖、短裤和鞋导出为被 Git 忽略的本地 GLB；发型尚未装入首个组合 GLB，页面会明确禁用该开关。需要只重建本地预览时可运行 `npm.cmd run assets:prepare`。
+
 生成新候选时输出到 `workspace/`。只有人工审核通过后，才替换对应 `milestones/<category>/` 内容并更新 `docs/ASSET_STATUS.json`。
 
 开始 Studio 功能开发前，必须先按 `PRINCIPLES.md` 的顺序阅读开发基准、产品技术基线、里程碑和对应功能文档。技术变化、内容删除与重要保存检查点必须同步更新仓库内的追溯记录。

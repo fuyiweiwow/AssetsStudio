@@ -1,0 +1,72 @@
+{
+  "schema": "assetsstudio_asset_registry_v1",
+  "studio_version": "0.1.0",
+  "updated": "2026-08-09",
+  "preview": {
+    "model_url": "/generated/actor-composite-v1.glb",
+    "manifest_url": "/generated/actor-composite-v1.manifest.json",
+    "storage_policy": "local"
+  },
+  "assets": [
+    {
+      "id": "body_actor_v1_walk",
+      "category": "body",
+      "label": "身体与动作",
+      "status": "accepted",
+      "source_path": "milestones/body/chibi_actor_mixamo_walk_v1.blend",
+      "workflow": "docs/WORKFLOW_BODY.md",
+      "known_issue": null,
+      "visibility_group": null
+    },
+    {
+      "id": "hair_component_pool_v1",
+      "category": "hair",
+      "label": "发型组件池",
+      "status": "source_contract",
+      "source_path": "milestones/hair/hair_random_pool_v1.json",
+      "workflow": "docs/WORKFLOW_HAIR.md",
+      "known_issue": null,
+      "visibility_group": "hair"
+    },
+    {
+      "id": "face_actor_v1",
+      "category": "face",
+      "label": "五官与耳朵",
+      "status": "technical_baseline",
+      "source_path": "milestones/body/face_contract_v1.json",
+      "workflow": "docs/WORKFLOW_FACE.md",
+      "known_issue": null,
+      "visibility_group": "face"
+    },
+    {
+      "id": "top_actor_native_tshirt_v5",
+      "category": "tops",
+      "label": "短袖上衣",
+      "status": "provisional",
+      "source_path": "milestones/tops/actor_native_tshirt_v5/manifest.json",
+      "workflow": "docs/WORKFLOW_TOPS.md",
+      "known_issue": "pose-dependent right shoulder/sleeve protrusion",
+      "visibility_group": "top"
+    },
+    {
+      "id": "pants_native_control_v0",
+      "category": "pants",
+      "label": "短裤",
+      "status": "provisional",
+      "source_path": "milestones/pants/native_control_v0/manifest.json",
+      "workflow": "docs/WORKFLOW_PANTS.md",
+      "known_issue": "strict geometry report is not a production-quality visual verdict",
+      "visibility_group": "pants"
+    },
+    {
+      "id": "shoes_cartoon_sneaker_v10",
+      "category": "shoes",
+      "label": "卡通运动鞋",
+      "status": "accepted",
+      "source_path": "milestones/shoes/cartoon_sneaker_v10/manifest.json",
+      "workflow": "docs/WORKFLOW_SHOES.md",
+      "known_issue": null,
+      "visibility_group": "shoes"
+    }
+  ]
+}
