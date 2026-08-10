@@ -56,7 +56,18 @@ def cli_args() -> argparse.Namespace:
     return parser.parse_args(argv)
 
 
-def evaluated_points(obj: bpy.types.Object) -> tuple[list[Vector], list[tuple[int, ...]]]:
+def evaluated_points(
+    obj: bpy.types.Object,
+    *,
+    include_thickness: bool = True,
+) -> tuple[list[Vector], list[tuple[int, ...]]]:
+    hidden_modifiers = []
+    if not include_thickness:
+        for modifier in obj.modifiers:
+            if modifier.type in {"SOLIDIFY", "BEVEL"} and modifier.show_viewport:
+                hidden_modifiers.append(modifier)
+                modifier.show_viewport = False
+        bpy.context.view_layer.update()
     depsgraph = bpy.context.evaluated_depsgraph_get()
     evaluated = obj.evaluated_get(depsgraph)
     mesh = evaluated.to_mesh()
@@ -66,6 +77,41 @@ def evaluated_points(obj: bpy.types.Object) -> tuple[list[Vector], list[tuple[in
         return points, polygons
     finally:
         evaluated.to_mesh_clear()
+        for modifier in hidden_modifiers:
+            modifier.show_viewport = True
+        if hidden_modifiers:
+            bpy.context.view_layer.update()
+
+
+def evaluated_cage_data(
+    obj: bpy.types.Object,
+    *,
+    include_thickness: bool = False,
+) -> tuple[list[Vector], list[Vector], list[int]]:
+    """Return evaluated points, world normals, and optional source mapping."""
+    hidden_modifiers = []
+    if not include_thickness:
+        for modifier in obj.modifiers:
+            if modifier.type in {"SOLIDIFY", "BEVEL"} and modifier.show_viewport:
+                hidden_modifiers.append(modifier)
+                modifier.show_viewport = False
+        bpy.context.view_layer.update()
+    depsgraph = bpy.context.evaluated_depsgraph_get()
+    evaluated = obj.evaluated_get(depsgraph)
+    mesh = evaluated.to_mesh()
+    try:
+        transform = evaluated.matrix_world.to_3x3()
+        points = [evaluated.matrix_world @ vertex.co for vertex in mesh.vertices]
+        normals = [(transform @ vertex.normal).normalized() for vertex in mesh.vertices]
+        attribute = mesh.attributes.get("assetslab_source_index")
+        source_indices = [int(attribute.data[index].value) for index in range(len(mesh.vertices))] if attribute else [-1] * len(mesh.vertices)
+        return points, normals, source_indices
+    finally:
+        evaluated.to_mesh_clear()
+        for modifier in hidden_modifiers:
+            modifier.show_viewport = True
+        if hidden_modifiers:
+            bpy.context.view_layer.update()
 
 
 def make_bvh(points: list[Vector], polygons: list[tuple[int, ...]]) -> BVHTree:
@@ -284,12 +330,35 @@ def main() -> int:
         bpy.context.view_layer.update()
         garment_points: list[Vector] = []
         garment_polygons: list[tuple[int, ...]] = []
+        garment_source_indices: list[int] = []
         torso_points: list[Vector] = []
         torso_polygons: list[tuple[int, ...]] = []
         for object_index, garment_object in enumerate(garments):
-            object_points, object_polygons = evaluated_points(garment_object)
+            native_rebuild = garment_object.get("assetslab_garment_route") == "native_blender_pants_rebuild"
+            if native_rebuild:
+                # The rebuild stores a source vertex id for every copied cage
+                # point.  The bridge has -1 and is evaluated by the visual
+                # continuity gate instead.
+                object_points, object_polygons = evaluated_points(
+                    garment_object,
+                    include_thickness=False,
+                )
+                _cage_points, _object_normals, object_source_indices = evaluated_cage_data(
+                    garment_object,
+                    include_thickness=False,
+                )
+            else:
+                # Solidify's inner shell is intentionally inside the Actor.
+                # Use only the armature-deformed garment cage for collision /
+                # clearance checks; thickness remains render/export geometry.
+                object_points, object_polygons = evaluated_points(
+                    garment_object,
+                    include_thickness=False,
+                )
+                object_source_indices = [-1] * len(object_points)
             offset = len(garment_points)
             garment_points.extend(object_points)
+            garment_source_indices.extend(object_source_indices)
             if object_index == 0:
                 torso_points = object_points
                 torso_polygons = object_polygons
@@ -298,6 +367,10 @@ def main() -> int:
                 for polygon in object_polygons
             )
         actor_points, actor_polygons = evaluated_points(actor)
+        actor_cage_points, actor_cage_normals, _actor_source_indices = evaluated_cage_data(
+            actor,
+            include_thickness=True,
+        )
         actor_torso_points = torso_weighted_points(actor)
         actor_surface_points = (
             actor_torso_points
@@ -309,7 +382,32 @@ def main() -> int:
         torso_top_z = max(point.z for point in torso_points)
         top_z = max(point.z for point in garment_points)
         torso_indices = set(range(len(torso_points)))
-        signed_distances = [nearest_signed_distance(actor_bvh, point) for point in garment_points]
+        native_rebuild = any(
+            garment_object.get("assetslab_garment_route") == "native_blender_pants_rebuild"
+            for garment_object in garments
+        )
+        if options.garment_kind == "pants" and native_rebuild and any(index >= 0 for index in garment_source_indices):
+            penetration_items = []
+            depth_gap_items = []
+            for index, source_index in enumerate(garment_source_indices):
+                if source_index < 0 or source_index >= len(actor_cage_points):
+                    continue
+                delta = garment_points[index] - actor_cage_points[source_index]
+                distance = delta.length
+                # Source Actor normals are not consistently oriented on inner
+                # thigh seams.  For a source-mapped garment cage, the stable
+                # signal is correspondence distance: near-zero means the
+                # garment collapsed onto the body, while the expected shell
+                # clearance is roughly 0.02 m.
+                if distance < 0.002:
+                    penetration_items.append((index, -distance, distance))
+                if distance > 0.08:
+                    depth_gap_items.append((index, distance, distance - 0.08))
+            shoulder_bridge_items = []
+            shoulder_bridge_indices = set()
+            signed_distances = []
+        else:
+            signed_distances = [nearest_signed_distance(actor_bvh, point) for point in garment_points]
         shoulder_bridge_items = [
             (index, signed, distance)
             for index, (signed, distance) in enumerate(signed_distances)
@@ -328,8 +426,11 @@ def main() -> int:
         ]
         shoulder_bridge_indices = {index for index, _signed, _distance in shoulder_bridge_items}
         depth_penetration_items = []
-        depth_gap_items = []
+        if not (options.garment_kind == "pants" and native_rebuild and any(index >= 0 for index in garment_source_indices)):
+            depth_gap_items = []
         for index, point in enumerate(garment_points):
+            if options.garment_kind == "pants" and native_rebuild and any(index >= 0 for index in garment_source_indices):
+                continue
             if options.garment_kind == "shirt" and (
                 abs(point.y) < 0.12
                 or abs(point.x) > 0.24
@@ -359,7 +460,8 @@ def main() -> int:
                 depth_penetration_items.append((index, -penetration, penetration))
             if gap > 0.0:
                 depth_gap_items.append((index, point.y, gap))
-        penetration_items = depth_penetration_items
+        if not (options.garment_kind == "pants" and native_rebuild and any(index >= 0 for index in garment_source_indices)):
+            penetration_items = depth_penetration_items
         hem_limit = bottom_z + max(0.20, (torso_top_z - bottom_z) * 0.22)
         hem_penetration_items = [
             item for item in penetration_items
