@@ -5,5 +5,6 @@
 | 功能 ID | 名称 | 状态 | 文档 |
 | --- | --- | --- | --- |
 | `F001` | Studio 外壳、资产注册表与 Actor 预览 | `proposed` | [`F001-studio-shell-asset-registry-actor-preview.md`](F001-studio-shell-asset-registry-actor-preview.md) |
+| `F002` | Actor 专用 GarmentCode 短袖 | `provisional` | [`F002-actor-garmentcode-short-sleeve.md`](F002-actor-garmentcode-short-sleeve.md) |
 
 允许状态：`proposed`、`in_progress`、`provisional`、`accepted`、`paused`、`retired`。

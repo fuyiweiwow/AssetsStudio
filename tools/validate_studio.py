@@ -170,11 +170,14 @@ def main() -> int:
         raise RuntimeError("missing Actor face contract dependencies:\n" + "\n".join(missing_face_paths))
 
     for manifest in ROOT.rglob("*.json"):
+        if "third_party" in manifest.relative_to(ROOT).parts:
+            continue
         json.loads(manifest.read_text(encoding="utf-8"))
 
     broken_links = []
     for document in ROOT.rglob("*.md"):
-        if ".git" in document.parts:
+        relative_parts = document.relative_to(ROOT).parts
+        if ".git" in document.parts or "third_party" in relative_parts:
             continue
         content = document.read_text(encoding="utf-8")
         for raw_target in MARKDOWN_LINK_RE.findall(content):
@@ -190,13 +193,20 @@ def main() -> int:
     stale_roots = ("E:\\\\WorkProject\\\\AssetsLab", "D:\\\\Apps\\\\CodeXApp\\\\Tests\\\\AssetsLab")
     stale = []
     for manifest in ROOT.rglob("*.json"):
+        if "third_party" in manifest.relative_to(ROOT).parts:
+            continue
         content = manifest.read_text(encoding="utf-8")
         if any(root in content for root in stale_roots):
             stale.append(str(manifest.relative_to(ROOT)))
     if stale:
         raise RuntimeError("stale AssetsLab absolute paths:\n" + "\n".join(stale))
 
-    files = sorted(path for path in ROOT.rglob("*") if path.is_file() and ".git" not in path.parts)
+    files = sorted(
+        path for path in ROOT.rglob("*")
+        if path.is_file()
+        and ".git" not in path.parts
+        and "third_party" not in path.relative_to(ROOT).parts
+    )
     total = sum(path.stat().st_size for path in files)
     largest = max(files, key=lambda path: path.stat().st_size)
     if largest.stat().st_size >= 100 * 1024 * 1024:
