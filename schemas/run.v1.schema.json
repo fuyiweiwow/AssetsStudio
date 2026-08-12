@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://assetsstudio.local/schemas/run.v1.schema.json",
+  "title": "AssetsStudio local run v1",
+  "type": "object",
+  "required": ["schema", "run_id", "created_at", "asset_type", "generator", "recipe", "sources", "outputs", "status", "storage_policy", "pinned"],
+  "properties": {
+    "schema": { "const": "assetsstudio_run_v1" },
+    "run_id": { "type": "string", "format": "uuid" },
+    "created_at": { "type": "string", "format": "date-time" },
+    "asset_type": { "type": "string" },
+    "generator": { "type": "object" },
+    "recipe": { "type": "object" },
+    "sources": { "type": "array" },
+    "outputs": { "type": "array" },
+    "status": { "enum": ["candidate", "reviewed", "promoted", "rejected", "release"] },
+    "storage_policy": { "enum": ["local", "sync", "release"] },
+    "pinned": { "type": "boolean" }
+  },
+  "additionalProperties": true
+}

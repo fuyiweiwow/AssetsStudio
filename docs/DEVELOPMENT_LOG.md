@@ -13,6 +13,16 @@
 | 2026-08-09 | art direction | product/visual | 确立 Q 版日漫 JRPG 美术方向，以《零之使魔》和《闪之轨迹》作为抽象风格坐标 | 统一后续 Actor、发型、五官、服饰和 3 渲 2 审查语言；不复制具体受版权保护设计 |
 | 2026-08-09 | audit | body/face | 用当前 Actor、Walk 动画和内嵌 3D 眼睛/耳朵完成四方向 3 渲 2 复现测试 | 证明五官工作流不依赖旧 `milestones/face/` 2D 测试资产，可以安全收敛为 Actor Face 合同 |
 | 2026-08-09 | cleanup | hair/face | 统一男女发型源文件命名，移动耳朵提取来源，删除旧五官渲染和失效脚本 | 正式分支只保留当前 Actor 3 渲 2 所需组成部分；删除项仍可从 Git/AssetsLab 恢复 |
+| 2026-08-09 | implementation | F001/studio | 建立 React + Three.js Studio 外壳、六类资产注册表、版本化 Schema 和可复现 Actor 组合 GLB 导出 | 首个页面已显示真实 Actor、Walk、短袖、短裤和鞋；发型因尚无已验证 Actor bundle 明确保持未装入状态 |
+| 2026-08-09 | fix | F001/preview | 根据用户首轮审查修复 GLB 骨骼场景深拷贝、短裤近共面闪烁和离线启动误区 | 五官、衣物与鞋改为共享同一 GLTF 骨架；短裤增加仅限网页深度稳定；新增双击启动入口；用户决定将袖管模型缺陷延期到服装里程碑，F001 不做 workaround |
+| 2026-08-09 | fix | face/F001 | 复查原项目眼睛历史并将误迁移的 `EyePackageV1` 替换为头部贴合 EyeAssembly 三态 | 保留身体/Walk v1，不覆盖基线；新增 Face v2 Blend、open/half/closed 纹理、重建/验证/四向眨眼脚本，Studio 恢复确定性眨眼 |
+| 2026-08-09 | implementation | F002/workflow | 用模型→骨骼→动画→拼装→结果五步工作流替换无效左侧资产 Tab | 当前单模型/单骨骼/单动画如实显示；组件选择定位镜头；增加播放、暂停、停止、时间轴和直接拖动自由观察 |
+| 2026-08-09 | implementation/fix | F003/workbench/preview | 将资产工作台与最终组合预览拆分，恢复发型目录与确定性配方入口，并把网页眼睛改为 Head Bone 蒙皮导出 | 八类工作流、单独/Actor 预览和正式组合控制台已建立；旧 GLB 眼睛无 Skin 的验证缺口已封堵，等待用户人工审查 |
+| 2026-08-09 | fix | F001/launcher | 让双击启动器识别已运行的 AssetsStudio，并在无关程序占用端口时提前停止 | 修复重复双击导致 `Port 4173 is already in use`；避免失败前重复执行 Actor GLB 重建 |
+| 2026-08-09 | implementation | F003/baseline/library | 新增 Actor 基准验收页、可放大 3D 工作区和本地静态缩略图资产仓库 | 把基本模型检查从参数工作流中分离；复用里程碑审查图让资产可快速辨认，并保持缓存可重建、不提交 Git |
+| 2026-08-09 | implementation/fix | F004/hair | 按历史推荐 `seed_04_bangs04` 重建首套女性发型，绑定到 `CC_Base_Head` 并接入网页、缩略图和四方向 Walk GIF | 复用既有 Actor 贴合参数而不重新测量；修复 Bone Parent 导出造成发型落在脚边的问题，拒绝两个失败头皮补片；当前头顶中分小缝保留为人工审查项 |
+| 2026-08-10 | quality/fix | F004/hair | 用前向表面覆盖检测定位并修复首套发型中心亮缝，生成 `seed_04_bangs04_v2` | v1 发片局部落到头皮后方而非左右断裂；v2 不加补片，仅平滑前移原网格，暴露采样从 105 降到 0，并改用 512px 浅色 Actor GIF 防止审查掩盖 |
+| 2026-08-10 | implementation | F005/workbench | 资产仓库改为只显示当前左侧工作流类别，每个组件只缓存一张固定正面图；工作流预览可独立隐藏/显示 | 恢复左侧工作流选择的实际意义，避免四视图拼图和常驻 3D 画布挤占控制台空间 |
 
 ## 记录规则
 

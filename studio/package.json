@@ -1,0 +1,43 @@
+{
+  "name": "assetsstudio-ui",
+  "private": true,
+  "version": "0.6.0",
+  "type": "module",
+  "scripts": {
+    "predev": "npm run assets:prepare",
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "typecheck": "tsc -b --pretty false",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "assets:registry": "python ../tools/build_studio_registry.py",
+    "assets:hair": "powershell -ExecutionPolicy Bypass -File ../tools/build_first_hair_bundle.ps1",
+    "assets:hair:review": "powershell -ExecutionPolicy Bypass -File ../tools/render_first_hair_bundle_review.ps1",
+    "assets:actor": "powershell -ExecutionPolicy Bypass -File ../tools/export_studio_actor_preview.ps1",
+    "assets:prepare": "npm run assets:hair && npm run assets:registry && npm run assets:actor"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "@react-three/drei": "10.7.8",
+    "@react-three/fiber": "9.7.0",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "three": "0.185.1"
+  },
+  "devDependencies": {
+    "@rolldown/binding-win32-x64-msvc": "^1.2.3",
+    "@testing-library/jest-dom": "6.9.1",
+    "@testing-library/react": "16.3.2",
+    "@types/node": "24.12.0",
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3",
+    "@types/three": "0.184.1",
+    "@vitejs/plugin-react": "6.0.5",
+    "jsdom": "29.0.1",
+    "typescript": "7.0.2",
+    "vite": "8.2.1",
+    "vitest": "4.1.10"
+  }
+}

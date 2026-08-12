@@ -48,6 +48,25 @@ python .\tools\validate_studio.py
 python .\tools\build_studio_gallery.py
 ```
 
+## 启动 Studio（F001）
+
+第一版 Studio 是 Windows 单用户本地工具。Node.js 与 Blender 可用后：
+
+- 最简单：双击仓库根目录的 `start-studio.cmd`，保持弹出的命令窗口开启；脚本会在服务就绪后打开浏览器。重复双击不会再次启动服务：若检测到 AssetsStudio 已在 `4173` 端口运行，脚本会直接打开现有页面；若该端口被其他程序占用，会明确提示并停止。
+- 命令行方式：
+
+```powershell
+cd .\studio
+npm.cmd install
+npm.cmd run dev
+```
+
+Studio 不是可以双击或复制 `file://` 地址打开的单个离线 HTML；浏览器的 ES Module、GLB 和 JSON 加载需要本机 HTTP 服务。请使用上述启动入口，再访问 `http://127.0.0.1:4173/`。`npm run dev` 的预启动步骤会从正式状态生成六类前端注册表和本地静态缩略图缓存，并把当前 Actor、首套固定女性发型、短袖、短裤和鞋导出为被 Git 忽略的本地 GLB。发型 v2 已通过中心头皮覆盖检测，但仍为 `provisional`，必须由用户人工审查后才能晋级。需要只重建本地预览时可运行 `npm.cmd run assets:prepare`。
+
+首套发型可单独执行 `npm.cmd run assets:hair` 重建并验证；执行 `npm.cmd run assets:hair:review` 会在 `workspace/cache/hair/first_bundle_v2/walk_review/` 生成 512px、浅色 Actor 的四方向 Walk GIF，便于不打开 Blend 文件完成审查。
+
+页面分为“资产工作台 / 组合预览 / Actor 基准”三个入口。资产工作台的仓库只显示左侧当前工作流对应的资产；每个组件只缓存一张固定正面图，四视图和 GIF 留在审查层。工作流 3D 预览可独立隐藏/显示，并支持滚轮缩放、拖动旋转和“放大预览”。Actor 基准页专门检查模型、骨骼、Walk、眨眼及服饰装配，不与参数编辑混用。当前模型、骨骼和动画各只有一套经过登记的选项；多模型导入、自动绑定和动画重定向仍是后续功能。
+
 生成新候选时输出到 `workspace/`。只有人工审核通过后，才替换对应 `milestones/<category>/` 内容并更新 `docs/ASSET_STATUS.json`。
 
 开始 Studio 功能开发前，必须先按 `PRINCIPLES.md` 的顺序阅读开发基准、产品技术基线、里程碑和对应功能文档。技术变化、内容删除与重要保存检查点必须同步更新仓库内的追溯记录。

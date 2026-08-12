@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://assetsstudio.local/schemas/asset-registry.v1.schema.json",
+  "title": "AssetsStudio asset registry v1",
+  "type": "object",
+  "required": ["schema", "studio_version", "updated", "preview", "assets", "hair"],
+  "properties": {
+    "schema": { "const": "assetsstudio_asset_registry_v1" },
+    "studio_version": { "type": "string" },
+    "updated": { "type": "string", "format": "date" },
+    "preview": {
+      "type": "object",
+      "required": ["model_url", "manifest_url", "storage_policy"],
+      "properties": {
+        "model_url": { "type": "string" },
+        "manifest_url": { "type": "string" },
+        "storage_policy": { "const": "local" }
+      },
+      "additionalProperties": false
+    },
+    "assets": {
+      "type": "array",
+      "minItems": 6,
+      "maxItems": 6,
+      "items": {
+        "type": "object",
+        "required": ["id", "category", "label", "status", "source_path", "workflow", "known_issue", "visibility_group", "thumbnail_url", "thumbnail_kind"],
+        "properties": {
+          "id": { "type": "string" },
+          "category": { "enum": ["body", "hair", "face", "tops", "pants", "shoes"] },
+          "label": { "type": "string" },
+          "status": { "enum": ["accepted", "provisional", "source_contract", "technical_baseline"] },
+          "source_path": { "type": "string" },
+          "workflow": { "type": "string" },
+          "known_issue": { "type": ["string", "null"] },
+          "visibility_group": { "type": ["string", "null"] },
+          "thumbnail_url": { "type": ["string", "null"] },
+          "thumbnail_kind": { "enum": ["fixed_front", "texture", null] }
+        },
+        "additionalProperties": false
+      }
+    },
+    "hair": {
+      "type": "object",
+      "required": ["first_bundle", "component_groups", "random_pool", "galleries"],
+      "properties": {
+        "first_bundle": { "type": "object" },
+        "component_groups": { "type": "array" },
+        "random_pool": { "type": "array" },
+        "galleries": { "type": "array" }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

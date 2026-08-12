@@ -20,7 +20,7 @@ AssetsLab 工作树在整理时包含大量未提交实验。迁移采取“只�
 
 模型文件不是外部占位符：当前流程使用的 Actor、动作、耳朵、发型、短袖、短裤、鞋以及鞋源 FBX 均迁入正式仓库。只有旧失败候选、未采用的外部衣服和第三方工具缓存被排除。
 
-迁移后的第二轮清理进一步统一了源资产命名：男女发型进入 `milestones/hair/sources/<gender>/`，耳朵提取来源进入 `references/face/miku_chibi_source/`。当前眼睛和耳朵已经嵌入 Actor，不再维护一套平行的 `milestones/face/` 渲染资产；其可复现合同位于 `milestones/body/face_contract_v1.json`。
+迁移后的第二轮清理进一步统一了源资产命名：男女发型进入 `milestones/hair/sources/<gender>/`，耳朵提取来源进入 `references/face/miku_chibi_source/`。当前眼睛和耳朵已经嵌入 Actor，不再维护一套平行的 `milestones/face/` 渲染资产。用户审查随后发现迁移时误保留旧 EyePackage 并遗漏已验证眨眼，因此当前可复现合同已修订为 `milestones/body/face_contract_v2.json`，身体/Walk v1 仍原样保留。
 
 ## 未迁入正式分支
 

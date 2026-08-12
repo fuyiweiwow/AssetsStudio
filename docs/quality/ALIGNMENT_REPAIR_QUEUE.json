@@ -1,0 +1,68 @@
+{
+  "schema": "assetsstudio_alignment_repair_queue_v1",
+  "asset": "pants_rebuild",
+  "baseline": "workspace/pants_rebuild/native_pants_candidate_v7",
+  "mode": "sequential",
+  "items": [
+    {
+      "id": "native-cage-clearance",
+      "stage": 3,
+      "view_scope": ["front", "right", "back", "left", "walk"],
+      "failure": "Generic collision audit counted Solidify's inner shell and inconsistent Actor seam normals as garment penetration.",
+      "measured_delta": "v5 reported thousands of false penetration vertices; v7 source-cage audit passes.",
+      "proposed_action": "Use source-index correspondence for native pants cages and ignore the intentional thickness shell during clearance checks.",
+      "write_scope": ["tools/blender/check_garment_actor_fit.py", "tools/blender/build_native_pants_rebuild.py"],
+      "parallel_group": null,
+      "blocked_by": [],
+      "acceptance_gate": "fit_report_v2.status == pass"
+    },
+    {
+      "id": "pants-back-projection-rule",
+      "stage": 3,
+      "view_scope": ["back", "walk"],
+      "failure": "A trouser projection can contain separate left/right leg components even when the mesh is structurally continuous.",
+      "measured_delta": "v5-v7 back component checks were false failures at 2-3 projected components.",
+      "proposed_action": "Allow up to three back projection components for pants while retaining mandatory human review.",
+      "write_scope": ["tools/check_garment_visual_review.py"],
+      "parallel_group": null,
+      "blocked_by": [],
+      "acceptance_gate": "visual_review_report_v2.automatic_visual_status == review_required"
+    },
+    {
+      "id": "human-walk-review",
+      "stage": 3,
+      "view_scope": ["front", "right", "back", "left", "walk"],
+      "failure": "Automated checks cannot judge whether the silhouette and crotch motion feel intentional.",
+      "measured_delta": "No automated failures remain; approval is still pending.",
+      "proposed_action": "Review the 8-frame four-direction GIF for thigh width, crotch continuity, and cuff stability.",
+      "write_scope": ["workspace/pants_rebuild/native_pants_candidate_v7/renders"],
+      "parallel_group": null,
+      "blocked_by": [],
+      "acceptance_gate": "human_review.status == approved"
+    },
+    {
+      "id": "style-and-cuff-pass",
+      "stage": 5,
+      "view_scope": ["front", "right", "back", "left"],
+      "failure": "The current candidate is a technical shell and does not yet have a final cuff/waistband design.",
+      "measured_delta": "No source style sheet supplied; style remains provisional.",
+      "proposed_action": "After human silhouette approval, tune waistband height, leg taper, cuff shape, and material treatment.",
+      "write_scope": ["tools/blender/build_native_pants_rebuild.py"],
+      "parallel_group": "look-dev",
+      "blocked_by": ["human-walk-review"],
+      "acceptance_gate": "style_review.status == approved"
+    },
+    {
+      "id": "promote-and-export",
+      "stage": 6,
+      "view_scope": ["all"],
+      "failure": "Candidate has not been promoted to a milestone asset.",
+      "measured_delta": "v7 is review_required, not accepted.",
+      "proposed_action": "Export the approved candidate and update the pants manifest only after human and style gates pass.",
+      "write_scope": ["milestones/pants", "docs/ASSET_STATUS.json"],
+      "parallel_group": null,
+      "blocked_by": ["human-walk-review", "style-and-cuff-pass"],
+      "acceptance_gate": "all prior gates pass"
+    }
+  ]
+}

@@ -24,6 +24,29 @@ REQUIRED = [
     "docs/decisions/0001-development-record-system.md",
     "docs/decisions/0002-asset-lifecycle-sync-policy.md",
     "docs/features/F001-studio-shell-asset-registry-actor-preview.md",
+    "docs/features/F002-actor-assembly-workflow.md",
+    "docs/features/F003-asset-workbench-composite-review.md",
+    "docs/features/F004-first-hair-bundle-integration.md",
+    "docs/features/F005-workflow-scoped-library-collapsible-preview.md",
+    "schemas/asset-registry.v1.schema.json",
+    "schemas/recipe.v1.schema.json",
+    "schemas/run.v1.schema.json",
+    "schemas/hair-bundle-recipe.v1.schema.json",
+    "studio/package.json",
+    "studio/package-lock.json",
+    "studio/src/generated/asset-registry.json",
+    "studio/src/App.tsx",
+    "studio/src/components/WorkflowRail.tsx",
+    "start-studio.cmd",
+    "tools/build_studio_registry.py",
+    "tools/blender/export_studio_actor_preview.py",
+    "tools/export_studio_actor_preview.ps1",
+    "tools/validate_studio_actor_preview.py",
+    "tools/build_first_hair_bundle.ps1",
+    "tools/render_first_hair_bundle_review.ps1",
+    "tools/validate_first_hair_bundle.py",
+    "tools/blender/hair_fit_support.py",
+    "tools/blender/analyze_front_surface_coverage.py",
     "docs/templates/FEATURE_TEMPLATE.md",
     "docs/templates/ADR_TEMPLATE.md",
     "milestones/body/chibi_actor_mixamo_walk_v1.blend",
@@ -31,19 +54,31 @@ REQUIRED = [
     "milestones/body/release_manifest.json",
     "milestones/body/animation_sources/mixamo_standard_walk.fbx",
     "milestones/body/animation_sources/mixamo_run.fbx",
-    "milestones/body/face_contract_v1.json",
+    "milestones/body/face_contract_v2.json",
+    "milestones/body/chibi_actor_eye_assembly_v2.blend",
     "milestones/body/eye_textures/eye_left.png",
     "milestones/body/eye_textures/eye_right.png",
+    "milestones/body/eye_textures/eye_half_left.png",
+    "milestones/body/eye_textures/eye_half_right.png",
+    "milestones/body/eye_textures/eye_closed_left.png",
+    "milestones/body/eye_textures/eye_closed_right.png",
     "milestones/hair/sources/female/chloe_hair_source.blend",
     "milestones/hair/sources/male/colin_hair_source.blend",
     "milestones/hair/hair_component_catalog_v1.json",
     "milestones/hair/hair_random_pool_v1.json",
+    "milestones/hair/first_bundle_recipe_v1.json",
     "references/face/miku_chibi_source/miku_chibi_source.fbx",
     "references/face/miku_chibi_source/reference_manifest.json",
     "tools/blender/render_accurig_chibi_walk_test.py",
     "tools/process_actor_3to2_pixels.py",
     "tools/validate_actor_3to2_pixels.py",
     "tools/blender/actor_asset_render_utils.py",
+    "tools/blender/build_actor_eye_assembly.py",
+    "tools/blender/validate_actor_eye_assembly.py",
+    "tools/blender/render_actor_eye_blink_review.py",
+    "tools/build_actor_eye_assembly.ps1",
+    "tools/render_actor_eye_blink_review.ps1",
+    "tools/validate_actor_eye_blink_review.py",
     "milestones/tops/actor_native_tshirt_v5/actor_native_tshirt_body_component_v5_upperarm_coverage.blend",
     "milestones/tops/actor_native_tshirt_v5/manifest.json",
     "milestones/pants/native_control_v0/native_control_shorts_v0.blend",
@@ -72,8 +107,8 @@ REQUIRED_TEXT_MARKERS = {
         "## 旧 ImageGen 男女图的处理",
     ],
     "docs/PRODUCT_TECH_BASELINE.md": [
-        "状态：`draft_for_discussion`",
-        "## 当前需要讨论确认的问题",
+        "状态：`accepted_baseline`",
+        "## 已确认的第一版技术边界",
     ],
     "docs/REMOVALS.md": ["## 新记录要求"],
     "docs/decisions/0002-asset-lifecycle-sync-policy.md": [
@@ -83,7 +118,20 @@ REQUIRED_TEXT_MARKERS = {
     ],
     "docs/features/F001-studio-shell-asset-registry-actor-preview.md": [
         "功能 ID：`F001`",
+        "状态：`in_progress`",
         "## 技术选型",
+        "## 验收条件",
+    ],
+    "docs/features/F002-actor-assembly-workflow.md": [
+        "功能 ID：`F002`",
+        "状态：`in_progress`",
+        "## 技术选型",
+        "## 验收条件",
+    ],
+    "docs/features/F003-asset-workbench-composite-review.md": [
+        "功能 ID：`F003`",
+        "状态：`in_progress`",
+        "## 分类边界",
         "## 验收条件",
     ],
 }
@@ -109,6 +157,22 @@ FORBIDDEN_PATHS = [
 
 
 MARKDOWN_LINK_RE = re.compile(r"\[[^\]]+\]\(([^)]+)\)")
+
+
+def is_local_output(path: Path) -> bool:
+    relative = path.relative_to(ROOT)
+    parts = relative.parts
+    if "__pycache__" in parts:
+        return True
+    if parts and parts[0] in {"workspace", "third_party"}:
+        return True
+    local_roots = (
+        ("studio", "node_modules"),
+        ("studio", "dist"),
+        ("studio", "coverage"),
+        ("studio", "public", "generated"),
+    )
+    return any(parts[: len(prefix)] == prefix for prefix in local_roots)
 
 
 def main() -> int:
@@ -138,6 +202,9 @@ def main() -> int:
         path = ROOT / str(record["path"])
         if not path.is_file():
             raise FileNotFoundError(path)
+        first_bundle = record.get("first_bundle")
+        if first_bundle and not (ROOT / str(first_bundle)).is_file():
+            raise FileNotFoundError(ROOT / str(first_bundle))
 
     hair_catalog = json.loads(
         (ROOT / "milestones/hair/hair_component_catalog_v1.json").read_text(encoding="utf-8")
@@ -153,31 +220,60 @@ def main() -> int:
     if missing_hair_sources:
         raise RuntimeError("missing catalogued hair sources:\n" + "\n".join(missing_hair_sources))
 
+    hair_bundle = json.loads(
+        (ROOT / "milestones/hair/first_bundle_recipe_v1.json").read_text(encoding="utf-8")
+    )
+    if hair_bundle.get("schema") != "assetsstudio_hair_bundle_recipe_v1":
+        raise RuntimeError("unexpected first hair bundle recipe schema")
+    if hair_bundle.get("status") != "provisional":
+        raise RuntimeError("first hair bundle must remain provisional until user review")
+    if hair_bundle.get("binding", {}).get("bone") != "CC_Base_Head":
+        raise RuntimeError("first hair bundle must bind to CC_Base_Head")
+
     face_contract = json.loads(
-        (ROOT / "milestones/body/face_contract_v1.json").read_text(encoding="utf-8")
+        (ROOT / "milestones/body/face_contract_v2.json").read_text(encoding="utf-8")
     )
     face_paths = [
-        str(face_contract["actor_blend"]),
-        str(face_contract["eye_textures"]["left"]),
-        str(face_contract["eye_textures"]["right"]),
+        str(face_contract["source_actor_blend"]),
+        str(face_contract["actor_face_blend"]),
+        *[str(path) for path in face_contract["eye_textures"].values() if isinstance(path, str)],
         str(face_contract["ear_source"]["file"]),
         str(face_contract["actor_3to2_pipeline"]["render"]),
         str(face_contract["actor_3to2_pipeline"]["pixel_process"]),
         str(face_contract["actor_3to2_pipeline"]["validate"]),
+        str(face_contract["rebuild"]),
+        str(face_contract["review"]),
+        str(face_contract["validate"]),
     ]
     missing_face_paths = [path for path in face_paths if not (ROOT / path).is_file()]
     if missing_face_paths:
         raise RuntimeError("missing Actor face contract dependencies:\n" + "\n".join(missing_face_paths))
 
+    registry = json.loads(
+        (ROOT / "studio/src/generated/asset-registry.json").read_text(encoding="utf-8")
+    )
+    if registry.get("schema") != "assetsstudio_asset_registry_v1":
+        raise RuntimeError("unexpected Studio asset registry schema")
+    registry_records = registry.get("assets", [])
+    registry_projection = [
+        (record.get("id"), record.get("category"), record.get("status"), record.get("source_path"))
+        for record in registry_records
+    ]
+    status_projection = [
+        (record.get("id"), record.get("category"), record.get("status"), record.get("path"))
+        for record in records
+    ]
+    if registry_projection != status_projection:
+        raise RuntimeError("Studio registry is stale; run python tools/build_studio_registry.py")
+
     for manifest in ROOT.rglob("*.json"):
-        if "third_party" in manifest.relative_to(ROOT).parts:
+        if is_local_output(manifest) or ".git" in manifest.parts:
             continue
         json.loads(manifest.read_text(encoding="utf-8"))
 
     broken_links = []
     for document in ROOT.rglob("*.md"):
-        relative_parts = document.relative_to(ROOT).parts
-        if ".git" in document.parts or "third_party" in relative_parts:
+        if ".git" in document.parts or is_local_output(document):
             continue
         content = document.read_text(encoding="utf-8")
         for raw_target in MARKDOWN_LINK_RE.findall(content):
@@ -193,7 +289,7 @@ def main() -> int:
     stale_roots = ("E:\\\\WorkProject\\\\AssetsLab", "D:\\\\Apps\\\\CodeXApp\\\\Tests\\\\AssetsLab")
     stale = []
     for manifest in ROOT.rglob("*.json"):
-        if "third_party" in manifest.relative_to(ROOT).parts:
+        if is_local_output(manifest) or ".git" in manifest.parts:
             continue
         content = manifest.read_text(encoding="utf-8")
         if any(root in content for root in stale_roots):
@@ -202,10 +298,9 @@ def main() -> int:
         raise RuntimeError("stale AssetsLab absolute paths:\n" + "\n".join(stale))
 
     files = sorted(
-        path for path in ROOT.rglob("*")
-        if path.is_file()
-        and ".git" not in path.parts
-        and "third_party" not in path.relative_to(ROOT).parts
+        path
+        for path in ROOT.rglob("*")
+        if path.is_file() and ".git" not in path.parts and not is_local_output(path)
     )
     total = sum(path.stat().st_size for path in files)
     largest = max(files, key=lambda path: path.stat().st_size)

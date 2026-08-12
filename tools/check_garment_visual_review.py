@@ -30,6 +30,7 @@ def args() -> argparse.Namespace:
     parser.add_argument("--garment-kind", choices=("auto", "pants", "tshirt"), default="auto")
     parser.add_argument("--highlight-color", default="0.08,0.30,0.85,1.0")
     parser.add_argument("--side-coverage-threshold", type=float, default=0.65)
+    parser.add_argument("--back-max-components", type=int, default=3)
     return parser.parse_args()
 
 
@@ -61,7 +62,13 @@ def component_count(mask: np.ndarray) -> int:
     return count
 
 
-def inspect_frame(path: Path, direction: str, side_threshold: float, garment_kind: str) -> dict[str, object]:
+def inspect_frame(
+    path: Path,
+    direction: str,
+    side_threshold: float,
+    garment_kind: str,
+    back_max_components: int,
+) -> dict[str, object]:
     rgba = np.array(Image.open(path).convert("RGBA"))
     actor = rgba[:, :, 3] > 10
     garment = highlight_mask(rgba)
@@ -98,7 +105,8 @@ def inspect_frame(path: Path, direction: str, side_threshold: float, garment_kin
     coverage = float(np.median(row_ratios)) if row_ratios else 0.0
     components = component_count(roi_garment)
     side_fail = direction in {"right", "left"} and coverage < side_threshold
-    back_fail = direction == "back" and components > 1
+    expected_back_components = 1 if garment_kind == "tshirt" else back_max_components
+    back_fail = direction == "back" and components > expected_back_components
     return {
         "path": str(path),
         "direction": direction,
@@ -108,6 +116,7 @@ def inspect_frame(path: Path, direction: str, side_threshold: float, garment_kin
         "garment_component_count": components,
         "side_outer_thigh_status": "fail" if side_fail else "pass_or_review",
         "back_crotch_continuity_status": "fail" if back_fail else "pass_or_review",
+        "back_expected_max_components": expected_back_components,
     }
 
 
@@ -124,7 +133,15 @@ def main() -> int:
         for frame in range(8):
             path = render_dir / f"{direction}_{frame:02d}.png"
             if path.is_file():
-                frames.append(inspect_frame(path, direction, options.side_coverage_threshold, garment_kind))
+                frames.append(
+                    inspect_frame(
+                        path,
+                        direction,
+                        options.side_coverage_threshold,
+                        garment_kind,
+                        options.back_max_components,
+                    )
+                )
 
     side_failures = [item for item in frames if item.get("side_outer_thigh_status") == "fail"]
     back_failures = [item for item in frames if item.get("back_crotch_continuity_status") == "fail"]
@@ -186,7 +203,7 @@ def main() -> int:
         "missing_frames": missing,
         "thresholds": {
             "side_coverage_median_min": options.side_coverage_threshold,
-            "back_max_expected_components": 1,
+            "back_max_expected_components": 1 if garment_kind == "tshirt" else options.back_max_components,
         },
         "failures": {
             "tshirt_upper_body": upper_body_failures,
