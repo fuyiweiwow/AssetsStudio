@@ -9,7 +9,10 @@ from pathlib import Path
 
 
 FORBIDDEN_SOURCE_MARKERS = ("official", "neutral", "demo", "sim.obj")
-MEASUREMENT_SCHEMA = "assetsstudio_actor_complete_shirt_measurements_v1"
+MEASUREMENT_SCHEMAS = {
+    "assetsstudio_actor_complete_shirt_measurements_v1",
+    "assetsstudio_actor_complete_pants_measurements_v1",
+}
 
 
 def args() -> argparse.Namespace:
@@ -46,14 +49,16 @@ def main() -> int:
         measurements = json.loads(options.measurements.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as exc:
         fail(f"cannot read measurements: {exc}")
-    if measurements.get("schema") != MEASUREMENT_SCHEMA:
-        fail(f"measurements schema must be {MEASUREMENT_SCHEMA}")
+    if measurements.get("schema") not in MEASUREMENT_SCHEMAS:
+        fail(f"measurements schema must be one of {sorted(MEASUREMENT_SCHEMAS)}")
     if measurements.get("pose") != "REST":
         fail("measurements must come from Actor REST pose")
     if measurements.get("units") != "centimetres":
         fail("measurements units must be centimetres")
-    if "arms" not in measurements or "body" not in measurements:
-        fail("measurements must contain Actor body and arms")
+    if "body" not in measurements:
+        fail("measurements must contain Actor body sections")
+    if measurements.get("schema") == "assetsstudio_actor_complete_shirt_measurements_v1" and "arms" not in measurements:
+        fail("shirt measurements must contain Actor arms")
 
     pattern_text = source_text(options.pattern)
     if any(marker in pattern_text for marker in FORBIDDEN_SOURCE_MARKERS):

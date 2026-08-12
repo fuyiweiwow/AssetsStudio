@@ -86,6 +86,11 @@ def main() -> int:
     dependency_result = subprocess.run([
         sys.executable, str(dependency_guard),
         "--garmentcode-root", str(args.garmentcode_root.resolve()),
+        *(
+            ["--require-sleeve-patch"]
+            if manifest.get("schema") != "assetsstudio_garmentcode_pants_candidate_v1"
+            else []
+        ),
     ], text=True)
     if dependency_result.returncode:
         raise RuntimeError("pinned GarmentCode/Warp dependency guard rejected simulation")

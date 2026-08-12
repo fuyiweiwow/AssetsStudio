@@ -1,4 +1,8 @@
-"""Verify the pinned GarmentCode checkout exposes Actor-specific sleeve fields."""
+"""Verify the pinned GarmentCode/Warp checkout used by Actor garments.
+
+The sleeve markers are required only when generating an upper garment. Pants
+use upstream GarmentCode unchanged but still require the same pinned commits.
+"""
 
 from __future__ import annotations
 
@@ -21,6 +25,11 @@ REQUIRED_MARKERS = {
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--garmentcode-root", required=True, type=Path)
+    parser.add_argument(
+        "--require-sleeve-patch",
+        action="store_true",
+        help="also require the project Actor sleeve field patch",
+    )
     options = parser.parse_args()
     root = options.garmentcode_root.resolve()
     if not (root / ".git").exists():
@@ -30,11 +39,12 @@ def main() -> int:
     ).strip()
     if commit != PINNED_COMMIT:
         raise RuntimeError(f"GarmentCode commit mismatch: {commit} != {PINNED_COMMIT}")
-    for relative, markers in REQUIRED_MARKERS.items():
-        source = (root / relative).read_text(encoding="utf-8")
-        missing = [marker for marker in markers if marker not in source]
-        if missing:
-            raise RuntimeError(f"missing Actor field support in {relative}: {missing}")
+    if options.require_sleeve_patch:
+        for relative, markers in REQUIRED_MARKERS.items():
+            source = (root / relative).read_text(encoding="utf-8")
+            missing = [marker for marker in markers if marker not in source]
+            if missing:
+                raise RuntimeError(f"missing Actor field support in {relative}: {missing}")
     warp_root = root.parent / "NvidiaWarp-GarmentCode"
     if not (warp_root / ".git").exists():
         raise RuntimeError(f"missing sibling Warp checkout: {warp_root}")

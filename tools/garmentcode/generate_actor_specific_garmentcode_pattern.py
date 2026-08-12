@@ -128,6 +128,7 @@ def run_guards(options: argparse.Namespace, spec_path: Path) -> None:
         sys.executable,
         str(Path(__file__).with_name("validate_garmentcode_actor_patch.py")),
         "--garmentcode-root", str(options.garmentcode_root.resolve()),
+        "--require-sleeve-patch",
     ], "GarmentCode dependency guard rejected the checkout")
     run_command([
         sys.executable,

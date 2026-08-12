@@ -36,7 +36,7 @@ uv venv --python 3.9 .\third_party\GarmentCode\.venv
 & .\third_party\GarmentCode\.venv\Scripts\python.exe .\third_party\NvidiaWarp-GarmentCode\build_lib.py
 uv pip install --python .\third_party\GarmentCode\.venv\Scripts\python.exe -r .\tools\garmentcode\actor_sim_requirements.txt -e .\third_party\NvidiaWarp-GarmentCode
 Copy-Item .\third_party\GarmentCode\system.template.json .\third_party\GarmentCode\system.json
-python .\tools\garmentcode\validate_garmentcode_actor_patch.py --garmentcode-root .\third_party\GarmentCode
+python .\tools\garmentcode\validate_garmentcode_actor_patch.py --garmentcode-root .\third_party\GarmentCode --require-sleeve-patch
 ```
 
 补丁只让 GarmentCode 原生衣片读取 `actor_sleeve_connecting_width`、`actor_sleeve_cuff_circumference` 和 `actor_sleeve_length`；它不复制 demo 网格，也不修改生成后的衣服。
