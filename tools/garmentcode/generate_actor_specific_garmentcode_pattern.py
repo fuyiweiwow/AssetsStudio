@@ -290,6 +290,7 @@ def main() -> int:
         "measurements_source": str(options.measurements.resolve()),
         "body_source": str(options.body.resolve()),
         "pattern_spec": str(spec_path.resolve()),
+        "generated_specification": str((destination / f"{destination.name}_specification.json").resolve()),
         "design_template_source": str(options.design_template.resolve()),
         "actor_parameters": spec["actor_parameters"],
         "garment_style_parameters": spec["garment_style_parameters"],

@@ -1,0 +1,203 @@
+{
+  "schema": "assetsstudio_garmentcode_orientation_audit_v1",
+  "boxmesh_obj": "D:\\Apps\\CodeXApp\\Tests\\AssetsStudio\\workspace\\garmentcode_restart_actor_length_0p90_repro_v1\\simulation_100f_actor_locked\\garmentcode_restart_actor_length_0p90_repro_v1_seed_1_boxmesh.obj",
+  "sim_obj": "D:\\Apps\\CodeXApp\\Tests\\AssetsStudio\\workspace\\garmentcode_restart_actor_length_0p90_repro_v1\\simulation_100f_actor_locked\\garmentcode_restart_actor_length_0p90_repro_v1_seed_1_sim.obj",
+  "body_obj": "D:\\Apps\\CodeXApp\\Tests\\AssetsStudio\\workspace\\garmentcode_actor_native_measurements_v2\\actor_torso_upperarm_surface_rest_partial_boundary_filled_v1.obj",
+  "garment": {
+    "vertices": 16340,
+    "faces": 32236,
+    "degenerate_faces": 0,
+    "box_to_sim_normal_dot_negative": 1792,
+    "box_to_sim_normal_dot_mean": 0.6713814217527015,
+    "panels": {
+      "left_btorso": {
+        "faces": 7123,
+        "degenerate_faces": 0,
+        "box_to_sim_normal_dot_negative": 436,
+        "box_to_sim_normal_dot_mean": 0.6950127185461957,
+        "expected_front_back_z_fraction": 0.9241892461041696,
+        "mean_normal": [
+          0.4445573469410711,
+          0.05924428281484631,
+          -0.6770671689581765
+        ]
+      },
+      "left_ftorso": {
+        "faces": 6928,
+        "degenerate_faces": 0,
+        "box_to_sim_normal_dot_negative": 164,
+        "box_to_sim_normal_dot_mean": 0.7107396220234148,
+        "expected_front_back_z_fraction": 0.976905311778291,
+        "mean_normal": [
+          0.4832194006798695,
+          0.029162665362824677,
+          0.6972268315530109
+        ]
+      },
+      "left_sleeve_b": {
+        "faces": 812,
+        "degenerate_faces": 0,
+        "box_to_sim_normal_dot_negative": 100,
+        "box_to_sim_normal_dot_mean": 0.4809366558846674,
+        "expected_front_back_z_fraction": 0.8866995073891626,
+        "mean_normal": [
+          0.27975352056119734,
+          0.25121565552024266,
+          -0.450413288373086
+        ]
+      },
+      "left_sleeve_f": {
+        "faces": 802,
+        "degenerate_faces": 0,
+        "box_to_sim_normal_dot_negative": 81,
+        "box_to_sim_normal_dot_mean": 0.58124719929496,
+        "expected_front_back_z_fraction": 0.9102244389027432,
+        "mean_normal": [
+          0.2414900722774818,
+          0.1787639175101335,
+          0.5647581160537603
+        ]
+      },
+      "right_btorso": {
+        "faces": 7065,
+        "degenerate_faces": 0,
+        "box_to_sim_normal_dot_negative": 346,
+        "box_to_sim_normal_dot_mean": 0.703267524846059,
+        "expected_front_back_z_fraction": 0.937721160651097,
+        "mean_normal": [
+          -0.4477027783523504,
+          0.05512485576861307,
+          -0.687337322070218
+        ]
+      },
+      "right_ftorso": {
+        "faces": 6852,
+        "degenerate_faces": 0,
+        "box_to_sim_normal_dot_negative": 85,
+        "box_to_sim_normal_dot_mean": 0.7180654052862153,
+        "expected_front_back_z_fraction": 0.9892002335084646,
+        "mean_normal": [
+          -0.4940935616327627,
+          0.027446316143949438,
+          0.7058661507158547
+        ]
+      },
+      "right_sleeve_b": {
+        "faces": 800,
+        "degenerate_faces": 0,
+        "box_to_sim_normal_dot_negative": 77,
+        "box_to_sim_normal_dot_mean": 0.5000449136372613,
+        "expected_front_back_z_fraction": 0.92875,
+        "mean_normal": [
+          -0.3118092994337561,
+          0.23830064486224545,
+          -0.4870284987416164
+        ]
+      },
+      "right_sleeve_f": {
+        "faces": 778,
+        "degenerate_faces": 0,
+        "box_to_sim_normal_dot_negative": 113,
+        "box_to_sim_normal_dot_mean": 0.49967889732864956,
+        "expected_front_back_z_fraction": 0.8740359897172236,
+        "mean_normal": [
+          -0.3061416039635247,
+          0.22841511919276253,
+          0.49195241548723356
+        ]
+      },
+      "sl_left_cuff_b": {
+        "faces": 268,
+        "degenerate_faces": 0,
+        "box_to_sim_normal_dot_negative": 105,
+        "box_to_sim_normal_dot_mean": 0.18137444508730352,
+        "expected_front_back_z_fraction": 0.6119402985074627,
+        "mean_normal": [
+          0.041765272706781674,
+          0.2134665867489732,
+          -0.16618395905498312
+        ]
+      },
+      "sl_left_cuff_f": {
+        "faces": 272,
+        "degenerate_faces": 0,
+        "box_to_sim_normal_dot_negative": 114,
+        "box_to_sim_normal_dot_mean": 0.1519608283336841,
+        "expected_front_back_z_fraction": 0.5882352941176471,
+        "mean_normal": [
+          0.09071644397896238,
+          0.14805255527150007,
+          0.13708791603240283
+        ]
+      },
+      "sl_right_cuff_b": {
+        "faces": 264,
+        "degenerate_faces": 0,
+        "box_to_sim_normal_dot_negative": 100,
+        "box_to_sim_normal_dot_mean": 0.17072799528648785,
+        "expected_front_back_z_fraction": 0.6212121212121212,
+        "mean_normal": [
+          -0.16017647873136534,
+          0.31333372480016114,
+          -0.15407343589720496
+        ]
+      },
+      "sl_right_cuff_f": {
+        "faces": 272,
+        "degenerate_faces": 0,
+        "box_to_sim_normal_dot_negative": 71,
+        "box_to_sim_normal_dot_mean": 0.363315357310904,
+        "expected_front_back_z_fraction": 0.7426470588235294,
+        "mean_normal": [
+          -0.07562253888759195,
+          0.1369590006814008,
+          0.3394887317202208
+        ]
+      }
+    }
+  },
+  "body_proxy": {
+    "vertices": 3014,
+    "faces": 5906,
+    "boundary_edges": 124,
+    "nonmanifold_edges": 1,
+    "radial_outward_fraction": 0.9417541483237386,
+    "radial_dot_mean": 0.6779498768066784,
+    "regions": {
+      "body": {
+        "vertices": 986,
+        "faces_wholly_in_region": 1832,
+        "pca_axis": [
+          -0.9951479307013453,
+          -0.08701180522163085,
+          -0.04592974823470529
+        ],
+        "outward_fraction": 0.9743449781659389,
+        "radial_dot_mean": 0.694467096713504
+      },
+      "left_arm": {
+        "vertices": 1019,
+        "faces_wholly_in_region": 1911,
+        "pca_axis": [
+          0.23039187163139685,
+          -0.9717542846298574,
+          -0.05111942673481619
+        ],
+        "outward_fraction": 0.8785975928833072,
+        "radial_dot_mean": 0.5155242044928497
+      },
+      "right_arm": {
+        "vertices": 1009,
+        "faces_wholly_in_region": 1893,
+        "pca_axis": [
+          -0.25072319418065037,
+          -0.9680174880317014,
+          -0.008945544401947406
+        ],
+        "outward_fraction": 0.8557844690966719,
+        "radial_dot_mean": 0.4964899073641654
+      }
+    },
+    "note": "partial proxy is open; radial test audits torso-side winding, not watertight volume"
+  }
+}

@@ -134,7 +134,7 @@ F001 先建立可信的可视化与数据入口：让 Studio 能回答“当前�
 | 2026-08-09 | 未定义 | 两级预览 | 用户允许等待，但要求留在页面并在 Actor 上看到结果 | 前端必须支持本地异步作业状态；F001 先实现已有 GLB 的交互预览 |
 | 2026-08-09 | 生成结果可能混入 Git | 默认本地、显式晋级 | 用户要求追溯和方便清理，防止项目膨胀 | 所有后续生成器必须写运行记录和存储策略 |
 | 2026-08-09 | 手工放置网页预览模型 | Blender 脚本生成、Git 忽略的本地 GLB | 必须保持可复现且不能让预览二进制无限进入 Git | `npm run assets:prepare` 生成 `studio/public/generated/`，manifest 记录源哈希和 Git 提交 |
-| 2026-08-09 | 各里程碑分别导出后在浏览器猜测装配 | 以鞋 v10 完整 Actor 场景为基底，精确追加当前短袖和短裤对象 | 三个服饰 Blend 都携带 Actor；直接合并完整场景会产生重复骨架和身体 | 导出器只追加 `ActorNativeTshirt_BodyComponent_v1` 与 `NativeControlShorts` 并重定向到权威 Armature |
+| 2026-08-09 | 各里程碑分别导出后在浏览器猜测装配 | 以鞋 v10 完整 Actor 场景为基底，精确追加当前短袖和短裤对象 | 三个服饰 Blend 都携带 Actor；直接合并完整场景会产生重复骨架和身体 | 导出器只追加 `GarmentCodeShirt_ActorTransfer` 与 `NativeControlShorts` 并重定向到权威 Armature |
 | 2026-08-09 | 普通深拷贝 GLB 场景 | 单实例直接使用 GLTFLoader 场景 | 用户观察到五官漂浮；普通克隆不能保持 SkinnedMesh 与克隆骨骼的一致引用 | 当前只挂载一个组合 Actor；未来若需要多实例，必须使用 SkeletonUtils.clone 并新增回归测试 |
 | 2026-08-09 | 允许 `file://` 直接打开页面 | 双击脚本启动本地 HTTP 服务 | 浏览器会阻止离线文件跨文件加载 ES Module、GLB 和 JSON | 增加 `start-studio.cmd`，命令窗口生命周期等于本地服务生命周期 |
 | 2026-08-09 | 旧 `EyePackageV1` 眼框/镜片叠层 | 头部贴合 `EyeAssemblyV1` 三态 | 用户观察到悬浮、遮挡和眨眼丢失；原项目记录证明迁移选择了错误基线 | Face 合同升级到 v2；GLB manifest 增加 Face/眨眼合同 |

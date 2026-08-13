@@ -1,0 +1,47 @@
+body:
+  height: 174.84346628189087
+  head_l: 23.660194873809814
+  arm_length: 35.6496
+  arm_pose_angle: 45.2925
+  armscye_depth: 15.6458
+  shoulder_w: 49.8495
+  shoulder_incl: 32.1178
+  neck_w: 13.0
+  bust: 148.85901021315567
+  back_width: 74.42950510657784
+  underbust: 148.85901021315567
+  bust_line: 32.91889131069183
+  vert_bust_line: 32.91889131069183
+  bust_points: 20.037390225974555
+  waist: 182.22878337784988
+  waist_back_width: 91.11439168892494
+  waist_line: 80.91709613800049
+  waist_over_bust_line: 80.91709613800049
+  hips: 165.05824354728102
+  hip_back_width: 82.52912177364051
+  hips_line: 15.872746706008911
+  hip_inclination: 0.0
+  wrist: 36.8328
+  actor_upperarm_cuff_circumference: 64.0566
+  actor_sleeve_cuff_circumference: 67.9
+  actor_sleeve_connecting_width: 18.0599
+  actor_sleeve_length: 8.7537
+  actor_sleeve_cuff_t: 0.62
+assetsstudio_actor_body_provenance:
+  schema: assetsstudio_actor_garmentcodedata_body_provenance_v1
+  actor: milestones/body/chibi_actor_mixamo_walk_v1.blend
+  pose: REST
+  units: centimetres
+  body_height_source: Actor armature world height; oversized head mesh excluded
+  torso_measurement_source: inputs/actor_measurements.json
+  torso_measurement_policy: centered closed body loop, +/-2cm at 5mm, bust/hips MAX
+    and waist MIN, 10% continuity gate
+  arm_measurement_source: inputs/actor_measurements.json
+  neck_measurement_source: diagnostic override supplied by actor neck face-section
+    scan; not yet accepted
+  unsupported_or_style_assumptions:
+  - underbust equals centered bust because Actor has no separate underbust landmark
+  - back widths are half of corresponding circumferences for GarmentCode front/back
+    allocation
+  - hip inclination is zero because this is an upper-garment test
+  neck_w_override_cm: 13.0

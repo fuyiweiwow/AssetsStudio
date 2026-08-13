@@ -1,0 +1,1044 @@
+{
+  "schema": "assetsstudio_actor_garment_local_penetration_audit_v1",
+  "blend": "milestones/tops/garmentcode_short_sleeve_v1/output/actor_transfer.blend",
+  "pose_mode": "POSE",
+  "panel_membership": "milestones/tops/garmentcode_short_sleeve_v1/simulation/panel_membership.json",
+  "frames": [
+    {
+      "frame": 1,
+      "penetration_count": 35,
+      "regions": {
+        "armpit_left": {
+          "count": 0,
+          "max_depth_m": 0.0,
+          "examples": []
+        },
+        "armpit_right": {
+          "count": 0,
+          "max_depth_m": 0.0,
+          "examples": []
+        },
+        "back_neck": {
+          "count": 0,
+          "max_depth_m": 0.0,
+          "examples": []
+        },
+        "other": {
+          "count": 35,
+          "max_depth_m": 0.037288068124325946,
+          "examples": [
+            {
+              "point": [
+                -0.07998240739107132,
+                -0.047279469668865204,
+                1.4916702508926392
+              ],
+              "signed_m": -0.037288068124325946,
+              "distance_m": 0.03728862106800079,
+              "region": "other"
+            },
+            {
+              "point": [
+                -0.07999245822429657,
+                -0.048297103494405746,
+                1.4914922714233398
+              ],
+              "signed_m": -0.037189014605246484,
+              "distance_m": 0.03718956559896469,
+              "region": "other"
+            },
+            {
+              "point": [
+                -0.08005750179290771,
+                -0.04869866371154785,
+                1.4919222593307495
+              ],
+              "signed_m": -0.037165977773838677,
+              "distance_m": 0.037166524678468704,
+              "region": "other"
+            },
+            {
+              "point": [
+                -0.07073402404785156,
+                -0.0486057884991169,
+                1.489837884902954
+              ],
+              "signed_m": -0.035996854305267334,
+              "distance_m": 0.046068716794252396,
+              "region": "other"
+            },
+            {
+              "point": [
+                0.05125315487384796,
+                -0.04931328073143959,
+                1.4801255464553833
+              ],
+              "signed_m": -0.029637277126312256,
+              "distance_m": 0.033720094710588455,
+              "region": "other"
+            }
+          ]
+        }
+      },
+      "panel_family_penetration": {
+        "torso": {
+          "count": 29,
+          "max_depth_m": 0.037288068124325946,
+          "over_0p01_m": 29
+        },
+        "left_sleeve": {
+          "count": 0,
+          "max_depth_m": 0.0,
+          "over_0p01_m": 0
+        },
+        "right_sleeve": {
+          "count": 6,
+          "max_depth_m": 0.013349259097594768,
+          "over_0p01_m": 6
+        }
+      },
+      "penetrating_weight_totals": [
+        [
+          "CC_Base_Spine02",
+          19.414716497063637
+        ],
+        [
+          "CC_Base_Waist",
+          6.141644984483719
+        ],
+        [
+          "CC_Base_R_Upperarm",
+          5.458175152540207
+        ],
+        [
+          "CC_Base_Hip",
+          2.839721202850342
+        ],
+        [
+          "CC_Base_L_Upperarm",
+          0.679806299507618
+        ],
+        [
+          "CC_Base_L_Clavicle",
+          0.2369837686419487
+        ],
+        [
+          "CC_Base_R_Clavicle",
+          0.21031827479600906
+        ],
+        [
+          "CC_Base_Spine01",
+          0.01863378973212093
+        ]
+      ]
+    },
+    {
+      "frame": 11,
+      "penetration_count": 49,
+      "regions": {
+        "armpit_left": {
+          "count": 0,
+          "max_depth_m": 0.0,
+          "examples": []
+        },
+        "armpit_right": {
+          "count": 0,
+          "max_depth_m": 0.0,
+          "examples": []
+        },
+        "back_neck": {
+          "count": 0,
+          "max_depth_m": 0.0,
+          "examples": []
+        },
+        "other": {
+          "count": 49,
+          "max_depth_m": 0.047549346927553415,
+          "examples": [
+            {
+              "point": [
+                -0.059430111199617386,
+                -0.0666792169213295,
+                1.487438440322876
+              ],
+              "signed_m": -0.047549346927553415,
+              "distance_m": 0.047597549855709076,
+              "region": "other"
+            },
+            {
+              "point": [
+                -0.06870880722999573,
+                -0.06619320809841156,
+                1.4895180463790894
+              ],
+              "signed_m": -0.038778020127210766,
+              "distance_m": 0.038781195878982544,
+              "region": "other"
+            },
+            {
+              "point": [
+                -0.06863432377576828,
+                -0.0672072321176529,
+                1.4893287420272827
+              ],
+              "signed_m": -0.0386894557159394,
+              "distance_m": 0.038692623376846313,
+              "region": "other"
+            },
+            {
+              "point": [
+                -0.0686526820063591,
+                -0.06761627644300461,
+                1.4897555112838745
+              ],
+              "signed_m": -0.03867725079180673,
+              "distance_m": 0.03868041932582855,
+              "region": "other"
+            },
+            {
+              "point": [
+                0.06232249736785889,
+                -0.07438919693231583,
+                1.4803297519683838
+              ],
+              "signed_m": -0.03377321266452782,
+              "distance_m": 0.03409867733716965,
+              "region": "other"
+            }
+          ]
+        }
+      },
+      "panel_family_penetration": {
+        "torso": {
+          "count": 40,
+          "max_depth_m": 0.047549346927553415,
+          "over_0p01_m": 40
+        },
+        "left_sleeve": {
+          "count": 9,
+          "max_depth_m": 0.019239642657339573,
+          "over_0p01_m": 9
+        },
+        "right_sleeve": {
+          "count": 0,
+          "max_depth_m": 0.0,
+          "over_0p01_m": 0
+        }
+      },
+      "penetrating_weight_totals": [
+        [
+          "CC_Base_Spine02",
+          24.66423189640045
+        ],
+        [
+          "CC_Base_Waist",
+          13.329059958457947
+        ],
+        [
+          "CC_Base_Hip",
+          6.626731276512146
+        ],
+        [
+          "CC_Base_L_Upperarm",
+          3.0322419479489326
+        ],
+        [
+          "CC_Base_R_Upperarm",
+          0.7638092935085297
+        ],
+        [
+          "CC_Base_L_Clavicle",
+          0.2369837686419487
+        ],
+        [
+          "CC_Base_R_Clavicle",
+          0.21031827479600906
+        ],
+        [
+          "CC_Base_Spine01",
+          0.13662337104324251
+        ]
+      ]
+    },
+    {
+      "frame": 21,
+      "penetration_count": 68,
+      "regions": {
+        "armpit_left": {
+          "count": 0,
+          "max_depth_m": 0.0,
+          "examples": []
+        },
+        "armpit_right": {
+          "count": 0,
+          "max_depth_m": 0.0,
+          "examples": []
+        },
+        "back_neck": {
+          "count": 0,
+          "max_depth_m": 0.0,
+          "examples": []
+        },
+        "other": {
+          "count": 68,
+          "max_depth_m": 0.038187564874533564,
+          "examples": [
+            {
+              "point": [
+                -0.06056370958685875,
+                -0.05414944887161255,
+                1.4921340942382812
+              ],
+              "signed_m": -0.038187564874533564,
+              "distance_m": 0.038189731538295746,
+              "region": "other"
+            },
+            {
+              "point": [
+                -0.06047520041465759,
+                -0.055165357887744904,
+                1.4919631481170654
+              ],
+              "signed_m": -0.038097412878414616,
+              "distance_m": 0.03809957206249237,
+              "region": "other"
+            },
+            {
+              "point": [
+                -0.06047576665878296,
+                -0.05556614324450493,
+                1.4923981428146362
+              ],
+              "signed_m": -0.03808605737867765,
+              "distance_m": 0.03808820992708206,
+              "region": "other"
+            },
+            {
+              "point": [
+                -0.05133039504289627,
+                -0.05451212450861931,
+                1.4898381233215332
+              ],
+              "signed_m": -0.03795788960997015,
+              "distance_m": 0.04700220376253128,
+              "region": "other"
+            },
+            {
+              "point": [
+                0.26050347089767456,
+                -0.09157770127058029,
+                0.5707001090049744
+              ],
+              "signed_m": -0.030964148230850697,
+              "distance_m": 0.030964458361268044,
+              "region": "other"
+            }
+          ]
+        }
+      },
+      "panel_family_penetration": {
+        "torso": {
+          "count": 54,
+          "max_depth_m": 0.038187564874533564,
+          "over_0p01_m": 54
+        },
+        "left_sleeve": {
+          "count": 14,
+          "max_depth_m": 0.02550371951656416,
+          "over_0p01_m": 14
+        },
+        "right_sleeve": {
+          "count": 0,
+          "max_depth_m": 0.0,
+          "over_0p01_m": 0
+        }
+      },
+      "penetrating_weight_totals": [
+        [
+          "CC_Base_Spine02",
+          28.530033767223358
+        ],
+        [
+          "CC_Base_Waist",
+          22.37475234270096
+        ],
+        [
+          "CC_Base_Hip",
+          10.546735256910324
+        ],
+        [
+          "CC_Base_L_Upperarm",
+          5.123133458197117
+        ],
+        [
+          "CC_Base_R_Upperarm",
+          0.7638092935085297
+        ],
+        [
+          "CC_Base_L_Clavicle",
+          0.2369837686419487
+        ],
+        [
+          "CC_Base_Spine01",
+          0.21423361391134677
+        ],
+        [
+          "CC_Base_R_Clavicle",
+          0.21031827479600906
+        ]
+      ]
+    },
+    {
+      "frame": 31,
+      "penetration_count": 32,
+      "regions": {
+        "armpit_left": {
+          "count": 1,
+          "max_depth_m": 0.010961402433167677,
+          "examples": [
+            {
+              "point": [
+                0.25134414434432983,
+                0.025466494262218475,
+                1.1474252939224243
+              ],
+              "signed_m": -0.010961402433167677,
+              "distance_m": 0.01115498412400484,
+              "region": "armpit_left"
+            }
+          ]
+        },
+        "armpit_right": {
+          "count": 0,
+          "max_depth_m": 0.0,
+          "examples": []
+        },
+        "back_neck": {
+          "count": 0,
+          "max_depth_m": 0.0,
+          "examples": []
+        },
+        "other": {
+          "count": 31,
+          "max_depth_m": 0.045948607701575384,
+          "examples": [
+            {
+              "point": [
+                -0.07472953200340271,
+                -0.056121841073036194,
+                1.489013910293579
+              ],
+              "signed_m": -0.045948607701575384,
+              "distance_m": 0.04599164053797722,
+              "region": "other"
+            },
+            {
+              "point": [
+                -0.08395828306674957,
+                -0.05482608079910278,
+                1.4909653663635254
+              ],
+              "signed_m": -0.03720974716998171,
+              "distance_m": 0.03721017763018608,
+              "region": "other"
+            },
+            {
+              "point": [
+                -0.08396751433610916,
+                -0.055843789130449295,
+                1.4907869100570679
+              ],
+              "signed_m": -0.03711360912711825,
+              "distance_m": 0.03711404278874397,
+              "region": "other"
+            },
+            {
+              "point": [
+                -0.08402577042579651,
+                -0.056245751678943634,
+                1.4912171363830566
+              ],
+              "signed_m": -0.037098190921824425,
+              "distance_m": 0.03709862008690834,
+              "region": "other"
+            },
+            {
+              "point": [
+                0.04743899405002594,
+                -0.05900136008858681,
+                1.4799216985702515
+              ],
+              "signed_m": -0.029040964756859466,
+              "distance_m": 0.03360503911972046,
+              "region": "other"
+            }
+          ]
+        }
+      },
+      "panel_family_penetration": {
+        "torso": {
+          "count": 31,
+          "max_depth_m": 0.045948607701575384,
+          "over_0p01_m": 31
+        },
+        "left_sleeve": {
+          "count": 1,
+          "max_depth_m": 0.010961402433167677,
+          "over_0p01_m": 1
+        },
+        "right_sleeve": {
+          "count": 0,
+          "max_depth_m": 0.0,
+          "over_0p01_m": 0
+        }
+      },
+      "penetrating_weight_totals": [
+        [
+          "CC_Base_Spine02",
+          18.78097414970398
+        ],
+        [
+          "CC_Base_Waist",
+          8.86521178483963
+        ],
+        [
+          "CC_Base_Hip",
+          2.108012318611145
+        ],
+        [
+          "CC_Base_L_Upperarm",
+          0.9933845475316048
+        ],
+        [
+          "CC_Base_R_Upperarm",
+          0.7638092935085297
+        ],
+        [
+          "CC_Base_L_Clavicle",
+          0.2369837686419487
+        ],
+        [
+          "CC_Base_R_Clavicle",
+          0.21031827479600906
+        ],
+        [
+          "CC_Base_Spine01",
+          0.041305785765871406
+        ]
+      ]
+    },
+    {
+      "frame": 41,
+      "penetration_count": 48,
+      "regions": {
+        "armpit_left": {
+          "count": 0,
+          "max_depth_m": 0.0,
+          "examples": []
+        },
+        "armpit_right": {
+          "count": 0,
+          "max_depth_m": 0.0,
+          "examples": []
+        },
+        "back_neck": {
+          "count": 0,
+          "max_depth_m": 0.0,
+          "examples": []
+        },
+        "other": {
+          "count": 48,
+          "max_depth_m": 0.04662916439838227,
+          "examples": [
+            {
+              "point": [
+                -0.08096950501203537,
+                -0.09252212941646576,
+                1.48708176612854
+              ],
+              "signed_m": -0.04662916439838227,
+              "distance_m": 0.04662921279668808,
+              "region": "other"
+            },
+            {
+              "point": [
+                -0.09007755666971207,
+                -0.09054594486951828,
+                1.489030122756958
+              ],
+              "signed_m": -0.03782983407654683,
+              "distance_m": 0.03782987222075462,
+              "region": "other"
+            },
+            {
+              "point": [
+                -0.09016895294189453,
+                -0.09154967963695526,
+                1.4888063669204712
+              ],
+              "signed_m": -0.03772027069271644,
+              "distance_m": 0.03772030770778656,
+              "region": "other"
+            },
+            {
+              "point": [
+                -0.09026467055082321,
+                -0.09196434915065765,
+                1.4892183542251587
+              ],
+              "signed_m": -0.03768264633572471,
+              "distance_m": 0.037682682275772095,
+              "region": "other"
+            },
+            {
+              "point": [
+                0.03896243870258331,
+                -0.08626358956098557,
+                1.4776278734207153
+              ],
+              "signed_m": -0.034285772181419816,
+              "distance_m": 0.035335708409547806,
+              "region": "other"
+            }
+          ]
+        }
+      },
+      "panel_family_penetration": {
+        "torso": {
+          "count": 27,
+          "max_depth_m": 0.04662916439838227,
+          "over_0p01_m": 27
+        },
+        "left_sleeve": {
+          "count": 0,
+          "max_depth_m": 0.0,
+          "over_0p01_m": 0
+        },
+        "right_sleeve": {
+          "count": 21,
+          "max_depth_m": 0.021200127666816115,
+          "over_0p01_m": 21
+        }
+      },
+      "penetrating_weight_totals": [
+        [
+          "CC_Base_Spine02",
+          24.76949942111969
+        ],
+        [
+          "CC_Base_R_Upperarm",
+          16.000415295362473
+        ],
+        [
+          "CC_Base_Hip",
+          3.5437710881233215
+        ],
+        [
+          "CC_Base_Waist",
+          2.450467586517334
+        ],
+        [
+          "CC_Base_L_Upperarm",
+          0.7559349462389946
+        ],
+        [
+          "CC_Base_L_Clavicle",
+          0.2636647913604975
+        ],
+        [
+          "CC_Base_R_Clavicle",
+          0.21031827479600906
+        ],
+        [
+          "CC_Base_Spine01",
+          0.005928583724198688
+        ]
+      ]
+    },
+    {
+      "frame": 51,
+      "penetration_count": 53,
+      "regions": {
+        "armpit_left": {
+          "count": 0,
+          "max_depth_m": 0.0,
+          "examples": []
+        },
+        "armpit_right": {
+          "count": 0,
+          "max_depth_m": 0.0,
+          "examples": []
+        },
+        "back_neck": {
+          "count": 0,
+          "max_depth_m": 0.0,
+          "examples": []
+        },
+        "other": {
+          "count": 53,
+          "max_depth_m": 0.046835878980346024,
+          "examples": [
+            {
+              "point": [
+                -0.08980194479227066,
+                -0.09381819516420364,
+                1.4849344491958618
+              ],
+              "signed_m": -0.046835878980346024,
+              "distance_m": 0.046835921704769135,
+              "region": "other"
+            },
+            {
+              "point": [
+                -0.09874467551708221,
+                -0.09118492901325226,
+                1.4868741035461426
+              ],
+              "signed_m": -0.03804145229514688,
+              "distance_m": 0.03804148733615875,
+              "region": "other"
+            },
+            {
+              "point": [
+                -0.09890837222337723,
+                -0.09217934310436249,
+                1.486651062965393
+              ],
+              "signed_m": -0.03792951424838975,
+              "distance_m": 0.03792954608798027,
+              "region": "other"
+            },
+            {
+              "point": [
+                -0.09903425723314285,
+                -0.09258580207824707,
+                1.4870630502700806
+              ],
+              "signed_m": -0.037891019630478695,
+              "distance_m": 0.03789105266332626,
+              "region": "other"
+            },
+            {
+              "point": [
+                0.029444975778460503,
+                -0.0878407433629036,
+                1.4767167568206787
+              ],
+              "signed_m": -0.0365651614847593,
+              "distance_m": 0.03738811984658241,
+              "region": "other"
+            }
+          ]
+        }
+      },
+      "panel_family_penetration": {
+        "torso": {
+          "count": 31,
+          "max_depth_m": 0.046835878980346024,
+          "over_0p01_m": 31
+        },
+        "left_sleeve": {
+          "count": 0,
+          "max_depth_m": 0.0,
+          "over_0p01_m": 0
+        },
+        "right_sleeve": {
+          "count": 22,
+          "max_depth_m": 0.02062415171531029,
+          "over_0p01_m": 22
+        }
+      },
+      "penetrating_weight_totals": [
+        [
+          "CC_Base_Spine02",
+          27.021863222122192
+        ],
+        [
+          "CC_Base_R_Upperarm",
+          16.545057982206345
+        ],
+        [
+          "CC_Base_Hip",
+          4.808753848075867
+        ],
+        [
+          "CC_Base_Waist",
+          3.1833117604255676
+        ],
+        [
+          "CC_Base_L_Upperarm",
+          0.9059763848781586
+        ],
+        [
+          "CC_Base_L_Clavicle",
+          0.31661691702902317
+        ],
+        [
+          "CC_Base_R_Clavicle",
+          0.21031827479600906
+        ],
+        [
+          "CC_Base_Spine01",
+          0.008101680014988233
+        ]
+      ]
+    },
+    {
+      "frame": 61,
+      "penetration_count": 42,
+      "regions": {
+        "armpit_left": {
+          "count": 0,
+          "max_depth_m": 0.0,
+          "examples": []
+        },
+        "armpit_right": {
+          "count": 0,
+          "max_depth_m": 0.0,
+          "examples": []
+        },
+        "back_neck": {
+          "count": 0,
+          "max_depth_m": 0.0,
+          "examples": []
+        },
+        "other": {
+          "count": 42,
+          "max_depth_m": 0.04655479229404591,
+          "examples": [
+            {
+              "point": [
+                -0.08065153658390045,
+                -0.04115390032529831,
+                1.4883538484573364
+              ],
+              "signed_m": -0.04655479229404591,
+              "distance_m": 0.046555694192647934,
+              "region": "other"
+            },
+            {
+              "point": [
+                -0.0896349623799324,
+                -0.03850667178630829,
+                1.4900728464126587
+              ],
+              "signed_m": -0.03776875829498749,
+              "distance_m": 0.037768784910440445,
+              "region": "other"
+            },
+            {
+              "point": [
+                -0.08978693932294846,
+                -0.03951423242688179,
+                1.4899073839187622
+              ],
+              "signed_m": -0.0376591053645825,
+              "distance_m": 0.03765912726521492,
+              "region": "other"
+            },
+            {
+              "point": [
+                -0.08991184085607529,
+                -0.03989710658788681,
+                1.4903414249420166
+              ],
+              "signed_m": -0.03762383338471409,
+              "distance_m": 0.03762385621666908,
+              "region": "other"
+            },
+            {
+              "point": [
+                0.03939404711127281,
+                -0.04194750636816025,
+                1.4820200204849243
+              ],
+              "signed_m": -0.03395614941837266,
+              "distance_m": 0.03498463332653046,
+              "region": "other"
+            }
+          ]
+        }
+      },
+      "panel_family_penetration": {
+        "torso": {
+          "count": 23,
+          "max_depth_m": 0.04655479229404591,
+          "over_0p01_m": 23
+        },
+        "left_sleeve": {
+          "count": 0,
+          "max_depth_m": 0.0,
+          "over_0p01_m": 0
+        },
+        "right_sleeve": {
+          "count": 19,
+          "max_depth_m": 0.01869976907619275,
+          "over_0p01_m": 19
+        }
+      },
+      "penetrating_weight_totals": [
+        [
+          "CC_Base_Spine02",
+          24.088550314307213
+        ],
+        [
+          "CC_Base_R_Upperarm",
+          14.681364387273788
+        ],
+        [
+          "CC_Base_Waist",
+          1.3018862009048462
+        ],
+        [
+          "CC_Base_L_Upperarm",
+          0.7559349462389946
+        ],
+        [
+          "CC_Base_Hip",
+          0.6954598426818848
+        ],
+        [
+          "CC_Base_L_Clavicle",
+          0.2636647913604975
+        ],
+        [
+          "CC_Base_R_Clavicle",
+          0.21031827479600906
+        ],
+        [
+          "CC_Base_Spine01",
+          0.0028212291554154945
+        ]
+      ]
+    },
+    {
+      "frame": 71,
+      "penetration_count": 35,
+      "regions": {
+        "armpit_left": {
+          "count": 0,
+          "max_depth_m": 0.0,
+          "examples": []
+        },
+        "armpit_right": {
+          "count": 0,
+          "max_depth_m": 0.0,
+          "examples": []
+        },
+        "back_neck": {
+          "count": 0,
+          "max_depth_m": 0.0,
+          "examples": []
+        },
+        "other": {
+          "count": 35,
+          "max_depth_m": 0.03728803810372483,
+          "examples": [
+            {
+              "point": [
+                -0.07998242974281311,
+                -0.04727949574589729,
+                1.4916702508926392
+              ],
+              "signed_m": -0.03728803810372483,
+              "distance_m": 0.037288594990968704,
+              "region": "other"
+            },
+            {
+              "point": [
+                -0.07999246567487717,
+                -0.048297133296728134,
+                1.4914922714233398
+              ],
+              "signed_m": -0.037188981848885305,
+              "distance_m": 0.0371895395219326,
+              "region": "other"
+            },
+            {
+              "point": [
+                -0.0800575241446495,
+                -0.048698704689741135,
+                1.4919222593307495
+              ],
+              "signed_m": -0.03716593778517563,
+              "distance_m": 0.03716649115085602,
+              "region": "other"
+            },
+            {
+              "point": [
+                -0.07073403894901276,
+                -0.04860580712556839,
+                1.4898377656936646
+              ],
+              "signed_m": -0.03599706734530628,
+              "distance_m": 0.04606867581605911,
+              "region": "other"
+            },
+            {
+              "point": [
+                0.05125308409333229,
+                -0.0493132621049881,
+                1.4801255464553833
+              ],
+              "signed_m": -0.029637458123033866,
+              "distance_m": 0.033720120787620544,
+              "region": "other"
+            }
+          ]
+        }
+      },
+      "panel_family_penetration": {
+        "torso": {
+          "count": 29,
+          "max_depth_m": 0.03728803810372483,
+          "over_0p01_m": 29
+        },
+        "left_sleeve": {
+          "count": 0,
+          "max_depth_m": 0.0,
+          "over_0p01_m": 0
+        },
+        "right_sleeve": {
+          "count": 6,
+          "max_depth_m": 0.013349257758818567,
+          "over_0p01_m": 6
+        }
+      },
+      "penetrating_weight_totals": [
+        [
+          "CC_Base_Spine02",
+          19.414716497063637
+        ],
+        [
+          "CC_Base_Waist",
+          6.141644984483719
+        ],
+        [
+          "CC_Base_R_Upperarm",
+          5.458175152540207
+        ],
+        [
+          "CC_Base_Hip",
+          2.839721202850342
+        ],
+        [
+          "CC_Base_L_Upperarm",
+          0.679806299507618
+        ],
+        [
+          "CC_Base_L_Clavicle",
+          0.2369837686419487
+        ],
+        [
+          "CC_Base_R_Clavicle",
+          0.21031827479600906
+        ],
+        [
+          "CC_Base_Spine01",
+          0.01863378973212093
+        ]
+      ]
+    }
+  ],
+  "status": "review_required"
+}

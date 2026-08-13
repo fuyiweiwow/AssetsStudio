@@ -1,0 +1,6486 @@
+{
+  "schema": "assetsstudio_actor_garmentcode_collision_spring_diagnostic_v1",
+  "pattern_spec": "D:\\Apps\\CodeXApp\\Tests\\AssetsStudio\\workspace\\garmentcode_restart_actor_length_0p90_repro_v1\\garmentcode_restart_actor_length_0p90_repro_v1_seed_1\\garmentcode_restart_actor_length_0p90_repro_v1_seed_1_specification.json",
+  "body_obj": "D:\\Apps\\CodeXApp\\Tests\\AssetsStudio\\workspace\\garmentcode_actor_native_measurements_v2\\actor_torso_upperarm_surface_rest_partial_boundary_filled_v1.obj",
+  "body_measurements": "D:\\Apps\\CodeXApp\\Tests\\AssetsStudio\\workspace\\garmentcode_actor_native_measurements_v2\\neck_boundary_body_13p0.yaml",
+  "body_segmentation": "D:\\Apps\\CodeXApp\\Tests\\AssetsStudio\\workspace\\garmentcode_actor_native_measurements_v2\\actor_torso_upperarm_surface_rest_source_v1_segmentation.json",
+  "attachment_frames": 100,
+  "sim_frames": 0,
+  "position_source": "initial_boxmesh",
+  "final_sim_obj": null,
+  "particle_count": 16340,
+  "spring_count": 48579,
+  "body_collision_count": 358,
+  "all_spring_endpoint_label_counts": {
+    "right_btorso": 20705,
+    "left_ftorso": 20315,
+    "sl_left_cuff_f": 726,
+    "left_sleeve_f": 2121,
+    "right_ftorso": 20092,
+    "left_sleeve_b": 2152,
+    "left_btorso": 20877,
+    "stitch_9": 398,
+    "stitch_3": 76,
+    "right_sleeve_f": 2053,
+    "sl_left_cuff_b": 713,
+    "stitch_15": 203,
+    "stitch_12": 111,
+    "stitch_19": 405,
+    "stitch_8": 126,
+    "stitch_20": 404,
+    "sl_right_cuff_b": 702,
+    "right_sleeve_b": 2118,
+    "sl_right_cuff_f": 726,
+    "stitch_10,stitch_12,stitch_14": 6,
+    "stitch_21": 434,
+    "stitch_4": 201,
+    "stitch_14": 202,
+    "stitch_5": 202,
+    "stitch_18": 124,
+    "stitch_13": 80,
+    "stitch_6": 160,
+    "stitch_1,stitch_3,stitch_4": 4,
+    "stitch_11,stitch_13,stitch_14": 6,
+    "stitch_16": 162,
+    "stitch_17": 161,
+    "stitch_7": 162,
+    "stitch_2": 110,
+    "stitch_11": 21,
+    "stitch_13,stitch_16,stitch_17": 8,
+    "stitch_10": 21,
+    "stitch_1": 21,
+    "stitch_0": 21,
+    "stitch_0,stitch_2,stitch_4": 6,
+    "stitch_12,stitch_16,stitch_17": 7,
+    "stitch_3,stitch_6,stitch_7": 8,
+    "stitch_2,stitch_6,stitch_7": 8
+  },
+  "all_spring_label_pair_counts": {
+    "right_btorso|right_btorso": 10163,
+    "left_ftorso|left_ftorso": 9971,
+    "sl_left_cuff_f|sl_left_cuff_f": 323,
+    "left_sleeve_f|left_sleeve_f": 971,
+    "right_ftorso|right_ftorso": 9863,
+    "left_sleeve_b|left_sleeve_b": 987,
+    "left_btorso|left_btorso": 10248,
+    "right_btorso|stitch_9": 134,
+    "right_sleeve_f|stitch_3": 20,
+    "sl_left_cuff_b|sl_left_cuff_b": 316,
+    "sl_left_cuff_b|stitch_15": 67,
+    "right_sleeve_f|right_sleeve_f": 939,
+    "left_sleeve_f|stitch_12": 36,
+    "stitch_19|stitch_19": 64,
+    "right_btorso|stitch_8": 42,
+    "stitch_20|stitch_20": 65,
+    "sl_right_cuff_b|sl_right_cuff_b": 312,
+    "right_sleeve_b|right_sleeve_b": 970,
+    "left_ftorso|stitch_19": 137,
+    "sl_right_cuff_f|sl_right_cuff_f": 323,
+    "stitch_10,stitch_12,stitch_14|stitch_15": 1,
+    "left_ftorso|stitch_20": 138,
+    "left_btorso|stitch_21": 147,
+    "sl_right_cuff_f|stitch_4": 66,
+    "right_btorso|stitch_21": 147,
+    "stitch_14|stitch_14": 32,
+    "right_sleeve_b|stitch_5": 63,
+    "right_ftorso|stitch_9": 133,
+    "left_ftorso|stitch_18": 42,
+    "left_sleeve_f|stitch_14": 64,
+    "right_ftorso|stitch_20": 136,
+    "sl_left_cuff_f|stitch_14": 66,
+    "stitch_9|stitch_9": 64,
+    "left_sleeve_f|stitch_13": 23,
+    "right_ftorso|stitch_6": 53,
+    "stitch_1,stitch_3,stitch_4|stitch_3": 1,
+    "left_sleeve_b|stitch_12": 37,
+    "sl_left_cuff_b|stitch_11,stitch_13,stitch_14": 1,
+    "sl_right_cuff_b|stitch_5": 66,
+    "left_ftorso|stitch_16": 55,
+    "left_sleeve_b|stitch_17": 53,
+    "right_btorso|stitch_7": 55,
+    "right_sleeve_b|stitch_2": 37,
+    "stitch_11|stitch_11": 3,
+    "left_sleeve_f|stitch_16": 53,
+    "stitch_8|stitch_8": 20,
+    "stitch_12|stitch_12": 17,
+    "left_btorso|stitch_19": 137,
+    "right_sleeve_f|stitch_4": 62,
+    "stitch_21|stitch_21": 70,
+    "left_sleeve_b|stitch_15": 64,
+    "right_sleeve_b|stitch_7": 54,
+    "left_btorso|stitch_18": 41,
+    "stitch_6|stitch_6": 25,
+    "right_sleeve_f|stitch_6": 54,
+    "right_ftorso|stitch_8": 43,
+    "stitch_4|stitch_4": 32,
+    "left_sleeve_b|stitch_13,stitch_16,stitch_17": 2,
+    "left_btorso|stitch_17": 54,
+    "sl_left_cuff_f|stitch_10": 6,
+    "stitch_3|stitch_4": 5,
+    "sl_right_cuff_b|stitch_1": 6,
+    "left_sleeve_b|stitch_13": 21,
+    "right_sleeve_f|stitch_2": 36,
+    "stitch_15|stitch_15": 32,
+    "stitch_17|stitch_17": 25,
+    "stitch_0|stitch_0,stitch_2,stitch_4": 1,
+    "stitch_12,stitch_16,stitch_17|stitch_16": 1,
+    "right_sleeve_b|stitch_3": 20,
+    "sl_right_cuff_f|stitch_1": 6,
+    "stitch_3|stitch_5": 5,
+    "stitch_13|stitch_13": 12,
+    "stitch_13,stitch_16,stitch_17|stitch_17": 1,
+    "stitch_13|stitch_13,stitch_16,stitch_17": 1,
+    "stitch_7|stitch_7": 25,
+    "stitch_13|stitch_14": 5,
+    "stitch_2|stitch_2": 17,
+    "stitch_5|stitch_5": 32,
+    "stitch_11,stitch_13,stitch_14|stitch_13": 1,
+    "stitch_18|stitch_18": 20,
+    "sl_left_cuff_f|stitch_11": 7,
+    "stitch_16|stitch_16": 25,
+    "stitch_3|stitch_3,stitch_6,stitch_7": 1,
+    "right_sleeve_f|stitch_3,stitch_6,stitch_7": 2,
+    "stitch_3|stitch_3": 12,
+    "stitch_17|stitch_19": 1,
+    "stitch_0,stitch_2,stitch_4|stitch_2": 1,
+    "stitch_1,stitch_3,stitch_4|stitch_4": 1,
+    "stitch_1|stitch_1,stitch_3,stitch_4": 1,
+    "stitch_0,stitch_2,stitch_4|stitch_5": 1,
+    "stitch_3,stitch_6,stitch_7|stitch_9": 1,
+    "sl_left_cuff_b|stitch_11": 7,
+    "stitch_1|stitch_4": 1,
+    "stitch_2,stitch_6,stitch_7|stitch_8": 1,
+    "sl_left_cuff_f|stitch_11,stitch_13,stitch_14": 1,
+    "stitch_10,stitch_12,stitch_14|stitch_12": 1,
+    "left_sleeve_f|stitch_10,stitch_12,stitch_14": 1,
+    "sl_right_cuff_f|stitch_0,stitch_2,stitch_4": 1,
+    "stitch_12,stitch_16,stitch_17|stitch_17": 1,
+    "stitch_0,stitch_2,stitch_4|stitch_4": 1,
+    "stitch_11|stitch_11,stitch_13,stitch_14": 1,
+    "sl_right_cuff_b|stitch_0": 6,
+    "stitch_13|stitch_15": 5,
+    "left_sleeve_f|stitch_13,stitch_16,stitch_17": 2,
+    "stitch_7|stitch_9": 1,
+    "stitch_1|stitch_1": 3,
+    "stitch_1,stitch_3,stitch_4|stitch_5": 1,
+    "left_btorso|stitch_12,stitch_16,stitch_17": 2,
+    "stitch_6|stitch_9": 1,
+    "stitch_10|stitch_14": 1,
+    "stitch_10|stitch_10": 3,
+    "stitch_1|stitch_5": 1,
+    "stitch_2,stitch_6,stitch_7|stitch_6": 1,
+    "sl_right_cuff_f|stitch_0": 7,
+    "right_sleeve_b|stitch_3,stitch_6,stitch_7": 2,
+    "left_sleeve_b|stitch_10,stitch_12,stitch_14": 1,
+    "stitch_13,stitch_16,stitch_17|stitch_19": 1,
+    "right_sleeve_f|stitch_2,stitch_6,stitch_7": 1,
+    "stitch_13,stitch_16,stitch_17|stitch_16": 1,
+    "right_sleeve_b|stitch_2,stitch_6,stitch_7": 1,
+    "sl_left_cuff_b|stitch_10": 6,
+    "stitch_10|stitch_10,stitch_12,stitch_14": 1,
+    "right_sleeve_b|stitch_0,stitch_2,stitch_4": 1,
+    "stitch_11,stitch_13,stitch_14|stitch_14": 1,
+    "right_btorso|stitch_2,stitch_6,stitch_7": 1,
+    "stitch_0|stitch_0": 3,
+    "stitch_10|stitch_15": 1,
+    "stitch_11,stitch_13,stitch_14|stitch_15": 1,
+    "stitch_12,stitch_16,stitch_17|stitch_18": 1,
+    "stitch_2|stitch_4": 1,
+    "stitch_0|stitch_5": 1,
+    "stitch_3,stitch_6,stitch_7|stitch_6": 1,
+    "stitch_12|stitch_16": 1,
+    "stitch_12|stitch_12,stitch_16,stitch_17": 1,
+    "stitch_10,stitch_12,stitch_14|stitch_14": 1,
+    "stitch_2|stitch_2,stitch_6,stitch_7": 1,
+    "right_ftorso|stitch_2,stitch_6,stitch_7": 1,
+    "stitch_3,stitch_6,stitch_7|stitch_7": 1,
+    "stitch_16|stitch_19": 1,
+    "stitch_2,stitch_6,stitch_7|stitch_7": 1,
+    "left_ftorso|stitch_12,stitch_16,stitch_17": 1,
+    "stitch_12|stitch_17": 1
+  },
+  "crossing_endpoint_label_counts": {
+    "stitch_3": 40,
+    "right_sleeve_f": 23,
+    "stitch_8": 85,
+    "right_btorso": 48,
+    "stitch_18": 83,
+    "left_ftorso": 51,
+    "stitch_13": 44,
+    "left_sleeve_f": 25,
+    "left_btorso": 49,
+    "right_ftorso": 52,
+    "stitch_13,stitch_16,stitch_17": 7,
+    "left_sleeve_b": 22,
+    "stitch_4": 7,
+    "stitch_12,stitch_16,stitch_17": 6,
+    "stitch_16": 3,
+    "right_sleeve_b": 24,
+    "stitch_1": 7,
+    "sl_right_cuff_f": 6,
+    "stitch_9": 15,
+    "stitch_17": 4,
+    "stitch_14": 6,
+    "stitch_11": 7,
+    "sl_left_cuff_f": 8,
+    "stitch_3,stitch_6,stitch_7": 7,
+    "stitch_19": 16,
+    "stitch_1,stitch_3,stitch_4": 1,
+    "sl_left_cuff_b": 17,
+    "sl_right_cuff_b": 19,
+    "stitch_11,stitch_13,stitch_14": 2,
+    "stitch_15": 8,
+    "stitch_5": 8,
+    "stitch_7": 3,
+    "stitch_6": 3,
+    "stitch_2,stitch_6,stitch_7": 7,
+    "stitch_12": 2,
+    "stitch_2": 1
+  },
+  "crossing_label_pair_counts": {
+    "right_sleeve_f|stitch_3": 20,
+    "right_btorso|stitch_8": 42,
+    "left_ftorso|stitch_18": 42,
+    "left_sleeve_f|stitch_13": 23,
+    "left_btorso|stitch_18": 41,
+    "right_ftorso|stitch_8": 43,
+    "left_sleeve_b|stitch_13,stitch_16,stitch_17": 2,
+    "stitch_3|stitch_4": 5,
+    "stitch_12,stitch_16,stitch_17|stitch_16": 1,
+    "right_sleeve_b|stitch_3": 14,
+    "sl_right_cuff_f|stitch_1": 6,
+    "right_ftorso|stitch_9": 8,
+    "stitch_13,stitch_16,stitch_17|stitch_17": 1,
+    "stitch_13|stitch_13,stitch_16,stitch_17": 1,
+    "stitch_13|stitch_14": 5,
+    "left_sleeve_b|stitch_13": 15,
+    "sl_left_cuff_f|stitch_11": 7,
+    "stitch_3|stitch_3,stitch_6,stitch_7": 1,
+    "right_sleeve_f|stitch_3,stitch_6,stitch_7": 2,
+    "stitch_17|stitch_19": 1,
+    "stitch_1,stitch_3,stitch_4|stitch_4": 1,
+    "sl_left_cuff_b|sl_left_cuff_b": 7,
+    "sl_right_cuff_b|sl_right_cuff_b": 8,
+    "stitch_1|stitch_4": 1,
+    "left_btorso|stitch_19": 6,
+    "sl_left_cuff_f|stitch_11,stitch_13,stitch_14": 1,
+    "left_sleeve_b|stitch_15": 3,
+    "right_btorso|stitch_9": 5,
+    "stitch_12,stitch_16,stitch_17|stitch_17": 1,
+    "right_sleeve_b|stitch_5": 3,
+    "left_sleeve_f|stitch_13,stitch_16,stitch_17": 2,
+    "stitch_7|stitch_9": 1,
+    "sl_left_cuff_b|stitch_15": 3,
+    "left_btorso|stitch_12,stitch_16,stitch_17": 2,
+    "stitch_6|stitch_9": 1,
+    "left_sleeve_b|left_sleeve_b": 1,
+    "left_ftorso|stitch_19": 8,
+    "stitch_2,stitch_6,stitch_7|stitch_6": 1,
+    "right_sleeve_b|stitch_3,stitch_6,stitch_7": 2,
+    "right_sleeve_f|stitch_2,stitch_6,stitch_7": 1,
+    "stitch_13,stitch_16,stitch_17|stitch_16": 1,
+    "sl_right_cuff_b|stitch_5": 3,
+    "right_sleeve_b|right_sleeve_b": 2,
+    "right_sleeve_b|stitch_2,stitch_6,stitch_7": 1,
+    "stitch_11,stitch_13,stitch_14|stitch_14": 1,
+    "right_btorso|stitch_2,stitch_6,stitch_7": 1,
+    "stitch_3,stitch_6,stitch_7|stitch_6": 1,
+    "stitch_15|stitch_15": 1,
+    "stitch_12|stitch_12,stitch_16,stitch_17": 1,
+    "stitch_2|stitch_2,stitch_6,stitch_7": 1,
+    "right_ftorso|stitch_2,stitch_6,stitch_7": 1,
+    "stitch_3,stitch_6,stitch_7|stitch_7": 1,
+    "stitch_16|stitch_19": 1,
+    "stitch_2,stitch_6,stitch_7|stitch_7": 1,
+    "left_ftorso|stitch_12,stitch_16,stitch_17": 1,
+    "stitch_12|stitch_17": 1,
+    "stitch_5|stitch_5": 1
+  },
+  "crossing_family_counts": {
+    "right_sleeve": 64,
+    "torso": 195,
+    "left_sleeve": 67,
+    "left_sleeve+torso": 16,
+    "right_sleeve+torso": 16
+  },
+  "crossing_panel_counts": {
+    "right_sleeve_b+right_sleeve_f": 34,
+    "right_btorso+right_ftorso": 98,
+    "left_btorso+left_ftorso": 97,
+    "left_sleeve_b+left_sleeve_f": 38,
+    "left_btorso+left_ftorso+left_sleeve_b+left_sleeve_f": 13,
+    "right_sleeve_b+right_sleeve_f+sl_right_cuff_f": 5,
+    "sl_right_cuff_b+sl_right_cuff_f": 6,
+    "left_sleeve_b+left_sleeve_f+sl_left_cuff_f": 5,
+    "sl_left_cuff_b+sl_left_cuff_f": 7,
+    "right_btorso+right_ftorso+right_sleeve_b+right_sleeve_f": 14,
+    "left_btorso+left_ftorso+left_sleeve_b": 1,
+    "right_sleeve_b+right_sleeve_f+sl_right_cuff_b+sl_right_cuff_f": 1,
+    "sl_left_cuff_b": 7,
+    "sl_right_cuff_b": 8,
+    "right_sleeve_f+sl_right_cuff_b+sl_right_cuff_f": 1,
+    "left_sleeve_b+left_sleeve_f+sl_left_cuff_b+sl_left_cuff_f": 2,
+    "left_sleeve_b+sl_left_cuff_b": 7,
+    "right_sleeve_b+sl_right_cuff_b": 7,
+    "right_btorso+right_ftorso+right_sleeve_b": 1,
+    "right_btorso+right_ftorso+right_sleeve_f": 1,
+    "left_sleeve_b": 1,
+    "right_sleeve_b": 2,
+    "left_btorso+left_ftorso+left_sleeve_f": 1,
+    "left_btorso+left_sleeve_b+left_sleeve_f": 1
+  },
+  "crossing_height_bin_counts": {
+    "100-110cm": 79,
+    "130-140cm": 78,
+    "140-150cm": 104,
+    "110-120cm": 95,
+    "090-100cm": 2
+  },
+  "crossing_springs": [
+    {
+      "spring": 14,
+      "vertices": [
+        39,
+        1393
+      ],
+      "labels": [
+        "stitch_3",
+        "right_sleeve_f"
+      ],
+      "panels": [
+        "right_sleeve_b",
+        "right_sleeve_f"
+      ],
+      "family": "right_sleeve",
+      "spring_midpoint_y_cm": 106.66207122802734
+    },
+    {
+      "spring": 39,
+      "vertices": [
+        168,
+        3092
+      ],
+      "labels": [
+        "stitch_8",
+        "right_btorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 139.62522888183594
+    },
+    {
+      "spring": 200,
+      "vertices": [
+        175,
+        4234
+      ],
+      "labels": [
+        "stitch_8",
+        "right_btorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 143.49905395507812
+    },
+    {
+      "spring": 388,
+      "vertices": [
+        417,
+        14668
+      ],
+      "labels": [
+        "stitch_18",
+        "left_ftorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 142.17529296875
+    },
+    {
+      "spring": 449,
+      "vertices": [
+        286,
+        16039
+      ],
+      "labels": [
+        "stitch_13",
+        "left_sleeve_f"
+      ],
+      "panels": [
+        "left_sleeve_b",
+        "left_sleeve_f"
+      ],
+      "family": "left_sleeve",
+      "spring_midpoint_y_cm": 112.56547546386719
+    },
+    {
+      "spring": 492,
+      "vertices": [
+        175,
+        1632
+      ],
+      "labels": [
+        "stitch_8",
+        "right_btorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 143.5264892578125
+    },
+    {
+      "spring": 557,
+      "vertices": [
+        33,
+        1309
+      ],
+      "labels": [
+        "stitch_3",
+        "right_sleeve_f"
+      ],
+      "panels": [
+        "right_sleeve_b",
+        "right_sleeve_f"
+      ],
+      "family": "right_sleeve",
+      "spring_midpoint_y_cm": 111.96122741699219
+    },
+    {
+      "spring": 782,
+      "vertices": [
+        412,
+        11990
+      ],
+      "labels": [
+        "stitch_18",
+        "left_ftorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 144.9824676513672
+    },
+    {
+      "spring": 1455,
+      "vertices": [
+        421,
+        10499
+      ],
+      "labels": [
+        "stitch_18",
+        "left_btorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 139.90170288085938
+    },
+    {
+      "spring": 1531,
+      "vertices": [
+        175,
+        5100
+      ],
+      "labels": [
+        "stitch_8",
+        "right_ftorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 144.12686157226562
+    },
+    {
+      "spring": 1632,
+      "vertices": [
+        289,
+        15646
+      ],
+      "labels": [
+        "stitch_13,stitch_16,stitch_17",
+        "left_sleeve_b"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso",
+        "left_sleeve_b",
+        "left_sleeve_f"
+      ],
+      "family": "left_sleeve+torso",
+      "spring_midpoint_y_cm": 116.91600036621094
+    },
+    {
+      "spring": 1763,
+      "vertices": [
+        281,
+        15972
+      ],
+      "labels": [
+        "stitch_13",
+        "left_sleeve_f"
+      ],
+      "panels": [
+        "left_sleeve_b",
+        "left_sleeve_f"
+      ],
+      "family": "left_sleeve",
+      "spring_midpoint_y_cm": 108.75579833984375
+    },
+    {
+      "spring": 1975,
+      "vertices": [
+        283,
+        16150
+      ],
+      "labels": [
+        "stitch_13",
+        "left_sleeve_f"
+      ],
+      "panels": [
+        "left_sleeve_b",
+        "left_sleeve_f"
+      ],
+      "family": "left_sleeve",
+      "spring_midpoint_y_cm": 110.44873046875
+    },
+    {
+      "spring": 2248,
+      "vertices": [
+        40,
+        73
+      ],
+      "labels": [
+        "stitch_3",
+        "stitch_4"
+      ],
+      "panels": [
+        "right_sleeve_b",
+        "right_sleeve_f",
+        "sl_right_cuff_f"
+      ],
+      "family": "right_sleeve",
+      "spring_midpoint_y_cm": 105.48614501953125
+    },
+    {
+      "spring": 2263,
+      "vertices": [
+        411,
+        8472
+      ],
+      "labels": [
+        "stitch_18",
+        "left_btorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 145.43605041503906
+    },
+    {
+      "spring": 2330,
+      "vertices": [
+        411,
+        11989
+      ],
+      "labels": [
+        "stitch_18",
+        "left_ftorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 145.5529022216797
+    },
+    {
+      "spring": 2349,
+      "vertices": [
+        163,
+        6383
+      ],
+      "labels": [
+        "stitch_8",
+        "right_ftorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 137.26971435546875
+    },
+    {
+      "spring": 2475,
+      "vertices": [
+        422,
+        10271
+      ],
+      "labels": [
+        "stitch_18",
+        "left_btorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 139.31028747558594
+    },
+    {
+      "spring": 2502,
+      "vertices": [
+        257,
+        381
+      ],
+      "labels": [
+        "stitch_12,stitch_16,stitch_17",
+        "stitch_16"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso",
+        "left_sleeve_b",
+        "left_sleeve_f"
+      ],
+      "family": "left_sleeve+torso",
+      "spring_midpoint_y_cm": 137.4344482421875
+    },
+    {
+      "spring": 2574,
+      "vertices": [
+        173,
+        3611
+      ],
+      "labels": [
+        "stitch_8",
+        "right_btorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 142.68020629882812
+    },
+    {
+      "spring": 2690,
+      "vertices": [
+        30,
+        918
+      ],
+      "labels": [
+        "stitch_3",
+        "right_sleeve_b"
+      ],
+      "panels": [
+        "right_sleeve_b",
+        "right_sleeve_f"
+      ],
+      "family": "right_sleeve",
+      "spring_midpoint_y_cm": 114.6937026977539
+    },
+    {
+      "spring": 2731,
+      "vertices": [
+        9,
+        1488
+      ],
+      "labels": [
+        "stitch_1",
+        "sl_right_cuff_f"
+      ],
+      "panels": [
+        "sl_right_cuff_b",
+        "sl_right_cuff_f"
+      ],
+      "family": "right_sleeve",
+      "spring_midpoint_y_cm": 99.85334014892578
+    },
+    {
+      "spring": 2981,
+      "vertices": [
+        244,
+        7828
+      ],
+      "labels": [
+        "stitch_9",
+        "right_ftorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 115.49444580078125
+    },
+    {
+      "spring": 3037,
+      "vertices": [
+        174,
+        5099
+      ],
+      "labels": [
+        "stitch_8",
+        "right_ftorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 143.50839233398438
+    },
+    {
+      "spring": 3206,
+      "vertices": [
+        416,
+        9521
+      ],
+      "labels": [
+        "stitch_18",
+        "left_btorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 142.29322814941406
+    },
+    {
+      "spring": 3303,
+      "vertices": [
+        289,
+        407
+      ],
+      "labels": [
+        "stitch_13,stitch_16,stitch_17",
+        "stitch_17"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso",
+        "left_sleeve_b",
+        "left_sleeve_f"
+      ],
+      "family": "left_sleeve+torso",
+      "spring_midpoint_y_cm": 117.469970703125
+    },
+    {
+      "spring": 3376,
+      "vertices": [
+        288,
+        289
+      ],
+      "labels": [
+        "stitch_13",
+        "stitch_13,stitch_16,stitch_17"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso",
+        "left_sleeve_b",
+        "left_sleeve_f"
+      ],
+      "family": "left_sleeve+torso",
+      "spring_midpoint_y_cm": 116.26866912841797
+    },
+    {
+      "spring": 3670,
+      "vertices": [
+        416,
+        11993
+      ],
+      "labels": [
+        "stitch_18",
+        "left_ftorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 142.8682098388672
+    },
+    {
+      "spring": 3704,
+      "vertices": [
+        277,
+        291
+      ],
+      "labels": [
+        "stitch_13",
+        "stitch_14"
+      ],
+      "panels": [
+        "left_sleeve_b",
+        "left_sleeve_f",
+        "sl_left_cuff_f"
+      ],
+      "family": "left_sleeve",
+      "spring_midpoint_y_cm": 104.69136047363281
+    },
+    {
+      "spring": 3835,
+      "vertices": [
+        34,
+        1309
+      ],
+      "labels": [
+        "stitch_3",
+        "right_sleeve_f"
+      ],
+      "panels": [
+        "right_sleeve_b",
+        "right_sleeve_f"
+      ],
+      "family": "right_sleeve",
+      "spring_midpoint_y_cm": 111.5176773071289
+    },
+    {
+      "spring": 4061,
+      "vertices": [
+        413,
+        11990
+      ],
+      "labels": [
+        "stitch_18",
+        "left_ftorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 144.7220458984375
+    },
+    {
+      "spring": 4133,
+      "vertices": [
+        288,
+        15569
+      ],
+      "labels": [
+        "stitch_13",
+        "left_sleeve_b"
+      ],
+      "panels": [
+        "left_sleeve_b",
+        "left_sleeve_f"
+      ],
+      "family": "left_sleeve",
+      "spring_midpoint_y_cm": 114.617431640625
+    },
+    {
+      "spring": 4207,
+      "vertices": [
+        427,
+        11701
+      ],
+      "labels": [
+        "stitch_18",
+        "left_btorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 136.83181762695312
+    },
+    {
+      "spring": 4216,
+      "vertices": [
+        279,
+        16125
+      ],
+      "labels": [
+        "stitch_13",
+        "left_sleeve_f"
+      ],
+      "panels": [
+        "left_sleeve_b",
+        "left_sleeve_f"
+      ],
+      "family": "left_sleeve",
+      "spring_midpoint_y_cm": 106.69450378417969
+    },
+    {
+      "spring": 4418,
+      "vertices": [
+        179,
+        5103
+      ],
+      "labels": [
+        "stitch_8",
+        "right_ftorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 146.09727478027344
+    },
+    {
+      "spring": 4508,
+      "vertices": [
+        255,
+        16320
+      ],
+      "labels": [
+        "stitch_11",
+        "sl_left_cuff_f"
+      ],
+      "panels": [
+        "sl_left_cuff_b",
+        "sl_left_cuff_f"
+      ],
+      "family": "left_sleeve",
+      "spring_midpoint_y_cm": 101.44773864746094
+    },
+    {
+      "spring": 4590,
+      "vertices": [
+        29,
+        30
+      ],
+      "labels": [
+        "stitch_3,stitch_6,stitch_7",
+        "stitch_3"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso",
+        "right_sleeve_b",
+        "right_sleeve_f"
+      ],
+      "family": "right_sleeve+torso",
+      "spring_midpoint_y_cm": 116.26866912841797
+    },
+    {
+      "spring": 4622,
+      "vertices": [
+        29,
+        1319
+      ],
+      "labels": [
+        "stitch_3,stitch_6,stitch_7",
+        "right_sleeve_f"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso",
+        "right_sleeve_b",
+        "right_sleeve_f"
+      ],
+      "family": "right_sleeve+torso",
+      "spring_midpoint_y_cm": 116.37986755371094
+    },
+    {
+      "spring": 4749,
+      "vertices": [
+        422,
+        10499
+      ],
+      "labels": [
+        "stitch_18",
+        "left_btorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 139.64126586914062
+    },
+    {
+      "spring": 4824,
+      "vertices": [
+        176,
+        5100
+      ],
+      "labels": [
+        "stitch_8",
+        "right_ftorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 144.38729858398438
+    },
+    {
+      "spring": 5002,
+      "vertices": [
+        7,
+        1536
+      ],
+      "labels": [
+        "stitch_1",
+        "sl_right_cuff_f"
+      ],
+      "panels": [
+        "sl_right_cuff_b",
+        "sl_right_cuff_f"
+      ],
+      "family": "right_sleeve",
+      "spring_midpoint_y_cm": 100.89863586425781
+    },
+    {
+      "spring": 5098,
+      "vertices": [
+        282,
+        15972
+      ],
+      "labels": [
+        "stitch_13",
+        "left_sleeve_f"
+      ],
+      "panels": [
+        "left_sleeve_b",
+        "left_sleeve_f"
+      ],
+      "family": "left_sleeve",
+      "spring_midpoint_y_cm": 109.1993408203125
+    },
+    {
+      "spring": 5515,
+      "vertices": [
+        170,
+        3732
+      ],
+      "labels": [
+        "stitch_8",
+        "right_btorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 141.12335205078125
+    },
+    {
+      "spring": 5525,
+      "vertices": [
+        165,
+        6771
+      ],
+      "labels": [
+        "stitch_8",
+        "right_ftorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 138.25755310058594
+    },
+    {
+      "spring": 5622,
+      "vertices": [
+        419,
+        13564
+      ],
+      "labels": [
+        "stitch_18",
+        "left_ftorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 141.07266235351562
+    },
+    {
+      "spring": 5906,
+      "vertices": [
+        174,
+        3611
+      ],
+      "labels": [
+        "stitch_8",
+        "right_btorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 142.94064331054688
+    },
+    {
+      "spring": 6027,
+      "vertices": [
+        31,
+        918
+      ],
+      "labels": [
+        "stitch_3",
+        "right_sleeve_b"
+      ],
+      "panels": [
+        "right_sleeve_b",
+        "right_sleeve_f"
+      ],
+      "family": "right_sleeve",
+      "spring_midpoint_y_cm": 114.25015258789062
+    },
+    {
+      "spring": 6196,
+      "vertices": [
+        407,
+        429
+      ],
+      "labels": [
+        "stitch_17",
+        "stitch_19"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso",
+        "left_sleeve_b"
+      ],
+      "family": "left_sleeve+torso",
+      "spring_midpoint_y_cm": 117.25410461425781
+    },
+    {
+      "spring": 6213,
+      "vertices": [
+        282,
+        15602
+      ],
+      "labels": [
+        "stitch_13",
+        "left_sleeve_b"
+      ],
+      "panels": [
+        "left_sleeve_b",
+        "left_sleeve_f"
+      ],
+      "family": "left_sleeve",
+      "spring_midpoint_y_cm": 109.75105285644531
+    },
+    {
+      "spring": 6370,
+      "vertices": [
+        245,
+        7828
+      ],
+      "labels": [
+        "stitch_9",
+        "right_ftorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 115.98887634277344
+    },
+    {
+      "spring": 6399,
+      "vertices": [
+        426,
+        10441
+      ],
+      "labels": [
+        "stitch_18",
+        "left_btorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 137.47280883789062
+    },
+    {
+      "spring": 6537,
+      "vertices": [
+        5,
+        75
+      ],
+      "labels": [
+        "stitch_1,stitch_3,stitch_4",
+        "stitch_4"
+      ],
+      "panels": [
+        "right_sleeve_b",
+        "right_sleeve_f",
+        "sl_right_cuff_b",
+        "sl_right_cuff_f"
+      ],
+      "family": "right_sleeve",
+      "spring_midpoint_y_cm": 103.09769439697266
+    },
+    {
+      "spring": 6626,
+      "vertices": [
+        417,
+        9521
+      ],
+      "labels": [
+        "stitch_18",
+        "left_btorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 142.03280639648438
+    },
+    {
+      "spring": 6764,
+      "vertices": [
+        170,
+        6074
+      ],
+      "labels": [
+        "stitch_8",
+        "right_ftorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 140.75506591796875
+    },
+    {
+      "spring": 7130,
+      "vertices": [
+        278,
+        291
+      ],
+      "labels": [
+        "stitch_13",
+        "stitch_14"
+      ],
+      "panels": [
+        "left_sleeve_b",
+        "left_sleeve_f",
+        "sl_left_cuff_f"
+      ],
+      "family": "left_sleeve",
+      "spring_midpoint_y_cm": 105.13491821289062
+    },
+    {
+      "spring": 7314,
+      "vertices": [
+        414,
+        11992
+      ],
+      "labels": [
+        "stitch_18",
+        "left_ftorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 143.76882934570312
+    },
+    {
+      "spring": 7323,
+      "vertices": [
+        164,
+        3334
+      ],
+      "labels": [
+        "stitch_8",
+        "right_btorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 137.7415771484375
+    },
+    {
+      "spring": 7662,
+      "vertices": [
+        15756,
+        15820
+      ],
+      "labels": [
+        "sl_left_cuff_b",
+        "sl_left_cuff_b"
+      ],
+      "panels": [
+        "sl_left_cuff_b"
+      ],
+      "family": "left_sleeve",
+      "spring_midpoint_y_cm": 102.225830078125
+    },
+    {
+      "spring": 7888,
+      "vertices": [
+        282,
+        16094
+      ],
+      "labels": [
+        "stitch_13",
+        "left_sleeve_f"
+      ],
+      "panels": [
+        "left_sleeve_b",
+        "left_sleeve_f"
+      ],
+      "family": "left_sleeve",
+      "spring_midpoint_y_cm": 109.629638671875
+    },
+    {
+      "spring": 8136,
+      "vertices": [
+        419,
+        15349
+      ],
+      "labels": [
+        "stitch_18",
+        "left_ftorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 141.00030517578125
+    },
+    {
+      "spring": 8198,
+      "vertices": [
+        1060,
+        1112
+      ],
+      "labels": [
+        "sl_right_cuff_b",
+        "sl_right_cuff_b"
+      ],
+      "panels": [
+        "sl_right_cuff_b"
+      ],
+      "family": "right_sleeve",
+      "spring_midpoint_y_cm": 102.90719604492188
+    },
+    {
+      "spring": 8200,
+      "vertices": [
+        165,
+        8369
+      ],
+      "labels": [
+        "stitch_8",
+        "right_ftorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 138.529541015625
+    },
+    {
+      "spring": 8412,
+      "vertices": [
+        8,
+        1536
+      ],
+      "labels": [
+        "stitch_1",
+        "sl_right_cuff_f"
+      ],
+      "panels": [
+        "sl_right_cuff_b",
+        "sl_right_cuff_f"
+      ],
+      "family": "right_sleeve",
+      "spring_midpoint_y_cm": 100.58192443847656
+    },
+    {
+      "spring": 8539,
+      "vertices": [
+        171,
+        7810
+      ],
+      "labels": [
+        "stitch_8",
+        "right_ftorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 141.73757934570312
+    },
+    {
+      "spring": 8773,
+      "vertices": [
+        35,
+        1295
+      ],
+      "labels": [
+        "stitch_3",
+        "right_sleeve_f"
+      ],
+      "panels": [
+        "right_sleeve_b",
+        "right_sleeve_f"
+      ],
+      "family": "right_sleeve",
+      "spring_midpoint_y_cm": 110.61264038085938
+    },
+    {
+      "spring": 8978,
+      "vertices": [
+        171,
+        3732
+      ],
+      "labels": [
+        "stitch_8",
+        "right_btorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 141.3837890625
+    },
+    {
+      "spring": 9106,
+      "vertices": [
+        252,
+        16208
+      ],
+      "labels": [
+        "stitch_11",
+        "sl_left_cuff_f"
+      ],
+      "panels": [
+        "sl_left_cuff_b",
+        "sl_left_cuff_f"
+      ],
+      "family": "left_sleeve",
+      "spring_midpoint_y_cm": 99.85334014892578
+    },
+    {
+      "spring": 9310,
+      "vertices": [
+        427,
+        13527
+      ],
+      "labels": [
+        "stitch_18",
+        "left_ftorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 136.64239501953125
+    },
+    {
+      "spring": 9501,
+      "vertices": [
+        167,
+        8259
+      ],
+      "labels": [
+        "stitch_8",
+        "right_ftorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 139.52896118164062
+    },
+    {
+      "spring": 9511,
+      "vertices": [
+        168,
+        7171
+      ],
+      "labels": [
+        "stitch_8",
+        "right_ftorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 140.18980407714844
+    },
+    {
+      "spring": 9658,
+      "vertices": [
+        283,
+        15602
+      ],
+      "labels": [
+        "stitch_13",
+        "left_sleeve_b"
+      ],
+      "panels": [
+        "left_sleeve_b",
+        "left_sleeve_f"
+      ],
+      "family": "left_sleeve",
+      "spring_midpoint_y_cm": 110.1946029663086
+    },
+    {
+      "spring": 9852,
+      "vertices": [
+        283,
+        15549
+      ],
+      "labels": [
+        "stitch_13",
+        "left_sleeve_b"
+      ],
+      "panels": [
+        "left_sleeve_b",
+        "left_sleeve_f"
+      ],
+      "family": "left_sleeve",
+      "spring_midpoint_y_cm": 110.61264038085938
+    },
+    {
+      "spring": 9945,
+      "vertices": [
+        6,
+        75
+      ],
+      "labels": [
+        "stitch_1",
+        "stitch_4"
+      ],
+      "panels": [
+        "right_sleeve_f",
+        "sl_right_cuff_b",
+        "sl_right_cuff_f"
+      ],
+      "family": "right_sleeve",
+      "spring_midpoint_y_cm": 102.42562866210938
+    },
+    {
+      "spring": 10109,
+      "vertices": [
+        246,
+        6114
+      ],
+      "labels": [
+        "stitch_9",
+        "right_ftorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 116.86896514892578
+    },
+    {
+      "spring": 10258,
+      "vertices": [
+        431,
+        10834
+      ],
+      "labels": [
+        "stitch_19",
+        "left_btorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 114.69237518310547
+    },
+    {
+      "spring": 10351,
+      "vertices": [
+        168,
+        3337
+      ],
+      "labels": [
+        "stitch_8",
+        "right_btorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 139.9839324951172
+    },
+    {
+      "spring": 10357,
+      "vertices": [
+        180,
+        1627
+      ],
+      "labels": [
+        "stitch_8",
+        "right_btorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 146.57748413085938
+    },
+    {
+      "spring": 10433,
+      "vertices": [
+        415,
+        11992
+      ],
+      "labels": [
+        "stitch_18",
+        "left_ftorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 143.50839233398438
+    },
+    {
+      "spring": 10525,
+      "vertices": [
+        256,
+        16337
+      ],
+      "labels": [
+        "stitch_11,stitch_13,stitch_14",
+        "sl_left_cuff_f"
+      ],
+      "panels": [
+        "left_sleeve_b",
+        "left_sleeve_f",
+        "sl_left_cuff_b",
+        "sl_left_cuff_f"
+      ],
+      "family": "left_sleeve",
+      "spring_midpoint_y_cm": 102.3880615234375
+    },
+    {
+      "spring": 10765,
+      "vertices": [
+        276,
+        290
+      ],
+      "labels": [
+        "stitch_13",
+        "stitch_14"
+      ],
+      "panels": [
+        "left_sleeve_b",
+        "left_sleeve_f",
+        "sl_left_cuff_f"
+      ],
+      "family": "left_sleeve",
+      "spring_midpoint_y_cm": 103.89659118652344
+    },
+    {
+      "spring": 10850,
+      "vertices": [
+        431,
+        9952
+      ],
+      "labels": [
+        "stitch_19",
+        "left_btorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 115.10723876953125
+    },
+    {
+      "spring": 10961,
+      "vertices": [
+        289,
+        15590
+      ],
+      "labels": [
+        "stitch_13,stitch_16,stitch_17",
+        "left_sleeve_b"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso",
+        "left_sleeve_b",
+        "left_sleeve_f"
+      ],
+      "family": "left_sleeve+torso",
+      "spring_midpoint_y_cm": 116.44139099121094
+    },
+    {
+      "spring": 11078,
+      "vertices": [
+        350,
+        15545
+      ],
+      "labels": [
+        "stitch_15",
+        "left_sleeve_b"
+      ],
+      "panels": [
+        "left_sleeve_b",
+        "sl_left_cuff_b"
+      ],
+      "family": "left_sleeve",
+      "spring_midpoint_y_cm": 107.39955139160156
+    },
+    {
+      "spring": 11098,
+      "vertices": [
+        177,
+        1630
+      ],
+      "labels": [
+        "stitch_8",
+        "right_btorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 144.82379150390625
+    },
+    {
+      "spring": 11216,
+      "vertices": [
+        178,
+        5102
+      ],
+      "labels": [
+        "stitch_8",
+        "right_ftorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 145.5529022216797
+    },
+    {
+      "spring": 11265,
+      "vertices": [
+        416,
+        10477
+      ],
+      "labels": [
+        "stitch_18",
+        "left_btorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 142.68411254882812
+    },
+    {
+      "spring": 11332,
+      "vertices": [
+        283,
+        16094
+      ],
+      "labels": [
+        "stitch_13",
+        "left_sleeve_f"
+      ],
+      "panels": [
+        "left_sleeve_b",
+        "left_sleeve_f"
+      ],
+      "family": "left_sleeve",
+      "spring_midpoint_y_cm": 110.07318115234375
+    },
+    {
+      "spring": 11383,
+      "vertices": [
+        245,
+        3104
+      ],
+      "labels": [
+        "stitch_9",
+        "right_btorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 116.3745346069336
+    },
+    {
+      "spring": 11506,
+      "vertices": [
+        162,
+        2906
+      ],
+      "labels": [
+        "stitch_8",
+        "right_btorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 136.63462829589844
+    },
+    {
+      "spring": 11618,
+      "vertices": [
+        166,
+        8369
+      ],
+      "labels": [
+        "stitch_8",
+        "right_ftorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 138.78997802734375
+    },
+    {
+      "spring": 11739,
+      "vertices": [
+        6,
+        1535
+      ],
+      "labels": [
+        "stitch_1",
+        "sl_right_cuff_f"
+      ],
+      "panels": [
+        "sl_right_cuff_b",
+        "sl_right_cuff_f"
+      ],
+      "family": "right_sleeve",
+      "spring_midpoint_y_cm": 101.5562744140625
+    },
+    {
+      "spring": 11869,
+      "vertices": [
+        425,
+        13225
+      ],
+      "labels": [
+        "stitch_18",
+        "left_ftorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 137.65428161621094
+    },
+    {
+      "spring": 11884,
+      "vertices": [
+        279,
+        16032
+      ],
+      "labels": [
+        "stitch_13",
+        "left_sleeve_f"
+      ],
+      "panels": [
+        "left_sleeve_b",
+        "left_sleeve_f"
+      ],
+      "family": "left_sleeve",
+      "spring_midpoint_y_cm": 107.11759185791016
+    },
+    {
+      "spring": 12118,
+      "vertices": [
+        40,
+        74
+      ],
+      "labels": [
+        "stitch_3",
+        "stitch_4"
+      ],
+      "panels": [
+        "right_sleeve_b",
+        "right_sleeve_f",
+        "sl_right_cuff_f"
+      ],
+      "family": "right_sleeve",
+      "spring_midpoint_y_cm": 105.13491821289062
+    },
+    {
+      "spring": 12387,
+      "vertices": [
+        257,
+        382
+      ],
+      "labels": [
+        "stitch_12,stitch_16,stitch_17",
+        "stitch_17"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso",
+        "left_sleeve_b",
+        "left_sleeve_f"
+      ],
+      "family": "left_sleeve+torso",
+      "spring_midpoint_y_cm": 137.4344482421875
+    },
+    {
+      "spring": 12455,
+      "vertices": [
+        80,
+        819
+      ],
+      "labels": [
+        "stitch_5",
+        "right_sleeve_b"
+      ],
+      "panels": [
+        "right_sleeve_b",
+        "sl_right_cuff_b"
+      ],
+      "family": "right_sleeve",
+      "spring_midpoint_y_cm": 106.74417877197266
+    },
+    {
+      "spring": 12548,
+      "vertices": [
+        166,
+        7247
+      ],
+      "labels": [
+        "stitch_8",
+        "right_ftorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 139.03125
+    },
+    {
+      "spring": 12565,
+      "vertices": [
+        255,
+        16337
+      ],
+      "labels": [
+        "stitch_11",
+        "sl_left_cuff_f"
+      ],
+      "panels": [
+        "sl_left_cuff_b",
+        "sl_left_cuff_f"
+      ],
+      "family": "left_sleeve",
+      "spring_midpoint_y_cm": 101.71599578857422
+    },
+    {
+      "spring": 12871,
+      "vertices": [
+        169,
+        7171
+      ],
+      "labels": [
+        "stitch_8",
+        "right_ftorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 140.45022583007812
+    },
+    {
+      "spring": 13000,
+      "vertices": [
+        1022,
+        1060
+      ],
+      "labels": [
+        "sl_right_cuff_b",
+        "sl_right_cuff_b"
+      ],
+      "panels": [
+        "sl_right_cuff_b"
+      ],
+      "family": "right_sleeve",
+      "spring_midpoint_y_cm": 103.16486358642578
+    },
+    {
+      "spring": 13002,
+      "vertices": [
+        288,
+        15590
+      ],
+      "labels": [
+        "stitch_13",
+        "left_sleeve_b"
+      ],
+      "panels": [
+        "left_sleeve_b",
+        "left_sleeve_f"
+      ],
+      "family": "left_sleeve",
+      "spring_midpoint_y_cm": 115.16213989257812
+    },
+    {
+      "spring": 13113,
+      "vertices": [
+        351,
+        15618
+      ],
+      "labels": [
+        "stitch_15",
+        "left_sleeve_b"
+      ],
+      "panels": [
+        "left_sleeve_b",
+        "sl_left_cuff_b"
+      ],
+      "family": "left_sleeve",
+      "spring_midpoint_y_cm": 106.66780090332031
+    },
+    {
+      "spring": 13190,
+      "vertices": [
+        413,
+        8470
+      ],
+      "labels": [
+        "stitch_18",
+        "left_btorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 144.1865234375
+    },
+    {
+      "spring": 13445,
+      "vertices": [
+        181,
+        1627
+      ],
+      "labels": [
+        "stitch_8",
+        "right_btorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 146.83792114257812
+    },
+    {
+      "spring": 13579,
+      "vertices": [
+        243,
+        7260
+      ],
+      "labels": [
+        "stitch_9",
+        "right_ftorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 113.90237426757812
+    },
+    {
+      "spring": 13612,
+      "vertices": [
+        164,
+        4469
+      ],
+      "labels": [
+        "stitch_8",
+        "right_btorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 138.11087036132812
+    },
+    {
+      "spring": 13666,
+      "vertices": [
+        416,
+        11994
+      ],
+      "labels": [
+        "stitch_18",
+        "left_ftorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 142.46835327148438
+    },
+    {
+      "spring": 13822,
+      "vertices": [
+        289,
+        16196
+      ],
+      "labels": [
+        "stitch_13,stitch_16,stitch_17",
+        "left_sleeve_f"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso",
+        "left_sleeve_b",
+        "left_sleeve_f"
+      ],
+      "family": "left_sleeve+torso",
+      "spring_midpoint_y_cm": 116.37537384033203
+    },
+    {
+      "spring": 13925,
+      "vertices": [
+        410,
+        8473
+      ],
+      "labels": [
+        "stitch_18",
+        "left_btorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 146.02125549316406
+    },
+    {
+      "spring": 13950,
+      "vertices": [
+        284,
+        16039
+      ],
+      "labels": [
+        "stitch_13",
+        "left_sleeve_f"
+      ],
+      "panels": [
+        "left_sleeve_b",
+        "left_sleeve_f"
+      ],
+      "family": "left_sleeve",
+      "spring_midpoint_y_cm": 111.67837524414062
+    },
+    {
+      "spring": 13977,
+      "vertices": [
+        42,
+        75
+      ],
+      "labels": [
+        "stitch_3",
+        "stitch_4"
+      ],
+      "panels": [
+        "right_sleeve_b",
+        "right_sleeve_f",
+        "sl_right_cuff_f"
+      ],
+      "family": "right_sleeve",
+      "spring_midpoint_y_cm": 103.89659118652344
+    },
+    {
+      "spring": 14000,
+      "vertices": [
+        430,
+        9582
+      ],
+      "labels": [
+        "stitch_19",
+        "left_btorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 116.3745346069336
+    },
+    {
+      "spring": 14036,
+      "vertices": [
+        413,
+        11991
+      ],
+      "labels": [
+        "stitch_18",
+        "left_ftorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 144.38729858398438
+    },
+    {
+      "spring": 14084,
+      "vertices": [
+        162,
+        7403
+      ],
+      "labels": [
+        "stitch_8",
+        "right_ftorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 136.9712371826172
+    },
+    {
+      "spring": 14226,
+      "vertices": [
+        172,
+        2673
+      ],
+      "labels": [
+        "stitch_8",
+        "right_btorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 142.03280639648438
+    },
+    {
+      "spring": 14352,
+      "vertices": [
+        423,
+        10457
+      ],
+      "labels": [
+        "stitch_18",
+        "left_btorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 138.76588439941406
+    },
+    {
+      "spring": 14416,
+      "vertices": [
+        179,
+        5104
+      ],
+      "labels": [
+        "stitch_8",
+        "right_ftorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 146.35391235351562
+    },
+    {
+      "spring": 14438,
+      "vertices": [
+        351,
+        15545
+      ],
+      "labels": [
+        "stitch_15",
+        "left_sleeve_b"
+      ],
+      "panels": [
+        "left_sleeve_b",
+        "sl_left_cuff_b"
+      ],
+      "family": "left_sleeve",
+      "spring_midpoint_y_cm": 107.04832458496094
+    },
+    {
+      "spring": 14671,
+      "vertices": [
+        424,
+        13876
+      ],
+      "labels": [
+        "stitch_18",
+        "left_ftorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 138.27969360351562
+    },
+    {
+      "spring": 14800,
+      "vertices": [
+        176,
+        5101
+      ],
+      "labels": [
+        "stitch_8",
+        "right_ftorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 144.7220458984375
+    },
+    {
+      "spring": 15054,
+      "vertices": [
+        35,
+        820
+      ],
+      "labels": [
+        "stitch_3",
+        "right_sleeve_b"
+      ],
+      "panels": [
+        "right_sleeve_b",
+        "right_sleeve_f"
+      ],
+      "family": "right_sleeve",
+      "spring_midpoint_y_cm": 110.61264038085938
+    },
+    {
+      "spring": 15087,
+      "vertices": [
+        135,
+        246
+      ],
+      "labels": [
+        "stitch_7",
+        "stitch_9"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso",
+        "right_sleeve_b"
+      ],
+      "family": "right_sleeve+torso",
+      "spring_midpoint_y_cm": 117.25410461425781
+    },
+    {
+      "spring": 15239,
+      "vertices": [
+        421,
+        13635
+      ],
+      "labels": [
+        "stitch_18",
+        "left_ftorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 140.0540008544922
+    },
+    {
+      "spring": 15266,
+      "vertices": [
+        280,
+        16032
+      ],
+      "labels": [
+        "stitch_13",
+        "left_sleeve_f"
+      ],
+      "panels": [
+        "left_sleeve_b",
+        "left_sleeve_f"
+      ],
+      "family": "left_sleeve",
+      "spring_midpoint_y_cm": 107.56114196777344
+    },
+    {
+      "spring": 15331,
+      "vertices": [
+        172,
+        3592
+      ],
+      "labels": [
+        "stitch_8",
+        "right_btorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 141.94149780273438
+    },
+    {
+      "spring": 15507,
+      "vertices": [
+        41,
+        74
+      ],
+      "labels": [
+        "stitch_3",
+        "stitch_4"
+      ],
+      "panels": [
+        "right_sleeve_b",
+        "right_sleeve_f",
+        "sl_right_cuff_f"
+      ],
+      "family": "right_sleeve",
+      "spring_midpoint_y_cm": 104.69136047363281
+    },
+    {
+      "spring": 15808,
+      "vertices": [
+        288,
+        16196
+      ],
+      "labels": [
+        "stitch_13",
+        "left_sleeve_f"
+      ],
+      "panels": [
+        "left_sleeve_b",
+        "left_sleeve_f"
+      ],
+      "family": "left_sleeve",
+      "spring_midpoint_y_cm": 115.09613037109375
+    },
+    {
+      "spring": 15819,
+      "vertices": [
+        352,
+        15807
+      ],
+      "labels": [
+        "stitch_15",
+        "sl_left_cuff_b"
+      ],
+      "panels": [
+        "left_sleeve_b",
+        "sl_left_cuff_b"
+      ],
+      "family": "left_sleeve",
+      "spring_midpoint_y_cm": 105.0423583984375
+    },
+    {
+      "spring": 15908,
+      "vertices": [
+        281,
+        15485
+      ],
+      "labels": [
+        "stitch_13",
+        "left_sleeve_b"
+      ],
+      "panels": [
+        "left_sleeve_b",
+        "left_sleeve_f"
+      ],
+      "family": "left_sleeve",
+      "spring_midpoint_y_cm": 108.75579833984375
+    },
+    {
+      "spring": 15910,
+      "vertices": [
+        167,
+        7247
+      ],
+      "labels": [
+        "stitch_8",
+        "right_ftorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 139.29168701171875
+    },
+    {
+      "spring": 15928,
+      "vertices": [
+        409,
+        8473
+      ],
+      "labels": [
+        "stitch_18",
+        "left_btorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 146.28167724609375
+    },
+    {
+      "spring": 16071,
+      "vertices": [
+        33,
+        1233
+      ],
+      "labels": [
+        "stitch_3",
+        "right_sleeve_f"
+      ],
+      "panels": [
+        "right_sleeve_b",
+        "right_sleeve_f"
+      ],
+      "family": "right_sleeve",
+      "spring_midpoint_y_cm": 112.33989715576172
+    },
+    {
+      "spring": 16390,
+      "vertices": [
+        253,
+        16259
+      ],
+      "labels": [
+        "stitch_11",
+        "sl_left_cuff_f"
+      ],
+      "panels": [
+        "sl_left_cuff_b",
+        "sl_left_cuff_f"
+      ],
+      "family": "left_sleeve",
+      "spring_midpoint_y_cm": 100.7243423461914
+    },
+    {
+      "spring": 16726,
+      "vertices": [
+        37,
+        1358
+      ],
+      "labels": [
+        "stitch_3",
+        "right_sleeve_f"
+      ],
+      "panels": [
+        "right_sleeve_b",
+        "right_sleeve_f"
+      ],
+      "family": "right_sleeve",
+      "spring_midpoint_y_cm": 109.12605285644531
+    },
+    {
+      "spring": 16780,
+      "vertices": [
+        174,
+        4234
+      ],
+      "labels": [
+        "stitch_8",
+        "right_btorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 143.23861694335938
+    },
+    {
+      "spring": 17007,
+      "vertices": [
+        257,
+        11763
+      ],
+      "labels": [
+        "stitch_12,stitch_16,stitch_17",
+        "left_btorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso",
+        "left_sleeve_b",
+        "left_sleeve_f"
+      ],
+      "family": "left_sleeve+torso",
+      "spring_midpoint_y_cm": 136.18670654296875
+    },
+    {
+      "spring": 17041,
+      "vertices": [
+        285,
+        16039
+      ],
+      "labels": [
+        "stitch_13",
+        "left_sleeve_f"
+      ],
+      "panels": [
+        "left_sleeve_b",
+        "left_sleeve_f"
+      ],
+      "family": "left_sleeve",
+      "spring_midpoint_y_cm": 112.1219253540039
+    },
+    {
+      "spring": 17078,
+      "vertices": [
+        278,
+        292
+      ],
+      "labels": [
+        "stitch_13",
+        "stitch_14"
+      ],
+      "panels": [
+        "left_sleeve_b",
+        "left_sleeve_f",
+        "sl_left_cuff_f"
+      ],
+      "family": "left_sleeve",
+      "spring_midpoint_y_cm": 105.48614501953125
+    },
+    {
+      "spring": 17123,
+      "vertices": [
+        421,
+        11846
+      ],
+      "labels": [
+        "stitch_18",
+        "left_btorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 140.22793579101562
+    },
+    {
+      "spring": 17155,
+      "vertices": [
+        134,
+        246
+      ],
+      "labels": [
+        "stitch_6",
+        "stitch_9"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso",
+        "right_sleeve_f"
+      ],
+      "family": "right_sleeve+torso",
+      "spring_midpoint_y_cm": 117.25410461425781
+    },
+    {
+      "spring": 17215,
+      "vertices": [
+        172,
+        8219
+      ],
+      "labels": [
+        "stitch_8",
+        "right_ftorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 142.2911376953125
+    },
+    {
+      "spring": 17305,
+      "vertices": [
+        411,
+        8473
+      ],
+      "labels": [
+        "stitch_18",
+        "left_btorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 145.76083374023438
+    },
+    {
+      "spring": 17475,
+      "vertices": [
+        15485,
+        15545
+      ],
+      "labels": [
+        "left_sleeve_b",
+        "left_sleeve_b"
+      ],
+      "panels": [
+        "left_sleeve_b"
+      ],
+      "family": "left_sleeve",
+      "spring_midpoint_y_cm": 108.28488159179688
+    },
+    {
+      "spring": 17501,
+      "vertices": [
+        30,
+        838
+      ],
+      "labels": [
+        "stitch_3",
+        "right_sleeve_b"
+      ],
+      "panels": [
+        "right_sleeve_b",
+        "right_sleeve_f"
+      ],
+      "family": "right_sleeve",
+      "spring_midpoint_y_cm": 115.10061645507812
+    },
+    {
+      "spring": 17620,
+      "vertices": [
+        173,
+        2673
+      ],
+      "labels": [
+        "stitch_8",
+        "right_btorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 142.29322814941406
+    },
+    {
+      "spring": 17737,
+      "vertices": [
+        424,
+        10457
+      ],
+      "labels": [
+        "stitch_18",
+        "left_btorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 138.50546264648438
+    },
+    {
+      "spring": 17816,
+      "vertices": [
+        180,
+        5104
+      ],
+      "labels": [
+        "stitch_8",
+        "right_ftorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 146.61434936523438
+    },
+    {
+      "spring": 17824,
+      "vertices": [
+        280,
+        16073
+      ],
+      "labels": [
+        "stitch_13",
+        "left_sleeve_f"
+      ],
+      "panels": [
+        "left_sleeve_b",
+        "left_sleeve_f"
+      ],
+      "family": "left_sleeve",
+      "spring_midpoint_y_cm": 107.86894226074219
+    },
+    {
+      "spring": 17967,
+      "vertices": [
+        176,
+        1630
+      ],
+      "labels": [
+        "stitch_8",
+        "right_btorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 144.5633544921875
+    },
+    {
+      "spring": 18062,
+      "vertices": [
+        425,
+        13876
+      ],
+      "labels": [
+        "stitch_18",
+        "left_ftorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 138.01927185058594
+    },
+    {
+      "spring": 18096,
+      "vertices": [
+        289,
+        16058
+      ],
+      "labels": [
+        "stitch_13,stitch_16,stitch_17",
+        "left_sleeve_f"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso",
+        "left_sleeve_b",
+        "left_sleeve_f"
+      ],
+      "family": "left_sleeve+torso",
+      "spring_midpoint_y_cm": 116.82839965820312
+    },
+    {
+      "spring": 18484,
+      "vertices": [
+        429,
+        14643
+      ],
+      "labels": [
+        "stitch_19",
+        "left_ftorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 117.19903564453125
+    },
+    {
+      "spring": 18840,
+      "vertices": [
+        169,
+        3337
+      ],
+      "labels": [
+        "stitch_8",
+        "right_btorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 140.24435424804688
+    },
+    {
+      "spring": 19310,
+      "vertices": [
+        282,
+        15485
+      ],
+      "labels": [
+        "stitch_13",
+        "left_sleeve_b"
+      ],
+      "panels": [
+        "left_sleeve_b",
+        "left_sleeve_f"
+      ],
+      "family": "left_sleeve",
+      "spring_midpoint_y_cm": 109.1993408203125
+    },
+    {
+      "spring": 19332,
+      "vertices": [
+        8,
+        1488
+      ],
+      "labels": [
+        "stitch_1",
+        "sl_right_cuff_f"
+      ],
+      "panels": [
+        "sl_right_cuff_b",
+        "sl_right_cuff_f"
+      ],
+      "family": "right_sleeve",
+      "spring_midpoint_y_cm": 100.1700439453125
+    },
+    {
+      "spring": 19397,
+      "vertices": [
+        15756,
+        15776
+      ],
+      "labels": [
+        "sl_left_cuff_b",
+        "sl_left_cuff_b"
+      ],
+      "panels": [
+        "sl_left_cuff_b"
+      ],
+      "family": "left_sleeve",
+      "spring_midpoint_y_cm": 103.11846160888672
+    },
+    {
+      "spring": 19779,
+      "vertices": [
+        254,
+        16259
+      ],
+      "labels": [
+        "stitch_11",
+        "sl_left_cuff_f"
+      ],
+      "panels": [
+        "sl_left_cuff_b",
+        "sl_left_cuff_f"
+      ],
+      "family": "left_sleeve",
+      "spring_midpoint_y_cm": 101.04104614257812
+    },
+    {
+      "spring": 20241,
+      "vertices": [
+        415,
+        11993
+      ],
+      "labels": [
+        "stitch_18",
+        "left_ftorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 143.12863159179688
+    },
+    {
+      "spring": 20468,
+      "vertices": [
+        173,
+        8219
+      ],
+      "labels": [
+        "stitch_8",
+        "right_ftorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 142.5515594482422
+    },
+    {
+      "spring": 20479,
+      "vertices": [
+        28,
+        109
+      ],
+      "labels": [
+        "stitch_2,stitch_6,stitch_7",
+        "stitch_6"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso",
+        "right_sleeve_b",
+        "right_sleeve_f"
+      ],
+      "family": "right_sleeve+torso",
+      "spring_midpoint_y_cm": 137.4344482421875
+    },
+    {
+      "spring": 20692,
+      "vertices": [
+        287,
+        15569
+      ],
+      "labels": [
+        "stitch_13",
+        "left_sleeve_b"
+      ],
+      "panels": [
+        "left_sleeve_b",
+        "left_sleeve_f"
+      ],
+      "family": "left_sleeve",
+      "spring_midpoint_y_cm": 114.17388916015625
+    },
+    {
+      "spring": 20750,
+      "vertices": [
+        181,
+        5104
+      ],
+      "labels": [
+        "stitch_8",
+        "right_ftorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 146.87478637695312
+    },
+    {
+      "spring": 20784,
+      "vertices": [
+        278,
+        16125
+      ],
+      "labels": [
+        "stitch_13",
+        "left_sleeve_f"
+      ],
+      "panels": [
+        "left_sleeve_b",
+        "left_sleeve_f"
+      ],
+      "family": "left_sleeve",
+      "spring_midpoint_y_cm": 106.25096130371094
+    },
+    {
+      "spring": 20787,
+      "vertices": [
+        161,
+        6680
+      ],
+      "labels": [
+        "stitch_8",
+        "right_ftorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 136.41372680664062
+    },
+    {
+      "spring": 20986,
+      "vertices": [
+        178,
+        5103
+      ],
+      "labels": [
+        "stitch_8",
+        "right_ftorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 145.83685302734375
+    },
+    {
+      "spring": 21086,
+      "vertices": [
+        254,
+        16320
+      ],
+      "labels": [
+        "stitch_11",
+        "sl_left_cuff_f"
+      ],
+      "panels": [
+        "sl_left_cuff_b",
+        "sl_left_cuff_f"
+      ],
+      "family": "left_sleeve",
+      "spring_midpoint_y_cm": 101.13103485107422
+    },
+    {
+      "spring": 21087,
+      "vertices": [
+        29,
+        926
+      ],
+      "labels": [
+        "stitch_3,stitch_6,stitch_7",
+        "right_sleeve_b"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso",
+        "right_sleeve_b",
+        "right_sleeve_f"
+      ],
+      "family": "right_sleeve+torso",
+      "spring_midpoint_y_cm": 116.873779296875
+    },
+    {
+      "spring": 21491,
+      "vertices": [
+        33,
+        754
+      ],
+      "labels": [
+        "stitch_3",
+        "right_sleeve_b"
+      ],
+      "panels": [
+        "right_sleeve_b",
+        "right_sleeve_f"
+      ],
+      "family": "right_sleeve",
+      "spring_midpoint_y_cm": 112.33989715576172
+    },
+    {
+      "spring": 21773,
+      "vertices": [
+        421,
+        13725
+      ],
+      "labels": [
+        "stitch_18",
+        "left_ftorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 139.7188720703125
+    },
+    {
+      "spring": 21868,
+      "vertices": [
+        179,
+        1628
+      ],
+      "labels": [
+        "stitch_8",
+        "right_btorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 146.02125549316406
+    },
+    {
+      "spring": 21883,
+      "vertices": [
+        419,
+        11264
+      ],
+      "labels": [
+        "stitch_18",
+        "left_btorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 140.97845458984375
+    },
+    {
+      "spring": 21886,
+      "vertices": [
+        167,
+        3092
+      ],
+      "labels": [
+        "stitch_8",
+        "right_btorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 139.36480712890625
+    },
+    {
+      "spring": 22037,
+      "vertices": [
+        164,
+        6771
+      ],
+      "labels": [
+        "stitch_8",
+        "right_ftorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 137.99713134765625
+    },
+    {
+      "spring": 22275,
+      "vertices": [
+        427,
+        14244
+      ],
+      "labels": [
+        "stitch_18",
+        "left_ftorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 137.01119995117188
+    },
+    {
+      "spring": 22522,
+      "vertices": [
+        419,
+        11455
+      ],
+      "labels": [
+        "stitch_18",
+        "left_btorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 141.24142456054688
+    },
+    {
+      "spring": 22587,
+      "vertices": [
+        15754,
+        15775
+      ],
+      "labels": [
+        "sl_left_cuff_b",
+        "sl_left_cuff_b"
+      ],
+      "panels": [
+        "sl_left_cuff_b"
+      ],
+      "family": "left_sleeve",
+      "spring_midpoint_y_cm": 101.11238098144531
+    },
+    {
+      "spring": 22744,
+      "vertices": [
+        428,
+        10525
+      ],
+      "labels": [
+        "stitch_18",
+        "left_btorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 136.2025604248047
+    },
+    {
+      "spring": 22950,
+      "vertices": [
+        410,
+        11987
+      ],
+      "labels": [
+        "stitch_18",
+        "left_ftorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 146.35391235351562
+    },
+    {
+      "spring": 22994,
+      "vertices": [
+        28,
+        1439
+      ],
+      "labels": [
+        "stitch_2,stitch_6,stitch_7",
+        "right_sleeve_f"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso",
+        "right_sleeve_b",
+        "right_sleeve_f"
+      ],
+      "family": "right_sleeve+torso",
+      "spring_midpoint_y_cm": 138.3100128173828
+    },
+    {
+      "spring": 23073,
+      "vertices": [
+        161,
+        4330
+      ],
+      "labels": [
+        "stitch_8",
+        "right_btorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 136.08636474609375
+    },
+    {
+      "spring": 23245,
+      "vertices": [
+        289,
+        356
+      ],
+      "labels": [
+        "stitch_13,stitch_16,stitch_17",
+        "stitch_16"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso",
+        "left_sleeve_b",
+        "left_sleeve_f"
+      ],
+      "family": "left_sleeve+torso",
+      "spring_midpoint_y_cm": 117.469970703125
+    },
+    {
+      "spring": 23403,
+      "vertices": [
+        431,
+        11364
+      ],
+      "labels": [
+        "stitch_19",
+        "left_btorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 115.38567352294922
+    },
+    {
+      "spring": 23725,
+      "vertices": [
+        415,
+        11046
+      ],
+      "labels": [
+        "stitch_18",
+        "left_btorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 143.23861694335938
+    },
+    {
+      "spring": 23731,
+      "vertices": [
+        15754,
+        15755
+      ],
+      "labels": [
+        "sl_left_cuff_b",
+        "sl_left_cuff_b"
+      ],
+      "panels": [
+        "sl_left_cuff_b"
+      ],
+      "family": "left_sleeve",
+      "spring_midpoint_y_cm": 100.55579376220703
+    },
+    {
+      "spring": 23763,
+      "vertices": [
+        244,
+        3593
+      ],
+      "labels": [
+        "stitch_9",
+        "right_btorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 115.38488006591797
+    },
+    {
+      "spring": 24025,
+      "vertices": [
+        78,
+        1103
+      ],
+      "labels": [
+        "stitch_5",
+        "sl_right_cuff_b"
+      ],
+      "panels": [
+        "right_sleeve_b",
+        "sl_right_cuff_b"
+      ],
+      "family": "right_sleeve",
+      "spring_midpoint_y_cm": 104.3600845336914
+    },
+    {
+      "spring": 24051,
+      "vertices": [
+        752,
+        801
+      ],
+      "labels": [
+        "right_sleeve_b",
+        "right_sleeve_b"
+      ],
+      "panels": [
+        "right_sleeve_b"
+      ],
+      "family": "right_sleeve",
+      "spring_midpoint_y_cm": 108.41455078125
+    },
+    {
+      "spring": 24159,
+      "vertices": [
+        162,
+        6680
+      ],
+      "labels": [
+        "stitch_8",
+        "right_ftorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 136.67416381835938
+    },
+    {
+      "spring": 24317,
+      "vertices": [
+        426,
+        14244
+      ],
+      "labels": [
+        "stitch_18",
+        "left_ftorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 137.27163696289062
+    },
+    {
+      "spring": 24364,
+      "vertices": [
+        168,
+        7172
+      ],
+      "labels": [
+        "stitch_8",
+        "right_ftorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 139.87832641601562
+    },
+    {
+      "spring": 24509,
+      "vertices": [
+        28,
+        963
+      ],
+      "labels": [
+        "stitch_2,stitch_6,stitch_7",
+        "right_sleeve_b"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso",
+        "right_sleeve_b",
+        "right_sleeve_f"
+      ],
+      "family": "right_sleeve+torso",
+      "spring_midpoint_y_cm": 138.31051635742188
+    },
+    {
+      "spring": 24688,
+      "vertices": [
+        412,
+        8471
+      ],
+      "labels": [
+        "stitch_18",
+        "left_btorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 144.82379150390625
+    },
+    {
+      "spring": 24968,
+      "vertices": [
+        409,
+        11987
+      ],
+      "labels": [
+        "stitch_18",
+        "left_ftorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 146.61434936523438
+    },
+    {
+      "spring": 25125,
+      "vertices": [
+        422,
+        13725
+      ],
+      "labels": [
+        "stitch_18",
+        "left_ftorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 139.45843505859375
+    },
+    {
+      "spring": 25236,
+      "vertices": [
+        180,
+        1628
+      ],
+      "labels": [
+        "stitch_8",
+        "right_btorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 146.28167724609375
+    },
+    {
+      "spring": 25265,
+      "vertices": [
+        420,
+        11264
+      ],
+      "labels": [
+        "stitch_18",
+        "left_btorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 140.718017578125
+    },
+    {
+      "spring": 25454,
+      "vertices": [
+        430,
+        11364
+      ],
+      "labels": [
+        "stitch_19",
+        "left_btorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 115.8801040649414
+    },
+    {
+      "spring": 25579,
+      "vertices": [
+        423,
+        12881
+      ],
+      "labels": [
+        "stitch_18",
+        "left_ftorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 138.8685302734375
+    },
+    {
+      "spring": 25610,
+      "vertices": [
+        288,
+        16197
+      ],
+      "labels": [
+        "stitch_13",
+        "left_sleeve_f"
+      ],
+      "panels": [
+        "left_sleeve_b",
+        "left_sleeve_f"
+      ],
+      "family": "left_sleeve",
+      "spring_midpoint_y_cm": 114.73135375976562
+    },
+    {
+      "spring": 25643,
+      "vertices": [
+        31,
+        1241
+      ],
+      "labels": [
+        "stitch_3",
+        "right_sleeve_f"
+      ],
+      "panels": [
+        "right_sleeve_b",
+        "right_sleeve_f"
+      ],
+      "family": "right_sleeve",
+      "spring_midpoint_y_cm": 113.83403778076172
+    },
+    {
+      "spring": 25719,
+      "vertices": [
+        409,
+        8474
+      ],
+      "labels": [
+        "stitch_18",
+        "left_btorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 146.57748413085938
+    },
+    {
+      "spring": 25743,
+      "vertices": [
+        414,
+        11046
+      ],
+      "labels": [
+        "stitch_18",
+        "left_btorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 143.49905395507812
+    },
+    {
+      "spring": 26316,
+      "vertices": [
+        417,
+        10462
+      ],
+      "labels": [
+        "stitch_18",
+        "left_btorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 141.93560791015625
+    },
+    {
+      "spring": 26369,
+      "vertices": [
+        256,
+        290
+      ],
+      "labels": [
+        "stitch_11,stitch_13,stitch_14",
+        "stitch_14"
+      ],
+      "panels": [
+        "left_sleeve_b",
+        "left_sleeve_f",
+        "sl_left_cuff_b",
+        "sl_left_cuff_f"
+      ],
+      "family": "left_sleeve",
+      "spring_midpoint_y_cm": 103.09769439697266
+    },
+    {
+      "spring": 26414,
+      "vertices": [
+        37,
+        875
+      ],
+      "labels": [
+        "stitch_3",
+        "right_sleeve_b"
+      ],
+      "panels": [
+        "right_sleeve_b",
+        "right_sleeve_f"
+      ],
+      "family": "right_sleeve",
+      "spring_midpoint_y_cm": 109.12605285644531
+    },
+    {
+      "spring": 26429,
+      "vertices": [
+        28,
+        4330
+      ],
+      "labels": [
+        "stitch_2,stitch_6,stitch_7",
+        "right_btorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso",
+        "right_sleeve_b",
+        "right_sleeve_f"
+      ],
+      "family": "right_sleeve+torso",
+      "spring_midpoint_y_cm": 136.38494873046875
+    },
+    {
+      "spring": 26573,
+      "vertices": [
+        245,
+        6114
+      ],
+      "labels": [
+        "stitch_9",
+        "right_ftorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 116.3745346069336
+    },
+    {
+      "spring": 26594,
+      "vertices": [
+        428,
+        14465
+      ],
+      "labels": [
+        "stitch_18",
+        "left_ftorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 136.255859375
+    },
+    {
+      "spring": 27087,
+      "vertices": [
+        245,
+        3593
+      ],
+      "labels": [
+        "stitch_9",
+        "right_btorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 115.87931060791016
+    },
+    {
+      "spring": 27166,
+      "vertices": [
+        430,
+        13629
+      ],
+      "labels": [
+        "stitch_19",
+        "left_ftorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 115.814208984375
+    },
+    {
+      "spring": 27353,
+      "vertices": [
+        79,
+        1103
+      ],
+      "labels": [
+        "stitch_5",
+        "sl_right_cuff_b"
+      ],
+      "panels": [
+        "right_sleeve_b",
+        "sl_right_cuff_b"
+      ],
+      "family": "right_sleeve",
+      "spring_midpoint_y_cm": 104.71131134033203
+    },
+    {
+      "spring": 27490,
+      "vertices": [
+        286,
+        16135
+      ],
+      "labels": [
+        "stitch_13",
+        "left_sleeve_f"
+      ],
+      "panels": [
+        "left_sleeve_b",
+        "left_sleeve_f"
+      ],
+      "family": "left_sleeve",
+      "spring_midpoint_y_cm": 113.28379821777344
+    },
+    {
+      "spring": 27526,
+      "vertices": [
+        418,
+        13564
+      ],
+      "labels": [
+        "stitch_18",
+        "left_ftorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 141.33309936523438
+    },
+    {
+      "spring": 27527,
+      "vertices": [
+        30,
+        1404
+      ],
+      "labels": [
+        "stitch_3",
+        "right_sleeve_f"
+      ],
+      "panels": [
+        "right_sleeve_b",
+        "right_sleeve_f"
+      ],
+      "family": "right_sleeve",
+      "spring_midpoint_y_cm": 114.6937026977539
+    },
+    {
+      "spring": 27673,
+      "vertices": [
+        415,
+        10477
+      ],
+      "labels": [
+        "stitch_18",
+        "left_btorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 142.9445343017578
+    },
+    {
+      "spring": 27944,
+      "vertices": [
+        164,
+        8414
+      ],
+      "labels": [
+        "stitch_8",
+        "right_ftorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 137.89022827148438
+    },
+    {
+      "spring": 27947,
+      "vertices": [
+        425,
+        10441
+      ],
+      "labels": [
+        "stitch_18",
+        "left_btorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 137.73324584960938
+    },
+    {
+      "spring": 28005,
+      "vertices": [
+        413,
+        8471
+      ],
+      "labels": [
+        "stitch_18",
+        "left_btorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 144.5633544921875
+    },
+    {
+      "spring": 28789,
+      "vertices": [
+        173,
+        5097
+      ],
+      "labels": [
+        "stitch_8",
+        "right_ftorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 142.46835327148438
+    },
+    {
+      "spring": 28907,
+      "vertices": [
+        164,
+        3909
+      ],
+      "labels": [
+        "stitch_8",
+        "right_btorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 137.60635375976562
+    },
+    {
+      "spring": 28971,
+      "vertices": [
+        286,
+        15525
+      ],
+      "labels": [
+        "stitch_13",
+        "left_sleeve_b"
+      ],
+      "panels": [
+        "left_sleeve_b",
+        "left_sleeve_f"
+      ],
+      "family": "left_sleeve",
+      "spring_midpoint_y_cm": 112.72400665283203
+    },
+    {
+      "spring": 28983,
+      "vertices": [
+        32,
+        1241
+      ],
+      "labels": [
+        "stitch_3",
+        "right_sleeve_f"
+      ],
+      "panels": [
+        "right_sleeve_b",
+        "right_sleeve_f"
+      ],
+      "family": "right_sleeve",
+      "spring_midpoint_y_cm": 113.39048767089844
+    },
+    {
+      "spring": 28991,
+      "vertices": [
+        170,
+        2868
+      ],
+      "labels": [
+        "stitch_8",
+        "right_btorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 140.7757568359375
+    },
+    {
+      "spring": 29151,
+      "vertices": [
+        15756,
+        15777
+      ],
+      "labels": [
+        "sl_left_cuff_b",
+        "sl_left_cuff_b"
+      ],
+      "panels": [
+        "sl_left_cuff_b"
+      ],
+      "family": "left_sleeve",
+      "spring_midpoint_y_cm": 102.63412475585938
+    },
+    {
+      "spring": 29191,
+      "vertices": [
+        284,
+        16150
+      ],
+      "labels": [
+        "stitch_13",
+        "left_sleeve_f"
+      ],
+      "panels": [
+        "left_sleeve_b",
+        "left_sleeve_f"
+      ],
+      "family": "left_sleeve",
+      "spring_midpoint_y_cm": 110.89227294921875
+    },
+    {
+      "spring": 29354,
+      "vertices": [
+        423,
+        10271
+      ],
+      "labels": [
+        "stitch_18",
+        "left_btorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 139.0498504638672
+    },
+    {
+      "spring": 29475,
+      "vertices": [
+        166,
+        4817
+      ],
+      "labels": [
+        "stitch_8",
+        "right_btorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 139.17739868164062
+    },
+    {
+      "spring": 29696,
+      "vertices": [
+        418,
+        10462
+      ],
+      "labels": [
+        "stitch_18",
+        "left_btorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 141.67518615722656
+    },
+    {
+      "spring": 29797,
+      "vertices": [
+        35,
+        1358
+      ],
+      "labels": [
+        "stitch_3",
+        "right_sleeve_f"
+      ],
+      "panels": [
+        "right_sleeve_b",
+        "right_sleeve_f"
+      ],
+      "family": "right_sleeve",
+      "spring_midpoint_y_cm": 110.01315307617188
+    },
+    {
+      "spring": 29816,
+      "vertices": [
+        423,
+        13898
+      ],
+      "labels": [
+        "stitch_18",
+        "left_ftorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 138.80039978027344
+    },
+    {
+      "spring": 30001,
+      "vertices": [
+        163,
+        8414
+      ],
+      "labels": [
+        "stitch_8",
+        "right_ftorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 137.6298065185547
+    },
+    {
+      "spring": 30142,
+      "vertices": [
+        244,
+        5025
+      ],
+      "labels": [
+        "stitch_9",
+        "right_btorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 114.75920104980469
+    },
+    {
+      "spring": 30217,
+      "vertices": [
+        431,
+        13629
+      ],
+      "labels": [
+        "stitch_19",
+        "left_ftorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 115.31977844238281
+    },
+    {
+      "spring": 30284,
+      "vertices": [
+        430,
+        13511
+      ],
+      "labels": [
+        "stitch_19",
+        "left_ftorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 116.3745346069336
+    },
+    {
+      "spring": 30368,
+      "vertices": [
+        41,
+        75
+      ],
+      "labels": [
+        "stitch_3",
+        "stitch_4"
+      ],
+      "panels": [
+        "right_sleeve_b",
+        "right_sleeve_f",
+        "sl_right_cuff_f"
+      ],
+      "family": "right_sleeve",
+      "spring_midpoint_y_cm": 104.34014129638672
+    },
+    {
+      "spring": 30389,
+      "vertices": [
+        429,
+        9582
+      ],
+      "labels": [
+        "stitch_19",
+        "left_btorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 116.86896514892578
+    },
+    {
+      "spring": 30461,
+      "vertices": [
+        431,
+        14865
+      ],
+      "labels": [
+        "stitch_19",
+        "left_ftorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 114.89124298095703
+    },
+    {
+      "spring": 30558,
+      "vertices": [
+        34,
+        1295
+      ],
+      "labels": [
+        "stitch_3",
+        "right_sleeve_f"
+      ],
+      "panels": [
+        "right_sleeve_b",
+        "right_sleeve_f"
+      ],
+      "family": "right_sleeve",
+      "spring_midpoint_y_cm": 111.05618286132812
+    },
+    {
+      "spring": 30779,
+      "vertices": [
+        33,
+        832
+      ],
+      "labels": [
+        "stitch_3",
+        "right_sleeve_b"
+      ],
+      "panels": [
+        "right_sleeve_b",
+        "right_sleeve_f"
+      ],
+      "family": "right_sleeve",
+      "spring_midpoint_y_cm": 111.96122741699219
+    },
+    {
+      "spring": 30870,
+      "vertices": [
+        287,
+        16135
+      ],
+      "labels": [
+        "stitch_13",
+        "left_sleeve_f"
+      ],
+      "panels": [
+        "left_sleeve_b",
+        "left_sleeve_f"
+      ],
+      "family": "left_sleeve",
+      "spring_midpoint_y_cm": 113.72735595703125
+    },
+    {
+      "spring": 30907,
+      "vertices": [
+        31,
+        1404
+      ],
+      "labels": [
+        "stitch_3",
+        "right_sleeve_f"
+      ],
+      "panels": [
+        "right_sleeve_b",
+        "right_sleeve_f"
+      ],
+      "family": "right_sleeve",
+      "spring_midpoint_y_cm": 114.25015258789062
+    },
+    {
+      "spring": 30955,
+      "vertices": [
+        163,
+        3909
+      ],
+      "labels": [
+        "stitch_8",
+        "right_btorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 137.34593200683594
+    },
+    {
+      "spring": 31353,
+      "vertices": [
+        985,
+        986
+      ],
+      "labels": [
+        "sl_right_cuff_b",
+        "sl_right_cuff_b"
+      ],
+      "panels": [
+        "sl_right_cuff_b"
+      ],
+      "family": "right_sleeve",
+      "spring_midpoint_y_cm": 100.55579376220703
+    },
+    {
+      "spring": 31382,
+      "vertices": [
+        161,
+        4457
+      ],
+      "labels": [
+        "stitch_8",
+        "right_btorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 136.34234619140625
+    },
+    {
+      "spring": 31561,
+      "vertices": [
+        30,
+        1319
+      ],
+      "labels": [
+        "stitch_3",
+        "right_sleeve_f"
+      ],
+      "panels": [
+        "right_sleeve_b",
+        "right_sleeve_f"
+      ],
+      "family": "right_sleeve",
+      "spring_midpoint_y_cm": 115.10061645507812
+    },
+    {
+      "spring": 31649,
+      "vertices": [
+        420,
+        13635
+      ],
+      "labels": [
+        "stitch_18",
+        "left_ftorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 140.31442260742188
+    },
+    {
+      "spring": 31658,
+      "vertices": [
+        417,
+        14276
+      ],
+      "labels": [
+        "stitch_18",
+        "left_ftorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 141.9603271484375
+    },
+    {
+      "spring": 32249,
+      "vertices": [
+        40,
+        1393
+      ],
+      "labels": [
+        "stitch_3",
+        "right_sleeve_f"
+      ],
+      "panels": [
+        "right_sleeve_b",
+        "right_sleeve_f"
+      ],
+      "family": "right_sleeve",
+      "spring_midpoint_y_cm": 106.21852111816406
+    },
+    {
+      "spring": 32354,
+      "vertices": [
+        15776,
+        15805
+      ],
+      "labels": [
+        "sl_left_cuff_b",
+        "sl_left_cuff_b"
+      ],
+      "panels": [
+        "sl_left_cuff_b"
+      ],
+      "family": "left_sleeve",
+      "spring_midpoint_y_cm": 103.27926635742188
+    },
+    {
+      "spring": 32492,
+      "vertices": [
+        32,
+        1233
+      ],
+      "labels": [
+        "stitch_3",
+        "right_sleeve_f"
+      ],
+      "panels": [
+        "right_sleeve_b",
+        "right_sleeve_f"
+      ],
+      "family": "right_sleeve",
+      "spring_midpoint_y_cm": 112.783447265625
+    },
+    {
+      "spring": 32569,
+      "vertices": [
+        752,
+        875
+      ],
+      "labels": [
+        "right_sleeve_b",
+        "right_sleeve_b"
+      ],
+      "panels": [
+        "right_sleeve_b"
+      ],
+      "family": "right_sleeve",
+      "spring_midpoint_y_cm": 108.77407836914062
+    },
+    {
+      "spring": 32758,
+      "vertices": [
+        38,
+        1294
+      ],
+      "labels": [
+        "stitch_3",
+        "right_sleeve_f"
+      ],
+      "panels": [
+        "right_sleeve_b",
+        "right_sleeve_f"
+      ],
+      "family": "right_sleeve",
+      "spring_midpoint_y_cm": 107.56114196777344
+    },
+    {
+      "spring": 32830,
+      "vertices": [
+        167,
+        4817
+      ],
+      "labels": [
+        "stitch_8",
+        "right_btorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 139.43783569335938
+    },
+    {
+      "spring": 33116,
+      "vertices": [
+        36,
+        1358
+      ],
+      "labels": [
+        "stitch_3",
+        "right_sleeve_f"
+      ],
+      "panels": [
+        "right_sleeve_b",
+        "right_sleeve_f"
+      ],
+      "family": "right_sleeve",
+      "spring_midpoint_y_cm": 109.5696029663086
+    },
+    {
+      "spring": 33133,
+      "vertices": [
+        424,
+        13898
+      ],
+      "labels": [
+        "stitch_18",
+        "left_ftorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 138.53997802734375
+    },
+    {
+      "spring": 33325,
+      "vertices": [
+        29,
+        134
+      ],
+      "labels": [
+        "stitch_3,stitch_6,stitch_7",
+        "stitch_6"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso",
+        "right_sleeve_b",
+        "right_sleeve_f"
+      ],
+      "family": "right_sleeve+torso",
+      "spring_midpoint_y_cm": 117.469970703125
+    },
+    {
+      "spring": 33473,
+      "vertices": [
+        420,
+        11846
+      ],
+      "labels": [
+        "stitch_18",
+        "left_btorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 140.4883575439453
+    },
+    {
+      "spring": 33517,
+      "vertices": [
+        424,
+        9470
+      ],
+      "labels": [
+        "stitch_18",
+        "left_btorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 138.11599731445312
+    },
+    {
+      "spring": 33781,
+      "vertices": [
+        432,
+        14865
+      ],
+      "labels": [
+        "stitch_19",
+        "left_ftorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 114.39680480957031
+    },
+    {
+      "spring": 34093,
+      "vertices": [
+        34,
+        832
+      ],
+      "labels": [
+        "stitch_3",
+        "right_sleeve_b"
+      ],
+      "panels": [
+        "right_sleeve_b",
+        "right_sleeve_f"
+      ],
+      "family": "right_sleeve",
+      "spring_midpoint_y_cm": 111.5176773071289
+    },
+    {
+      "spring": 34150,
+      "vertices": [
+        284,
+        16016
+      ],
+      "labels": [
+        "stitch_13",
+        "left_sleeve_f"
+      ],
+      "panels": [
+        "left_sleeve_b",
+        "left_sleeve_f"
+      ],
+      "family": "left_sleeve",
+      "spring_midpoint_y_cm": 111.17176055908203
+    },
+    {
+      "spring": 34238,
+      "vertices": [
+        351,
+        352
+      ],
+      "labels": [
+        "stitch_15",
+        "stitch_15"
+      ],
+      "panels": [
+        "left_sleeve_b",
+        "sl_left_cuff_b"
+      ],
+      "family": "left_sleeve",
+      "spring_midpoint_y_cm": 105.90750122070312
+    },
+    {
+      "spring": 34476,
+      "vertices": [
+        412,
+        8472
+      ],
+      "labels": [
+        "stitch_18",
+        "left_btorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 145.17562866210938
+    },
+    {
+      "spring": 34480,
+      "vertices": [
+        352,
+        15776
+      ],
+      "labels": [
+        "stitch_15",
+        "sl_left_cuff_b"
+      ],
+      "panels": [
+        "left_sleeve_b",
+        "sl_left_cuff_b"
+      ],
+      "family": "left_sleeve",
+      "spring_midpoint_y_cm": 104.63406372070312
+    },
+    {
+      "spring": 34546,
+      "vertices": [
+        412,
+        11989
+      ],
+      "labels": [
+        "stitch_18",
+        "left_ftorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 145.29248046875
+    },
+    {
+      "spring": 34713,
+      "vertices": [
+        162,
+        4457
+      ],
+      "labels": [
+        "stitch_8",
+        "right_btorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 136.602783203125
+    },
+    {
+      "spring": 34750,
+      "vertices": [
+        427,
+        10366
+      ],
+      "labels": [
+        "stitch_18",
+        "left_btorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 136.87362670898438
+    },
+    {
+      "spring": 35002,
+      "vertices": [
+        418,
+        14276
+      ],
+      "labels": [
+        "stitch_18",
+        "left_ftorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 141.69989013671875
+    },
+    {
+      "spring": 35077,
+      "vertices": [
+        244,
+        6501
+      ],
+      "labels": [
+        "stitch_9",
+        "right_ftorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 115.09818267822266
+    },
+    {
+      "spring": 35255,
+      "vertices": [
+        29,
+        1407
+      ],
+      "labels": [
+        "stitch_3,stitch_6,stitch_7",
+        "right_sleeve_f"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso",
+        "right_sleeve_b",
+        "right_sleeve_f"
+      ],
+      "family": "right_sleeve+torso",
+      "spring_midpoint_y_cm": 116.85562133789062
+    },
+    {
+      "spring": 35322,
+      "vertices": [
+        175,
+        5099
+      ],
+      "labels": [
+        "stitch_8",
+        "right_ftorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 143.76882934570312
+    },
+    {
+      "spring": 35360,
+      "vertices": [
+        172,
+        7810
+      ],
+      "labels": [
+        "stitch_8",
+        "right_ftorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 141.99801635742188
+    },
+    {
+      "spring": 35513,
+      "vertices": [
+        286,
+        15481
+      ],
+      "labels": [
+        "stitch_13",
+        "left_sleeve_b"
+      ],
+      "panels": [
+        "left_sleeve_b",
+        "left_sleeve_f"
+      ],
+      "family": "left_sleeve",
+      "spring_midpoint_y_cm": 113.22848510742188
+    },
+    {
+      "spring": 35522,
+      "vertices": [
+        414,
+        8469
+      ],
+      "labels": [
+        "stitch_18",
+        "left_btorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 143.5264892578125
+    },
+    {
+      "spring": 35800,
+      "vertices": [
+        39,
+        1294
+      ],
+      "labels": [
+        "stitch_3",
+        "right_sleeve_f"
+      ],
+      "panels": [
+        "right_sleeve_b",
+        "right_sleeve_f"
+      ],
+      "family": "right_sleeve",
+      "spring_midpoint_y_cm": 107.11759185791016
+    },
+    {
+      "spring": 36162,
+      "vertices": [
+        31,
+        762
+      ],
+      "labels": [
+        "stitch_3",
+        "right_sleeve_b"
+      ],
+      "panels": [
+        "right_sleeve_b",
+        "right_sleeve_f"
+      ],
+      "family": "right_sleeve",
+      "spring_midpoint_y_cm": 113.83403778076172
+    },
+    {
+      "spring": 36189,
+      "vertices": [
+        287,
+        15977
+      ],
+      "labels": [
+        "stitch_13",
+        "left_sleeve_f"
+      ],
+      "panels": [
+        "left_sleeve_b",
+        "left_sleeve_f"
+      ],
+      "family": "left_sleeve",
+      "spring_midpoint_y_cm": 113.92261505126953
+    },
+    {
+      "spring": 36296,
+      "vertices": [
+        1031,
+        1063
+      ],
+      "labels": [
+        "sl_right_cuff_b",
+        "sl_right_cuff_b"
+      ],
+      "panels": [
+        "sl_right_cuff_b"
+      ],
+      "family": "right_sleeve",
+      "spring_midpoint_y_cm": 102.03765869140625
+    },
+    {
+      "spring": 36504,
+      "vertices": [
+        428,
+        11701
+      ],
+      "labels": [
+        "stitch_18",
+        "left_btorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 136.57138061523438
+    },
+    {
+      "spring": 36537,
+      "vertices": [
+        165,
+        3720
+      ],
+      "labels": [
+        "stitch_8",
+        "right_btorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 138.58482360839844
+    },
+    {
+      "spring": 36777,
+      "vertices": [
+        426,
+        10366
+      ],
+      "labels": [
+        "stitch_18",
+        "left_btorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 137.13406372070312
+    },
+    {
+      "spring": 36819,
+      "vertices": [
+        34,
+        820
+      ],
+      "labels": [
+        "stitch_3",
+        "right_sleeve_b"
+      ],
+      "panels": [
+        "right_sleeve_b",
+        "right_sleeve_f"
+      ],
+      "family": "right_sleeve",
+      "spring_midpoint_y_cm": 111.05618286132812
+    },
+    {
+      "spring": 36862,
+      "vertices": [
+        425,
+        9470
+      ],
+      "labels": [
+        "stitch_18",
+        "left_btorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 137.85556030273438
+    },
+    {
+      "spring": 37050,
+      "vertices": [
+        15775,
+        15820
+      ],
+      "labels": [
+        "sl_left_cuff_b",
+        "sl_left_cuff_b"
+      ],
+      "panels": [
+        "sl_left_cuff_b"
+      ],
+      "family": "left_sleeve",
+      "spring_midpoint_y_cm": 101.62216186523438
+    },
+    {
+      "spring": 37092,
+      "vertices": [
+        171,
+        3592
+      ],
+      "labels": [
+        "stitch_8",
+        "right_btorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 141.68106079101562
+    },
+    {
+      "spring": 37524,
+      "vertices": [
+        277,
+        290
+      ],
+      "labels": [
+        "stitch_13",
+        "stitch_14"
+      ],
+      "panels": [
+        "left_sleeve_b",
+        "left_sleeve_f",
+        "sl_left_cuff_f"
+      ],
+      "family": "left_sleeve",
+      "spring_midpoint_y_cm": 104.34014129638672
+    },
+    {
+      "spring": 37818,
+      "vertices": [
+        410,
+        11988
+      ],
+      "labels": [
+        "stitch_18",
+        "left_ftorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 146.09727478027344
+    },
+    {
+      "spring": 37826,
+      "vertices": [
+        353,
+        15776
+      ],
+      "labels": [
+        "stitch_15",
+        "sl_left_cuff_b"
+      ],
+      "panels": [
+        "left_sleeve_b",
+        "sl_left_cuff_b"
+      ],
+      "family": "left_sleeve",
+      "spring_midpoint_y_cm": 104.2828369140625
+    },
+    {
+      "spring": 37904,
+      "vertices": [
+        32,
+        754
+      ],
+      "labels": [
+        "stitch_3",
+        "right_sleeve_b"
+      ],
+      "panels": [
+        "right_sleeve_b",
+        "right_sleeve_f"
+      ],
+      "family": "right_sleeve",
+      "spring_midpoint_y_cm": 112.783447265625
+    },
+    {
+      "spring": 38306,
+      "vertices": [
+        178,
+        1628
+      ],
+      "labels": [
+        "stitch_8",
+        "right_btorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 145.76083374023438
+    },
+    {
+      "spring": 38573,
+      "vertices": [
+        173,
+        5098
+      ],
+      "labels": [
+        "stitch_8",
+        "right_ftorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 142.8682098388672
+    },
+    {
+      "spring": 38582,
+      "vertices": [
+        257,
+        258
+      ],
+      "labels": [
+        "stitch_12,stitch_16,stitch_17",
+        "stitch_12"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso",
+        "left_sleeve_b",
+        "left_sleeve_f"
+      ],
+      "family": "left_sleeve+torso",
+      "spring_midpoint_y_cm": 138.61012268066406
+    },
+    {
+      "spring": 38725,
+      "vertices": [
+        1063,
+        1097
+      ],
+      "labels": [
+        "sl_right_cuff_b",
+        "sl_right_cuff_b"
+      ],
+      "panels": [
+        "sl_right_cuff_b"
+      ],
+      "family": "right_sleeve",
+      "spring_midpoint_y_cm": 101.74038696289062
+    },
+    {
+      "spring": 38813,
+      "vertices": [
+        287,
+        15481
+      ],
+      "labels": [
+        "stitch_13",
+        "left_sleeve_b"
+      ],
+      "panels": [
+        "left_sleeve_b",
+        "left_sleeve_f"
+      ],
+      "family": "left_sleeve",
+      "spring_midpoint_y_cm": 113.67204284667969
+    },
+    {
+      "spring": 38871,
+      "vertices": [
+        161,
+        7397
+      ],
+      "labels": [
+        "stitch_8",
+        "right_ftorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 136.07736206054688
+    },
+    {
+      "spring": 39214,
+      "vertices": [
+        29,
+        838
+      ],
+      "labels": [
+        "stitch_3,stitch_6,stitch_7",
+        "right_sleeve_b"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso",
+        "right_sleeve_b",
+        "right_sleeve_f"
+      ],
+      "family": "right_sleeve+torso",
+      "spring_midpoint_y_cm": 116.37986755371094
+    },
+    {
+      "spring": 39255,
+      "vertices": [
+        80,
+        752
+      ],
+      "labels": [
+        "stitch_5",
+        "right_sleeve_b"
+      ],
+      "panels": [
+        "right_sleeve_b",
+        "sl_right_cuff_b"
+      ],
+      "family": "right_sleeve",
+      "spring_midpoint_y_cm": 107.16726684570312
+    },
+    {
+      "spring": 39351,
+      "vertices": [
+        175,
+        1631
+      ],
+      "labels": [
+        "stitch_8",
+        "right_btorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 143.92608642578125
+    },
+    {
+      "spring": 39497,
+      "vertices": [
+        35,
+        875
+      ],
+      "labels": [
+        "stitch_3",
+        "right_sleeve_b"
+      ],
+      "panels": [
+        "right_sleeve_b",
+        "right_sleeve_f"
+      ],
+      "family": "right_sleeve",
+      "spring_midpoint_y_cm": 110.01315307617188
+    },
+    {
+      "spring": 39514,
+      "vertices": [
+        32,
+        762
+      ],
+      "labels": [
+        "stitch_3",
+        "right_sleeve_b"
+      ],
+      "panels": [
+        "right_sleeve_b",
+        "right_sleeve_f"
+      ],
+      "family": "right_sleeve",
+      "spring_midpoint_y_cm": 113.39048767089844
+    },
+    {
+      "spring": 39857,
+      "vertices": [
+        166,
+        3720
+      ],
+      "labels": [
+        "stitch_8",
+        "right_btorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 138.84524536132812
+    },
+    {
+      "spring": 40369,
+      "vertices": [
+        1031,
+        1112
+      ],
+      "labels": [
+        "sl_right_cuff_b",
+        "sl_right_cuff_b"
+      ],
+      "panels": [
+        "sl_right_cuff_b"
+      ],
+      "family": "right_sleeve",
+      "spring_midpoint_y_cm": 102.33665466308594
+    },
+    {
+      "spring": 41131,
+      "vertices": [
+        411,
+        11988
+      ],
+      "labels": [
+        "stitch_18",
+        "left_ftorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 145.83685302734375
+    },
+    {
+      "spring": 41213,
+      "vertices": [
+        432,
+        13699
+      ],
+      "labels": [
+        "stitch_19",
+        "left_ftorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 113.91963195800781
+    },
+    {
+      "spring": 41214,
+      "vertices": [
+        253,
+        16208
+      ],
+      "labels": [
+        "stitch_11",
+        "sl_left_cuff_f"
+      ],
+      "panels": [
+        "sl_left_cuff_b",
+        "sl_left_cuff_f"
+      ],
+      "family": "left_sleeve",
+      "spring_midpoint_y_cm": 100.1700439453125
+    },
+    {
+      "spring": 41319,
+      "vertices": [
+        168,
+        8259
+      ],
+      "labels": [
+        "stitch_8",
+        "right_ftorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 139.78939819335938
+    },
+    {
+      "spring": 41365,
+      "vertices": [
+        408,
+        11987
+      ],
+      "labels": [
+        "stitch_18",
+        "left_ftorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 146.87478637695312
+    },
+    {
+      "spring": 41430,
+      "vertices": [
+        428,
+        13527
+      ],
+      "labels": [
+        "stitch_18",
+        "left_ftorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 136.3819580078125
+    },
+    {
+      "spring": 41534,
+      "vertices": [
+        177,
+        5101
+      ],
+      "labels": [
+        "stitch_8",
+        "right_ftorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 144.9824676513672
+    },
+    {
+      "spring": 41666,
+      "vertices": [
+        419,
+        15051
+      ],
+      "labels": [
+        "stitch_18",
+        "left_ftorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 140.86752319335938
+    },
+    {
+      "spring": 41727,
+      "vertices": [
+        27,
+        28
+      ],
+      "labels": [
+        "stitch_2",
+        "stitch_2,stitch_6,stitch_7"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso",
+        "right_sleeve_b",
+        "right_sleeve_f"
+      ],
+      "family": "right_sleeve+torso",
+      "spring_midpoint_y_cm": 138.61012268066406
+    },
+    {
+      "spring": 41936,
+      "vertices": [
+        174,
+        5098
+      ],
+      "labels": [
+        "stitch_8",
+        "right_ftorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 143.12863159179688
+    },
+    {
+      "spring": 42004,
+      "vertices": [
+        284,
+        15549
+      ],
+      "labels": [
+        "stitch_13",
+        "left_sleeve_b"
+      ],
+      "panels": [
+        "left_sleeve_b",
+        "left_sleeve_f"
+      ],
+      "family": "left_sleeve",
+      "spring_midpoint_y_cm": 111.05618286132812
+    },
+    {
+      "spring": 42017,
+      "vertices": [
+        287,
+        16197
+      ],
+      "labels": [
+        "stitch_13",
+        "left_sleeve_f"
+      ],
+      "panels": [
+        "left_sleeve_b",
+        "left_sleeve_f"
+      ],
+      "family": "left_sleeve",
+      "spring_midpoint_y_cm": 114.28780364990234
+    },
+    {
+      "spring": 42080,
+      "vertices": [
+        37,
+        1230
+      ],
+      "labels": [
+        "stitch_3",
+        "right_sleeve_f"
+      ],
+      "panels": [
+        "right_sleeve_b",
+        "right_sleeve_f"
+      ],
+      "family": "right_sleeve",
+      "spring_midpoint_y_cm": 108.42778015136719
+    },
+    {
+      "spring": 42117,
+      "vertices": [
+        408,
+        8474
+      ],
+      "labels": [
+        "stitch_18",
+        "left_btorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 146.83792114257812
+    },
+    {
+      "spring": 42201,
+      "vertices": [
+        28,
+        7397
+      ],
+      "labels": [
+        "stitch_2,stitch_6,stitch_7",
+        "right_ftorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso",
+        "right_sleeve_b",
+        "right_sleeve_f"
+      ],
+      "family": "right_sleeve+torso",
+      "spring_midpoint_y_cm": 136.37594604492188
+    },
+    {
+      "spring": 42564,
+      "vertices": [
+        81,
+        752
+      ],
+      "labels": [
+        "stitch_5",
+        "right_sleeve_b"
+      ],
+      "panels": [
+        "right_sleeve_b",
+        "sl_right_cuff_b"
+      ],
+      "family": "right_sleeve",
+      "spring_midpoint_y_cm": 107.51849365234375
+    },
+    {
+      "spring": 42606,
+      "vertices": [
+        243,
+        8226
+      ],
+      "labels": [
+        "stitch_9",
+        "right_ftorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 114.28848266601562
+    },
+    {
+      "spring": 42675,
+      "vertices": [
+        176,
+        1631
+      ],
+      "labels": [
+        "stitch_8",
+        "right_btorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 144.1865234375
+    },
+    {
+      "spring": 42845,
+      "vertices": [
+        36,
+        875
+      ],
+      "labels": [
+        "stitch_3",
+        "right_sleeve_b"
+      ],
+      "panels": [
+        "right_sleeve_b",
+        "right_sleeve_f"
+      ],
+      "family": "right_sleeve",
+      "spring_midpoint_y_cm": 109.5696029663086
+    },
+    {
+      "spring": 43119,
+      "vertices": [
+        29,
+        135
+      ],
+      "labels": [
+        "stitch_3,stitch_6,stitch_7",
+        "stitch_7"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso",
+        "right_sleeve_b",
+        "right_sleeve_f"
+      ],
+      "family": "right_sleeve+torso",
+      "spring_midpoint_y_cm": 117.469970703125
+    },
+    {
+      "spring": 43368,
+      "vertices": [
+        79,
+        1084
+      ],
+      "labels": [
+        "stitch_5",
+        "sl_right_cuff_b"
+      ],
+      "panels": [
+        "right_sleeve_b",
+        "sl_right_cuff_b"
+      ],
+      "family": "right_sleeve",
+      "spring_midpoint_y_cm": 104.8935546875
+    },
+    {
+      "spring": 43526,
+      "vertices": [
+        246,
+        3104
+      ],
+      "labels": [
+        "stitch_9",
+        "right_btorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 116.86896514892578
+    },
+    {
+      "spring": 43702,
+      "vertices": [
+        356,
+        429
+      ],
+      "labels": [
+        "stitch_16",
+        "stitch_19"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso",
+        "left_sleeve_f"
+      ],
+      "family": "left_sleeve+torso",
+      "spring_midpoint_y_cm": 117.25410461425781
+    },
+    {
+      "spring": 43901,
+      "vertices": [
+        7,
+        1535
+      ],
+      "labels": [
+        "stitch_1",
+        "sl_right_cuff_f"
+      ],
+      "panels": [
+        "sl_right_cuff_b",
+        "sl_right_cuff_f"
+      ],
+      "family": "right_sleeve",
+      "spring_midpoint_y_cm": 101.23956298828125
+    },
+    {
+      "spring": 44029,
+      "vertices": [
+        426,
+        13225
+      ],
+      "labels": [
+        "stitch_18",
+        "left_ftorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 137.39385986328125
+    },
+    {
+      "spring": 44137,
+      "vertices": [
+        170,
+        6683
+      ],
+      "labels": [
+        "stitch_8",
+        "right_ftorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 141.15480041503906
+    },
+    {
+      "spring": 44169,
+      "vertices": [
+        28,
+        160
+      ],
+      "labels": [
+        "stitch_2,stitch_6,stitch_7",
+        "stitch_7"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso",
+        "right_sleeve_b",
+        "right_sleeve_f"
+      ],
+      "family": "right_sleeve+torso",
+      "spring_midpoint_y_cm": 137.4344482421875
+    },
+    {
+      "spring": 44333,
+      "vertices": [
+        418,
+        11455
+      ],
+      "labels": [
+        "stitch_18",
+        "left_btorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 141.50186157226562
+    },
+    {
+      "spring": 44402,
+      "vertices": [
+        257,
+        14465
+      ],
+      "labels": [
+        "stitch_12,stitch_16,stitch_17",
+        "left_ftorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso",
+        "left_sleeve_b",
+        "left_sleeve_f"
+      ],
+      "family": "left_sleeve+torso",
+      "spring_midpoint_y_cm": 136.554443359375
+    },
+    {
+      "spring": 44501,
+      "vertices": [
+        281,
+        16073
+      ],
+      "labels": [
+        "stitch_13",
+        "left_sleeve_f"
+      ],
+      "panels": [
+        "left_sleeve_b",
+        "left_sleeve_f"
+      ],
+      "family": "left_sleeve",
+      "spring_midpoint_y_cm": 108.3125
+    },
+    {
+      "spring": 44537,
+      "vertices": [
+        258,
+        382
+      ],
+      "labels": [
+        "stitch_12",
+        "stitch_17"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_sleeve_b",
+        "left_sleeve_f"
+      ],
+      "family": "left_sleeve+torso",
+      "spring_midpoint_y_cm": 138.7615966796875
+    },
+    {
+      "spring": 44790,
+      "vertices": [
+        177,
+        1629
+      ],
+      "labels": [
+        "stitch_8",
+        "right_btorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 145.17562866210938
+    },
+    {
+      "spring": 44893,
+      "vertices": [
+        986,
+        1097
+      ],
+      "labels": [
+        "sl_right_cuff_b",
+        "sl_right_cuff_b"
+      ],
+      "panels": [
+        "sl_right_cuff_b"
+      ],
+      "family": "right_sleeve",
+      "spring_midpoint_y_cm": 101.13681030273438
+    },
+    {
+      "spring": 44929,
+      "vertices": [
+        178,
+        5101
+      ],
+      "labels": [
+        "stitch_8",
+        "right_ftorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 145.24288940429688
+    },
+    {
+      "spring": 45028,
+      "vertices": [
+        170,
+        7171
+      ],
+      "labels": [
+        "stitch_8",
+        "right_ftorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 140.71066284179688
+    },
+    {
+      "spring": 45054,
+      "vertices": [
+        420,
+        15051
+      ],
+      "labels": [
+        "stitch_18",
+        "left_ftorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 140.60708618164062
+    },
+    {
+      "spring": 45208,
+      "vertices": [
+        285,
+        15578
+      ],
+      "labels": [
+        "stitch_13",
+        "left_sleeve_b"
+      ],
+      "panels": [
+        "left_sleeve_b",
+        "left_sleeve_f"
+      ],
+      "family": "left_sleeve",
+      "spring_midpoint_y_cm": 111.92697143554688
+    },
+    {
+      "spring": 45318,
+      "vertices": [
+        414,
+        8470
+      ],
+      "labels": [
+        "stitch_18",
+        "left_btorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 143.92608642578125
+    },
+    {
+      "spring": 45390,
+      "vertices": [
+        285,
+        15525
+      ],
+      "labels": [
+        "stitch_13",
+        "left_sleeve_b"
+      ],
+      "panels": [
+        "left_sleeve_b",
+        "left_sleeve_f"
+      ],
+      "family": "left_sleeve",
+      "spring_midpoint_y_cm": 112.28045654296875
+    },
+    {
+      "spring": 45410,
+      "vertices": [
+        169,
+        2868
+      ],
+      "labels": [
+        "stitch_8",
+        "right_btorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 140.51531982421875
+    },
+    {
+      "spring": 45439,
+      "vertices": [
+        38,
+        1230
+      ],
+      "labels": [
+        "stitch_3",
+        "right_sleeve_f"
+      ],
+      "panels": [
+        "right_sleeve_b",
+        "right_sleeve_f"
+      ],
+      "family": "right_sleeve",
+      "spring_midpoint_y_cm": 107.9842300415039
+    },
+    {
+      "spring": 45451,
+      "vertices": [
+        1060,
+        1103
+      ],
+      "labels": [
+        "sl_right_cuff_b",
+        "sl_right_cuff_b"
+      ],
+      "panels": [
+        "sl_right_cuff_b"
+      ],
+      "family": "right_sleeve",
+      "spring_midpoint_y_cm": 103.4842758178711
+    },
+    {
+      "spring": 45646,
+      "vertices": [
+        257,
+        10525
+      ],
+      "labels": [
+        "stitch_12,stitch_16,stitch_17",
+        "left_btorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso",
+        "left_sleeve_b",
+        "left_sleeve_f"
+      ],
+      "family": "left_sleeve+torso",
+      "spring_midpoint_y_cm": 136.5011444091797
+    },
+    {
+      "spring": 45684,
+      "vertices": [
+        416,
+        14668
+      ],
+      "labels": [
+        "stitch_18",
+        "left_ftorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 142.43572998046875
+    },
+    {
+      "spring": 45685,
+      "vertices": [
+        165,
+        4469
+      ],
+      "labels": [
+        "stitch_8",
+        "right_btorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 138.3712921142578
+    },
+    {
+      "spring": 45919,
+      "vertices": [
+        244,
+        8226
+      ],
+      "labels": [
+        "stitch_9",
+        "right_ftorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 114.78291320800781
+    },
+    {
+      "spring": 46095,
+      "vertices": [
+        286,
+        15970
+      ],
+      "labels": [
+        "stitch_13",
+        "left_sleeve_f"
+      ],
+      "panels": [
+        "left_sleeve_b",
+        "left_sleeve_f"
+      ],
+      "family": "left_sleeve",
+      "spring_midpoint_y_cm": 112.92561340332031
+    },
+    {
+      "spring": 46099,
+      "vertices": [
+        414,
+        11991
+      ],
+      "labels": [
+        "stitch_18",
+        "left_ftorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 144.12686157226562
+    },
+    {
+      "spring": 46148,
+      "vertices": [
+        163,
+        7403
+      ],
+      "labels": [
+        "stitch_8",
+        "right_ftorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 137.23165893554688
+    },
+    {
+      "spring": 46208,
+      "vertices": [
+        79,
+        80
+      ],
+      "labels": [
+        "stitch_5",
+        "stitch_5"
+      ],
+      "panels": [
+        "right_sleeve_b",
+        "sl_right_cuff_b"
+      ],
+      "family": "right_sleeve",
+      "spring_midpoint_y_cm": 105.90750122070312
+    },
+    {
+      "spring": 46619,
+      "vertices": [
+        429,
+        13511
+      ],
+      "labels": [
+        "stitch_19",
+        "left_ftorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 116.86896514892578
+    },
+    {
+      "spring": 47098,
+      "vertices": [
+        284,
+        15578
+      ],
+      "labels": [
+        "stitch_13",
+        "left_sleeve_b"
+      ],
+      "panels": [
+        "left_sleeve_b",
+        "left_sleeve_f"
+      ],
+      "family": "left_sleeve",
+      "spring_midpoint_y_cm": 111.4834213256836
+    },
+    {
+      "spring": 47259,
+      "vertices": [
+        162,
+        3909
+      ],
+      "labels": [
+        "stitch_8",
+        "right_btorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 137.08551025390625
+    },
+    {
+      "spring": 47269,
+      "vertices": [
+        422,
+        12881
+      ],
+      "labels": [
+        "stitch_18",
+        "left_ftorso"
+      ],
+      "panels": [
+        "left_btorso",
+        "left_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 139.12896728515625
+    },
+    {
+      "spring": 47397,
+      "vertices": [
+        171,
+        6683
+      ],
+      "labels": [
+        "stitch_8",
+        "right_ftorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 141.41522216796875
+    },
+    {
+      "spring": 48058,
+      "vertices": [
+        178,
+        1629
+      ],
+      "labels": [
+        "stitch_8",
+        "right_btorso"
+      ],
+      "panels": [
+        "right_btorso",
+        "right_ftorso"
+      ],
+      "family": "torso",
+      "spring_midpoint_y_cm": 145.43605041503906
+    }
+  ],
+  "note": "CPU finite-segment triangle intersection fallback equivalent to GarmentCode's mesh_query_ray spring criterion; Warp source/API mismatch prevented compiling a standalone diagnostic kernel."
+}

@@ -1,6 +1,6 @@
 {
   "schema": "assetsstudio_asset_status_v1",
-  "updated": "2026-08-10",
+  "updated": "2026-08-13",
   "source": {
     "repository": "git@github.com:fuyiweiwow/AssetsLab.git",
     "branch": "clothes_test",
@@ -28,11 +28,11 @@
       "path": "milestones/body/face_contract_v2.json"
     },
     {
-      "id": "top_actor_native_tshirt_v5",
+      "id": "top_garmentcode_short_sleeve_v1",
       "category": "tops",
       "status": "provisional",
-      "path": "milestones/tops/actor_native_tshirt_v5/manifest.json",
-      "known_issue": "pose-dependent right shoulder/sleeve protrusion"
+      "path": "milestones/tops/garmentcode_short_sleeve_v1/manifest.json",
+      "known_issue": "visual review passed, but 1184 GarmentCode self-intersections and 326 collision springs remain in the physical audit"
     },
     {
       "id": "pants_native_control_v0",

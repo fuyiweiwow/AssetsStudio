@@ -1,7 +1,7 @@
 # F006 Actor 专用 GarmentCode 短袖
 
 - 状态：provisional
-- 当前候选：`workspace/garmentcode_restart_actor_length_0p90_repro_v1/actor_transfer_native_weight_mix_v3/`
+- 当前候选：`milestones/tops/garmentcode_short_sleeve_v1/`
 
 ## 目标
 

@@ -1,7 +1,7 @@
 {
   "schema": "assetsstudio_asset_registry_v1",
   "studio_version": "0.6.0",
-  "updated": "2026-08-10",
+  "updated": "2026-08-13",
   "preview": {
     "model_url": "/generated/actor-composite-v1.glb",
     "manifest_url": "/generated/actor-composite-v1.manifest.json",
@@ -45,13 +45,13 @@
       "thumbnail_kind": "texture"
     },
     {
-      "id": "top_actor_native_tshirt_v5",
+      "id": "top_garmentcode_short_sleeve_v1",
       "category": "tops",
       "label": "短袖上衣",
       "status": "provisional",
-      "source_path": "milestones/tops/actor_native_tshirt_v5/manifest.json",
+      "source_path": "milestones/tops/garmentcode_short_sleeve_v1/manifest.json",
       "workflow": "docs/WORKFLOW_TOPS.md",
-      "known_issue": "pose-dependent right shoulder/sleeve protrusion",
+      "known_issue": "visual review passed, but 1184 GarmentCode self-intersections and 326 collision springs remain in the physical audit",
       "visibility_group": "top",
       "thumbnail_url": "/generated/thumbnails/tops.png",
       "thumbnail_kind": "fixed_front"

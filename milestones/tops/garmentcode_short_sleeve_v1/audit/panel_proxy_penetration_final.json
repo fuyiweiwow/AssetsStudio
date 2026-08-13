@@ -1,0 +1,366 @@
+{
+  "schema": "assetsstudio_garmentcode_panel_proxy_penetration_v1",
+  "source": "final_100f",
+  "garment_obj": "D:\\Apps\\CodeXApp\\Tests\\AssetsStudio\\workspace\\garmentcode_restart_actor_length_0p90_repro_v1\\simulation_100f_actor_locked\\garmentcode_restart_actor_length_0p90_repro_v1_seed_1_sim.obj",
+  "body_obj": "D:\\Apps\\CodeXApp\\Tests\\AssetsStudio\\workspace\\garmentcode_actor_native_measurements_v2\\actor_torso_upperarm_surface_rest_partial_boundary_filled_v1.obj",
+  "coordinate_contract": "garment cm and Actor proxy metres scaled by 100, both in GarmentCode x/y-up/z-depth",
+  "families": {
+    "right_arm": {
+      "count": 1118,
+      "negative": 2,
+      "negative_fraction": 0.0017889087656529517,
+      "below_minus_0p25cm": 0,
+      "below_minus_1cm": 0,
+      "below_minus_2cm": 0,
+      "min_signed_cm": -0.11279144883155823,
+      "median_signed_cm": 0.349724159276775,
+      "p10_signed_cm": 0.3258537966758013
+    },
+    "body": {
+      "count": 14084,
+      "negative": 4181,
+      "negative_fraction": 0.29686168702073273,
+      "below_minus_0p25cm": 3646,
+      "below_minus_1cm": 2665,
+      "below_minus_2cm": 1942,
+      "min_signed_cm": -15.397412419319153,
+      "median_signed_cm": 0.34781323045899626,
+      "p10_signed_cm": -3.4851632118225098
+    },
+    "left_arm": {
+      "count": 1138,
+      "negative": 0,
+      "negative_fraction": 0.0,
+      "below_minus_0p25cm": 0,
+      "below_minus_1cm": 0,
+      "below_minus_2cm": 0,
+      "min_signed_cm": 0.1460363119840622,
+      "median_signed_cm": 0.34898567290110805,
+      "p10_signed_cm": 0.31146867347706575
+    }
+  },
+  "panels": {
+    "left_btorso": {
+      "count": 3691,
+      "negative": 899,
+      "negative_fraction": 0.24356542942292062,
+      "below_minus_0p25cm": 765,
+      "below_minus_1cm": 501,
+      "below_minus_2cm": 300,
+      "min_signed_cm": -15.397412419319153,
+      "median_signed_cm": 0.35282836854457855,
+      "p10_signed_cm": -1.5751795768737793
+    },
+    "left_ftorso": {
+      "count": 3595,
+      "negative": 1319,
+      "negative_fraction": 0.36689847009735743,
+      "below_minus_0p25cm": 1176,
+      "below_minus_1cm": 906,
+      "below_minus_2cm": 704,
+      "min_signed_cm": -13.050509810447693,
+      "median_signed_cm": 0.3390888124704361,
+      "p10_signed_cm": -4.979873597621918
+    },
+    "left_sleeve_b": {
+      "count": 454,
+      "negative": 0,
+      "negative_fraction": 0.0,
+      "below_minus_0p25cm": 0,
+      "below_minus_1cm": 0,
+      "below_minus_2cm": 0,
+      "min_signed_cm": 0.1679679976296029,
+      "median_signed_cm": 0.34967154456535354,
+      "p10_signed_cm": 0.3258317559957504
+    },
+    "left_sleeve_f": {
+      "count": 449,
+      "negative": 0,
+      "negative_fraction": 0.0,
+      "below_minus_0p25cm": 0,
+      "below_minus_1cm": 0,
+      "below_minus_2cm": 0,
+      "min_signed_cm": 0.16599232039880008,
+      "median_signed_cm": 0.3486211658891989,
+      "p10_signed_cm": 0.33178211748600006
+    },
+    "right_btorso": {
+      "count": 3662,
+      "negative": 745,
+      "negative_fraction": 0.2034407427635172,
+      "below_minus_0p25cm": 623,
+      "below_minus_1cm": 425,
+      "below_minus_2cm": 289,
+      "min_signed_cm": -15.056901216506958,
+      "median_signed_cm": 0.35443093068897724,
+      "p10_signed_cm": -1.272538423538208
+    },
+    "right_ftorso": {
+      "count": 3557,
+      "negative": 1291,
+      "negative_fraction": 0.3629463030643801,
+      "below_minus_0p25cm": 1142,
+      "below_minus_1cm": 870,
+      "below_minus_2cm": 680,
+      "min_signed_cm": -13.579196572303772,
+      "median_signed_cm": 0.34082444210071117,
+      "p10_signed_cm": -4.910415291786194
+    },
+    "right_sleeve_b": {
+      "count": 448,
+      "negative": 1,
+      "negative_fraction": 0.002232142857142857,
+      "below_minus_0p25cm": 0,
+      "below_minus_1cm": 0,
+      "below_minus_2cm": 0,
+      "min_signed_cm": -0.11279144883155823,
+      "median_signed_cm": 0.35073377937078476,
+      "p10_signed_cm": 0.32943256199359894
+    },
+    "right_sleeve_f": {
+      "count": 437,
+      "negative": 0,
+      "negative_fraction": 0.0,
+      "below_minus_0p25cm": 0,
+      "below_minus_1cm": 0,
+      "below_minus_2cm": 0,
+      "min_signed_cm": 0.17521891021169722,
+      "median_signed_cm": 0.3482285453937948,
+      "p10_signed_cm": 0.3341703861951828
+    },
+    "sl_left_cuff_b": {
+      "count": 173,
+      "negative": 0,
+      "negative_fraction": 0.0,
+      "below_minus_0p25cm": 0,
+      "below_minus_1cm": 0,
+      "below_minus_2cm": 0,
+      "min_signed_cm": 0.15480714454315603,
+      "median_signed_cm": 0.35556624281781524,
+      "p10_signed_cm": 0.18629438104107976
+    },
+    "sl_left_cuff_f": {
+      "count": 175,
+      "negative": 0,
+      "negative_fraction": 0.0,
+      "below_minus_0p25cm": 0,
+      "below_minus_1cm": 0,
+      "below_minus_2cm": 0,
+      "min_signed_cm": 0.1460363119840622,
+      "median_signed_cm": 0.35468085785396397,
+      "p10_signed_cm": 0.20144302630797029
+    },
+    "sl_right_cuff_b": {
+      "count": 171,
+      "negative": 2,
+      "negative_fraction": 0.011695906432748537,
+      "below_minus_0p25cm": 0,
+      "below_minus_1cm": 0,
+      "below_minus_2cm": 0,
+      "min_signed_cm": -0.11279144883155823,
+      "median_signed_cm": 0.3589953724294901,
+      "p10_signed_cm": 0.19836555623624008
+    },
+    "sl_right_cuff_f": {
+      "count": 175,
+      "negative": 0,
+      "negative_fraction": 0.0,
+      "below_minus_0p25cm": 0,
+      "below_minus_1cm": 0,
+      "below_minus_2cm": 0,
+      "min_signed_cm": 0.16247851081425324,
+      "median_signed_cm": 0.3603103304049,
+      "p10_signed_cm": 0.330433544004336
+    }
+  },
+  "deepest_examples": {
+    "right_arm": [
+      {
+        "vertex": 93,
+        "signed_cm": -0.11279144883155823,
+        "distance_cm": 1.7323722839355469,
+        "panels": [
+          "right_sleeve_b",
+          "sl_right_cuff_b"
+        ],
+        "point_cm": [
+          -35.3251838684082,
+          116.6270523071289,
+          -7.200504779815674
+        ]
+      },
+      {
+        "vertex": 1043,
+        "signed_cm": -0.025534406304359436,
+        "distance_cm": 1.5538134574890137,
+        "panels": [
+          "sl_right_cuff_b"
+        ],
+        "point_cm": [
+          -35.89152526855469,
+          115.75849914550781,
+          -6.889991283416748
+        ]
+      }
+    ],
+    "body": [
+      {
+        "vertex": 10140,
+        "signed_cm": -15.397412419319153,
+        "distance_cm": 31.76524543762207,
+        "panels": [
+          "left_btorso"
+        ],
+        "point_cm": [
+          28.05415916442871,
+          110.25553131103516,
+          0.1418708711862564
+        ]
+      },
+      {
+        "vertex": 11482,
+        "signed_cm": -15.332231044769287,
+        "distance_cm": 31.468460083007812,
+        "panels": [
+          "left_btorso"
+        ],
+        "point_cm": [
+          28.3523006439209,
+          109.40252685546875,
+          0.1999913901090622
+        ]
+      },
+      {
+        "vertex": 11661,
+        "signed_cm": -15.097070097923279,
+        "distance_cm": 31.46597671508789,
+        "panels": [
+          "left_btorso"
+        ],
+        "point_cm": [
+          27.87120246887207,
+          110.35801696777344,
+          0.5046771764755249
+        ]
+      },
+      {
+        "vertex": 8910,
+        "signed_cm": -15.08362102508545,
+        "distance_cm": 31.26241683959961,
+        "panels": [
+          "left_btorso"
+        ],
+        "point_cm": [
+          27.920900344848633,
+          109.94812774658203,
+          0.5428856611251831
+        ]
+      },
+      {
+        "vertex": 2240,
+        "signed_cm": -15.056901216506958,
+        "distance_cm": 32.004661560058594,
+        "panels": [
+          "right_btorso"
+        ],
+        "point_cm": [
+          -27.59044647216797,
+          111.680419921875,
+          0.5067027807235718
+        ]
+      },
+      {
+        "vertex": 9582,
+        "signed_cm": -15.054622769355774,
+        "distance_cm": 31.77124786376953,
+        "panels": [
+          "left_btorso"
+        ],
+        "point_cm": [
+          27.624597549438477,
+          111.24830627441406,
+          0.5401303172111511
+        ]
+      },
+      {
+        "vertex": 11745,
+        "signed_cm": -14.985767364501953,
+        "distance_cm": 31.755563735961914,
+        "panels": [
+          "left_btorso"
+        ],
+        "point_cm": [
+          27.96786880493164,
+          110.8881607055664,
+          0.540587842464447
+        ]
+      },
+      {
+        "vertex": 1953,
+        "signed_cm": -14.874155163764954,
+        "distance_cm": 31.58499526977539,
+        "panels": [
+          "right_btorso"
+        ],
+        "point_cm": [
+          -27.635412216186523,
+          111.14408111572266,
+          0.7366014122962952
+        ]
+      },
+      {
+        "vertex": 9058,
+        "signed_cm": -14.844149827957153,
+        "distance_cm": 31.370874404907227,
+        "panels": [
+          "left_btorso"
+        ],
+        "point_cm": [
+          28.109935760498047,
+          110.21493530273438,
+          0.7102574706077576
+        ]
+      },
+      {
+        "vertex": 11693,
+        "signed_cm": -14.806190729141235,
+        "distance_cm": 30.802526473999023,
+        "panels": [
+          "left_btorso"
+        ],
+        "point_cm": [
+          28.077051162719727,
+          109.27886199951172,
+          0.8506137132644653
+        ]
+      },
+      {
+        "vertex": 4917,
+        "signed_cm": -14.754202246665955,
+        "distance_cm": 31.237178802490234,
+        "panels": [
+          "right_btorso"
+        ],
+        "point_cm": [
+          -27.708717346191406,
+          110.60755157470703,
+          0.8916754126548767
+        ]
+      },
+      {
+        "vertex": 10967,
+        "signed_cm": -14.430997252464294,
+        "distance_cm": 30.55302619934082,
+        "panels": [
+          "left_btorso"
+        ],
+        "point_cm": [
+          27.756149291992188,
+          109.76240539550781,
+          1.2982693910598755
+        ]
+      }
+    ]
+  },
+  "interpretation": "negative means the garment vertex lies behind the outward normal of the matching proxy region"
+}

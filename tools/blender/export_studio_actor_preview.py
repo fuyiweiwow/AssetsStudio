@@ -22,7 +22,7 @@ COMPONENT_OBJECTS = {
         "MikuEar_L_SourceV1",
         "MikuEar_R_SourceV1",
     ],
-    "top": ["ActorNativeTshirt_BodyComponent_v1"],
+    "top": ["GarmentCodeShirt_ActorTransfer"],
     "pants": ["NativeControlShorts"],
 }
 
@@ -369,7 +369,7 @@ def main() -> int:
         },
         "known_limitations": {
             "hair": hair_recipe.get("known_issue"),
-            "top": "The provisional right shoulder/sleeve issue remains visible by design.",
+            "top": "Visual review passed; GarmentCode self-intersection and collision audits remain provisional.",
             "pants": "The provisional visual-review status remains unchanged.",
         },
     }

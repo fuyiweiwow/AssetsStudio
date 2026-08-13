@@ -5,6 +5,8 @@ from __future__ import annotations
 import hashlib
 import json
 import re
+import subprocess
+import sys
 from pathlib import Path
 from urllib.parse import unquote
 
@@ -28,6 +30,7 @@ REQUIRED = [
     "docs/features/F003-asset-workbench-composite-review.md",
     "docs/features/F004-first-hair-bundle-integration.md",
     "docs/features/F005-workflow-scoped-library-collapsible-preview.md",
+    "docs/features/F006-actor-garmentcode-short-sleeve.md",
     "schemas/asset-registry.v1.schema.json",
     "schemas/recipe.v1.schema.json",
     "schemas/run.v1.schema.json",
@@ -79,8 +82,10 @@ REQUIRED = [
     "tools/build_actor_eye_assembly.ps1",
     "tools/render_actor_eye_blink_review.ps1",
     "tools/validate_actor_eye_blink_review.py",
-    "milestones/tops/actor_native_tshirt_v5/actor_native_tshirt_body_component_v5_upperarm_coverage.blend",
-    "milestones/tops/actor_native_tshirt_v5/manifest.json",
+    "milestones/tops/garmentcode_short_sleeve_v1/output/actor_transfer.blend",
+    "milestones/tops/garmentcode_short_sleeve_v1/manifest.json",
+    "milestones/tops/garmentcode_short_sleeve_v1/review/walk_4way_32frames.gif",
+    "tools/validate_garmentcode_milestone.py",
     "milestones/pants/native_control_v0/native_control_shorts_v0.blend",
     "milestones/pants/native_control_v0/manifest.json",
     "milestones/shoes/cartoon_sneaker_v10/actor_cartoon_sneaker_fbx_v10_length_expanded.blend",
@@ -153,6 +158,7 @@ FORBIDDEN_PATHS = [
     "tools/blender/render_procedural_anime_eye_on_accurig.py",
     "tools/blender/validate_eye_assembly_v1.py",
     "tools/blender/build_actor_derived_tshirt.py",
+    "milestones/tops/actor_native_tshirt_v5",
 ]
 
 
@@ -265,6 +271,19 @@ def main() -> int:
     ]
     if registry_projection != status_projection:
         raise RuntimeError("Studio registry is stale; run python tools/build_studio_registry.py")
+
+    garment_manifest = ROOT / "milestones/tops/garmentcode_short_sleeve_v1/manifest.json"
+    milestone_result = subprocess.run(
+        [
+            sys.executable,
+            str(ROOT / "tools/validate_garmentcode_milestone.py"),
+            "--manifest",
+            str(garment_manifest),
+        ],
+        text=True,
+    )
+    if milestone_result.returncode:
+        raise RuntimeError("GarmentCode milestone asset validation failed")
 
     for manifest in ROOT.rglob("*.json"):
         if is_local_output(manifest) or ".git" in manifest.parts:

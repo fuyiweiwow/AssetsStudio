@@ -39,13 +39,11 @@ CARDS = [
         "doc": "docs/WORKFLOW_FACE.md",
     },
     {
-        "title": "Actor-native short sleeve v5",
+        "title": "Actor-specific GarmentCode short sleeve v1",
         "status": "provisional",
-        "note": "Current single-mesh shirt candidate. Known issue: pose-dependent right shoulder/sleeve protrusion.",
+        "note": "Current Actor-measured GarmentCode candidate. Visual review passed; physical audits remain provisional.",
         "media": [
-            "milestones/tops/actor_native_tshirt_v5/front_walk_8frames.gif",
-            "milestones/tops/actor_native_tshirt_v5/right_walk_8frames.gif",
-            "milestones/tops/actor_native_tshirt_v5/walk_4way_32frames.gif",
+            "milestones/tops/garmentcode_short_sleeve_v1/review/walk_4way_32frames.gif",
         ],
         "doc": "docs/WORKFLOW_TOPS.md",
     },

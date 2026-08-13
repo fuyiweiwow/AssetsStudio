@@ -20,7 +20,7 @@ describe("asset registry", () => {
     const registry = parseRegistry(rawRegistry);
     const top = registry.assets.find((asset) => asset.category === "tops");
     expect(top?.status).toBe("provisional");
-    expect(top?.known_issue).toMatch(/shoulder\/sleeve/);
+    expect(top?.known_issue).toMatch(/self-intersections/);
   });
 
   it("carries the retained hair workflow instead of a generic accessory placeholder", () => {

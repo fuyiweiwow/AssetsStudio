@@ -74,13 +74,21 @@ def main() -> int:
         if actual != expected:
             raise RuntimeError(f"manifest {key} mismatch: {actual} != {expected}")
     generated_pattern = args.pattern_spec.resolve()
-    generated_output = Path(str(manifest.get("output", ""))).resolve()
-    expected_pattern_name = f"{generated_output.name}_specification.json"
-    if generated_pattern.parent != generated_output or generated_pattern.name != expected_pattern_name:
-        raise RuntimeError(
-            "generated pattern is not the specification emitted by this manifest: "
-            f"{generated_pattern}"
-        )
+    declared_generated_pattern = manifest.get("generated_specification")
+    if declared_generated_pattern:
+        if generated_pattern != Path(str(declared_generated_pattern)).resolve():
+            raise RuntimeError(
+                "generated pattern does not match manifest generated_specification: "
+                f"{generated_pattern}"
+            )
+    else:
+        generated_output = Path(str(manifest.get("output", ""))).resolve()
+        expected_pattern_name = f"{generated_output.name}_specification.json"
+        if generated_pattern.parent != generated_output or generated_pattern.name != expected_pattern_name:
+            raise RuntimeError(
+                "generated pattern is not the specification emitted by this manifest: "
+                f"{generated_pattern}"
+            )
 
     dependency_guard = Path(__file__).with_name("validate_garmentcode_actor_patch.py")
     dependency_result = subprocess.run([

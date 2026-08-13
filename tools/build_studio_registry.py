@@ -21,7 +21,7 @@ THUMBNAIL_OUTPUT = ROOT / "studio" / "public" / "generated" / "thumbnails"
 
 THUMBNAIL_SOURCES = {
     "face": (ROOT / "milestones" / "body" / "eye_textures" / "eye_left.png", "full"),
-    "tops": (ROOT / "milestones" / "tops" / "actor_native_tshirt_v5" / "four_view_frame00_contact_sheet.png", "horizontal_front"),
+    "tops": (ROOT / "milestones" / "tops" / "garmentcode_short_sleeve_v1" / "review" / "four_view_frame00_contact_sheet.png", "horizontal_front"),
     "pants": (ROOT / "milestones" / "pants" / "native_control_v0" / "four_view_frame00_contact_sheet.png", "horizontal_front"),
     "shoes": (ROOT / "milestones" / "shoes" / "cartoon_sneaker_v10" / "four_view_contact_sheet.png", "grid_front"),
 }

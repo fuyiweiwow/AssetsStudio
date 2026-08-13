@@ -1,0 +1,137 @@
+{
+  "schema": "assetsstudio_garmentcode_candidate_v1",
+  "experiment_kind": "garmentcode_actor_specific",
+  "authoring_source": "actor_measurements_and_actor_pattern",
+  "generator": "GarmentCode/PyGarment",
+  "license_boundary": "GarmentCode core MIT; no GPL measurement dependency",
+  "name": "garmentcode_restart_actor_length_0p90_repro_v1",
+  "seed": 1,
+  "actor_source": "milestones/body/chibi_actor_mixamo_walk_v1.blend",
+  "measurements_source": "milestones/tops/garmentcode_short_sleeve_v1/inputs/actor_measurements.json",
+  "body_source": "milestones/tops/garmentcode_short_sleeve_v1/inputs/body_measurements.yaml",
+  "pattern_spec": "milestones/tops/garmentcode_short_sleeve_v1/pattern/actor_pattern_spec.json",
+  "generated_specification": "milestones/tops/garmentcode_short_sleeve_v1/pattern/garment_specification.json",
+  "design_template_source": "third_party/GarmentCode/assets/design_params/t-shirt.yaml",
+  "actor_parameters": {
+    "shoulder_width_cm": 49.8495,
+    "neck_width_cm": 13.0,
+    "bust_cm": 148.85901021315567,
+    "waist_line_cm": 80.91709613800049,
+    "arm_pose_angle_deg": 45.2925,
+    "sleeve_length_cm": 8.7537,
+    "sleeve_connecting_width_cm": 18.0599,
+    "sleeve_cuff_circumference_cm": 67.9,
+    "sleeve_cuff_t": 0.62,
+    "left_upperarm_section": {
+      "vertex_count": 61,
+      "width_cm": 27.458439278416336,
+      "depth_cm": 18.059863935923204,
+      "circumference_cm": 72.26411140995538
+    },
+    "right_upperarm_section": {
+      "vertex_count": 61,
+      "width_cm": 27.458733203820884,
+      "depth_cm": 18.058288159954827,
+      "circumference_cm": 72.26242440786314
+    },
+    "left_cuff_section": {
+      "vertex_count": 44,
+      "width_cm": 22.745283809490502,
+      "depth_cm": 17.889213503804058,
+      "circumference_cm": 64.05661833956361
+    },
+    "right_cuff_section": {
+      "vertex_count": 44,
+      "width_cm": 22.74591305758804,
+      "depth_cm": 17.890634122886695,
+      "circumference_cm": 64.05975233506584
+    }
+  },
+  "garment_style_parameters": {
+    "shirt_width_ease": 1.05,
+    "shirt_length_factor": 0.9,
+    "sleeve_armhole_shape": "ArmholeCurve",
+    "sleeve_cuff_type": "CuffBand",
+    "sleeve_cuff_length_factor": 0.1,
+    "collar_width_fraction": 0.0,
+    "front_collar_depth_fraction": 0.25,
+    "back_collar_depth_fraction": 0.1,
+    "sleeve_placement_gap_override_cm": null,
+    "torso_side_clearance_cm": 0.0,
+    "armhole_curve_scale_override": null,
+    "armhole_front_scale_override": null,
+    "armhole_back_scale_override": null,
+    "sleeve_opening_dir_mix_override": null,
+    "armhole_curve_bulge_scale_override": null,
+    "match_torso_armhole_seams": false,
+    "actor_armhole_ring_report": null,
+    "actor_armhole_surface_report": null,
+    "actor_armhole_surface_construction": false,
+    "actor_armhole_surface_shape_limit": 0.35,
+    "actor_armhole_ring_ease": 1.03
+  },
+  "output": "milestones/tops/garmentcode_short_sleeve_v1/pattern",
+  "panels": [
+    "left_btorso",
+    "left_ftorso",
+    "left_sleeve_b",
+    "left_sleeve_f",
+    "right_btorso",
+    "right_ftorso",
+    "right_sleeve_b",
+    "right_sleeve_f",
+    "sl_left_cuff_b",
+    "sl_left_cuff_f",
+    "sl_right_cuff_b",
+    "sl_right_cuff_f"
+  ],
+  "stitches": 22,
+  "torso_armhole_seam_match_changes": [],
+  "torso_side_clearance_changes": [],
+  "explicit_arm_side_label_changes": [
+    {
+      "panel": "left_sleeve_f",
+      "before": "arm",
+      "after": "left_arm"
+    },
+    {
+      "panel": "sl_left_cuff_f",
+      "before": "arm",
+      "after": "left_arm"
+    },
+    {
+      "panel": "sl_left_cuff_b",
+      "before": "arm",
+      "after": "left_arm"
+    },
+    {
+      "panel": "left_sleeve_b",
+      "before": "arm",
+      "after": "left_arm"
+    },
+    {
+      "panel": "right_sleeve_f",
+      "before": "arm",
+      "after": "right_arm"
+    },
+    {
+      "panel": "right_sleeve_b",
+      "before": "arm",
+      "after": "right_arm"
+    },
+    {
+      "panel": "sl_right_cuff_f",
+      "before": "arm",
+      "after": "right_arm"
+    },
+    {
+      "panel": "sl_right_cuff_b",
+      "before": "arm",
+      "after": "right_arm"
+    }
+  ],
+  "actor_armhole_ring_target_changes": [],
+  "actor_armhole_surface_curve_changes": [],
+  "actor_armhole_surface_construction_changes": [],
+  "next_stage": "run static-equilibrium simulation, transfer to Actor, then four-direction review"
+}
