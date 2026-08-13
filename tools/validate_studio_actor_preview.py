@@ -17,6 +17,8 @@ def cli_args() -> argparse.Namespace:
     parser.add_argument("--glb", required=True, type=Path)
     parser.add_argument("--manifest", required=True, type=Path)
     parser.add_argument("--hair-recipe", required=True, type=Path)
+    parser.add_argument("--hair-node", action="append", default=None)
+    parser.add_argument("--hair-bundle-id", default="")
     return parser.parse_args()
 
 
@@ -78,7 +80,8 @@ def main() -> int:
         raise RuntimeError(f"unexpected mutually exclusive eye states: {eye_states}")
     if unskinned_eye_nodes:
         raise RuntimeError(f"eye-state nodes must be skinned to the Actor rig: {unskinned_eye_nodes}")
-    if hair_nodes != ["HairBundle_Female_Seed04"]:
+    expected_hair_nodes = options.hair_node or ["HairBundle_Female_Seed04"]
+    if hair_nodes != expected_hair_nodes:
         raise RuntimeError(f"unexpected first hair bundle nodes: {hair_nodes}")
     if unskinned_hair_nodes:
         raise RuntimeError(f"hair nodes must be skinned to the Actor rig: {unskinned_hair_nodes}")
@@ -95,15 +98,25 @@ def main() -> int:
     if tuple(face.get("blink_schedule", [])) != EXPECTED_BLINK_SCHEDULE:
         raise RuntimeError("preview manifest blink schedule changed")
     hair = manifest.get("hair", {})
-    if hair.get("bundle_id") != hair_recipe.get("id"):
+    expected_bundle_id = options.hair_bundle_id or hair_recipe.get("id")
+    if hair.get("bundle_id") != expected_bundle_id:
         raise RuntimeError("preview manifest has no first hair bundle")
     if hair.get("head_bone") != hair_recipe.get("binding", {}).get("bone"):
         raise RuntimeError("preview manifest hair binding changed")
-    if hair.get("components") != hair_recipe.get("components"):
+    if expected_hair_nodes == ["HairBundle_Female_Seed04"]:
+        expected_components = hair_recipe.get("components")
+    elif expected_hair_nodes == ["HairUnderCap_Candidate"]:
+        expected_components = ["under_cap"]
+    else:
+        expected_components = [*hair_recipe.get("components", []), "under_cap"]
+    if hair.get("components") != expected_components:
         raise RuntimeError("preview manifest hair recipe components changed")
-    if hair.get("repair") != hair_recipe.get("repair"):
+    expected_repair = hair_recipe.get("repair")
+    if expected_hair_nodes == ["HairUnderCap_Candidate"]:
+        expected_repair = None
+    if hair.get("repair") != expected_repair:
         raise RuntimeError("preview manifest hair repair contract changed")
-    if manifest.get("components", {}).get("hair") != ["HairBundle_Female_Seed04"]:
+    if manifest.get("components", {}).get("hair") != expected_hair_nodes:
         raise RuntimeError("preview manifest hair component list changed")
 
     print(

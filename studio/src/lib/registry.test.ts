@@ -29,6 +29,11 @@ describe("asset registry", () => {
     expect(registry.hair.component_groups.some((group) => group.gender === "male")).toBe(true);
     expect(registry.hair.random_pool.length).toBeGreaterThan(10);
     expect(registry.hair.galleries.length).toBe(9);
+    expect(registry.hair.candidate_previews.some((preview) => preview.id === "hair_under_cap_v1")).toBe(true);
+    expect(registry.hair.candidate_previews.some((preview) => preview.id === "hair_seed04_scalp_conservative_v1")).toBe(true);
+    expect(registry.hair.candidate_previews.some((preview) => preview.id === "hair_seed04_scalp_coverage_v1")).toBe(true);
+    expect(registry.hair.candidate_previews.some((preview) => preview.id === "hair_workflow_seed04_scalp_conservative_v1")).toBe(true);
+    expect(registry.hair.candidate_previews.some((preview) => preview.id === "hair_workflow_seed04_scalp_coverage_v1")).toBe(true);
     expect(registry.hair.first_bundle.id).toBe("female_chloe_seed_04_bangs04_v2");
     expect(registry.hair.first_bundle.components).toEqual([
       "Chloe_hair_bangs_04",

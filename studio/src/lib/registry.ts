@@ -58,6 +58,7 @@ export interface GarmentMaterialLibrary {
 }
 
 export type HairGender = "female" | "male";
+export type HairScalpVariant = "conservative" | "coverage";
 
 export interface HairComponentGroup {
   id: string;
@@ -86,6 +87,17 @@ export interface HairGalleryRecord {
   description: string;
 }
 
+export interface HairCandidatePreview {
+  id: string;
+  label: string;
+  status: "candidate" | "reviewed" | "rejected";
+  model_url: string;
+  manifest_url: string;
+  description: string;
+  kind: "under_cap" | "assembly";
+  variant?: HairScalpVariant;
+}
+
 export interface HairRegistry {
   first_bundle: {
     id: string;
@@ -98,6 +110,7 @@ export interface HairRegistry {
   component_groups: HairComponentGroup[];
   random_pool: HairPoolComponent[];
   galleries: HairGalleryRecord[];
+  candidate_previews: HairCandidatePreview[];
 }
 
 const STATUSES = new Set<AssetStatus>([
@@ -151,7 +164,8 @@ export function parseRegistry(value: unknown): AssetRegistry {
   }
   if (!isRecord(value.hair) || !isRecord(value.hair.first_bundle) || !Array.isArray(value.hair.first_bundle.components)
       || !Array.isArray(value.hair.component_groups)
-      || !Array.isArray(value.hair.random_pool) || !Array.isArray(value.hair.galleries)) {
+      || !Array.isArray(value.hair.random_pool) || !Array.isArray(value.hair.galleries)
+      || !Array.isArray(value.hair.candidate_previews)) {
     throw new Error("资产注册表缺少发型工作流数据");
   }
   if (!isRecord(value.garment_materials)

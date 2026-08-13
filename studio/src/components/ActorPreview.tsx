@@ -5,7 +5,7 @@ import * as THREE from "three";
 import type { PreviewFocus } from "../lib/preview-focus";
 import type { GarmentMaterialLibrary, VisibilityGroup } from "../lib/registry";
 import { applyGarmentMaterial, type GarmentMaterialSelection } from "../lib/garment-material";
-import { applyPreviewVisibility, blinkStateAt, preparePreviewScene, type BlinkState } from "../lib/scene-preparation";
+import { applyHairPreviewDebugMaterial, applyHairPreviewParameters, applyPreviewVisibility, blinkStateAt, preparePreviewScene, type BlinkState, type HairPreviewParameterReport, type HairPreviewParameters } from "../lib/scene-preparation";
 
 export type CameraView = "front" | "right" | "back" | "left" | "free";
 export type VisibilityState = Record<VisibilityGroup, boolean>;
@@ -20,6 +20,9 @@ interface ActorPreviewProps {
   garmentMaterialLibrary: GarmentMaterialLibrary;
   garmentMaterial: GarmentMaterialSelection;
   focus: PreviewFocus;
+  hairParameters: HairPreviewParameters;
+  hairDebugMaterial: boolean;
+  onHairParameterReport: (report: HairPreviewParameterReport) => void;
   onTimeChange: (value: number) => void;
   onDuration: (duration: number, animationName: string) => void;
   onModelError: () => void;
@@ -112,6 +115,9 @@ function ActorModel({
   showBody,
   garmentMaterialLibrary,
   garmentMaterial,
+  hairParameters,
+  hairDebugMaterial,
+  onHairParameterReport,
   onTimeChange,
   onDuration,
 }: Omit<ActorPreviewProps, "view" | "focus" | "onModelError" | "onOrbitStart">) {
@@ -132,6 +138,15 @@ function ActorModel({
   useEffect(() => {
     applyGarmentMaterial(scene, garmentMaterialLibrary, garmentMaterial);
   }, [garmentMaterial, garmentMaterialLibrary, scene]);
+
+  useEffect(() => {
+    applyHairPreviewParameters(scene, hairParameters);
+    onHairParameterReport(scene.userData.assetsstudio_hair_parameter_report as HairPreviewParameterReport);
+  }, [hairParameters, onHairParameterReport, scene]);
+
+  useEffect(() => {
+    applyHairPreviewDebugMaterial(scene, hairDebugMaterial);
+  }, [hairDebugMaterial, scene]);
 
   useEffect(() => {
     applyPreviewVisibility(scene, visibility, currentBlink.current, showBody);

@@ -24,6 +24,17 @@
 | 2026-08-09 | implementation/fix | F004/hair | 按历史推荐 `seed_04_bangs04` 重建首套女性发型，绑定到 `CC_Base_Head` 并接入网页、缩略图和四方向 Walk GIF | 复用既有 Actor 贴合参数而不重新测量；修复 Bone Parent 导出造成发型落在脚边的问题，拒绝两个失败头皮补片；当前头顶中分小缝保留为人工审查项 |
 | 2026-08-10 | quality/fix | F004/hair | 用前向表面覆盖检测定位并修复首套发型中心亮缝，生成 `seed_04_bangs04_v2` | v1 发片局部落到头皮后方而非左右断裂；v2 不加补片，仅平滑前移原网格，暴露采样从 105 降到 0，并改用 512px 浅色 Actor GIF 防止审查掩盖 |
 | 2026-08-10 | implementation | F005/workbench | 资产仓库改为只显示当前左侧工作流类别，每个组件只缓存一张固定正面图；工作流预览可独立隐藏/显示 | 恢复左侧工作流选择的实际意义，避免四视图拼图和常驻 3D 画布挤占控制台空间 |
+| 2026-08-13 | decision/planning | F007/hair | 在 `hair_test` 分支记录发型参数化、标准 under-cap 和分层随机化方案 | 现有组件变体已可复现，但仍缺少统一发套合同；先建立不破坏 F004 的阶段性开发入口，再扩展根部锁定和发型语法生成 |
+| 2026-08-13 | implementation/validation | F007/hair | 完成 Phase 1 under-cap 生成器、Schema、验证器和四视图候选 | Actor 派生发套已生成并通过自动检查；候选未晋级，因前/侧发际线仍沿原面片边界呈锯齿状，Phase 2 需加入发际线 mask 与平滑裁切 |
+| 2026-08-13 | implementation/preview | F007/Studio | 将 Phase 1 under-cap 候选导出为 Actor + Walk GLB，并在发型工作台增加正式 seed_04/under-cap 切换 | 每个阶段都必须能在 Studio 中由用户确认；候选独立于正式组合 GLB，保留 candidate 状态和已知锯齿发际线问题 |
+| 2026-08-13 | fix/preview | F007/Studio | 修复候选 GLB 切换后旧发型残留、under-cap 显隐标签继承和默认展示模式 | 切换模型时强制重挂载 ActorPreview；沿祖先链识别 hair 组件；under-cap 默认使用单独展示，避免被 Actor 头部遮住 |
+| 2026-08-13 | implementation/preview | F007/Studio | 建立发型/发套节点工作流试点并生成 seed_04 + under-cap 组合 GLB | 让“选择发型→选择发套→连接”成为真实可确认的 Studio 状态；两个 hair 节点共同绑定 Actor 头骨，组合候选仍保持 candidate，不自动进入随机池 |
+| 2026-08-13 | quality/rejection | F007/hair | 检查 under-cap v2 的完整覆盖与自然度 | `rear_side_top` 会沿低模面片边界暴露缺口；连续椭球虽无锯齿，但在网页组合导出中未稳定承担补缝，故保留为失败证据，不晋级正式候选 |
+| 2026-08-13 | implementation/validation | F007/hair | 建立 `seed04_scalp_base_v1` 专用 coverage layer 并接入 Studio 组合节点 | 专用 scalp base 已具备连续 Actor 表面、头骨绑定和组合预览；Studio 仍暴露前额大面积头部，明确说明外层 front_bangs 需要先修复，不能用 scalp base 掩盖大面积覆盖不足 |
+| 2026-08-13 | implementation/preview | F007/hair | 将 seed_04 scalp base 拆为 Conservative / Coverage 两个可切换候选并接入 Studio | Conservative 前额回缩、优先保护刘海；Coverage 保留更宽覆盖用于对照；两套 Blender/GLB/manifest 和 Studio 组合均通过验证，下一步应修复外层 front_bangs 而不是继续扩大 scalp base |
+| 2026-08-14 | diagnosis/implementation | F007/hair | 复核完整 Studio 取景后取消对 front_bangs 的错误修复，并将 scalp base 覆盖宽度/前缘回缩做成可逆 Studio 参数 | Blender 与完整 Studio 预览均确认刘海轮廓连续；参数 1.08 / 0.12 和重置流程已通过交互验证，外层发型不受影响，下一步可讨论哪些参数值得回写 Blender |
+| 2026-08-14 | fix/preview | F007/hair | 修正 scalp base 前缘回缩的 Blender→Three.js 深度轴，并增加正面宽度/右侧回缩快捷检查 | 原实现把深度变化写到 Three.js 高度轴，状态变化但视觉不明显；修正为 -Z 后侧视可见，参数验收不再依赖错误的正面组合截图 |
+| 2026-08-14 | validation/fix | F007/Studio | 将 scalp base 参数改为直接 position buffer 变形，增加命中网格、X/Z 跨度、Z 中心报告和单独检查高对比材质 | 复核确认宽度与回缩均作用于真实 GLB 网格；宽度 0.94→1.10 改变 X 跨度，回缩 0→0.16 改变 Z 中心，解决“数值变化但预览看不出”的验收歧义 |
 
 ## 记录规则
 

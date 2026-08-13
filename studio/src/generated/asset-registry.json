@@ -571,6 +571,75 @@
         "status": "实验",
         "description": "男性全部 8 个刘海组件的统一贴合审查页，尚未全部进入推荐池。"
       }
+    ],
+    "candidate_previews": [
+      {
+        "id": "hair_seed04_scalp_base_v1",
+        "label": "seed_04 专用 scalp base",
+        "status": "candidate",
+        "model_url": "/generated/hair-candidates/seed04-scalp-base-v1/actor-seed04-scalp-base-v1.glb",
+        "manifest_url": "/generated/hair-candidates/seed04-scalp-base-v1/actor-seed04-scalp-base-v1.manifest.json",
+        "description": "seed_04 专用 coverage layer：从 Actor 头部连续表面派生，用于遮挡外层发束之间的头皮裂缝。",
+        "kind": "under_cap"
+      },
+      {
+        "id": "hair_under_cap_v1",
+        "label": "Phase 1 标准发套候选",
+        "status": "candidate",
+        "model_url": "/generated/hair-candidates/under-cap-v1/actor-under-cap-v1.glb",
+        "manifest_url": "/generated/hair-candidates/under-cap-v1/actor-under-cap-v1.manifest.json",
+        "description": "Actor 派生 under-cap；仅用于网页确认，不替换正式发型 Bundle。",
+        "kind": "under_cap"
+      },
+      {
+        "id": "hair_workflow_seed04_scalp_base_v1",
+        "label": "seed_04 + 专用 scalp base",
+        "status": "candidate",
+        "model_url": "/generated/hair-candidates/workflow-seed04-scalp-base-v1/actor-hair-workflow-v2.glb",
+        "manifest_url": "/generated/hair-candidates/workflow-seed04-scalp-base-v1/actor-hair-workflow-v2.manifest.json",
+        "description": "节点组合候选：正式 seed_04 发型与专用 scalp base 同时绑定到 Actor 头骨。",
+        "kind": "assembly"
+      },
+      {
+        "id": "hair_seed04_scalp_conservative_v1",
+        "label": "Conservative · 刘海优先",
+        "status": "candidate",
+        "model_url": "/generated/hair-candidates/seed04-scalp-conservative-v1/actor-seed04-scalp-base-v1.glb",
+        "manifest_url": "/generated/hair-candidates/seed04-scalp-conservative-v1/actor-seed04-scalp-base-v1.manifest.json",
+        "description": "前额边界后缩，保护 seed_04 刘海轮廓；用于默认预览。",
+        "kind": "under_cap",
+        "variant": "conservative"
+      },
+      {
+        "id": "hair_workflow_seed04_scalp_conservative_v1",
+        "label": "seed_04 + Conservative · 刘海优先",
+        "status": "candidate",
+        "model_url": "/generated/hair-candidates/workflow-seed04-scalp-conservative-v1/actor-hair-workflow-v2.glb",
+        "manifest_url": "/generated/hair-candidates/workflow-seed04-scalp-conservative-v1/actor-hair-workflow-v2.manifest.json",
+        "description": "节点组合候选：正式 seed_04 发型与 Conservative · 刘海优先 同时绑定到 Actor 头骨。",
+        "kind": "assembly",
+        "variant": "conservative"
+      },
+      {
+        "id": "hair_seed04_scalp_coverage_v1",
+        "label": "Coverage · 覆盖优先",
+        "status": "candidate",
+        "model_url": "/generated/hair-candidates/seed04-scalp-coverage-v1/actor-seed04-scalp-base-v1.glb",
+        "manifest_url": "/generated/hair-candidates/seed04-scalp-coverage-v1/actor-seed04-scalp-base-v1.manifest.json",
+        "description": "扩大头顶与前侧 coverage，用于检查裂缝上限，不作为默认刘海方案。",
+        "kind": "under_cap",
+        "variant": "coverage"
+      },
+      {
+        "id": "hair_workflow_seed04_scalp_coverage_v1",
+        "label": "seed_04 + Coverage · 覆盖优先",
+        "status": "candidate",
+        "model_url": "/generated/hair-candidates/workflow-seed04-scalp-coverage-v1/actor-hair-workflow-v2.glb",
+        "manifest_url": "/generated/hair-candidates/workflow-seed04-scalp-coverage-v1/actor-hair-workflow-v2.manifest.json",
+        "description": "节点组合候选：正式 seed_04 发型与 Coverage · 覆盖优先 同时绑定到 Actor 头骨。",
+        "kind": "assembly",
+        "variant": "coverage"
+      }
     ]
   }
 }
