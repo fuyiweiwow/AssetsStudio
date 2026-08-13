@@ -261,6 +261,8 @@ function App() {
     const brief = compileEquipmentBrief(equipmentPrompt);
     setEquipmentBrief(brief);
     chooseGarmentRecipe(brief.suggested_material_recipe_id);
+  }
+
   function selectHairPreviewTarget(target: HairPreviewTarget) {
     if (target === "under_cap" && !selectedHairCandidate) return;
     if (target === "assembly" && !selectedHairAssembly) return;
