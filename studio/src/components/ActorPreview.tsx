@@ -3,7 +3,8 @@ import { Grid, Html, OrbitControls, useAnimations, useGLTF } from "@react-three/
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import type { PreviewFocus } from "../lib/preview-focus";
-import type { VisibilityGroup } from "../lib/registry";
+import type { GarmentMaterialLibrary, VisibilityGroup } from "../lib/registry";
+import { applyGarmentMaterial, type GarmentMaterialSelection } from "../lib/garment-material";
 import { applyPreviewVisibility, blinkStateAt, preparePreviewScene, type BlinkState } from "../lib/scene-preparation";
 
 export type CameraView = "front" | "right" | "back" | "left" | "free";
@@ -16,6 +17,8 @@ interface ActorPreviewProps {
   normalizedTime: number;
   visibility: VisibilityState;
   showBody: boolean;
+  garmentMaterialLibrary: GarmentMaterialLibrary;
+  garmentMaterial: GarmentMaterialSelection;
   focus: PreviewFocus;
   onTimeChange: (value: number) => void;
   onDuration: (duration: number, animationName: string) => void;
@@ -107,6 +110,8 @@ function ActorModel({
   normalizedTime,
   visibility,
   showBody,
+  garmentMaterialLibrary,
+  garmentMaterial,
   onTimeChange,
   onDuration,
 }: Omit<ActorPreviewProps, "view" | "focus" | "onModelError" | "onOrbitStart">) {
@@ -123,6 +128,10 @@ function ActorModel({
   useEffect(() => {
     preparePreviewScene(scene);
   }, [scene]);
+
+  useEffect(() => {
+    applyGarmentMaterial(scene, garmentMaterialLibrary, garmentMaterial);
+  }, [garmentMaterial, garmentMaterialLibrary, scene]);
 
   useEffect(() => {
     applyPreviewVisibility(scene, visibility, currentBlink.current, showBody);

@@ -2,11 +2,11 @@
   "schema": "assetsstudio_garmentcode_panel_membership_v1",
   "pattern_spec": {
     "path": "milestones/tops/garmentcode_short_sleeve_v1/pattern/garment_specification.json",
-    "sha256": "91699c4a083fe9c0bc65d429fe055e665f01752eeebdb3076f446965c1cd313d"
+    "sha256": "4ecd7be19802bf7d2a30592dc10201297375d33b91588893ef15368763555538"
   },
   "sim_obj": {
     "path": "milestones/tops/garmentcode_short_sleeve_v1/simulation/garment_boxmesh.obj",
-    "sha256": "a370d80b8f921ea189a341d75f00964699b73ced05d1fe4c1ec9ea461a11cf81"
+    "sha256": "b3d6a58801a4189df932787b120dbcfb1b7b3e23dd2acf0f8b2151e2961fd994"
   },
   "resolution_scale": 1.0,
   "vertex_count": 16340,

@@ -59,6 +59,31 @@ def main() -> int:
     actor = repository / str(payload["actor"]["path"])
     if not actor.is_file() or sha256(actor) != str(payload["actor"]["sha256"]).upper():
         raise RuntimeError("Actor dependency is missing or has the wrong hash")
+
+    provenance_targets = {
+        "simulation/panel_membership.json": {
+            "pattern_spec": root / "pattern/garment_specification.json",
+            "sim_obj": root / "simulation/garment_sim.obj",
+        },
+        "simulation/panel_membership_initial.json": {
+            "pattern_spec": root / "pattern/garment_specification.json",
+            "sim_obj": root / "simulation/garment_boxmesh.obj",
+        },
+    }
+    for relative, expected_targets in provenance_targets.items():
+        provenance = json.loads((root / relative).read_text(encoding="utf-8"))
+        for key, expected_target in expected_targets.items():
+            reference = provenance.get(key, {})
+            declared = Path(str(reference.get("path", "")))
+            if declared.is_absolute() or ".." in declared.parts:
+                raise RuntimeError(f"unsafe {key} provenance path in {relative}: {declared}")
+            target = (repository / declared).resolve()
+            if target != expected_target.resolve():
+                raise RuntimeError(
+                    f"wrong {key} provenance target in {relative}: {target}"
+                )
+            if not target.is_file() or sha256(target) != str(reference.get("sha256", "")).upper():
+                raise RuntimeError(f"stale {key} provenance hash in {relative}")
     print(
         f"GARMENTCODE_MILESTONE_PASS files={len(listed)} bytes={total} "
         f"manifest={manifest_path}"

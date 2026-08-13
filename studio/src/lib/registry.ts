@@ -27,7 +27,34 @@ export interface AssetRegistry {
     storage_policy: "local";
   };
   assets: AssetRecord[];
+  garment_materials: GarmentMaterialLibrary;
   hair: HairRegistry;
+}
+
+export type GarmentPattern = "none" | "weave" | "stripes";
+
+export interface GarmentMaterialRecipe {
+  id: string;
+  label: string;
+  description: string;
+  base_color: string;
+  accent_color: string;
+  roughness: number;
+  metalness: number;
+  sheen: number;
+  pattern: GarmentPattern;
+  pattern_scale: number;
+  pattern_strength: number;
+}
+
+export interface GarmentMaterialLibrary {
+  schema: "assetsstudio_garment_material_library_v1";
+  geometry_asset_id: string;
+  target_objects: string[];
+  default_recipe_id: string;
+  geometry_immutable: true;
+  parameter_limits: Record<"roughness" | "metalness" | "sheen" | "pattern_scale" | "pattern_strength", [number, number]>;
+  recipes: GarmentMaterialRecipe[];
 }
 
 export type HairGender = "female" | "male";
@@ -126,6 +153,13 @@ export function parseRegistry(value: unknown): AssetRegistry {
       || !Array.isArray(value.hair.component_groups)
       || !Array.isArray(value.hair.random_pool) || !Array.isArray(value.hair.galleries)) {
     throw new Error("资产注册表缺少发型工作流数据");
+  }
+  if (!isRecord(value.garment_materials)
+      || value.garment_materials.schema !== "assetsstudio_garment_material_library_v1"
+      || value.garment_materials.geometry_immutable !== true
+      || !Array.isArray(value.garment_materials.recipes)
+      || value.garment_materials.recipes.length === 0) {
+    throw new Error("资产注册表缺少上衣材质合同");
   }
   return value as unknown as AssetRegistry;
 }

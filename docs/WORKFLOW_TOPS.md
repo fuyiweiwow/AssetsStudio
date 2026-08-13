@@ -4,6 +4,8 @@
 
 当前唯一保留候选是 `milestones/tops/garmentcode_short_sleeve_v1/`。它由当前非标准 Actor 的 REST 测量、Actor 上半身碰撞代理和 GarmentCode 衣片生成；最终网格未做 Blender 缩放、Shrinkwrap、顶点外推或补洞。Blender 只负责坐标映射、Actor 原生骨骼权重转移和预览。
 
+材质与几何分离：`materials/material_recipes.json` 只描述颜色、粗糙度、纹样和布料响应；它不能改变衣片、接缝、骨骼、碰撞或尺寸。Studio 的材质切换和 Blender 的 `--material-library/--material-recipe` 必须读取同一份 JSON。
+
 人工四向动画审查已通过“外观可继续”门槛，但自动报告仍记录 1184 个 GarmentCode 自相交和 326 个碰撞弹簧，因此状态保持 `provisional`，不能进入 Gallery 或随机化。
 
 ## 已提交的唯一数据基线
@@ -19,6 +21,7 @@
 | GarmentCode 规格 | `milestones/tops/garmentcode_short_sleeve_v1/pattern/garment_specification.json` | 仿真的精确衣片和接缝输入 |
 | 静态仿真 | `milestones/tops/garmentcode_short_sleeve_v1/simulation/garment_sim.obj` | 16340 顶点，附精确 panel membership |
 | Actor 转移 | `milestones/tops/garmentcode_short_sleeve_v1/output/actor_transfer.blend` | 唯一正式预览 Blend |
+| 固定动作审查候选 | `milestones/tops/garmentcode_short_sleeve_v1/output/actor_pose_corrective_v8_review.blend` | v8 宽泛落差诊断候选；保持 provisional，不进入 Gallery/随机化 |
 | 审计和预览 | `milestones/tops/garmentcode_short_sleeve_v1/audit/`、`review/` | 保留最小可核验报告、四向 GIF 和接触表 |
 
 `workspace/` 只用于可重新生成的缓存和试验结果，不是权威输入。里程碑中的所有必要数据资产均由 `manifest.json` 记录大小和 SHA-256；32 张单帧 PNG、随机织物贴图和重复缓存不影响几何重现，故不提交。
@@ -92,7 +95,7 @@ python .\tools\garmentcode\validate_garmentcode_actor_patch.py --garmentcode-roo
 
 先用 `export_garmentcode_panel_membership.py` 从同一规格和 sim OBJ 导出精确衣片成员关系，再运行 `transfer_garmentcode_sim_to_actor.py --panel-membership ...`。袖子必须保留 Actor 原生的躯干/锁骨/同侧手臂混合权重；不得仅按空间位置选择上臂并丢弃其他权重。
 
-审查顺序：静态正侧背四向、8 个走路采样帧的 Actor 穿透、GarmentCode 自相交、身体碰撞、最后完整四向 GIF。当前运动穿透计数为 `35,49,68,32,48,53,42,35`（均值 45.25，阈值为向 Actor 内 1cm）。
+审查顺序：静态正侧背四向、8 个走路采样帧的 Actor 穿透、GarmentCode 自相交、身体碰撞、最后完整四向 GIF。当前正式转移运动穿透计数为 `35,49,68,32,48,53,42,35`（均值 45.25，阈值为向 Actor 内 1cm）。v8 固定动作审查候选另记录普通视图 32、相机视图 75、衣料穿入峰值 179；它用于三渲二外观复核，不替换正式 GarmentCode 基线。
 
 ## 已排除路线
 

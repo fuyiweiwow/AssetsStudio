@@ -114,6 +114,7 @@ def main() -> int:
         tri_e2 = tri[:, 2] - tri_v0
         hit_values = np.zeros(len(springs), dtype=np.int32)
         face_values = np.full(len(springs), -1, dtype=np.int32)
+        hit_distances = np.full(len(springs), np.nan, dtype=np.float32)
         edge_origins = points[springs[:, 0]]
         edge_ends = points[springs[:, 1]]
         edge_delta = edge_ends - edge_origins
@@ -150,12 +151,17 @@ def main() -> int:
             if np.any(any_crossed):
                 first = np.argmax(crossed, axis=1)
                 face_values[start:stop][any_crossed] = first[any_crossed]
+                batch_rows = np.arange(stop - start)
+                local_distances = hit_distances[start:stop]
+                local_distances[any_crossed] = t[batch_rows, first][any_crossed]
 
         endpoint_counts = Counter()
         pair_counts = Counter()
         crossing_family_pair_counts = Counter()
         crossing_height_bin_counts = Counter()
         crossing_panel_pair_counts = Counter()
+        crossing_region_counts = Counter()
+        same_panel_overlap_count = 0
         records = []
         for spring_index, value in enumerate(hit_values):
             if not value:
@@ -181,6 +187,26 @@ def main() -> int:
             midpoint_y = float((points[int(e0), 1] + points[int(e1), 1]) * 0.5)
             height_bin = f"{int(midpoint_y // 10) * 10:03d}-{int(midpoint_y // 10) * 10 + 10:03d}cm"
             crossing_height_bin_counts[height_bin] += 1
+            crossing_point = edge_origins[spring_index] + edge_dirs[spring_index] * hit_distances[spring_index]
+            all_panels = spring_panels | face_panels
+            has_cuff = any("cuff" in name for name in all_panels)
+            has_sleeve = any("sleeve" in name or "cuff" in name for name in all_panels)
+            has_torso = any("torso" in name for name in all_panels)
+            if has_cuff and has_torso:
+                region = "cuff_torso"
+            elif has_cuff:
+                region = "cuff"
+            elif has_sleeve and has_torso:
+                region = "armhole"
+            elif has_sleeve:
+                region = "sleeve"
+            elif has_torso:
+                region = "torso"
+            else:
+                region = "unknown"
+            crossing_region_counts[region] += 1
+            same_panel_overlap = bool(spring_panels & face_panels)
+            same_panel_overlap_count += int(same_panel_overlap)
             records.append({
                 "spring": int(spring_index),
                 "vertices": [int(e0), int(e1)],
@@ -191,8 +217,63 @@ def main() -> int:
                 "face_vertices": face_vertices,
                 "face_panels": sorted(face_panels),
                 "face_family": face_family,
+                "family_pair": family_pair,
+                "panel_pair": panel_pair,
+                "region": region,
+                "same_panel_overlap": same_panel_overlap,
                 "spring_midpoint_y_cm": midpoint_y,
+                "crossing_point_cm": [float(value) for value in crossing_point],
+                "face_centroid_cm": [float(value) for value in points[face_vertices].mean(axis=0)],
             })
+
+        cluster_radius_cm = 4.0
+        crossing_points = np.asarray([record["crossing_point_cm"] for record in records], dtype=np.float32)
+        parents = list(range(len(records)))
+
+        def find(index: int) -> int:
+            while parents[index] != index:
+                parents[index] = parents[parents[index]]
+                index = parents[index]
+            return index
+
+        def union(left: int, right: int) -> None:
+            left_root = find(left)
+            right_root = find(right)
+            if left_root != right_root:
+                parents[right_root] = left_root
+
+        radius_squared = cluster_radius_cm * cluster_radius_cm
+        for left in range(len(crossing_points)):
+            squared_distances = np.sum(
+                (crossing_points[left + 1:] - crossing_points[left]) ** 2,
+                axis=1,
+            )
+            for offset in np.flatnonzero(squared_distances <= radius_squared):
+                union(left, left + 1 + int(offset))
+
+        cluster_members: dict[int, list[int]] = {}
+        for index in range(len(records)):
+            cluster_members.setdefault(find(index), []).append(index)
+        spatial_clusters = []
+        for member_indices in cluster_members.values():
+            if len(member_indices) < 2:
+                continue
+            member_points = crossing_points[member_indices]
+            member_records = [records[index] for index in member_indices]
+            spatial_clusters.append({
+                "count": len(member_indices),
+                "centroid_cm": [float(value) for value in member_points.mean(axis=0)],
+                "bounds_cm": [
+                    [float(value) for value in member_points.min(axis=0)],
+                    [float(value) for value in member_points.max(axis=0)],
+                ],
+                "region_counts": Counter(record["region"] for record in member_records),
+                "family_pair_counts": Counter(record["family_pair"] for record in member_records),
+                "top_panel_pairs": Counter(record["panel_pair"] for record in member_records).most_common(8),
+                "same_panel_overlap_count": sum(record["same_panel_overlap"] for record in member_records),
+                "spring_indices": [record["spring"] for record in member_records],
+            })
+        spatial_clusters.sort(key=lambda cluster: cluster["count"], reverse=True)
 
         payload = {
             "schema": "assetsstudio_garmentcode_self_intersection_diagnostic_v1",
@@ -206,10 +287,16 @@ def main() -> int:
             "crossing_family_pair_counts": crossing_family_pair_counts,
             "crossing_height_bin_counts": crossing_height_bin_counts,
             "crossing_panel_pair_counts": crossing_panel_pair_counts,
+            "crossing_region_counts": crossing_region_counts,
+            "same_panel_overlap_count": same_panel_overlap_count,
+            "spatial_cluster_radius_cm": cluster_radius_cm,
+            "spatial_cluster_count": len(spatial_clusters),
+            "isolated_crossing_count": sum(len(members) == 1 for members in cluster_members.values()),
+            "spatial_clusters": spatial_clusters,
             "crossing_springs": records,
             "query": "Warp mesh_query_edge on the final simulated cloth mesh, matching GarmentCode Cloth.count_self_intersections",
         }
-        output = args.output.resolve()
+        output = output_path
         output.mkdir(parents=True, exist_ok=True)
         (output / "self_intersection_diagnostic.json").write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
         print(json.dumps({k: v for k, v in payload.items() if k != "crossing_springs"}, indent=2))

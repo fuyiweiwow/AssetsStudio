@@ -1,0 +1,68 @@
+{
+  "schema": "assetsstudio_garment_material_library_v1",
+  "geometry_asset_id": "top_garmentcode_short_sleeve_v1",
+  "target_objects": ["GarmentCodeShirt_ActorTransfer"],
+  "default_recipe_id": "cotton_workshirt",
+  "geometry_immutable": true,
+  "parameter_limits": {
+    "roughness": [0.35, 1.0],
+    "metalness": [0.0, 0.15],
+    "sheen": [0.0, 0.5],
+    "pattern_scale": [1.0, 16.0],
+    "pattern_strength": [0.0, 0.45]
+  },
+  "recipes": [
+    {
+      "id": "cotton_workshirt",
+      "label": "粗布工作衫",
+      "description": "高粗糙度、低反光的日常工作布，适合作为矿工内层衣。",
+      "base_color": "#496D78",
+      "accent_color": "#304B54",
+      "roughness": 0.9,
+      "metalness": 0.0,
+      "sheen": 0.12,
+      "pattern": "weave",
+      "pattern_scale": 10.0,
+      "pattern_strength": 0.12
+    },
+    {
+      "id": "undyed_linen",
+      "label": "未染亚麻",
+      "description": "偏暖、干燥的浅色织物，适合作为西幻平民或工匠基础层。",
+      "base_color": "#B9A783",
+      "accent_color": "#887759",
+      "roughness": 0.96,
+      "metalness": 0.0,
+      "sheen": 0.08,
+      "pattern": "weave",
+      "pattern_scale": 13.0,
+      "pattern_strength": 0.1
+    },
+    {
+      "id": "dyed_wool",
+      "label": "染色羊毛",
+      "description": "更柔和厚重的织物响应，适合寒冷矿区和西幻外层服装。",
+      "base_color": "#6F3F43",
+      "accent_color": "#482A2D",
+      "roughness": 0.88,
+      "metalness": 0.0,
+      "sheen": 0.3,
+      "pattern": "weave",
+      "pattern_scale": 7.0,
+      "pattern_strength": 0.16
+    },
+    {
+      "id": "guild_stripe",
+      "label": "工会条纹布",
+      "description": "可识别的低对比条纹，用于阵营、工会或职业区分。",
+      "base_color": "#7B6841",
+      "accent_color": "#3D3425",
+      "roughness": 0.84,
+      "metalness": 0.0,
+      "sheen": 0.1,
+      "pattern": "stripes",
+      "pattern_scale": 5.0,
+      "pattern_strength": 0.28
+    }
+  ]
+}

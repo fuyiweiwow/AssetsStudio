@@ -268,7 +268,13 @@ dl { margin: 0; } dl div { padding: 8px 0; border-top: 1px solid #282f3f; } dt {
 .gallery-records summary { color: #aeb9ca; font-size: .61rem; cursor: pointer; }
 .gallery-records article { margin-top: 7px; padding: 8px; border-radius: 7px; background: #131823; }.gallery-records article strong { font-size: .61rem; }.gallery-records article span { float: right; color: #d4a279; font-size: .52rem; }.gallery-records article p { margin: 5px 0 0; color: #748197; font-size: .55rem; line-height: 1.4; }
 .field-label { display: grid; gap: 5px; margin-top: 10px; color: #8995a9; font-size: .58rem; }
-.field-label input { width: 100%; border: 1px solid #3b465b; border-radius: 8px; padding: 8px 9px; color: #d8dfeb; background: #111620; }
+.field-label input, .field-label select, .field-label textarea { width: 100%; border: 1px solid #3b465b; border-radius: 8px; padding: 8px 9px; color: #d8dfeb; background: #111620; font: inherit; }
+.field-label textarea { resize: vertical; line-height: 1.5; }
+.color-field > span { display: grid; grid-template-columns: 48px 1fr; align-items: center; gap: 8px; }
+.color-field input { height: 34px; padding: 3px; }.color-field code { color: #aeb9ca; font-size: .6rem; }
+.brief-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px; }.brief-tags span { padding: 4px 6px; border-radius: 5px; color: #b9cce9; background: #29384c; font-size: .51rem; }
+.brief-jobs { display: grid; gap: 6px; margin-top: 9px; }.brief-jobs article { padding: 8px; border: 1px solid #2d3545; border-left-width: 3px; border-radius: 7px; background: #131823; }.brief-jobs article.job-ready { border-left-color: #65b99e; }.brief-jobs article.job-requires_asset { border-left-color: #d09268; }.brief-jobs article.job-gate { border-left-color: #7899c0; }
+.brief-jobs article div { display: flex; justify-content: space-between; gap: 8px; }.brief-jobs strong { font-size: .59rem; }.brief-jobs span { color: #7f8da2; font-size: .49rem; }.brief-jobs p { margin: 4px 0 0; color: #748197; font-size: .53rem; line-height: 1.4; }
 .console-primary, .review-entry-button, .rail-primary-action { width: 100%; margin-top: 9px; border: 1px solid #8b586a; border-radius: 9px; padding: 9px 11px; background: linear-gradient(135deg, #704957, #3f4e6b); color: #fff; font-size: .65rem; cursor: pointer; }
 .disabled-action { opacity: .42; cursor: default; }
 .capability-note { margin-top: 10px; padding: 9px 10px; border-left: 3px solid #6688ad; border-radius: 6px; background: #1b2938; }.capability-note strong { color: #b8d2ee; font-size: .62rem; }.capability-note p { margin: 4px 0 0; color: #8092a7; font-size: .57rem; line-height: 1.45; }

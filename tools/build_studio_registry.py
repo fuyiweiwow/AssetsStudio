@@ -16,6 +16,7 @@ HAIR_COMPONENT_CATALOG = ROOT / "milestones" / "hair" / "hair_component_catalog_
 HAIR_RANDOM_POOL = ROOT / "milestones" / "hair" / "hair_random_pool_v1.json"
 HAIR_GALLERY_CATALOG = ROOT / "milestones" / "hair" / "hair_gallery_catalog_v1.json"
 HAIR_FIRST_BUNDLE_RECIPE = ROOT / "milestones" / "hair" / "first_bundle_recipe_v1.json"
+GARMENT_MATERIAL_LIBRARY = ROOT / "milestones" / "tops" / "garmentcode_short_sleeve_v1" / "materials" / "material_recipes.json"
 THUMBNAIL_OUTPUT = ROOT / "studio" / "public" / "generated" / "thumbnails"
 
 
@@ -135,12 +136,15 @@ def main() -> int:
     hair_components = json.loads(HAIR_COMPONENT_CATALOG.read_text(encoding="utf-8"))
     hair_pool = json.loads(HAIR_RANDOM_POOL.read_text(encoding="utf-8"))
     hair_galleries = json.loads(HAIR_GALLERY_CATALOG.read_text(encoding="utf-8"))
+    garment_materials = json.loads(GARMENT_MATERIAL_LIBRARY.read_text(encoding="utf-8"))
     if hair_components.get("schema") != "assetslab_hair_component_catalog_v1":
         raise RuntimeError("unexpected hair component catalog schema")
     if hair_pool.get("schema") != "assetslab_hair_random_pool_v1":
         raise RuntimeError("unexpected hair random pool schema")
     if hair_galleries.get("schema") != "assetslab_hair_gallery_catalog_v1":
         raise RuntimeError("unexpected hair gallery catalog schema")
+    if garment_materials.get("schema") != "assetsstudio_garment_material_library_v1":
+        raise RuntimeError("unexpected garment material library schema")
 
     payload = {
         "schema": "assetsstudio_asset_registry_v1",
@@ -152,6 +156,7 @@ def main() -> int:
             "storage_policy": "local",
         },
         "assets": assets,
+        "garment_materials": garment_materials,
         "hair": {
             "first_bundle": {
                 "id": first_hair_bundle["id"],

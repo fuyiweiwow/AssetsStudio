@@ -39,6 +39,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--seed", type=int, default=1)
     parser.add_argument("--shirt-width-ease", type=float, default=1.05)
     parser.add_argument("--shirt-length-factor", type=float, default=0.90)
+    parser.add_argument("--sleeve-cuff-type", choices=("band", "none"), default="band")
+    parser.add_argument("--sleeve-cuff-length-factor", type=float, default=0.10)
+    parser.add_argument("--sleeve-smoothing-coeff", type=float, default=0.18)
     return parser.parse_args()
 
 
@@ -88,7 +91,14 @@ def set_value(design: dict, *keys: str, value) -> None:
     node[keys[-1]]["v"] = value
 
 
-def build_design(template: Path, width_ease: float, length_factor: float) -> dict:
+def build_design(
+    template: Path,
+    width_ease: float,
+    length_factor: float,
+    sleeve_cuff_type: str,
+    sleeve_cuff_length_factor: float,
+    sleeve_smoothing_coeff: float,
+) -> dict:
     try:
         design = yaml.safe_load(template.read_text(encoding="utf-8"))["design"]
     except (OSError, KeyError, TypeError, yaml.YAMLError) as exc:
@@ -102,9 +112,29 @@ def build_design(template: Path, width_ease: float, length_factor: float) -> dic
     for side in ((), ("left",)):
         set_value(design, *side, "sleeve", "sleeveless", value=False)
         set_value(design, *side, "sleeve", "armhole_shape", value="ArmholeCurve")
-        set_value(design, *side, "sleeve", "smoothing_coeff", value=0.18)
-        set_value(design, *side, "sleeve", "cuff", "type", value="CuffBand")
-        set_value(design, *side, "sleeve", "cuff", "cuff_len", value=0.10)
+        set_value(
+            design,
+            *side,
+            "sleeve",
+            "smoothing_coeff",
+            value=sleeve_smoothing_coeff,
+        )
+        set_value(
+            design,
+            *side,
+            "sleeve",
+            "cuff",
+            "type",
+            value="CuffBand" if sleeve_cuff_type == "band" else None,
+        )
+        set_value(
+            design,
+            *side,
+            "sleeve",
+            "cuff",
+            "cuff_len",
+            value=sleeve_cuff_length_factor,
+        )
     set_value(design, "collar", "f_collar", value="CircleNeckHalf")
     set_value(design, "collar", "b_collar", value="CircleNeckHalf")
     set_value(design, "collar", "component", "style", value=None)
@@ -159,17 +189,29 @@ def label_sleeve_panels(pattern) -> list[dict[str, str]]:
     return changes
 
 
-def assert_topology(pattern) -> None:
+def assert_topology(pattern, sleeve_cuff_type: str) -> None:
     panels = pattern.pattern["panels"]
-    if set(panels) != EXPECTED_PANELS:
-        fail(f"expected exactly 12 canonical panels, got {sorted(panels)}")
-    if len(pattern.pattern["stitches"]) != 22:
-        fail(f"expected exactly 22 stitches, got {len(pattern.pattern['stitches'])}")
+    expected_panels = EXPECTED_PANELS
+    expected_edge_counts = EXPECTED_EDGE_COUNTS
+    expected_stitches = 22
+    if sleeve_cuff_type == "none":
+        expected_panels = {name for name in EXPECTED_PANELS if "_cuff_" not in name}
+        expected_edge_counts = {
+            name: count for name, count in EXPECTED_EDGE_COUNTS.items() if "_cuff_" not in name
+        }
+        expected_stitches = 14
+    if set(panels) != expected_panels:
+        fail(f"unexpected {sleeve_cuff_type} topology panels: {sorted(panels)}")
+    if len(pattern.pattern["stitches"]) != expected_stitches:
+        fail(
+            f"expected exactly {expected_stitches} {sleeve_cuff_type} stitches, "
+            f"got {len(pattern.pattern['stitches'])}"
+        )
     edge_counts = {
         name: len(panel["edges"] if isinstance(panel, dict) else panel.edges)
         for name, panel in panels.items()
     }
-    if edge_counts != EXPECTED_EDGE_COUNTS:
+    if edge_counts != expected_edge_counts:
         fail(f"canonical panel edge counts changed: {edge_counts}")
 
 
@@ -188,7 +230,11 @@ def pattern_spec(options: argparse.Namespace, data: dict, body: dict) -> dict:
             "bottom": None,
             "collar_front": "CircleNeckHalf",
             "collar_back": "CircleNeckHalf",
-            "sleeve": "short_sleeve_with_closed_cuff",
+            "sleeve": (
+                "short_sleeve_with_closed_cuff"
+                if options.sleeve_cuff_type == "band"
+                else "short_sleeve_open_hem"
+            ),
         },
         "actor_parameters": {
             "shoulder_width_cm": body["shoulder_w"],
@@ -214,8 +260,15 @@ def pattern_spec(options: argparse.Namespace, data: dict, body: dict) -> dict:
             "shirt_width_ease": options.shirt_width_ease,
             "shirt_length_factor": options.shirt_length_factor,
             "sleeve_armhole_shape": "ArmholeCurve",
-            "sleeve_cuff_type": "CuffBand",
-            "sleeve_cuff_length_factor": 0.10,
+            "sleeve_smoothing_coeff": options.sleeve_smoothing_coeff,
+            "sleeve_cuff_type": (
+                "CuffBand" if options.sleeve_cuff_type == "band" else None
+            ),
+            "sleeve_cuff_length_factor": (
+                options.sleeve_cuff_length_factor
+                if options.sleeve_cuff_type == "band"
+                else 0.0
+            ),
             "collar_width_fraction": 0.0,
             "front_collar_depth_fraction": 0.25,
             "back_collar_depth_fraction": 0.10,
@@ -237,6 +290,10 @@ def main() -> int:
             fail(f"missing {label}: {path}")
     if options.shirt_width_ease <= 0.0 or options.shirt_length_factor <= 0.0:
         fail("shirt width ease and length factor must be positive")
+    if not 0.1 <= options.sleeve_smoothing_coeff <= 0.4:
+        fail("sleeve smoothing coefficient must stay within the official 0.1-0.4 range")
+    if not 0.05 <= options.sleeve_cuff_length_factor <= 0.9:
+        fail("sleeve cuff length factor must stay within the official 0.05-0.9 range")
 
     data = read_measurements(options.measurements.resolve())
     if Path(data["source_actor"]).resolve() != options.actor.resolve():
@@ -257,7 +314,12 @@ def main() -> int:
 
     body = BodyParameters(str(options.body.resolve()))
     design = build_design(
-        options.design_template.resolve(), options.shirt_width_ease, options.shirt_length_factor
+        options.design_template.resolve(),
+        options.shirt_width_ease,
+        options.shirt_length_factor,
+        options.sleeve_cuff_type,
+        options.sleeve_cuff_length_factor,
+        options.sleeve_smoothing_coeff,
     )
     random.seed(options.seed)
     garment = MetaGarment(options.name, body, design)
@@ -265,7 +327,7 @@ def main() -> int:
     garment.assert_total_length()
     pattern = garment.assembly()
     label_changes = label_sleeve_panels(pattern)
-    assert_topology(pattern)
+    assert_topology(pattern, options.sleeve_cuff_type)
     if garment.is_self_intersecting():
         fail("GarmentCode generated a self-intersecting initial garment")
 

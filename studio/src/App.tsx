@@ -4,6 +4,13 @@ import { ActorPreview, PreviewFallback, type CameraView, type VisibilityState } 
 import { AssetShelf } from "./components/AssetShelf";
 import { WorkflowRail, type WorkflowStepId } from "./components/WorkflowRail";
 import { drawHairRecipe, type HairRecipe } from "./lib/hair-recipe";
+import { compileEquipmentBrief, type EquipmentBrief } from "./lib/equipment-brief";
+import {
+  defaultMaterialSelection,
+  materialRenderRequest,
+  resolveMaterialRecipe,
+  type GarmentMaterialSelection,
+} from "./lib/garment-material";
 import { getPreviewFocus } from "./lib/preview-focus";
 import { getPreviewState, type PreviewAvailability } from "./lib/preview-state";
 import { workflowAssets } from "./lib/workflow-assets";
@@ -56,6 +63,16 @@ function formatSeconds(value: number) {
   return `${value.toFixed(1)}s`;
 }
 
+function downloadJson(filename: string, value: unknown) {
+  const blob = new Blob([`${JSON.stringify(value, null, 2)}\n`], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const anchor = document.createElement("a");
+  anchor.href = url;
+  anchor.download = filename;
+  anchor.click();
+  URL.revokeObjectURL(url);
+}
+
 function useLocalPreview(modelUrl: string, manifestUrl: string) {
   const [availability, setAvailability] = useState<PreviewAvailability>("checking");
   const [manifest, setManifest] = useState<PreviewManifest | null>(null);
@@ -106,6 +123,13 @@ function App() {
   const [hairSeed, setHairSeed] = useState(104729);
   const [hairRecipe, setHairRecipe] = useState<HairRecipe>(() =>
     drawHairRecipe(registry.hair.random_pool, "female", 104729),
+  );
+  const [garmentMaterial, setGarmentMaterial] = useState<GarmentMaterialSelection>(() =>
+    defaultMaterialSelection(registry.garment_materials),
+  );
+  const [equipmentPrompt, setEquipmentPrompt] = useState("一套西幻风格的矿工装备");
+  const [equipmentBrief, setEquipmentBrief] = useState<EquipmentBrief>(() =>
+    compileEquipmentBrief("一套西幻风格的矿工装备"),
   );
   const { availability, setAvailability, manifest } = useLocalPreview(
     registry.preview.model_url,
@@ -202,6 +226,22 @@ function App() {
     setHairRecipe(drawHairRecipe(registry.hair.random_pool, hairGender, hairSeed));
   }
 
+  function chooseGarmentRecipe(recipeId: string) {
+    const recipe = resolveMaterialRecipe(registry.garment_materials, recipeId);
+    setGarmentMaterial({
+      recipeId,
+      baseColor: recipe.base_color,
+      roughness: recipe.roughness,
+      patternStrength: recipe.pattern_strength,
+    });
+  }
+
+  function compileBrief() {
+    const brief = compileEquipmentBrief(equipmentPrompt);
+    setEquipmentBrief(brief);
+    chooseGarmentRecipe(brief.suggested_material_recipe_id);
+  }
+
   const hairGroups = registry.hair.component_groups.filter((group) => group.gender === hairGender);
   const hairGalleries = registry.hair.galleries.filter((gallery) => gallery.gender === hairGender);
   const hairPoolCount = registry.hair.random_pool.filter((item) => item.gender === hairGender).length;
@@ -295,7 +335,7 @@ function App() {
           {!workflowPreviewCollapsed && <div className="preview-frame">
             <div className="frame-corner corner-tl" /><div className="frame-corner corner-tr" /><div className="frame-corner corner-bl" /><div className="frame-corner corner-br" />
             {availability === "available" ? (
-              <ActorPreview modelUrl={registry.preview.model_url} view={view} playing={playing} normalizedTime={timeline} visibility={activeVisibility} showBody={showBody} focus={previewFocus} onTimeChange={handleTimeChange} onDuration={handleDuration} onModelError={() => setAvailability("error")} onOrbitStart={() => setView("free")} />
+              <ActorPreview modelUrl={registry.preview.model_url} view={view} playing={playing} normalizedTime={timeline} visibility={activeVisibility} showBody={showBody} garmentMaterialLibrary={registry.garment_materials} garmentMaterial={garmentMaterial} focus={previewFocus} onTimeChange={handleTimeChange} onDuration={handleDuration} onModelError={() => setAvailability("error")} onOrbitStart={() => setView("free")} />
             ) : <PreviewFallback label={previewState.title} />}
             {workspaceView === "workbench" && selectedPreviewMissing && (
               <div className="preview-empty-card"><strong>当前资产尚未装入交互 GLB</strong><p>源模型和工作流数据已保留。生成 Actor bundle 后，这里会自动显示真实结果。</p></div>
@@ -371,7 +411,42 @@ function App() {
                 </>
               )}
 
-              {activeStep !== "hair" && (
+              {activeStep === "tops" && (
+                <>
+                  <section className="inspector-section parameter-panel">
+                    <div className="section-heading"><div><p className="eyebrow">MATERIAL RECIPE</p><h3>上衣材质切换</h3></div><span>几何锁定</span></div>
+                    <label className="field-label">基础配方
+                      <select value={garmentMaterial.recipeId} onChange={(event) => chooseGarmentRecipe(event.target.value)}>
+                        {registry.garment_materials.recipes.map((recipe) => <option key={recipe.id} value={recipe.id}>{recipe.label}</option>)}
+                      </select>
+                    </label>
+                    <label className="field-label color-field">主色
+                      <span><input type="color" value={garmentMaterial.baseColor} onChange={(event) => setGarmentMaterial((current) => ({ ...current, baseColor: event.target.value }))} /><code>{garmentMaterial.baseColor}</code></span>
+                    </label>
+                    <label className="field-label">粗糙度 · {garmentMaterial.roughness.toFixed(2)}
+                      <input type="range" min={registry.garment_materials.parameter_limits.roughness[0]} max={registry.garment_materials.parameter_limits.roughness[1]} step="0.01" value={garmentMaterial.roughness} onChange={(event) => setGarmentMaterial((current) => ({ ...current, roughness: Number(event.target.value) }))} />
+                    </label>
+                    <label className="field-label">纹样强度 · {garmentMaterial.patternStrength.toFixed(2)}
+                      <input type="range" min={registry.garment_materials.parameter_limits.pattern_strength[0]} max={registry.garment_materials.parameter_limits.pattern_strength[1]} step="0.01" value={garmentMaterial.patternStrength} onChange={(event) => setGarmentMaterial((current) => ({ ...current, patternStrength: Number(event.target.value) }))} />
+                    </label>
+                    <div className="capability-note"><strong>只改材质，不改衣服尺寸</strong><p>颜色、布料响应和程序纹样会立即进入 Three.js 预览；导出的同一配方可交给 Blender 权威渲染。</p></div>
+                    <button type="button" className="console-primary" onClick={() => downloadJson("garment-material-render-request.json", materialRenderRequest(registry.garment_materials, garmentMaterial))}>导出 Blender 渲染请求</button>
+                  </section>
+                  <section className="inspector-section equipment-brief-panel">
+                    <div className="section-heading"><div><p className="eyebrow">EQUIPMENT BRIEF</p><h3>装备简报编译器</h3></div><span>本地确定性</span></div>
+                    <label className="field-label">自然语言/语音转写
+                      <textarea rows={3} value={equipmentPrompt} onChange={(event) => setEquipmentPrompt(event.target.value)} />
+                    </label>
+                    <button type="button" className="console-primary" onClick={compileBrief}>拆解为 GUI 作业</button>
+                    <div className="brief-tags">{equipmentBrief.style_tags.map((tag) => <span key={tag}>{tag}</span>)}</div>
+                    <div className="brief-jobs">{equipmentBrief.jobs.map((job) => <article key={job.id} className={`job-${job.status}`}><div><strong>{job.label}</strong><span>{job.executor}</span></div><p>{job.reason}</p></article>)}</div>
+                    <div className="capability-note"><strong>{equipmentBrief.jobs.filter((job) => job.status === "ready").length} 项可直接执行 · {equipmentBrief.jobs.filter((job) => job.status === "requires_asset").length} 项需要新资产</strong><p>离线模型可补全标签和候选方案，但不能把“新几何”偷偷降级成换色。</p></div>
+                    <button type="button" className="console-primary" onClick={() => downloadJson("equipment-brief.json", equipmentBrief)}>导出装备 BOM / 作业图</button>
+                  </section>
+                </>
+              )}
+
+              {activeStep !== "hair" && activeStep !== "tops" && (
                 <section className="inspector-section parameter-panel">
                   <div className="section-heading"><div><p className="eyebrow">PARAMETERS</p><h3>参数与随机化</h3></div><span>合同阶段</span></div>
                   <div className="capability-note"><strong>当前使用固定里程碑</strong><p>{isAssetStep(activeStep) ? "本轮先把预览和审查入口做可信；参数 Schema 将在 Blender 作业桥接前逐类定义。" : "结构资产目前只有一套真实选项，不显示虚假的第二模型、骨骼或动作。"}</p></div>

@@ -35,6 +35,7 @@
     "garment_sim": "simulation/garment_sim.obj",
     "panel_membership": "simulation/panel_membership.json",
     "actor_transfer_blend": "output/actor_transfer.blend",
+    "actor_pose_corrective_review_blend": "output/actor_pose_corrective_v8_review.blend",
     "four_direction_review": "review/walk_4way_32frames.gif"
   },
   "files": [
@@ -62,9 +63,14 @@
     {"path": "review/walk_4way_32frames.gif", "bytes": 244030, "sha256": "CF25D41E63BDBE84EC5EAB237ABEECE50ABC4E061FE27B8F7D35DDA086B4810C"},
     {"path": "simulation/garment_boxmesh.obj", "bytes": 2535677, "sha256": "B3D6A58801A4189DF932787B120DBCFB1B7B3E23DD2ACF0F8B2151E2961FD994"},
     {"path": "simulation/garment_sim.obj", "bytes": 2757993, "sha256": "0D7DE9395900F2162E5FE570BDC84EA4A6884688DFB2865F8BC036657C6E6602"},
-    {"path": "simulation/panel_membership.json", "bytes": 569010, "sha256": "445138D2B169CE70E636EDE3AC5BE42BC891483CBB81135183224AB1BAB95ABC"},
-    {"path": "simulation/panel_membership_initial.json", "bytes": 569014, "sha256": "6195412F71C01E482219F255852594EF9E03FDF139D9314C099D939004DEFE97"},
-    {"path": "simulation/sim_props.yaml", "bytes": 2721, "sha256": "E1BA032D94FEF2B2FBFACF2FA3A55F209A10AC823EF847D04C400E1C368A3D25"}
+    {"path": "simulation/panel_membership.json", "bytes": 569010, "sha256": "665FBDE086ED1E80093E1D7552894147C847B03C43F35CB28369DD4B4CC90811"},
+    {"path": "simulation/panel_membership_initial.json", "bytes": 569014, "sha256": "093084D79837EDE99653924AF91382B96B9063391C0CB4C4A114A8643C2A0244"},
+    {"path": "simulation/sim_props.yaml", "bytes": 2721, "sha256": "E1BA032D94FEF2B2FBFACF2FA3A55F209A10AC823EF847D04C400E1C368A3D25"},
+    {"path": "materials/material_recipes.json", "bytes": 2017, "sha256": "DE0BA5536F7CE1D8D08CBC5034C7D9A89242C01C18135C37AE342844C1FEE709"},
+    {"path": "output/actor_pose_corrective_v8_review.blend", "bytes": 17241625, "sha256": "55B00EE569F5D73F7B60A6C6820BE5541427E8337EE3355E73B076F5FF0D2975"},
+    {"path": "output/actor_pose_corrective_v8_stage1_report.json", "bytes": 2716, "sha256": "2B44ADAE80F0DCC559B3B418E16DBF5DBF31FDA7B2BB3618605EECE2F261B335"},
+    {"path": "output/actor_pose_corrective_v8_stage2_report.json", "bytes": 3712, "sha256": "D64C1639123F47067634BCF5AD93CFC87CC657D666D1C4AFE16A777C0B048EC7"},
+    {"path": "review/walk_3way_v8_213frames.gif", "bytes": 2518805, "sha256": "5F42414D638DB21465E48BB9F350CE15AA4A0863AB7FFAC9F6068008256AEF49"}
   ],
   "omitted_regenerable_outputs": [
     "32 individual PNG animation frames",
