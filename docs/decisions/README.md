@@ -21,3 +21,4 @@ ADR 用于记录影响多个功能、未来替换成本高或需要长期解释�
 | `0001-development-record-system.md` | `accepted` | 用功能文档、ADR、开发时间线、删除记录和 Git 共同构成追溯系统 |
 | `0002-asset-lifecycle-sync-policy.md` | `accepted` | 生成资产默认本地，只有根源、里程碑和发布内容显式同步 |
 | `0003-actor-native-garmentcode-authoring-contract.md` | `accepted` | 当前 Actor 参数和碰撞体驱动 GarmentCode，Blender 不替代最终几何 |
+| `0004-hair-parameterization-and-under-cap.md` | `proposed` | 采用 Actor 标准发套、有限区域参数化组件和完整 bundle 随机化 |

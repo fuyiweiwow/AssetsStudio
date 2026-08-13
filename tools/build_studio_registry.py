@@ -17,6 +17,23 @@ HAIR_RANDOM_POOL = ROOT / "milestones" / "hair" / "hair_random_pool_v1.json"
 HAIR_GALLERY_CATALOG = ROOT / "milestones" / "hair" / "hair_gallery_catalog_v1.json"
 HAIR_FIRST_BUNDLE_RECIPE = ROOT / "milestones" / "hair" / "first_bundle_recipe_v1.json"
 THUMBNAIL_OUTPUT = ROOT / "studio" / "public" / "generated" / "thumbnails"
+HAIR_CANDIDATE_PREVIEW_ROOT = ROOT / "studio" / "public" / "generated" / "hair-candidates" / "under-cap-v1"
+HAIR_SCALP_BASE_PREVIEW_ROOT = ROOT / "studio" / "public" / "generated" / "hair-candidates" / "seed04-scalp-base-v1"
+HAIR_WORKFLOW_PREVIEW_ROOT = ROOT / "studio" / "public" / "generated" / "hair-candidates" / "workflow-seed04-scalp-base-v1"
+HAIR_SCALP_VARIANTS = {
+    "conservative": {
+        "scalp_root": ROOT / "studio" / "public" / "generated" / "hair-candidates" / "seed04-scalp-conservative-v1",
+        "workflow_root": ROOT / "studio" / "public" / "generated" / "hair-candidates" / "workflow-seed04-scalp-conservative-v1",
+        "label": "Conservative · 刘海优先",
+        "description": "前额边界后缩，保护 seed_04 刘海轮廓；用于默认预览。",
+    },
+    "coverage": {
+        "scalp_root": ROOT / "studio" / "public" / "generated" / "hair-candidates" / "seed04-scalp-coverage-v1",
+        "workflow_root": ROOT / "studio" / "public" / "generated" / "hair-candidates" / "workflow-seed04-scalp-coverage-v1",
+        "label": "Coverage · 覆盖优先",
+        "description": "扩大头顶与前侧 coverage，用于检查裂缝上限，不作为默认刘海方案。",
+    },
+}
 
 
 THUMBNAIL_SOURCES = {
@@ -141,6 +158,73 @@ def main() -> int:
         raise RuntimeError("unexpected hair random pool schema")
     if hair_galleries.get("schema") != "assetslab_hair_gallery_catalog_v1":
         raise RuntimeError("unexpected hair gallery catalog schema")
+    candidate_model = HAIR_CANDIDATE_PREVIEW_ROOT / "actor-under-cap-v1.glb"
+    candidate_manifest = HAIR_CANDIDATE_PREVIEW_ROOT / "actor-under-cap-v1.manifest.json"
+    candidate_previews = []
+    scalp_model = HAIR_SCALP_BASE_PREVIEW_ROOT / "actor-seed04-scalp-base-v1.glb"
+    scalp_manifest = HAIR_SCALP_BASE_PREVIEW_ROOT / "actor-seed04-scalp-base-v1.manifest.json"
+    if scalp_model.is_file() and scalp_manifest.is_file():
+        candidate_previews.append({
+            "id": "hair_seed04_scalp_base_v1",
+            "label": "seed_04 专用 scalp base",
+            "status": "candidate",
+            "model_url": "/generated/hair-candidates/seed04-scalp-base-v1/actor-seed04-scalp-base-v1.glb",
+            "manifest_url": "/generated/hair-candidates/seed04-scalp-base-v1/actor-seed04-scalp-base-v1.manifest.json",
+            "description": "seed_04 专用 coverage layer：从 Actor 头部连续表面派生，用于遮挡外层发束之间的头皮裂缝。",
+            "kind": "under_cap",
+        })
+    if candidate_model.is_file() and candidate_manifest.is_file():
+        candidate_previews.append({
+            "id": "hair_under_cap_v1",
+            "label": "Phase 1 标准发套候选",
+            "status": "candidate",
+            "model_url": "/generated/hair-candidates/under-cap-v1/actor-under-cap-v1.glb",
+            "manifest_url": "/generated/hair-candidates/under-cap-v1/actor-under-cap-v1.manifest.json",
+            "description": "Actor 派生 under-cap；仅用于网页确认，不替换正式发型 Bundle。",
+            "kind": "under_cap",
+        })
+    workflow_model = HAIR_WORKFLOW_PREVIEW_ROOT / "actor-hair-workflow-v2.glb"
+    workflow_manifest = HAIR_WORKFLOW_PREVIEW_ROOT / "actor-hair-workflow-v2.manifest.json"
+    if workflow_model.is_file() and workflow_manifest.is_file():
+        candidate_previews.append({
+            "id": "hair_workflow_seed04_scalp_base_v1",
+            "label": "seed_04 + 专用 scalp base",
+            "status": "candidate",
+            "model_url": "/generated/hair-candidates/workflow-seed04-scalp-base-v1/actor-hair-workflow-v2.glb",
+            "manifest_url": "/generated/hair-candidates/workflow-seed04-scalp-base-v1/actor-hair-workflow-v2.manifest.json",
+            "description": "节点组合候选：正式 seed_04 发型与专用 scalp base 同时绑定到 Actor 头骨。",
+            "kind": "assembly",
+        })
+
+    for variant, metadata in HAIR_SCALP_VARIANTS.items():
+        scalp_root = metadata["scalp_root"]
+        scalp_model = scalp_root / "actor-seed04-scalp-base-v1.glb"
+        scalp_manifest = scalp_root / "actor-seed04-scalp-base-v1.manifest.json"
+        if scalp_model.is_file() and scalp_manifest.is_file():
+            candidate_previews.append({
+                "id": f"hair_seed04_scalp_{variant}_v1",
+                "label": metadata["label"],
+                "status": "candidate",
+                "model_url": f"/generated/hair-candidates/seed04-scalp-{variant}-v1/actor-seed04-scalp-base-v1.glb",
+                "manifest_url": f"/generated/hair-candidates/seed04-scalp-{variant}-v1/actor-seed04-scalp-base-v1.manifest.json",
+                "description": metadata["description"],
+                "kind": "under_cap",
+                "variant": variant,
+            })
+        workflow_root = metadata["workflow_root"]
+        workflow_model = workflow_root / "actor-hair-workflow-v2.glb"
+        workflow_manifest = workflow_root / "actor-hair-workflow-v2.manifest.json"
+        if workflow_model.is_file() and workflow_manifest.is_file():
+            candidate_previews.append({
+                "id": f"hair_workflow_seed04_scalp_{variant}_v1",
+                "label": f"seed_04 + {metadata['label']}",
+                "status": "candidate",
+                "model_url": f"/generated/hair-candidates/workflow-seed04-scalp-{variant}-v1/actor-hair-workflow-v2.glb",
+                "manifest_url": f"/generated/hair-candidates/workflow-seed04-scalp-{variant}-v1/actor-hair-workflow-v2.manifest.json",
+                "description": f"节点组合候选：正式 seed_04 发型与 {metadata['label']} 同时绑定到 Actor 头骨。",
+                "kind": "assembly",
+                "variant": variant,
+            })
 
     payload = {
         "schema": "assetsstudio_asset_registry_v1",
@@ -173,6 +257,7 @@ def main() -> int:
             ],
             "random_pool": hair_pool.get("components", []),
             "galleries": hair_galleries.get("galleries", []),
+            "candidate_previews": candidate_previews,
         },
     }
     OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)

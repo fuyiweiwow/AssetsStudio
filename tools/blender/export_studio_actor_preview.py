@@ -35,6 +35,13 @@ def cli_args() -> argparse.Namespace:
     parser.add_argument("--top-blend", required=True, type=Path)
     parser.add_argument("--pants-blend", required=True, type=Path)
     parser.add_argument("--hair-blend", required=True, type=Path)
+    parser.add_argument("--hair-object", default="HairCandidate_Blend")
+    parser.add_argument("--hair-bundle-id", default="female_chloe_seed_04_bangs04_v2")
+    parser.add_argument("--hair-status", default="provisional_user_review_required")
+    parser.add_argument("--hair-components", nargs="+", default=None)
+    parser.add_argument("--hair-extra-blend", type=Path, default=None)
+    parser.add_argument("--hair-extra-object", default="")
+    parser.add_argument("--hair-extra-name", default="HairUnderCap_Candidate")
     parser.add_argument("--hair-recipe", required=True, type=Path)
     parser.add_argument("--output", required=True, type=Path)
     return parser.parse_args(argv)
@@ -178,6 +185,7 @@ def convert_eye_to_head_skinned_mesh(
 def convert_hair_to_head_skinned_mesh(
     obj: bpy.types.Object,
     armature: bpy.types.Object,
+    bundle_id: str = "female_chloe_seed_04_bangs04_v2",
 ) -> None:
     """Express the fitted hair as one Actor Head Bone skin for glTF."""
 
@@ -189,7 +197,7 @@ def convert_hair_to_head_skinned_mesh(
     modifier = next(modifier for modifier in obj.modifiers if modifier.type == "ARMATURE")
     modifier.name = "AssetsStudioHairHeadSkin"
     obj["assetsstudio_web_binding"] = "skinned_cc_base_head_v1"
-    obj["assetsstudio_bundle_id"] = "female_chloe_seed_04_bangs04"
+    obj["assetsstudio_bundle_id"] = bundle_id
 
 
 def create_blink_state_objects(eye: bpy.types.Object) -> list[bpy.types.Object]:
@@ -237,12 +245,16 @@ def main() -> int:
     top_blend = options.top_blend.resolve()
     pants_blend = options.pants_blend.resolve()
     hair_blend = options.hair_blend.resolve()
+    hair_extra_blend = options.hair_extra_blend.resolve() if options.hair_extra_blend else None
     hair_recipe_path = options.hair_recipe.resolve()
     hair_recipe = json.loads(hair_recipe_path.read_text(encoding="utf-8"))
     if hair_recipe.get("schema") != "assetsstudio_hair_bundle_recipe_v1":
         raise RuntimeError("unexpected hair bundle recipe schema")
     output = options.output.resolve()
-    for source in (base_blend, face_blend, top_blend, pants_blend, hair_blend):
+    sources = (base_blend, face_blend, top_blend, pants_blend, hair_blend)
+    if hair_extra_blend is not None:
+        sources = (*sources, hair_extra_blend)
+    for source in sources:
         if not source.is_file():
             raise FileNotFoundError(source)
 
@@ -265,11 +277,23 @@ def main() -> int:
         eye_objects.extend(create_blink_state_objects(eye))
     top = append_object(top_blend, COMPONENT_OBJECTS["top"][0])
     pants = append_object(pants_blend, COMPONENT_OBJECTS["pants"][0])
-    hair = append_object(hair_blend, "HairCandidate_Blend")
-    hair.name = "HairBundle_Female_Seed04"
+    hair = append_object(hair_blend, options.hair_object)
+    hair.name = "HairBundle_Female_Seed04" if options.hair_object == "HairCandidate_Blend" else "HairUnderCap_Candidate"
     retarget_armature_modifier(top, armature)
     retarget_armature_modifier(pants, armature)
-    convert_hair_to_head_skinned_mesh(hair, armature)
+    convert_hair_to_head_skinned_mesh(hair, armature, options.hair_bundle_id)
+    extra_hair: list[bpy.types.Object] = []
+    if hair_extra_blend is not None:
+        if not options.hair_extra_object:
+            raise RuntimeError("--hair-extra-object is required with --hair-extra-blend")
+        extra = append_object(hair_extra_blend, options.hair_extra_object)
+        extra.name = options.hair_extra_name
+        convert_hair_to_head_skinned_mesh(extra, armature, options.hair_bundle_id)
+        if hair.data.materials:
+            extra.data.materials.clear()
+            for material in hair.data.materials:
+                extra.data.materials.append(material)
+        extra_hair.append(extra)
 
     shoe_names = sorted(
         obj.name
@@ -282,7 +306,7 @@ def main() -> int:
         **COMPONENT_OBJECTS,
         "face": [obj.name for obj in eye_objects] + COMPONENT_OBJECTS["face"][2:],
         "shoes": shoe_names,
-        "hair": [hair.name],
+        "hair": [hair.name, *[obj.name for obj in extra_hair]],
     }
 
     selected: list[bpy.types.Object] = [armature]
@@ -341,6 +365,7 @@ def main() -> int:
             {"path": str(top_blend.relative_to(repository_root)), "sha256": sha256(top_blend)},
             {"path": str(pants_blend.relative_to(repository_root)), "sha256": sha256(pants_blend)},
             {"path": str(hair_blend.relative_to(repository_root)), "sha256": sha256(hair_blend)},
+            *([{"path": str(hair_extra_blend.relative_to(repository_root)), "sha256": sha256(hair_extra_blend)}] if hair_extra_blend else []),
             {"path": str(hair_recipe_path.relative_to(repository_root)), "sha256": sha256(hair_recipe_path)},
         ],
         "output": {"path": output.name, "bytes": output.stat().st_size, "sha256": sha256(output)},
@@ -361,11 +386,11 @@ def main() -> int:
             "blink_schedule": ["open", "half", "closed", "half", "open", "open", "open", "open"],
         },
         "hair": {
-            "bundle_id": hair_recipe["id"],
-            "components": hair_recipe["components"],
+            "bundle_id": options.hair_bundle_id,
+            "components": options.hair_components or hair_recipe["components"],
             "head_bone": hair_recipe["binding"]["bone"],
-            "repair": hair_recipe.get("repair"),
-            "status": "provisional_user_review_required",
+            "repair": hair_recipe.get("repair") if options.hair_object == "HairCandidate_Blend" else None,
+            "status": options.hair_status,
         },
         "known_limitations": {
             "hair": hair_recipe.get("known_issue"),

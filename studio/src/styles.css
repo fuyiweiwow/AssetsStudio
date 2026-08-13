@@ -198,6 +198,34 @@ dl { margin: 0; } dl div { padding: 8px 0; border-top: 1px solid #282f3f; } dt {
 .preview-toolbar-actions { display: flex; align-items: center; justify-content: flex-end; gap: 8px; flex-wrap: wrap; }
 .preview-subtitle { margin: 4px 0 0; color: #6f7b90; font-size: .59rem; }
 .mode-switcher button { padding: 6px 9px; }
+.candidate-preview-switcher { display: flex; gap: 6px; flex-wrap: wrap; margin: 8px 0; }
+.candidate-preview-switcher button { border: 1px solid #3b465b; border-radius: 8px; padding: 7px 9px; color: #9da9bc; background: #171d29; font-size: .64rem; cursor: pointer; }
+.candidate-preview-switcher button.active { color: #fff; border-color: #a36479; background: #302431; }
+.candidate-preview-switcher button:disabled { opacity: .45; cursor: not-allowed; }
+.variant-switcher { margin-top: 10px; }
+.hair-parameter-panel { display: grid; gap: 8px; margin: 9px 0; padding: 9px; border: 1px solid #303b51; border-radius: 10px; background: #111722; }
+.hair-parameter-row { display: grid; gap: 4px; }
+.hair-parameter-row label { display: flex; justify-content: space-between; color: #aab5c6; font-size: .59rem; }
+.hair-parameter-row output { color: #e4b4a1; font-variant-numeric: tabular-nums; }
+.hair-parameter-row input[type="range"] { width: 100%; accent-color: #c87579; }
+.hair-parameter-inputs { display: grid; grid-template-columns: minmax(0, 1fr) 54px; align-items: center; gap: 7px; }
+.hair-parameter-inputs input[type="number"] { width: 100%; box-sizing: border-box; border: 1px solid #3b465b; border-radius: 6px; padding: 4px 5px; color: #e7edf7; background: #171d29; font-size: .59rem; }
+.parameter-reset { justify-self: start; border: 1px solid #3b465b; border-radius: 7px; padding: 5px 8px; color: #9da9bc; background: #171d29; font-size: .59rem; cursor: pointer; }
+.parameter-reset:hover { color: #fff; border-color: #7a6171; }
+.parameter-inspect { justify-self: start; border: 1px solid #38475d; border-radius: 6px; padding: 4px 7px; color: #9db9cb; background: #16212c; font-size: .56rem; cursor: pointer; }
+.parameter-inspect:hover { color: #fff; border-color: #79a8bd; }
+.parameter-report { color: #74849b; font-size: .53rem; line-height: 1.35; }
+.parameter-report-warning { color: #d6a36a; }
+.candidate-preview-description { margin: 7px 0; color: #8792a6; font-size: .62rem; line-height: 1.45; }
+.hair-node-editor { display: grid; grid-template-columns: minmax(0, 1fr) 16px minmax(0, 1fr) 16px minmax(0, 1fr); align-items: center; gap: 4px; margin: 11px 0 8px; }
+.hair-node { min-width: 0; min-height: 84px; display: grid; gap: 3px; padding: 9px; border: 1px solid #354157; border-radius: 10px; text-align: left; background: #141a26; cursor: pointer; }
+.hair-node:hover { border-color: #7a6171; transform: translateY(-1px); }
+.hair-node.selected { border-color: #c87579; background: linear-gradient(145deg, #342633, #202536); box-shadow: inset 0 0 0 1px #c8757955; }
+.hair-node:disabled { opacity: .45; cursor: not-allowed; transform: none; }
+.hair-node strong { overflow: hidden; text-overflow: ellipsis; font-size: .66rem; white-space: nowrap; }
+.hair-node small { overflow: hidden; color: #7f8ca1; font-size: .53rem; text-overflow: ellipsis; white-space: nowrap; }
+.node-kicker { color: #bd8291; font-size: .48rem; font-weight: 800; letter-spacing: .1em; }
+.node-output .node-kicker { color: #7bbcaf; }.node-wire { color: #bc7180; font-size: 1rem; text-align: center; }.node-wire.wire-cap { color: #7bbcaf; }
 .collapse-preview-button, .expand-preview-button {
   border: 1px solid #52617a; border-radius: 9px; padding: 7px 10px;
   color: #c8d2e1; background: #202838; font-size: .65rem; cursor: pointer;

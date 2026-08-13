@@ -6,6 +6,7 @@ import { WorkflowRail, type WorkflowStepId } from "./components/WorkflowRail";
 import { drawHairRecipe, type HairRecipe } from "./lib/hair-recipe";
 import { getPreviewFocus } from "./lib/preview-focus";
 import { getPreviewState, type PreviewAvailability } from "./lib/preview-state";
+import type { HairPreviewParameterReport, HairPreviewParameters } from "./lib/scene-preparation";
 import { workflowAssets } from "./lib/workflow-assets";
 import {
   parseRegistry,
@@ -13,6 +14,7 @@ import {
   type AssetCategory,
   type AssetRecord,
   type HairGender,
+  type HairScalpVariant,
   type VisibilityGroup,
 } from "./lib/registry";
 
@@ -43,6 +45,7 @@ const EMPTY_VISIBILITY: VisibilityState = { hair: false, face: false, top: false
 
 type WorkspaceView = "workbench" | "review" | "baseline";
 type AssetPreviewMode = "isolated" | "actor";
+type HairPreviewTarget = "bundle" | "under_cap" | "assembly";
 
 interface PreviewManifest {
   schema: string;
@@ -63,6 +66,7 @@ function useLocalPreview(modelUrl: string, manifestUrl: string) {
     const controller = new AbortController();
     async function check() {
       setAvailability("checking");
+      setManifest(null);
       try {
         const response = await fetch(modelUrl, { method: "HEAD", cache: "no-store", signal: controller.signal });
         const contentType = response.headers.get("content-type") ?? "";
@@ -104,12 +108,25 @@ function App() {
   });
   const [hairGender, setHairGender] = useState<HairGender>("female");
   const [hairSeed, setHairSeed] = useState(104729);
+  const [hairPreviewTarget, setHairPreviewTarget] = useState<HairPreviewTarget>("bundle");
+  const [hairScalpVariant, setHairScalpVariant] = useState<HairScalpVariant>("conservative");
+  const [hairParameters, setHairParameters] = useState<HairPreviewParameters>({ scalpWidth: 1, frontRetraction: 0.04 });
+  const [hairParameterReport, setHairParameterReport] = useState<HairPreviewParameterReport>({ matchedMeshes: 0, xSpan: 0, zSpan: 0, zCenter: 0 });
   const [hairRecipe, setHairRecipe] = useState<HairRecipe>(() =>
     drawHairRecipe(registry.hair.random_pool, "female", 104729),
   );
+  const selectedHairCandidate = registry.hair.candidate_previews.find((preview) => preview.id === `hair_seed04_scalp_${hairScalpVariant}_v1`);
+  const selectedHairAssembly = registry.hair.candidate_previews.find((preview) => preview.id === `hair_workflow_seed04_scalp_${hairScalpVariant}_v1`);
+  const previewTarget = activeStep === "hair"
+    ? hairPreviewTarget === "under_cap" && selectedHairCandidate
+      ? selectedHairCandidate
+      : hairPreviewTarget === "assembly" && selectedHairAssembly
+        ? selectedHairAssembly
+        : registry.preview
+    : registry.preview;
   const { availability, setAvailability, manifest } = useLocalPreview(
-    registry.preview.model_url,
-    registry.preview.manifest_url,
+    previewTarget.model_url,
+    previewTarget.manifest_url,
   );
   const previewState = getPreviewState(availability);
 
@@ -172,7 +189,11 @@ function App() {
     ? "只检查模型装配、骨骼动画和网页显示，不在这里调整资产参数。"
     : workspaceView === "review"
       ? "显示所有当前选择，用于最终搭配检查。"
-      : "仅检查当前资产；不会改变正式里程碑。";
+      : activeStep === "hair" && hairPreviewTarget === "under_cap"
+        ? "seed_04 专用 scalp base；单独显示用于确认覆盖边界。"
+        : activeStep === "hair" && hairPreviewTarget === "assembly"
+          ? "节点组合候选：seed_04 发型与 Phase 1 发套已连接并共同预览。"
+        : "仅检查当前资产；不会改变正式里程碑。";
 
   const handleDuration = useCallback((nextDuration: number, name: string) => {
     setDuration(nextDuration);
@@ -200,6 +221,39 @@ function App() {
 
   function drawRecipe() {
     setHairRecipe(drawHairRecipe(registry.hair.random_pool, hairGender, hairSeed));
+  }
+
+  function selectHairPreviewTarget(target: HairPreviewTarget) {
+    if (target === "under_cap" && !selectedHairCandidate) return;
+    if (target === "assembly" && !selectedHairAssembly) return;
+    setHairPreviewTarget(target);
+    setWorkspaceView("workbench");
+    setActiveStep("hair");
+    setPreviewMode(target === "under_cap" ? "isolated" : "actor");
+    setView("front");
+    setTimeline(0);
+  }
+
+  function selectHairScalpVariant(variant: HairScalpVariant) {
+    setHairScalpVariant(variant);
+    setWorkspaceView("workbench");
+    setActiveStep("hair");
+    setPreviewMode(hairPreviewTarget === "under_cap" ? "isolated" : "actor");
+    setView("front");
+    setTimeline(0);
+  }
+
+  function resetHairParameters() {
+    setHairParameters({ scalpWidth: 1, frontRetraction: 0.04 });
+  }
+
+  function inspectHairParameter(parameter: "width" | "retraction") {
+    setHairPreviewTarget("under_cap");
+    setWorkspaceView("workbench");
+    setActiveStep("hair");
+    setPreviewMode("isolated");
+    setView(parameter === "width" ? "front" : "right");
+    setTimeline(0);
   }
 
   const hairGroups = registry.hair.component_groups.filter((group) => group.gender === hairGender);
@@ -295,7 +349,7 @@ function App() {
           {!workflowPreviewCollapsed && <div className="preview-frame">
             <div className="frame-corner corner-tl" /><div className="frame-corner corner-tr" /><div className="frame-corner corner-bl" /><div className="frame-corner corner-br" />
             {availability === "available" ? (
-              <ActorPreview modelUrl={registry.preview.model_url} view={view} playing={playing} normalizedTime={timeline} visibility={activeVisibility} showBody={showBody} focus={previewFocus} onTimeChange={handleTimeChange} onDuration={handleDuration} onModelError={() => setAvailability("error")} onOrbitStart={() => setView("free")} />
+              <ActorPreview key={previewTarget.model_url} modelUrl={previewTarget.model_url} view={view} playing={playing} normalizedTime={timeline} visibility={activeVisibility} showBody={showBody} focus={previewFocus} hairParameters={hairParameters} hairDebugMaterial={activeStep === "hair" && hairPreviewTarget === "under_cap" && previewMode === "isolated"} onHairParameterReport={setHairParameterReport} onTimeChange={handleTimeChange} onDuration={handleDuration} onModelError={() => setAvailability("error")} onOrbitStart={() => setView("free")} />
             ) : <PreviewFallback label={previewState.title} />}
             {workspaceView === "workbench" && selectedPreviewMissing && (
               <div className="preview-empty-card"><strong>当前资产尚未装入交互 GLB</strong><p>源模型和工作流数据已保留。生成 Actor bundle 后，这里会自动显示真实结果。</p></div>
@@ -367,6 +421,40 @@ function App() {
                     <div className="recipe-components">{hairRecipe.components.map((item) => <div key={item.component_id}><span>{item.role}</span><strong>{item.object}</strong></div>)}</div>
                     <div className="capability-note"><strong>首套固定 Bundle 已装入</strong><p>当前 3D 预览固定显示 seed_04；这里抽取的其他配方仍只生成可追溯选择，不会伪装成已生成模型。</p></div>
                     <button type="button" className="console-primary disabled-action" disabled>生成 Actor 预览 · 待作业桥接</button>
+                  </section>
+                  <section className="inspector-section parameter-panel">
+                    <div className="section-heading"><div><p className="eyebrow">HAIR WORKFLOW PILOT</p><h3>发型 · 发套节点编辑</h3></div><span>{selectedHairAssembly ? "可组合预览" : "候选阶段"}</span></div>
+                    <p className="candidate-preview-description">先选择输入节点，再由组合节点决定 Studio 预览目标。后续参数会挂在节点上。</p>
+                    <div className="hair-node-editor" aria-label="发型节点工作流">
+                      <button type="button" className={`hair-node node-input ${hairPreviewTarget === "bundle" || hairPreviewTarget === "assembly" ? "selected" : ""}`} onClick={() => selectHairPreviewTarget("bundle")}>
+                        <span className="node-kicker">HAIR STYLE</span><strong>seed_04 发型</strong><small>Chloe bangs / side / back</small>
+                      </button>
+                      <span className="node-wire wire-style" aria-hidden="true">→</span>
+                      <button type="button" className={`hair-node node-input ${hairPreviewTarget === "under_cap" || hairPreviewTarget === "assembly" ? "selected" : ""}`} onClick={() => selectHairPreviewTarget("under_cap")}>
+                        <span className="node-kicker">SCALP BASE</span><strong>seed_04 专用发套</strong><small>连续 Actor 表面 · candidate</small>
+                      </button>
+                      <span className="node-wire wire-cap" aria-hidden="true">→</span>
+                      <button type="button" className={`hair-node node-output ${hairPreviewTarget === "assembly" ? "selected" : ""}`} disabled={!selectedHairAssembly} onClick={() => selectHairPreviewTarget("assembly")}>
+                        <span className="node-kicker">ASSEMBLY</span><strong>Hair Preview</strong><small>{selectedHairAssembly ? "2 个节点已连接" : "组合 GLB 待生成"}</small>
+                      </button>
+                    </div>
+                    <div className="candidate-preview-switcher variant-switcher" aria-label="scalp base variant">
+                      <button type="button" className={hairScalpVariant === "conservative" ? "active" : ""} onClick={() => selectHairScalpVariant("conservative")}>Conservative · 刘海优先</button>
+                      <button type="button" className={hairScalpVariant === "coverage" ? "active" : ""} onClick={() => selectHairScalpVariant("coverage")}>Coverage · 覆盖优先</button>
+                    </div>
+                    <div className="hair-parameter-panel" aria-label="scalp base parameters">
+                      <div className="hair-parameter-row"><label htmlFor="scalp-width">覆盖宽度 <output>{hairParameters.scalpWidth.toFixed(2)}</output></label><div className="hair-parameter-inputs"><input id="scalp-width" type="range" min="0.94" max="1.10" step="0.01" value={hairParameters.scalpWidth} onChange={(event) => setHairParameters((current) => ({ ...current, scalpWidth: Number(event.target.value) }))} /><input aria-label="覆盖宽度数值" type="number" min="0.94" max="1.10" step="0.01" value={hairParameters.scalpWidth} onChange={(event) => setHairParameters((current) => ({ ...current, scalpWidth: Math.min(1.10, Math.max(0.94, Number(event.target.value) || 1)) }))} /></div><button type="button" className="parameter-inspect" onClick={() => inspectHairParameter("width")}>正面检查宽度</button></div>
+                      <div className="hair-parameter-row"><label htmlFor="front-retraction">前缘回缩 <output>{hairParameters.frontRetraction.toFixed(2)}</output></label><div className="hair-parameter-inputs"><input id="front-retraction" type="range" min="0" max="0.16" step="0.01" value={hairParameters.frontRetraction} onChange={(event) => setHairParameters((current) => ({ ...current, frontRetraction: Number(event.target.value) }))} /><input aria-label="前缘回缩数值" type="number" min="0" max="0.16" step="0.01" value={hairParameters.frontRetraction} onChange={(event) => setHairParameters((current) => ({ ...current, frontRetraction: Math.min(0.16, Math.max(0, Number(event.target.value) || 0)) }))} /></div><button type="button" className="parameter-inspect" onClick={() => inspectHairParameter("retraction")}>右侧检查回缩</button></div>
+                      <button type="button" className="parameter-reset" onClick={resetHairParameters}>重置发套参数</button>
+                      <small className="parameter-report">命中发套网格：{hairParameterReport.matchedMeshes} · X跨度 {hairParameterReport.xSpan.toFixed(3)} · Z跨度 {hairParameterReport.zSpan.toFixed(3)} · Z中心 {hairParameterReport.zCenter.toFixed(3)}</small>
+                      {hairParameterReport.matchedMeshes === 0 && <small className="parameter-report parameter-report-warning">当前预览目标不是发套；请点击“只看发套”或“预览连接结果”后调整参数。</small>}
+                    </div>
+                    <div className="candidate-preview-switcher">
+                      <button type="button" className={hairPreviewTarget === "bundle" ? "active" : ""} onClick={() => selectHairPreviewTarget("bundle")}>只看发型</button>
+                      <button type="button" className={hairPreviewTarget === "under_cap" ? "active" : ""} disabled={!selectedHairCandidate} onClick={() => selectHairPreviewTarget("under_cap")}>只看发套</button>
+                      <button type="button" className={hairPreviewTarget === "assembly" ? "active" : ""} disabled={!selectedHairAssembly} onClick={() => selectHairPreviewTarget("assembly")}>预览连接结果</button>
+                    </div>
+                    <div className="capability-note"><strong>当前节点结果：{hairPreviewTarget === "assembly" ? "seed_04 + 专用 scalp base" : hairPreviewTarget === "under_cap" ? "seed_04 scalp base（单独）" : "seed_04 发型（单独）"}</strong><p>{hairPreviewTarget === "under_cap" ? "单独模式用于检查 coverage layer；组合模式用于确认它是否自然填补外层发束之间的头皮裂缝。" : "可在正、右、背、左视角和 Walk 中检查；候选不会自动进入随机池。"}</p></div>
                   </section>
                 </>
               )}

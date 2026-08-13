@@ -4,7 +4,7 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import type { PreviewFocus } from "../lib/preview-focus";
 import type { VisibilityGroup } from "../lib/registry";
-import { applyPreviewVisibility, blinkStateAt, preparePreviewScene, type BlinkState } from "../lib/scene-preparation";
+import { applyHairPreviewDebugMaterial, applyHairPreviewParameters, applyPreviewVisibility, blinkStateAt, preparePreviewScene, type BlinkState, type HairPreviewParameterReport, type HairPreviewParameters } from "../lib/scene-preparation";
 
 export type CameraView = "front" | "right" | "back" | "left" | "free";
 export type VisibilityState = Record<VisibilityGroup, boolean>;
@@ -17,6 +17,9 @@ interface ActorPreviewProps {
   visibility: VisibilityState;
   showBody: boolean;
   focus: PreviewFocus;
+  hairParameters: HairPreviewParameters;
+  hairDebugMaterial: boolean;
+  onHairParameterReport: (report: HairPreviewParameterReport) => void;
   onTimeChange: (value: number) => void;
   onDuration: (duration: number, animationName: string) => void;
   onModelError: () => void;
@@ -107,6 +110,9 @@ function ActorModel({
   normalizedTime,
   visibility,
   showBody,
+  hairParameters,
+  hairDebugMaterial,
+  onHairParameterReport,
   onTimeChange,
   onDuration,
 }: Omit<ActorPreviewProps, "view" | "focus" | "onModelError" | "onOrbitStart">) {
@@ -123,6 +129,15 @@ function ActorModel({
   useEffect(() => {
     preparePreviewScene(scene);
   }, [scene]);
+
+  useEffect(() => {
+    applyHairPreviewParameters(scene, hairParameters);
+    onHairParameterReport(scene.userData.assetsstudio_hair_parameter_report as HairPreviewParameterReport);
+  }, [hairParameters, onHairParameterReport, scene]);
+
+  useEffect(() => {
+    applyHairPreviewDebugMaterial(scene, hairDebugMaterial);
+  }, [hairDebugMaterial, scene]);
 
   useEffect(() => {
     applyPreviewVisibility(scene, visibility, currentBlink.current, showBody);
