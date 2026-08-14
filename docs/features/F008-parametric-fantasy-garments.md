@@ -178,3 +178,23 @@ GarmentCode-only tuning loop. For the project's 2D target, the next step is a
 Blender-bound silhouette/render layer driven by the accepted recipe parameters;
 it must remain clearly marked as a 2D prototype and cannot promote the
 non-equilibrated simulation OBJ into a formal garment asset.
+
+## 2D silhouette prototype update (2026-08-14)
+
+The first recipe-driven Blender silhouette prototype is now executable through
+`tools/blender/build_parametric_robe_2d_prototype.py`. It consumes the accepted
+`mage_robe_body_v3` recipe and the current Actor blend, then creates a rest-pose
+robe body plus two independent long-sleeve tubes. The body opening is derived
+from the Actor shoulder bones rather than the full Actor bounding box, so the
+sleeves remain visible in the front silhouette. `length_factor`,
+`body_width_factor`, `hem_flare`, `robe_lower_flare`, and
+`sleeve_length_factor` affect the generated shape.
+
+The script emits four static review frames and a Blender candidate under
+`workspace/garments/mage_robe_body_2d_proto_v1/`. Its manifest is explicitly
+`2d_silhouette_only`, `review_required`, and
+`not_simulated; do_not_promote_to_formal_garment`. This is the first practical
+workflow position for the current experiment: after Recipe definition and
+before hood/decorative components, animation transfer, Gallery, or milestones.
+The current review gate is visual four-direction readability; it is not a
+physics or Actor-transfer gate.
