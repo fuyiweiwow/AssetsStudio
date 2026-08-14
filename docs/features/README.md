@@ -11,5 +11,6 @@
 | `F005` | 工作流作用域仓库与可折叠预览 | `in_progress` | [`F005-workflow-scoped-library-collapsible-preview.md`](F005-workflow-scoped-library-collapsible-preview.md) |
 | `F006` | Actor 专用 GarmentCode 短袖 | `provisional` | [`F006-actor-garmentcode-short-sleeve.md`](F006-actor-garmentcode-short-sleeve.md) |
 | `F007` | 发型参数化与标准发套 | `in_progress` | [`F007-hair-parameterization-and-under-cap.md`](F007-hair-parameterization-and-under-cap.md) |
+| `F008` | 面向 2D 输出的参数化幻想服装 | `proposed` | [`F008-parametric-fantasy-garments.md`](F008-parametric-fantasy-garments.md) |
 
 允许状态：`proposed`、`in_progress`、`provisional`、`accepted`、`paused`、`retired`。

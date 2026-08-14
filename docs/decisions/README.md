@@ -22,3 +22,4 @@ ADR 用于记录影响多个功能、未来替换成本高或需要长期解释�
 | `0002-asset-lifecycle-sync-policy.md` | `accepted` | 生成资产默认本地，只有根源、里程碑和发布内容显式同步 |
 | `0003-actor-native-garmentcode-authoring-contract.md` | `accepted` | 当前 Actor 参数和碰撞体驱动 GarmentCode，Blender 不替代最终几何 |
 | `0004-hair-parameterization-and-under-cap.md` | `proposed` | 采用 Actor 标准发套、有限区域参数化组件和完整 bundle 随机化 |
+| `0005-parametric-fantasy-garment-pipeline.md` | `proposed` | 主体衣片参数化、Blender 基础组件、Studio Recipe 和可选 ComfyUI 设计旁路 |

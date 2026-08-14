@@ -36,6 +36,7 @@
 | 2026-08-14 | fix/preview | F007/hair | 修正 scalp base 前缘回缩的 Blender→Three.js 深度轴，并增加正面宽度/右侧回缩快捷检查 | 原实现把深度变化写到 Three.js 高度轴，状态变化但视觉不明显；修正为 -Z 后侧视可见，参数验收不再依赖错误的正面组合截图 |
 | 2026-08-14 | validation/fix | F007/Studio | 将 scalp base 参数改为直接 position buffer 变形，增加命中网格、X/Z 跨度、Z 中心报告和单独检查高对比材质 | 复核确认宽度与回缩均作用于真实 GLB 网格；宽度 0.94→1.10 改变 X 跨度，回缩 0→0.16 改变 Z 中心，解决“数值变化但预览看不出”的验收歧义 |
 | 2026-08-14 | metadata | repository | 将 `docs/ASSET_STATUS.json` 的来源快照更新为当前 AssetsStudio `main` 基线 | 修正迁移遗留的 AssetsLab `clothes_test` 来源，避免机器注册表误报资产来源 |
+| 2026-08-14 | design | F008/garments | 建立面向 2D 输出的参数化幻想服装设计与 ADR-0005 | 以免费/可自部署工具为主，GarmentCode 负责主体衣片，Blender 参数化基础组件，ComfyUI 仅作可选设计辅助；下一步先验证单一主体长袍 archetype |
 
 ## 记录规则
 
