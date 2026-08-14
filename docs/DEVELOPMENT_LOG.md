@@ -35,6 +35,7 @@
 | 2026-08-14 | diagnosis/implementation | F007/hair | 复核完整 Studio 取景后取消对 front_bangs 的错误修复，并将 scalp base 覆盖宽度/前缘回缩做成可逆 Studio 参数 | Blender 与完整 Studio 预览均确认刘海轮廓连续；参数 1.08 / 0.12 和重置流程已通过交互验证，外层发型不受影响，下一步可讨论哪些参数值得回写 Blender |
 | 2026-08-14 | fix/preview | F007/hair | 修正 scalp base 前缘回缩的 Blender→Three.js 深度轴，并增加正面宽度/右侧回缩快捷检查 | 原实现把深度变化写到 Three.js 高度轴，状态变化但视觉不明显；修正为 -Z 后侧视可见，参数验收不再依赖错误的正面组合截图 |
 | 2026-08-14 | validation/fix | F007/Studio | 将 scalp base 参数改为直接 position buffer 变形，增加命中网格、X/Z 跨度、Z 中心报告和单独检查高对比材质 | 复核确认宽度与回缩均作用于真实 GLB 网格；宽度 0.94→1.10 改变 X 跨度，回缩 0→0.16 改变 Z 中心，解决“数值变化但预览看不出”的验收歧义 |
+| 2026-08-14 | metadata | repository | 将 `docs/ASSET_STATUS.json` 的来源快照更新为当前 AssetsStudio `main` 基线 | 修正迁移遗留的 AssetsLab `clothes_test` 来源，避免机器注册表误报资产来源 |
 
 ## 记录规则
 

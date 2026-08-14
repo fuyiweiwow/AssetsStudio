@@ -1,10 +1,10 @@
 {
   "schema": "assetsstudio_asset_status_v1",
-  "updated": "2026-08-13",
+  "updated": "2026-08-14",
   "source": {
-    "repository": "git@github.com:fuyiweiwow/AssetsLab.git",
-    "branch": "clothes_test",
-    "commit": "1745bcf"
+    "repository": "https://github.com/fuyiweiwow/AssetsStudio.git",
+    "branch": "main",
+    "commit": "057a147"
   },
   "milestones": [
     {
