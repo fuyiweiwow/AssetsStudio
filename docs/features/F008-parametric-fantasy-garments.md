@@ -159,3 +159,12 @@ and defines sleeve length as a fraction of the current Actor shoulder-to-wrist
 measurement. Pattern generation and Actor/dependency guards pass. A ten-frame
 simulation probe reaches cloth stepping and renders a longer-sleeve silhouette,
 but it is only a visual probe and is not a static-equilibrium acceptance.
+## Static simulation gate update (2026-08-14)
+
+The v2 full-resolution probe passes BoxMesh creation, collision-part
+initialization, and cloth stepping, but reaches only frame 47 before the
+240-second CPU simulation limit. Its result is recorded as
+`simulation_timeout`, not as a static-equilibrium pass. A 0.75 resolution
+probe returns the known `right_btorso` degenerate-triangle error. The v2
+candidate therefore remains outside Actor transfer, four-direction review,
+Gallery, randomization, and milestones.
