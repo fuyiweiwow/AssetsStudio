@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://assetsstudio.local/schemas/garment-recipe.v1.schema.json",
+  "title": "AssetsStudio garment recipe v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "recipe_id", "asset_type", "archetype", "seed", "parameters", "materials"],
+  "properties": {
+    "schema": { "const": "assetsstudio_garment_recipe_v1" },
+    "recipe_id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9_-]*$" },
+    "asset_type": { "const": "humanoid.garment" },
+    "archetype": { "type": "string", "minLength": 1 },
+    "seed": { "type": "integer", "minimum": 0 },
+    "parameters": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["length_factor", "skirt_length_factor", "body_width_factor", "hem_flare", "sleeve_length_factor", "cuff_width_factor"],
+      "properties": {
+        "length_factor": { "type": "number", "exclusiveMinimum": 0 },
+        "skirt_length_factor": { "type": "number", "exclusiveMinimum": 0 },
+        "body_width_factor": { "type": "number", "exclusiveMinimum": 0 },
+        "hem_flare": { "type": "number", "exclusiveMinimum": 0 },
+        "sleeve_length_factor": { "type": "number", "exclusiveMinimum": 0 },
+        "cuff_width_factor": { "type": "number", "exclusiveMinimum": 0 }
+      }
+    },
+    "materials": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["main_color", "trim_color"],
+      "properties": {
+        "main_color": { "type": "string", "pattern": "^#[0-9a-fA-F]{6}$" },
+        "trim_color": { "type": "string", "pattern": "^#[0-9a-fA-F]{6}$" }
+      }
+    }
+  }
+}

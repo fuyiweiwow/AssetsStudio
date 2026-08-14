@@ -128,3 +128,26 @@ ComfyUI 是旁路：可以由 Studio 导出参考请求或调用本地 API，但
 | 日期 | 变化 | 原因 |
 | --- | --- | --- |
 | 2026-08-14 | 建立 F008 设计 | 将“免费工具、2D 轮廓优先、参数化生产、ComfyUI 旁路”固化为可执行边界 |
+## First experiment implementation update (2026-08-14)
+
+The first executable recipe is now `mage_robe_body_v1_seed01`. It is driven by
+`schemas/garment-recipe.v1.schema.json`, `recipes/mage_robe_body_v1.json`, and
+`tools/garmentcode/generate_actor_specific_mage_robe.py`.
+
+The tested construction is a GarmentCode `Shirt + SkirtCircle` composition. It
+reads the current Actor measurements, derives only explicit style multipliers,
+and emits a candidate manifest. This remains one visual robe for the 2D
+pipeline, while avoiding the unstable overlong single-torso panel.
+
+The paper-pattern stage, Actor-source guard, dependency pin guard, panel
+topology guard, and BoxMesh generation pass. The full-resolution static probe
+reaches cloth simulation and emits front/back renders and a simulation OBJ,
+but the current CPU run crashes at frame 62. The low-resolution probe instead
+reproduces a BoxMesh degenerate-triangle failure. Both results remain in
+`workspace/` as diagnostic evidence; no candidate is promoted to Gallery,
+randomization, or milestones.
+
+The current Actor collision proxy has no lower-body vertex partition. The
+generator therefore records an explicit temporary policy that labels skirt
+panels against the available `body` collider. A dedicated lower-body proxy is
+required before this policy can be considered production quality.
