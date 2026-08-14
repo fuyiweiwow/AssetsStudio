@@ -198,3 +198,23 @@ workflow position for the current experiment: after Recipe definition and
 before hood/decorative components, animation transfer, Gallery, or milestones.
 The current review gate is visual four-direction readability; it is not a
 physics or Actor-transfer gate.
+
+## Pure 2D movement preview update (2026-08-14)
+
+The next isolated test uses the existing Actor walk-pose function only as an
+animation driver. `tools/blender/export_actor_walk_poses_2d.py` exports eight
+frames of Actor bone head/tail points. `tools/render_2d_robe_walk_preview.py`
+then consumes that JSON and draws the Actor silhouette, robe body, and sleeves
+directly with Pillow. No 3D garment object is loaded or rendered in this step.
+
+The robe body uses the Recipe's length, width, hem flare, lower flare, sleeve
+length, and cuff parameters. A small, explicit 2D motion amplification makes
+sleeve counter-swing and hem sway readable at preview resolution; the manifest
+records those amplification values. The output is eight frames for each of the
+four directions, plus review GIFs and contact sheets under
+`workspace/garments/mage_robe_body_2d_walk_v1/frames/`.
+
+This proves the intended workflow direction, not final art quality. The
+renderer is a procedural review proxy with a simplified Actor silhouette; the
+next quality step is to replace that silhouette with the project's approved 2D
+Actor layers while preserving the same garment deformation contract.
