@@ -121,9 +121,28 @@ def create_robe_shell(actor: bpy.types.Object, recipe: dict, material: bpy.types
         + 0.20 * float(recipe["parameters"]["hem_flare"])
         + 0.25 * float(recipe["parameters"]["robe_lower_flare"])
     )
-    top_depth = max(actor_depth * 0.11, 0.22)
+    # Use the evaluated Actor torso surface for the front/back placement. A
+    # fixed shallow depth lets the Actor abdomen render in front of the robe;
+    # that is unacceptable for the 3D-to-2D preview. The fallback keeps the
+    # generator usable if an evaluated mesh has no vertices in the window.
+    evaluated_actor = actor.evaluated_get(bpy.context.evaluated_depsgraph_get())
+    surface_points = [
+        evaluated_actor.matrix_world @ vertex.co
+        for vertex in evaluated_actor.data.vertices
+        if hem_z - height * 0.04 <= (evaluated_actor.matrix_world @ vertex.co).z <= top_z + height * 0.04
+    ]
+    if surface_points:
+        front_y = min(point.y for point in surface_points)
+        back_y = max(point.y for point in surface_points)
+        center_y = (front_y + back_y) * 0.5
+        top_depth = max((back_y - front_y) * 0.5 + 0.06, 0.28)
+        torso_x = [abs(point.x) for point in surface_points if abs(point.x) <= shoulder_half + 0.20]
+        if torso_x:
+            top_half = max(top_half, (max(torso_x) + 0.05) * float(recipe["parameters"]["body_width_factor"]))
+    else:
+        center_y = (low.y + high.y) * 0.5
+        top_depth = max(actor_depth * 0.28, 0.28)
     hem_depth = top_depth * 1.08
-    center_y = (low.y + high.y) * 0.5
 
     vertices = [
         Vector((-top_half, center_y - top_depth, top_z)),

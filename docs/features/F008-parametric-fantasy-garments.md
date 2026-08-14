@@ -198,3 +198,25 @@ workflow position for the current experiment: after Recipe definition and
 before hood/decorative components, animation transfer, Gallery, or milestones.
 The current review gate is visual four-direction readability; it is not a
 physics or Actor-transfer gate.
+
+## 3D rigged movement prototype update (2026-08-14)
+
+The pure-2D movement experiment was rejected for the production direction. The
+correct replacement is `tools/blender/build_parametric_robe_3d_rigged.py`.
+It reuses the Recipe-driven 3D robe body and sleeves, adds an Armature
+modifier, and assigns deterministic weights to the current Actor:
+
+- robe body: a height gradient from `CC_Base_Pelvis` to `CC_Base_Spine02`;
+- each sleeve: an axial gradient from `Upperarm` to `Forearm` to `Hand`.
+
+The build preserves the Actor's Mixamo Walk action. The existing Eevee clothing
+renderer then produces four directions and eight sampled Walk frames, followed
+by the normal review GIF/contact-sheet step. This is the valid Three-to-Two
+chain: the clothing remains 3D during deformation and lighting, and only the
+final rendered frames are 2D.
+
+The first run passes the mechanical chain and produces a lit preview. It is
+still `review_required` and `not_simulated`: the low-poly shell is a diagnostic
+proxy, not a GarmentCode physical-equilibrium result. Formal promotion still
+requires frame-by-frame review for torso exposure, sleeve attachment, hem
+continuity, four-direction silhouette, and later hood/decorative components.
