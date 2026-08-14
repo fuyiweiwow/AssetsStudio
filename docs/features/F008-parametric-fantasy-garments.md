@@ -168,3 +168,13 @@ initialization, and cloth stepping, but reaches only frame 47 before the
 probe returns the known `right_btorso` degenerate-triangle error. The v2
 candidate therefore remains outside Actor transfer, four-direction review,
 Gallery, randomization, and milestones.
+The extended 600-second probe reaches frame 99, but fails the physical gates
+with 1,946 self-collisions and 72 body collisions. The next isolated variant
+reduces lower-panel flare and introduces a small connection clearance; this is
+intended to reduce physical overlap without changing the 2D robe silhouette.
+The two-panel v3 probe reduces self-collisions to 1,545 and body collisions to
+36, but still fails the 300/35 physical thresholds. This closes the first
+GarmentCode-only tuning loop. For the project's 2D target, the next step is a
+Blender-bound silhouette/render layer driven by the accepted recipe parameters;
+it must remain clearly marked as a 2D prototype and cannot promote the
+non-equilibrated simulation OBJ into a formal garment asset.

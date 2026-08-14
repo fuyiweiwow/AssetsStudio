@@ -21,6 +21,7 @@
         "body_width_factor": { "type": "number", "exclusiveMinimum": 0 },
         "hem_flare": { "type": "number", "exclusiveMinimum": 0 },
         "robe_lower_flare": { "type": "number", "exclusiveMinimum": 0 },
+        "robe_connection_gap": { "type": "number", "minimum": 0 },
         "sleeve_length_factor": { "type": "number", "exclusiveMinimum": 0 },
         "cuff_width_factor": { "type": "number", "exclusiveMinimum": 0 }
       }

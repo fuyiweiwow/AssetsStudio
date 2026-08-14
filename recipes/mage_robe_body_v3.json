@@ -1,8 +1,8 @@
 {
   "schema": "assetsstudio_garment_recipe_v1",
-  "recipe_id": "mage_robe_body_v2_seed01",
+  "recipe_id": "mage_robe_body_v3_seed01",
   "asset_type": "humanoid.garment",
-  "archetype": "mage_robe_body_v2",
+  "archetype": "mage_robe_body_v3",
   "seed": 1,
   "parameters": {
     "length_factor": 0.90,
