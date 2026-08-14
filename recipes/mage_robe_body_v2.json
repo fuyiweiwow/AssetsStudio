@@ -1,16 +1,16 @@
 {
   "schema": "assetsstudio_garment_recipe_v1",
-  "recipe_id": "mage_robe_body_v1_seed01",
+  "recipe_id": "mage_robe_body_v2_seed01",
   "asset_type": "humanoid.garment",
-  "archetype": "mage_robe_body_v1",
+  "archetype": "mage_robe_body_v2",
   "seed": 1,
   "parameters": {
     "length_factor": 0.90,
-    "skirt_length_factor": 0.72,
+    "skirt_length_factor": 0.75,
     "body_width_factor": 1.05,
     "hem_flare": 1.00,
-    "robe_lower_flare": 0.85,
-    "sleeve_length_factor": 1.5,
+    "robe_lower_flare": 0.20,
+    "sleeve_length_factor": 0.95,
     "cuff_width_factor": 1.10
   },
   "materials": {

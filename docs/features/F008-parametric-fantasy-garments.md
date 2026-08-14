@@ -151,3 +151,11 @@ The current Actor collision proxy has no lower-body vertex partition. The
 generator therefore records an explicit temporary policy that labels skirt
 panels against the available `body` collider. A dedicated lower-body proxy is
 required before this policy can be considered production quality.
+## Second experiment implementation update (2026-08-14)
+
+`mage_robe_body_v2` now introduces the project-side `RobeBody` prototype. It
+uses six low-flare lower panels, closes the ordinary 5 cm separate-garment gap,
+and defines sleeve length as a fraction of the current Actor shoulder-to-wrist
+measurement. Pattern generation and Actor/dependency guards pass. A ten-frame
+simulation probe reaches cloth stepping and renders a longer-sleeve silhouette,
+but it is only a visual probe and is not a static-equilibrium acceptance.

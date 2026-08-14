@@ -31,6 +31,17 @@ from generate_actor_specific_garmentcode_pattern import (
 )
 
 
+class RobeBody:
+    """Project-side robe archetype assembled from stable GarmentCode parts."""
+
+    def __init__(self, meta_garment_class, name, body, design):
+        self._garment = meta_garment_class(name, body, design)
+        self._garment.subs[-1].place_below(self._garment.subs[0], gap=0)
+
+    def __getattr__(self, name):
+        return getattr(self._garment, name)
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument("--garmentcode-root", type=Path, required=True)
@@ -56,13 +67,15 @@ def load_recipe(path: Path) -> dict:
         fail("recipe schema must be assetsstudio_garment_recipe_v1")
     if recipe.get("asset_type") != "humanoid.garment":
         fail("recipe asset_type must be humanoid.garment")
-    if recipe.get("archetype") != "mage_robe_body_v1":
-        fail("first experiment requires mage_robe_body_v1")
+    if recipe.get("archetype") not in {"mage_robe_body_v1", "mage_robe_body_v2"}:
+        fail("robe experiment requires mage_robe_body_v1 or mage_robe_body_v2")
     parameters = recipe.get("parameters", {})
     required = {
         "length_factor", "skirt_length_factor", "body_width_factor", "hem_flare",
         "sleeve_length_factor", "cuff_width_factor",
     }
+    if recipe["archetype"] == "mage_robe_body_v2":
+        required.add("robe_lower_flare")
     if set(parameters) != required:
         fail(f"recipe parameters must be exactly {sorted(required)}")
     for key, value in parameters.items():
@@ -81,9 +94,16 @@ def derive_body(source: dict, recipe: dict, path: Path) -> dict:
     values = body["body"]
     # The actor measurements remain the source of truth.  These fields are
     # explicit style-eased derivatives used by the GarmentCode program.
-    values["actor_sleeve_length"] = float(values["actor_sleeve_length"]) * float(
-        params["sleeve_length_factor"]
-    )
+    if recipe["archetype"] == "mage_robe_body_v2":
+        # v2 defines sleeve length as a fraction of the Actor shoulder-to-wrist
+        # arm length. v1 retains its diagnostic multiplier semantics.
+        values["actor_sleeve_length"] = float(values["arm_length"]) * float(
+            params["sleeve_length_factor"]
+        )
+    else:
+        values["actor_sleeve_length"] = float(values["actor_sleeve_length"]) * float(
+            params["sleeve_length_factor"]
+        )
     values["actor_sleeve_cuff_circumference"] = float(
         values["actor_sleeve_cuff_circumference"]
     ) * float(params["cuff_width_factor"])
@@ -92,6 +112,11 @@ def derive_body(source: dict, recipe: dict, path: Path) -> dict:
         "archetype": recipe["archetype"],
         "sleeve_length_factor": params["sleeve_length_factor"],
         "cuff_width_factor": params["cuff_width_factor"],
+        "sleeve_length_semantics": (
+            "fraction_of_actor_arm_length"
+            if recipe["archetype"] == "mage_robe_body_v2"
+            else "multiplier_of_actor_sleeve_length"
+        ),
     }
     path.write_text(yaml.safe_dump(body, sort_keys=False), encoding="utf-8")
     return body
@@ -104,7 +129,13 @@ def build_design(template: Path, recipe: dict) -> dict:
         fail(f"cannot read design template: {exc}")
     params = recipe["parameters"]
     set_value(design, "meta", "upper", value="Shirt")
-    set_value(design, "meta", "bottom", value="SkirtCircle")
+    archetype = recipe["archetype"]
+    set_value(
+        design,
+        "meta",
+        "bottom",
+        value="SkirtCircle" if archetype == "mage_robe_body_v1" else "SkirtManyPanels",
+    )
     set_value(design, "meta", "wb", value=None)
     set_value(design, "shirt", "width", value=float(params["body_width_factor"]))
     set_value(design, "shirt", "length", value=float(params["length_factor"]))
@@ -113,7 +144,15 @@ def build_design(template: Path, recipe: dict) -> dict:
     # visual robe, while avoiding an overlong single torso panel.
     set_value(design, "flare-skirt", "length", value=float(params["skirt_length_factor"]))
     set_value(design, "flare-skirt", "rise", value=1.0)
-    set_value(design, "flare-skirt", "suns", value=0.85)
+    set_value(
+        design,
+        "flare-skirt",
+        "suns",
+        value=0.85 if archetype == "mage_robe_body_v1" else float(params["robe_lower_flare"]),
+    )
+    if archetype == "mage_robe_body_v2":
+        set_value(design, "flare-skirt", "skirt-many-panels", "n_panels", value=6)
+        set_value(design, "flare-skirt", "skirt-many-panels", "panel_curve", value=0)
     set_value(design, "flare-skirt", "cut", "add", value=False)
     # Keep a single, continuous主体服装.  The wide sleeve is part of the
     # robe pattern; trim remains a later material/component concern.
@@ -149,8 +188,9 @@ def make_spec(options: argparse.Namespace, recipe: dict, measurements: dict, bod
         "body_parameters": str(options.body.resolve()),
         "derived_style_body": str(derived_body.resolve()),
         "style": {
+            "component": "RobeBody" if recipe["archetype"] == "mage_robe_body_v2" else "MageRobeBody",
             "upper": "MageRobeBody",
-            "bottom": "SkirtCircle",
+            "bottom": "SkirtCircle" if recipe["archetype"] == "mage_robe_body_v1" else "SkirtManyPanels",
             "collar_front": "CircleNeckHalf",
             "collar_back": "CircleNeckHalf",
             "sleeve": "wide_long_sleeve_open_hem",
@@ -220,7 +260,11 @@ def main() -> int:
     body = BodyParameters(str(derived_body_path))
     design = build_design(options.design_template.resolve(), recipe)
     random.seed(recipe["seed"])
-    garment = MetaGarment("MageRobeBody", body, design)
+    garment = (
+        RobeBody(MetaGarment, "MageRobeBody", body, design)
+        if recipe["archetype"] == "mage_robe_body_v2"
+        else MetaGarment("MageRobeBody", body, design)
+    )
     garment.assert_non_empty()
     garment.assert_total_length()
     pattern = garment.assembly()

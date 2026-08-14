@@ -14,12 +14,13 @@
     "parameters": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["length_factor", "skirt_length_factor", "body_width_factor", "hem_flare", "sleeve_length_factor", "cuff_width_factor"],
+      "required": ["length_factor", "skirt_length_factor", "body_width_factor", "hem_flare", "robe_lower_flare", "sleeve_length_factor", "cuff_width_factor"],
       "properties": {
         "length_factor": { "type": "number", "exclusiveMinimum": 0 },
         "skirt_length_factor": { "type": "number", "exclusiveMinimum": 0 },
         "body_width_factor": { "type": "number", "exclusiveMinimum": 0 },
         "hem_flare": { "type": "number", "exclusiveMinimum": 0 },
+        "robe_lower_flare": { "type": "number", "exclusiveMinimum": 0 },
         "sleeve_length_factor": { "type": "number", "exclusiveMinimum": 0 },
         "cuff_width_factor": { "type": "number", "exclusiveMinimum": 0 }
       }

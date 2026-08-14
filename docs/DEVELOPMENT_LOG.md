@@ -44,3 +44,4 @@
 - 每条记录必须说明“为什么”，不能只有“做了什么”。
 - 功能细节进入对应 `docs/features/*.md`；跨功能技术决定进入 ADR；删除进入 `docs/REMOVALS.md`。
 | 2026-08-14 | implementation/diagnostic | F008/garments | Added the first parameterized `mage_robe_body_v1` recipe and Actor-specific GarmentCode generator; `Shirt + SkirtCircle` passes pattern generation and reaches simulation, but the CPU static probe crashes at frame 62 and the low-resolution probe exposes a BoxMesh degeneracy | Keep all outputs in `workspace/`, retain the candidate out of Gallery/randomization/milestones, and add a lower-body collision proxy before production promotion |
+| 2026-08-14 | implementation/prototype | F008/garments | Added the `RobeBody` v2 prototype with six low-flare lower panels, zero separate-garment gap, and Actor-arm-length sleeve semantics; pattern and ten-frame visual probe pass, full static acceptance remains pending | Establish the continuous robe silhouette before adding hood or decorative trim |
