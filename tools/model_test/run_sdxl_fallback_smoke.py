@@ -22,6 +22,11 @@ def main() -> None:
     parser.add_argument("--height", type=int, default=512)
     parser.add_argument("--steps", type=int, default=2)
     parser.add_argument("--strength", type=float, default=0.55)
+    parser.add_argument(
+        "--variant",
+        default="fp16",
+        help="Diffusers weight variant; use 'none' for checkpoints without a variant.",
+    )
     args = parser.parse_args()
 
     if not torch.cuda.is_available():
@@ -35,14 +40,15 @@ def main() -> None:
 
     pipeline_type = StableDiffusionXLPipeline if args.mode == "text" else StableDiffusionXLImg2ImgPipeline
     print(f"SDXL_LOAD mode={args.mode} model={args.model.resolve()}", flush=True)
-    pipe = pipeline_type.from_pretrained(
-        str(args.model.resolve()),
-        torch_dtype=torch.float16,
-        variant="fp16",
-        use_safetensors=True,
-    )
+    load_kwargs = {
+        "torch_dtype": torch.float16,
+        "use_safetensors": True,
+    }
+    if args.variant.lower() != "none":
+        load_kwargs["variant"] = args.variant
+    pipe = pipeline_type.from_pretrained(str(args.model.resolve()), **load_kwargs)
     pipe.enable_model_cpu_offload()
-    pipe.enable_vae_slicing()
+    pipe.vae.enable_slicing()
     pipe.set_progress_bar_config(disable=False)
 
     args.output.parent.mkdir(parents=True, exist_ok=True)
