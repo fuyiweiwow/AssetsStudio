@@ -2,6 +2,8 @@
 
 ## 基线
 
+以下文件是 Actor V1 的当前兼容基线。Actor V2 的身体基体不再内嵌耳朵；耳朵改由独立 `EarPair` 槽装配。
+
 - 场景：`milestones/body/chibi_actor_mixamo_walk_v1.blend`
 - 原演员：`milestones/body/actor_accurig_input.fbx`
 - Walk：`milestones/body/animation_sources/mixamo_standard_walk.fbx`
@@ -27,7 +29,8 @@
 
 - 四方向使用同一相机合同和同一脚底基线。
 - 明显看到大腿、膝、手臂和躯干逐帧变化。
-- 眼睛、耳朵、眉毛和未来头饰继续跟随 `CC_Base_Head`。
+- Actor V1 的眼睛、内嵌耳朵、眉毛和未来头饰继续跟随 `CC_Base_Head`。
+- Actor V2 的基体仅保留耳根定位合同；独立 `EarPair` 的左右对象必须跟随 `CC_Base_Head`，并通过四方向静态与动作检查。
 - 衣物与鞋的 GIF 必须使用同一组 8 个动作帧。
 
 ## 3渲2

@@ -1,0 +1,39 @@
+{
+  "schema": "wearable_limb_transition_contract_v1",
+  "actor_class": "ChibiActorV1",
+  "slot": "torso_outer",
+  "garment": "Wearable_Adventurer_TorsoOuterV1",
+  "body_mask": "WearableMask_AdventurerTorsoOuterV1",
+  "sides": {
+    "left": {
+      "transition_object": "ActorProfile_ArmTransition_L_ChibiActorV1",
+      "upperarm_bone": "CC_Base_L_Upperarm",
+      "forearm_bone": "CC_Base_L_Forearm",
+      "hand_bone": "CC_Base_L_Hand"
+    },
+    "right": {
+      "transition_object": "ActorProfile_ArmTransition_R_ChibiActorV1",
+      "upperarm_bone": "CC_Base_R_Upperarm",
+      "forearm_bone": "CC_Base_R_Forearm",
+      "hand_bone": "CC_Base_R_Hand"
+    }
+  },
+  "cuff_selection": {
+    "minimum_forearm_weight": 0.30,
+    "minimum_side_x": 0.30
+  },
+  "continuity_limits": {
+    "maximum_cuff_center_to_visible_skin": 0.105,
+    "maximum_sample_to_visible_skin": 0.135,
+    "minimum_exposed_chain_samples": 5,
+    "maximum_masked_forearm_vertices_per_side": 96,
+    "maximum_masked_hand_vertices_per_side": 0,
+    "minimum_collar_above_shoulder_margin": 0.008,
+    "maximum_terminal_center_to_actor_arm_center": 0.035
+  },
+  "workflow_action": {
+    "short_sleeve": "retain Actor forearm and hand; compile a garment-material terminal band from the Actor profile, end the body mask inside it, and require the Actor arm-ring center to pass through the sleeve-ring center",
+    "long_sleeve": "fit the generated cuff to the wrist ring and blend forearm-to-hand weights at the terminal band",
+    "failed_transition": "reject the slot or add an ActorProfile transition seal; never hide the hand to conceal the gap"
+  }
+}

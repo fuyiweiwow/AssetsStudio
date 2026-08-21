@@ -2,6 +2,8 @@
 
 ## 当前合同
 
+本节描述的是 **Actor V1 兼容基线**。其中耳朵内嵌于 Face Actor，是已经存在的运行时实现，不是 Actor V2 的目标结构。Actor V2 不得把这个历史实现误当成新基体合同。
+
 五官不再拥有独立的 `milestones/face/` 运行时或渲染里程碑。当前唯一正式合同是：
 
 - Face 合同：`milestones/body/face_contract_v2.json`
@@ -16,6 +18,19 @@
 - 耳朵原始来源：`references/face/miku_chibi_source/miku_chibi_source.fbx`
 
 眼睛和耳朵均已父级到 `CC_Base_Head`。眼睛使用同一套贴合头部浅曲面切换三种状态材质，不再使用旧 `EyePackageV1` 的框架/镜片叠层。原始 Miku FBX 是包含完整角色的私有来源文件，只用于可复现地提取耳朵，不能作为运行时耳朵直接载入。
+
+## Actor V2 耳朵槽迁移
+
+Actor V2 将耳朵从 Face Actor 拆分为可变化标准件：
+
+- 基体头部不得焊接、雕刻或导出永久耳朵，只保留左右耳根标准定位点与贴合边界。
+- 槽名为 `EarPair`；一个槽资源包含左右两个独立网格对象，但以同一 bundle/variant 管理，避免左右风格不一致。
+- 默认人类耳、精灵耳和后续幻想种族耳均走同一槽合同；不得为每种耳型复制 Actor 头部。
+- 耳朵对象绑定 `CC_Base_Head`，并记录左右定位、缩放、接缝遮盖范围和与发型/头饰的净空要求。
+- Actor 多视图和 Hunyuan 基体输入使用无永久耳朵版本；耳朵候选另行生成或建模，再进入 `EarPair` 标准件流程。
+- 四向静态与动作验收必须检查耳根缝隙、穿头、左右错配、发型遮挡和随头漂移。
+
+`milestones/body/face_contract_v2.json` 继续只代表 Actor V1 技术基线；在 Actor V2 获得静态多视图验收前，不覆盖该文件。
 
 Blender 权威 Face 保持 Bone Parent 合同；导出 Studio GLB 时，脚本先在 REST pose 烘焙同一贴合曲面，再把所有眼睛顶点 100% 赋权给 `CC_Base_Head`。网页端必须得到带 `skin` 的 SkinnedMesh，不能把普通 Bone Child 节点当作已完成网页绑定。`tools/validate_studio_actor_preview.py` 会拒绝任何没有 `skin` 的眨眼状态节点。
 

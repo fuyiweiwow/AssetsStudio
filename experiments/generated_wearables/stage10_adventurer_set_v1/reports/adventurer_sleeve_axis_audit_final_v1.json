@@ -1,0 +1,165 @@
+{
+  "schema": "wearable_sleeve_axis_alignment_v2",
+  "input_blend": "git-history:adventurer_set_complete_candidate_v5.blend",
+  "current_checkpoint": "milestone/adventurer_set_workflow_v3.blend",
+  "actor_class": "ChibiActorV1",
+  "slot": "torso_outer",
+  "silhouette": {
+    "collar_p95_z": 1.4818142652511597,
+    "sleeve_shoulder_p95_z": 1.4039835929870605,
+    "collar_above_shoulder_margin": 0.07783067226409912,
+    "minimum_margin": 0.008
+  },
+  "frames": {
+    "1": {
+      "left": {
+        "terminal_vertices": 68,
+        "actor_ring_vertices": 118,
+        "terminal_center_to_actor_arm_center": 0.008478211203233972,
+        "terminal_radius_p10": 0.0474159739372422,
+        "terminal_radius_p90": 0.06407663175034582,
+        "masked_hand_vertices": 0
+      },
+      "right": {
+        "terminal_vertices": 68,
+        "actor_ring_vertices": 118,
+        "terminal_center_to_actor_arm_center": 0.008498969287047055,
+        "terminal_radius_p10": 0.04758019822838135,
+        "terminal_radius_p90": 0.06379066318144976,
+        "masked_hand_vertices": 0
+      }
+    },
+    "11": {
+      "left": {
+        "terminal_vertices": 68,
+        "actor_ring_vertices": 118,
+        "terminal_center_to_actor_arm_center": 0.00830893373630434,
+        "terminal_radius_p10": 0.048838702859118864,
+        "terminal_radius_p90": 0.06352624003819585,
+        "masked_hand_vertices": 0
+      },
+      "right": {
+        "terminal_vertices": 68,
+        "actor_ring_vertices": 118,
+        "terminal_center_to_actor_arm_center": 0.008624905085927524,
+        "terminal_radius_p10": 0.04675334417588098,
+        "terminal_radius_p90": 0.064073711763921,
+        "masked_hand_vertices": 0
+      }
+    },
+    "21": {
+      "left": {
+        "terminal_vertices": 68,
+        "actor_ring_vertices": 118,
+        "terminal_center_to_actor_arm_center": 0.008076983985297773,
+        "terminal_radius_p10": 0.04890069545669198,
+        "terminal_radius_p90": 0.06366318377421734,
+        "masked_hand_vertices": 0
+      },
+      "right": {
+        "terminal_vertices": 68,
+        "actor_ring_vertices": 118,
+        "terminal_center_to_actor_arm_center": 0.008564346371065087,
+        "terminal_radius_p10": 0.04746698736758227,
+        "terminal_radius_p90": 0.06412288228349743,
+        "masked_hand_vertices": 0
+      }
+    },
+    "31": {
+      "left": {
+        "terminal_vertices": 68,
+        "actor_ring_vertices": 118,
+        "terminal_center_to_actor_arm_center": 0.008490921210775314,
+        "terminal_radius_p10": 0.047688396262297705,
+        "terminal_radius_p90": 0.06368342852928964,
+        "masked_hand_vertices": 0
+      },
+      "right": {
+        "terminal_vertices": 68,
+        "actor_ring_vertices": 118,
+        "terminal_center_to_actor_arm_center": 0.008363964572531107,
+        "terminal_radius_p10": 0.04817182790383961,
+        "terminal_radius_p90": 0.06390550814322847,
+        "masked_hand_vertices": 0
+      }
+    },
+    "41": {
+      "left": {
+        "terminal_vertices": 68,
+        "actor_ring_vertices": 118,
+        "terminal_center_to_actor_arm_center": 0.008722563732880724,
+        "terminal_radius_p10": 0.04534706769532633,
+        "terminal_radius_p90": 0.06428655636248375,
+        "masked_hand_vertices": 0
+      },
+      "right": {
+        "terminal_vertices": 68,
+        "actor_ring_vertices": 118,
+        "terminal_center_to_actor_arm_center": 0.00820528793687307,
+        "terminal_radius_p10": 0.04889457175013221,
+        "terminal_radius_p90": 0.06395142270885684,
+        "masked_hand_vertices": 0
+      }
+    },
+    "51": {
+      "left": {
+        "terminal_vertices": 68,
+        "actor_ring_vertices": 118,
+        "terminal_center_to_actor_arm_center": 0.008782736232489699,
+        "terminal_radius_p10": 0.04477346764471361,
+        "terminal_radius_p90": 0.06463236635128902,
+        "masked_hand_vertices": 0
+      },
+      "right": {
+        "terminal_vertices": 68,
+        "actor_ring_vertices": 118,
+        "terminal_center_to_actor_arm_center": 0.008030315792920574,
+        "terminal_radius_p10": 0.048774258337337416,
+        "terminal_radius_p90": 0.06382467654288004,
+        "masked_hand_vertices": 0
+      }
+    },
+    "61": {
+      "left": {
+        "terminal_vertices": 68,
+        "actor_ring_vertices": 118,
+        "terminal_center_to_actor_arm_center": 0.008707289937806182,
+        "terminal_radius_p10": 0.04542559859777235,
+        "terminal_radius_p90": 0.06420824463856946,
+        "masked_hand_vertices": 0
+      },
+      "right": {
+        "terminal_vertices": 68,
+        "actor_ring_vertices": 118,
+        "terminal_center_to_actor_arm_center": 0.008295554467047177,
+        "terminal_radius_p10": 0.04886116072570811,
+        "terminal_radius_p90": 0.06385900852466564,
+        "masked_hand_vertices": 0
+      }
+    },
+    "71": {
+      "left": {
+        "terminal_vertices": 68,
+        "actor_ring_vertices": 118,
+        "terminal_center_to_actor_arm_center": 0.00847817822300801,
+        "terminal_radius_p10": 0.04741599664776314,
+        "terminal_radius_p90": 0.06407661531668221,
+        "masked_hand_vertices": 0
+      },
+      "right": {
+        "terminal_vertices": 68,
+        "actor_ring_vertices": 118,
+        "terminal_center_to_actor_arm_center": 0.008498842302564986,
+        "terminal_radius_p10": 0.04758022613624901,
+        "terminal_radius_p90": 0.06379059748290494,
+        "masked_hand_vertices": 0
+      }
+    }
+  },
+  "limits": {
+    "maximum_terminal_center_offset": 0.035,
+    "maximum_masked_hand_vertices": 0
+  },
+  "failures": [],
+  "status": "pass"
+}

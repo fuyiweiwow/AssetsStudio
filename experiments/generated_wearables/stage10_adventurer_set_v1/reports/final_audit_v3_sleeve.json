@@ -1,0 +1,52 @@
+{
+  "schema": "wearable_sleeve_interface_workflow_v1",
+  "input_blend": "milestone/adventurer_set_workflow_v3.blend",
+  "actor_class": "ChibiActorV1",
+  "slot": "torso_outer",
+  "visible_geometry_source": "Hunyuan3D-2MV garment with ActorProfile boundary rings",
+  "actor_profile_interfaces": {
+    "ActorProfile_ArmTransition_L_ChibiActorV1": {
+      "component": "short_sleeve_interface_ring",
+      "vertices": 100,
+      "faces": 80,
+      "parameter_range": [
+        0.42,
+        0.82
+      ],
+      "armature_modifiers": 1
+    },
+    "ActorProfile_ArmTransition_R_ChibiActorV1": {
+      "component": "short_sleeve_interface_ring",
+      "vertices": 100,
+      "faces": 80,
+      "parameter_range": [
+        0.42,
+        0.82
+      ],
+      "armature_modifiers": 1
+    }
+  },
+  "garment_semantic_weights": [
+    "CC_Base_L_Clavicle",
+    "CC_Base_L_Forearm",
+    "CC_Base_L_Hand",
+    "CC_Base_L_Upperarm",
+    "CC_Base_R_Clavicle",
+    "CC_Base_R_Forearm",
+    "CC_Base_R_Hand",
+    "CC_Base_R_Upperarm",
+    "CC_Base_Spine01",
+    "CC_Base_Spine02",
+    "CC_Base_Waist"
+  ],
+  "missing_semantic_weights": [],
+  "masked_hand_vertices": 0,
+  "silhouette": {
+    "collar_p95_z": 1.4816114902496338,
+    "sleeve_shoulder_p95_z": 1.3796950578689575,
+    "collar_above_shoulder_margin": 0.10191643238067627,
+    "minimum_margin": 0.008
+  },
+  "failures": [],
+  "status": "pass"
+}

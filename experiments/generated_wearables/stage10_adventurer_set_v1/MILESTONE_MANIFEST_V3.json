@@ -1,0 +1,54 @@
+{
+  "schema": "assetslab_generated_wearable_milestone_v3_diagnostic",
+  "actor_class": "ChibiActorV1",
+  "wearable_set": "AdventurerSetV1",
+  "status": "reproducible_with_known_visual_blockers",
+  "complete_blend": {
+    "path": "milestone/adventurer_set_workflow_v3.blend",
+    "bytes": 70214780,
+    "sha256": "9258d722be3fe20c3ad55971b0f04c4a30771b2fdedaf828a655f803ba3fc5e5"
+  },
+  "active_slots": [
+    "head_hair",
+    "torso_outer",
+    "waist_accessory",
+    "legs_outer",
+    "feet_outer",
+    "wrist_accessory",
+    "back_accessory"
+  ],
+  "reproducibility": {
+    "integrity_manifest": "REPRODUCIBLE_PACKAGE_V1.json",
+    "instructions": "REPRODUCE_V3.md",
+    "verifier": "verify_reproducible_package_v1.ps1",
+    "source_views": "assets/source_views",
+    "generated_sources": "assets/generated_sources"
+  },
+  "preview": {
+    "full_path": "preview/preview_workflow_v3.gif",
+    "full_bytes": 397875,
+    "full_sha256": "11d9dc2e64be0e6411107010e4499253404e08aee577a52f9d5eec94402c70c7",
+    "upper_path": "preview/preview_workflow_v3_upper.gif",
+    "upper_bytes": 1298272,
+    "upper_sha256": "ce7a7e9235aae931b188af6c4776693b184fb4c3dc6aeecb9658d2fff07433e8"
+  },
+  "review": {
+    "frames": [1, 11, 21, 31, 41, 51, 61, 71],
+    "directions": ["front", "right", "back", "left"],
+    "structure_audit": "audit_reproducible_checkpoint_v1.py",
+    "sleeve_blocker_report": "reports/final_audit_v3_sleeve_torso_self_intersection.json",
+    "boot_blocker_report": "reports/final_audit_v3_boot_sole_contact.json"
+  },
+  "open_visual_blockers": [
+    "generated sleeve and torso regions self-intersect during animation",
+    "rigid Foot-bone boot binding rotates the sole and loses planted contact",
+    "old Actor exposed-limb topology is coarse at close range"
+  ],
+  "removed_from_working_package": [
+    "V1 and V2 Blend checkpoints",
+    "enclosing headscarf source and reference assets",
+    "unused feet_outer_workflow_v2 candidate",
+    "old previews and superseded audit snapshots",
+    "rebuildable frame caches"
+  ]
+}

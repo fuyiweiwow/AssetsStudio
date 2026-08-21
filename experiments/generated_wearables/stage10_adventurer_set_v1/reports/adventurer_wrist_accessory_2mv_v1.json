@@ -1,0 +1,13 @@
+{
+  "schema": "hunyuan3d_2mv_slot_generation_v1",
+  "slot": "wrist_accessory",
+  "input_dir": "assets/source_views/wrist_accessory/rgba",
+  "output": "assets/generated_sources/adventurer_wrist_accessory_2mv_v1.glb",
+  "seed": 20260821,
+  "steps": 30,
+  "guidance": 5.0,
+  "octree": 256,
+  "vertices": 234538,
+  "faces": 469068,
+  "status": "pass"
+}

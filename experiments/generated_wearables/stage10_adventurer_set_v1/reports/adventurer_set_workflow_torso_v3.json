@@ -1,0 +1,75 @@
+{
+  "schema": "hunyuan_generated_garment_adapter_v1",
+  "actor_class": "ChibiActorV1",
+  "slot": "torso_outer",
+  "visible_geometry_source": "hunyuan_outputs\\adventurer_torso_outer_2mv_v1.glb",
+  "adapter_visible": false,
+  "source_vertices": 335223,
+  "source_faces": 670458,
+  "compiled_vertices": 60335,
+  "compiled_faces": 120682,
+  "decimate_ratio": 0.18,
+  "bounds_frame_1": {
+    "low": [
+      -0.479689,
+      -0.236529,
+      0.750007
+    ],
+    "high": [
+      0.477585,
+      0.220263,
+      1.489998
+    ],
+    "size": [
+      0.957273,
+      0.456792,
+      0.739991
+    ]
+  },
+  "allowed_bones": [
+    "CC_Base_Waist",
+    "CC_Base_Spine01",
+    "CC_Base_Spine02",
+    "CC_Base_L_Clavicle",
+    "CC_Base_L_Upperarm",
+    "CC_Base_L_Forearm",
+    "CC_Base_L_Hand",
+    "CC_Base_R_Clavicle",
+    "CC_Base_R_Upperarm",
+    "CC_Base_R_Forearm",
+    "CC_Base_R_Hand"
+  ],
+  "weight_counts": {
+    "CC_Base_Waist": 14057,
+    "CC_Base_Spine01": 34570,
+    "CC_Base_Spine02": 30319,
+    "CC_Base_L_Clavicle": 1573,
+    "CC_Base_L_Upperarm": 13079,
+    "CC_Base_L_Forearm": 11506,
+    "CC_Base_L_Hand": 0,
+    "CC_Base_R_Clavicle": 1647,
+    "CC_Base_R_Upperarm": 13854,
+    "CC_Base_R_Forearm": 12207,
+    "CC_Base_R_Hand": 0
+  },
+  "body_mask": {
+    "name": "WearableMask_AdventurerTorsoOuterV1",
+    "vertex_count": 2196,
+    "applied_in_review": true
+  },
+  "actor_profile_neck_seal": {
+    "name": "ActorProfile_NeckSeal_ChibiActorV1",
+    "vertices": 192,
+    "faces": 162,
+    "bones": [
+      "CC_Base_Spine02",
+      "CC_Base_NeckTwist01"
+    ]
+  },
+  "fit_adjustments": {
+    "upper_torso_lift": 0.0,
+    "shoulder_arm_lift": 0.0,
+    "purpose": "place front/back shoulder bridges above Actor clavicles while preserving the neck opening"
+  },
+  "status": "compiled_motion_and_visual_review_required"
+}

@@ -1,0 +1,13 @@
+{
+  "schema": "hunyuan3d_2mv_slot_generation_v1",
+  "slot": "back_accessory",
+  "input_dir": "assets/source_views/back_accessory/rgba",
+  "output": "assets/generated_sources/adventurer_back_accessory_2mv_v1.glb",
+  "seed": 20260822,
+  "steps": 30,
+  "guidance": 5.0,
+  "octree": 256,
+  "vertices": 242922,
+  "faces": 485888,
+  "status": "pass"
+}

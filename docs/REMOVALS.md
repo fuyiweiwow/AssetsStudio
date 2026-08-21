@@ -16,6 +16,7 @@
 | 2026-08-13 | `milestones/tops/actor_native_tshirt_v5/` Actor 表面硬壳短袖 | 从正式分支删除 | 已被 Actor 参数驱动的 GarmentCode 0.90 基线替代；旧硬壳仍有右肩/右袖问题且不是最终几何路线 | `milestones/tops/garmentcode_short_sleeve_v1/` | Git 历史中的 `dc7674f` 及更早提交 |
 | 2026-08-09 | `face_contract_v1.json` 与旧 `EyePackageV1` 预览合同 | 被 v2 取代 | 用户审查发现旧眼框/镜片叠层悬浮、遮挡且遗漏已经验证的眨眼流程 | `face_contract_v2.json`、`chibi_actor_eye_assembly_v2.blend` 和可复现眼睛脚本 | Git 历史；AssetsLab `origin/eye_anime` 历史 |
 | 2026-08-09 | `studio/src/components/AssetRail.tsx` | 删除 | 只切换资产详情文字，不能表达模型→骨骼→动画→拼装→结果的工作流 | `WorkflowRail.tsx` 与 F002 五步装配流程 | Git 提交 `a2a5688` 之前的 F001 历史 |
+| 2026-08-21 | `milestones/pants/native_control_v0/`、`milestones/tops/garmentcode_short_sleeve_v1/` 与专用 `tools/garmentcode/` 工具链 | 用户确认后从正式分支删除 | 这些旧短裤/短袖里程碑与 Actor 专用 GarmentCode 路线已不在当前计划内；继续保留会让新 Actor V2 与分 Slot Hunyuan 工作流误选旧基线 | `docs/workflows/actor_v2_image_first_rebuild.md`、`references/actor_v2/` 和恢复的 `experiments/` ActorProfile/Slot 文档归档 | 本次删除前的 Git 历史（`5c0263e` 及更早提交） |
 
 ## 新记录要求
 

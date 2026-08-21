@@ -1,0 +1,173 @@
+{
+  "schema": "boot_sole_contact_workflow_v1",
+  "frames": {
+    "1": {
+      "left": {
+        "minimum_z": -0.0006658554193563759,
+        "p05_z": 0.0024525118060410023,
+        "median_z": 0.051229532808065414,
+        "p95_z": 0.107148677110672,
+        "sole_height_spread_p95_p05": 0.104696165304631,
+        "near_lowest_fraction_8mm": 0.12275955360162327
+      },
+      "right": {
+        "minimum_z": 0.01008276455104351,
+        "p05_z": 0.010908783413469791,
+        "median_z": 0.01486933883279562,
+        "p95_z": 0.022625207901000977,
+        "sole_height_spread_p95_p05": 0.011716424487531185,
+        "near_lowest_fraction_8mm": 0.7575245180926615
+      }
+    },
+    "11": {
+      "left": {
+        "minimum_z": 0.06018328666687012,
+        "p05_z": 0.0632922351360321,
+        "median_z": 0.09688453376293182,
+        "p95_z": 0.13379277288913727,
+        "sole_height_spread_p95_p05": 0.07050053775310516,
+        "near_lowest_fraction_8mm": 0.10348326006087251
+      },
+      "right": {
+        "minimum_z": -0.012091214768588543,
+        "p05_z": -0.01067795604467392,
+        "median_z": 0.01636587269604206,
+        "p95_z": 0.05018386244773865,
+        "sole_height_spread_p95_p05": 0.06086181849241257,
+        "near_lowest_fraction_8mm": 0.23199188366587759
+      }
+    },
+    "21": {
+      "left": {
+        "minimum_z": 0.058326657861471176,
+        "p05_z": 0.05910012498497963,
+        "median_z": 0.06714621931314468,
+        "p95_z": 0.08029525727033615,
+        "sole_height_spread_p95_p05": 0.02119513228535652,
+        "near_lowest_fraction_8mm": 0.4491038214406493
+      },
+      "right": {
+        "minimum_z": -0.0487629771232605,
+        "p05_z": -0.042923200875520706,
+        "median_z": 0.02466501109302044,
+        "p95_z": 0.09966582804918289,
+        "sole_height_spread_p95_p05": 0.1425890289247036,
+        "near_lowest_fraction_8mm": 0.07270882651335814
+      }
+    },
+    "31": {
+      "left": {
+        "minimum_z": 0.018503965809941292,
+        "p05_z": 0.02018103003501892,
+        "median_z": 0.02769698016345501,
+        "p95_z": 0.039169762283563614,
+        "sole_height_spread_p95_p05": 0.018988732248544693,
+        "near_lowest_fraction_8mm": 0.4548528914440311
+      },
+      "right": {
+        "minimum_z": -0.02696112170815468,
+        "p05_z": -0.021331848576664925,
+        "median_z": 0.044250257313251495,
+        "p95_z": 0.1178332045674324,
+        "sole_height_spread_p95_p05": 0.13916505314409733,
+        "near_lowest_fraction_8mm": 0.07034156239431856
+      }
+    },
+    "41": {
+      "left": {
+        "minimum_z": -0.006758708972483873,
+        "p05_z": -0.005037439521402121,
+        "median_z": 0.011959445662796497,
+        "p95_z": 0.03655048832297325,
+        "sole_height_spread_p95_p05": 0.04158792784437537,
+        "near_lowest_fraction_8mm": 0.3199188366587758
+      },
+      "right": {
+        "minimum_z": 0.03401312604546547,
+        "p05_z": 0.03610227257013321,
+        "median_z": 0.050230756402015686,
+        "p95_z": 0.0681680291891098,
+        "sole_height_spread_p95_p05": 0.03206575661897659,
+        "near_lowest_fraction_8mm": 0.203922894825837
+      }
+    },
+    "51": {
+      "left": {
+        "minimum_z": -0.01845884881913662,
+        "p05_z": -0.01543262880295515,
+        "median_z": 0.030548539012670517,
+        "p95_z": 0.08439581096172333,
+        "sole_height_spread_p95_p05": 0.09982843976467848,
+        "near_lowest_fraction_8mm": 0.13425769360838688
+      },
+      "right": {
+        "minimum_z": 0.05071812495589256,
+        "p05_z": 0.054276950657367706,
+        "median_z": 0.09230964630842209,
+        "p95_z": 0.13408340513706207,
+        "sole_height_spread_p95_p05": 0.07980645447969437,
+        "near_lowest_fraction_8mm": 0.09333784240784579
+      }
+    },
+    "61": {
+      "left": {
+        "minimum_z": -0.03877270594239235,
+        "p05_z": -0.029313668608665466,
+        "median_z": 0.06630720943212509,
+        "p95_z": 0.167636901140213,
+        "sole_height_spread_p95_p05": 0.19695056974887848,
+        "near_lowest_fraction_8mm": 0.04294893473114643
+      },
+      "right": {
+        "minimum_z": 0.04721078649163246,
+        "p05_z": 0.04786764457821846,
+        "median_z": 0.05041005462408066,
+        "p95_z": 0.05834772810339928,
+        "sole_height_spread_p95_p05": 0.010480083525180817,
+        "near_lowest_fraction_8mm": 0.8153533987149137
+      }
+    },
+    "71": {
+      "left": {
+        "minimum_z": -0.0006658458732999861,
+        "p05_z": 0.002452521352097392,
+        "median_z": 0.05122963711619377,
+        "p95_z": 0.10714887082576752,
+        "sole_height_spread_p95_p05": 0.10469634947367013,
+        "near_lowest_fraction_8mm": 0.12275955360162327
+      },
+      "right": {
+        "minimum_z": 0.010082712396979332,
+        "p05_z": 0.01090871449559927,
+        "median_z": 0.014869227074086666,
+        "p95_z": 0.022625159472227097,
+        "sole_height_spread_p95_p05": 0.011716444976627827,
+        "near_lowest_fraction_8mm": 0.7575245180926615
+      }
+    }
+  },
+  "boots": {
+    "left": {
+      "object": "Wearable_Adventurer_Boot_L_V1",
+      "sole_vertex_count": 2957,
+      "local_sole_limit": 0.011936061084270477,
+      "used_groups": [
+        "CC_Base_L_Foot"
+      ],
+      "binding_mode": null
+    },
+    "right": {
+      "object": "Wearable_Adventurer_Boot_R_V1",
+      "sole_vertex_count": 2957,
+      "local_sole_limit": 0.011936061084270477,
+      "used_groups": [
+        "CC_Base_R_Foot"
+      ],
+      "binding_mode": null
+    }
+  },
+  "summary": {
+    "maximum_sole_height_spread": 0.19695056974887848,
+    "interpretation": "large spread means the rigid sole is rotating instead of preserving a planted contact plane"
+  }
+}

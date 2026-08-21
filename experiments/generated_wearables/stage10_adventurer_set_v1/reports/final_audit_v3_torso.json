@@ -1,0 +1,335 @@
+{
+  "schema": "hunyuan_generated_garment_adapter_audit_v1",
+  "input_blend": "milestone/adventurer_set_workflow_v3.blend",
+  "actor_class": "ChibiActorV1",
+  "slot": "torso_outer",
+  "visible_geometry_source": "Hunyuan3D-2MV generated garment",
+  "frames": [
+    1,
+    11,
+    21,
+    31,
+    41,
+    51,
+    61,
+    71
+  ],
+  "garment": {
+    "name": "Wearable_Adventurer_TorsoOuterV1",
+    "vertices": 60335,
+    "faces": 120682,
+    "evaluated_vertices": 60335,
+    "evaluated_faces": 120682,
+    "used_weight_groups": [
+      "CC_Base_L_Clavicle",
+      "CC_Base_L_Forearm",
+      "CC_Base_L_Upperarm",
+      "CC_Base_R_Clavicle",
+      "CC_Base_R_Forearm",
+      "CC_Base_R_Upperarm",
+      "CC_Base_Spine01",
+      "CC_Base_Spine02",
+      "CC_Base_Waist"
+    ],
+    "forbidden_weight_groups": [],
+    "unweighted_vertices": 0,
+    "non_normalized_vertices": 0,
+    "max_weight_sum_error": 1.1920928955078125e-07,
+    "armature_modifiers": 1
+  },
+  "body_mask": {
+    "name": "WearableMask_AdventurerTorsoOuterV1",
+    "vertex_count": 2196,
+    "applied_in_review": true
+  },
+  "actor_profile_neck_seal": {
+    "name": "ActorProfile_NeckSeal_ChibiActorV1",
+    "vertices": 192,
+    "faces": 162
+  },
+  "collar_shoulder_coverage": {
+    "front": {
+      "inner": {
+        "vertex_count": 2217,
+        "p95_z": 1.4573391675949097,
+        "minimum_p95_z": 1.43
+      },
+      "middle": {
+        "vertex_count": 1643,
+        "p95_z": 1.4602360725402832,
+        "minimum_p95_z": 1.42
+      },
+      "outer": {
+        "vertex_count": 1449,
+        "p95_z": 1.4123954772949219,
+        "minimum_p95_z": 1.4
+      }
+    },
+    "back": {
+      "inner": {
+        "vertex_count": 1031,
+        "p95_z": 1.4887036085128784,
+        "minimum_p95_z": 1.47
+      },
+      "middle": {
+        "vertex_count": 713,
+        "p95_z": 1.4272685050964355,
+        "minimum_p95_z": 1.42
+      },
+      "outer": {
+        "vertex_count": 1383,
+        "p95_z": 1.43272864818573,
+        "minimum_p95_z": 1.42
+      }
+    }
+  },
+  "frame_reports": {
+    "1": {
+      "visible_actor_vertices": 10044,
+      "neck_seal_vertices": 192,
+      "actor_intersecting_face_pairs": 704,
+      "neck_seal_intersecting_face_pairs": 0,
+      "intersecting_face_pairs": 704,
+      "intersecting_actor_faces": 29,
+      "intersecting_garment_faces": 668,
+      "garment_face_samples": [
+        1324,
+        1328,
+        1330,
+        1343,
+        1620,
+        1621,
+        1918,
+        1919,
+        2204,
+        2205,
+        2527,
+        2528,
+        2529,
+        2538,
+        2539,
+        2816
+      ],
+      "degenerate_faces": 0
+    },
+    "11": {
+      "visible_actor_vertices": 10044,
+      "neck_seal_vertices": 192,
+      "actor_intersecting_face_pairs": 814,
+      "neck_seal_intersecting_face_pairs": 0,
+      "intersecting_face_pairs": 814,
+      "intersecting_actor_faces": 38,
+      "intersecting_garment_faces": 756,
+      "garment_face_samples": [
+        1328,
+        1343,
+        1344,
+        1352,
+        1353,
+        1359,
+        1619,
+        1631,
+        1632,
+        1658,
+        1665,
+        1916,
+        1917,
+        1922,
+        1965,
+        2198
+      ],
+      "degenerate_faces": 0
+    },
+    "21": {
+      "visible_actor_vertices": 10044,
+      "neck_seal_vertices": 192,
+      "actor_intersecting_face_pairs": 809,
+      "neck_seal_intersecting_face_pairs": 0,
+      "intersecting_face_pairs": 809,
+      "intersecting_actor_faces": 35,
+      "intersecting_garment_faces": 755,
+      "garment_face_samples": [
+        1328,
+        1343,
+        1344,
+        1352,
+        1353,
+        1619,
+        1631,
+        1632,
+        1916,
+        1917,
+        1919,
+        1922,
+        2200,
+        2204,
+        2205,
+        2520
+      ],
+      "degenerate_faces": 0
+    },
+    "31": {
+      "visible_actor_vertices": 10044,
+      "neck_seal_vertices": 192,
+      "actor_intersecting_face_pairs": 766,
+      "neck_seal_intersecting_face_pairs": 0,
+      "intersecting_face_pairs": 766,
+      "intersecting_actor_faces": 36,
+      "intersecting_garment_faces": 715,
+      "garment_face_samples": [
+        1324,
+        1328,
+        1330,
+        1620,
+        1621,
+        1918,
+        1920,
+        2206,
+        2207,
+        2528,
+        2529,
+        2538,
+        2539,
+        2816,
+        2817,
+        2823
+      ],
+      "degenerate_faces": 0
+    },
+    "41": {
+      "visible_actor_vertices": 10044,
+      "neck_seal_vertices": 192,
+      "actor_intersecting_face_pairs": 641,
+      "neck_seal_intersecting_face_pairs": 0,
+      "intersecting_face_pairs": 641,
+      "intersecting_actor_faces": 32,
+      "intersecting_garment_faces": 589,
+      "garment_face_samples": [
+        1324,
+        1330,
+        1620,
+        1621,
+        1918,
+        1920,
+        2206,
+        2207,
+        2528,
+        2529,
+        2538,
+        2539,
+        2816,
+        2817,
+        2823,
+        2826
+      ],
+      "degenerate_faces": 0
+    },
+    "51": {
+      "visible_actor_vertices": 10044,
+      "neck_seal_vertices": 192,
+      "actor_intersecting_face_pairs": 669,
+      "neck_seal_intersecting_face_pairs": 0,
+      "intersecting_face_pairs": 669,
+      "intersecting_actor_faces": 32,
+      "intersecting_garment_faces": 617,
+      "garment_face_samples": [
+        1620,
+        1621,
+        1918,
+        1920,
+        2206,
+        2207,
+        2216,
+        2538,
+        2539,
+        2816,
+        2817,
+        2823,
+        2826,
+        3086,
+        3348,
+        3349
+      ],
+      "degenerate_faces": 0
+    },
+    "61": {
+      "visible_actor_vertices": 10044,
+      "neck_seal_vertices": 192,
+      "actor_intersecting_face_pairs": 594,
+      "neck_seal_intersecting_face_pairs": 0,
+      "intersecting_face_pairs": 594,
+      "intersecting_actor_faces": 31,
+      "intersecting_garment_faces": 549,
+      "garment_face_samples": [
+        1324,
+        1620,
+        1621,
+        1918,
+        1920,
+        2206,
+        2207,
+        2528,
+        2529,
+        2538,
+        2539,
+        2816,
+        2817,
+        2823,
+        2826,
+        3086
+      ],
+      "degenerate_faces": 1
+    },
+    "71": {
+      "visible_actor_vertices": 10044,
+      "neck_seal_vertices": 192,
+      "actor_intersecting_face_pairs": 704,
+      "neck_seal_intersecting_face_pairs": 0,
+      "intersecting_face_pairs": 704,
+      "intersecting_actor_faces": 29,
+      "intersecting_garment_faces": 668,
+      "garment_face_samples": [
+        1324,
+        1328,
+        1330,
+        1343,
+        1620,
+        1621,
+        1918,
+        1919,
+        2204,
+        2205,
+        2527,
+        2528,
+        2529,
+        2538,
+        2539,
+        2816
+      ],
+      "degenerate_faces": 0
+    }
+  },
+  "summary": {
+    "visible_actor_garment_intersecting_face_pairs": 5701,
+    "contact_tolerance": {
+      "maximum_pairs_per_frame": 16,
+      "maximum_actor_faces_per_frame": 2,
+      "excessive_contact_frames": [
+        1,
+        11,
+        21,
+        31,
+        41,
+        51,
+        61,
+        71
+      ]
+    },
+    "degenerate_faces": 1,
+    "failures": [
+      "visible Actor/garment contact exceeded tolerance at frames: [1, 11, 21, 31, 41, 51, 61, 71]",
+      "degenerate evaluated faces: 1"
+    ]
+  },
+  "status": "fail"
+}

@@ -1,0 +1,25 @@
+{
+  "schema": "assetsstudio_actor_reference_view_analysis_v1",
+  "source": "E:\\WorkProject\\AssetsStudio\\workspace\\actor_v2\\base\\v1\\source_views\\rgb\\back.png",
+  "image_size": [
+    1024,
+    1024
+  ],
+  "component_count": 1,
+  "foreground_area_px": 115244,
+  "bbox_xywh": [
+    356,
+    199,
+    289,
+    615
+  ],
+  "centroid_xy": [
+    502.309,
+    474.522
+  ],
+  "top_y": 199,
+  "ground_y": 813,
+  "neck_y": 489,
+  "head_height_px": 291,
+  "visual_head_count": 2.1134
+}
