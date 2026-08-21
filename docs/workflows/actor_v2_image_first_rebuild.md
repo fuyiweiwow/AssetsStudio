@@ -2,10 +2,10 @@
 
 ## Status
 
-- Current state: `base_turnaround_approved_ready_for_rgba`
+- Current state: `static_shape_pass_rig_calibration_pending_human_confirmation`
 - Actor V1 remains the accepted game Actor.
 - Actor V2 must restart from `image_gen`; no manual proportion morph may enter the source-of-truth chain.
-- No mesh, armature, face, garment or GLB work may begin until the user-supplied visual anchor and the new default-outfit turnaround are approved.
+- The approved visual source has now passed local Hunyuan shape reconstruction and Blender static multiview QC. Skin binding, animation retarget and slot compilation remain blocked until the provisional bone landmarks are confirmed.
 
 ## Recovered saved workflow
 
@@ -103,6 +103,28 @@ Automatic reference validation passes:
 - front/back silhouette IoU: `0.967025`;
 - one connected Actor silhouette in every view.
 
+## Local Hunyuan shape and static fit result
+
+The approved base views were converted to official-rembg RGBA, clipped to the validated masks and reconstructed with the local `Hunyuan3D-2mv` turbo checkpoint using a conservative RTX 3060-safe configuration:
+
+- fixed seed `20260821`, `5` steps, octree `192`, `8000` chunks and CPU offload;
+- peak reported CUDA allocation `2,570,559,488` bytes (about `2.39 GiB`);
+- one watertight connected mesh, `61,164` vertices and `122,324` faces;
+- no crash or blue screen during this reconstruction/Blender validation run.
+
+After Blender-native canonicalization and a material-independent flat silhouette render, the valid alpha-to-silhouette fit is:
+
+| View | IoU | SSIM | BBox center gate | BBox size gate |
+|---|---:|---:|---|---|
+| front | `0.9404` | `0.9808` | pass | pass |
+| right | `0.8407` | `0.9733` | pass | pass |
+| back | `0.8537` | `0.9657` | pass | pass |
+| left | `0.8378` | `0.9730` | pass | pass |
+
+All four views stay within the multiview-fit hard gates: bbox center drift no more than `1.5%` of the frame, front size error no more than `3%`, and side/back size error no more than `5%`. The tracked evidence is `references/actor_v2/base_v1/validation/hunyuan_shape_static_fit_v0.json`; binary GLB/Blend files and overlays remain reproducible local workspace artifacts.
+
+The provisional unweighted armature now contains the reusable `CC_Base_*` semantic chain plus independent `EarRoot_L/R` anchors. Its preview and JSON live under `workspace/actor_v2/base/v1/rig_calibration/`. No skin binding or animation retarget has been performed.
+
 The first automatic report was invalid because alpha segmentation selected the entire opaque panel. It remains local-only under `workspace/actor_v2/base/v1/source_analysis/invalid_alpha_compiled_reference_manifest.json` and `workspace/actor_v2/base/v1/validation/invalid_panel_mask_*`; it must not be cited as Actor geometry evidence.
 
 ## EarPair variable-asset contract
@@ -151,14 +173,24 @@ Location: `workspace/actor_v2/rejected/imagegen/draft_04_ear_root_circles_pollut
 
 Failure: the body and multiview proportions were usable, but visible circular ear-root guides could be reconstructed by Hunyuan as disks, seams or depressions. The accepted candidate removes those marks entirely; `EarRoot_L/R` will be defined later as metadata/Blender anchors.
 
+### Invalid extra glTF rotation during canonicalization
+
+The first local static render appeared to contain only a giant head and a horizontally stretched body. The Hunyuan mesh had not collapsed: the diagnostic script had interpreted glTF's native `+Y` storage axis as if it were already Blender runtime space and applied an unnecessary additional `+90 degree X` rotation. Blender's glTF importer already resolves storage `+Y` into runtime `+Z`.
+
+The corrected rule is mandatory: import the native Hunyuan GLB in Blender, bake the importer-resolved world transform into the mesh, then move the runtime Z minimum to `0`. Never pre-rotate this GLB with trimesh before Blender import. The invalid rotated files remain local-only and must not be used as failure evidence for Hunyuan.
+
+### Invalid mask mode in the first fit report
+
+The first fit-loop invocation treated bright-on-dark registration masks as `wire_black`, selecting almost the entire black background and producing meaningless near-zero IoU. Final metrics compare the validated RGBA alpha directly against Blender's flat bright-on-dark silhouette. Only `hunyuan_shape_static_fit_v0.json` and the matching local `canonical_validation/fit/` reports are valid.
+
 ## Correct restart sequence
 
 1. Preserve the user-supplied proportion/style anchor as the primary visual authority.
 2. Generate and review one assembled default-adventurer turnaround in front/right/back/left order. The current identity master is `references/actor_v2/actor_v2_default_adventurer_turnaround_v1_candidate.png`.
 3. From the approved identity, derive a clean Actor calibration set with no hair, no permanent ears and only a neutral fitted construction layer; preserve subtle standardized ear-root attachment zones.
 4. Validate identity, silhouette, visual proportion, shoulder/hip width, rounded hands/feet, earless head/ear-root zones and construction-line correspondence across all four views.
-5. Create Actor RGB/RGBA inputs, run Hunyuan base generation, canonicalize in Blender and pass static visual QA.
-6. Extract the new ActorProfile and calibration views.
+5. Create Actor RGB/RGBA inputs, run Hunyuan base generation, canonicalize in Blender and pass static visual QA. **Completed for base V1.**
+6. Confirm the provisional pelvis/spine/neck/head, shoulders/elbows/wrists, hips/knees/ankles/toes and `EarRoot_L/R`; then bind skin and extract the new ActorProfile/calibration views.
 7. Isolate the default `EarPair`, hair and seven wearable slots from the approved master while preserving front/right/back/left correspondence.
 8. Process each slot through RGB/RGBA, Hunyuan3D-2MV, the smallest slot-specific compiler and static/action QA.
 

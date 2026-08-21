@@ -14,6 +14,7 @@ This tracked package is the reproducible visual source of truth for the Actor V2
 - `reference_manifest.json`: part-count and threshold contract.
 - `source_analysis/`: foreground masks and per-view measurements.
 - `validation/`: front/back and mirrored side overlays plus the passing consistency report.
+- `validation/hunyuan_shape_static_fit_v0.json`: local Hunyuan reconstruction, topology, coordinate contract and passing four-view Blender fit metrics.
 - `GENERATION_RECORD.md`: built-in ImageGen prompt summary and correction history.
 
 The assembled master may display the default human `EarPair`. The base source contains no permanent ears; `EarRoot_L/R` will be authored as ActorProfile/Blender anchors after shape reconstruction.

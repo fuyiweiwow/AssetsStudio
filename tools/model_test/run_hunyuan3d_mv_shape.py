@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import gc
 import importlib
+import json
 import os
 import sys
 from pathlib import Path
@@ -95,6 +96,8 @@ def main() -> int:
     parser.add_argument("--left", type=Path)
     parser.add_argument("--back", type=Path)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--manifest", type=Path)
+    parser.add_argument("--seed", type=int, default=20260821)
     parser.add_argument("--steps", type=int, default=5)
     parser.add_argument("--octree-resolution", type=int, default=256)
     parser.add_argument("--num-chunks", type=int, default=20000)
@@ -128,18 +131,48 @@ def main() -> int:
             "back": Image.open(args.back).convert("RGBA"),
         }
     print("HUNYUAN_MV_GENERATE", flush=True)
+    torch.cuda.reset_peak_memory_stats()
+    generator = torch.Generator(device="cuda").manual_seed(args.seed)
     with torch.inference_mode():
         mesh = pipeline(
             image=images,
             num_inference_steps=args.steps,
             octree_resolution=args.octree_resolution,
             num_chunks=args.num_chunks,
+            generator=generator,
             output_type="trimesh",
         )[0]
     mesh.export(args.output)
+    peak_memory_bytes = int(torch.cuda.max_memory_allocated())
+    report = {
+        "schema": "assetsstudio_hunyuan3d_2mv_shape_v1",
+        "model": str(args.model.resolve()),
+        "subfolder": args.subfolder,
+        "inputs": {
+            "front": str(args.front.resolve()),
+            "left": str(args.left.resolve()) if args.left else None,
+            "back": str(args.back.resolve()) if args.back else None,
+        },
+        "output": str(args.output.resolve()),
+        "seed": args.seed,
+        "steps": args.steps,
+        "octree_resolution": args.octree_resolution,
+        "num_chunks": args.num_chunks,
+        "cpu_offload": args.cpu_offload,
+        "vertices": len(mesh.vertices),
+        "faces": len(mesh.faces),
+        "peak_cuda_memory_bytes": peak_memory_bytes,
+        "status": "pass",
+    }
+    if args.manifest is not None:
+        args.manifest.parent.mkdir(parents=True, exist_ok=True)
+        args.manifest.write_text(
+            json.dumps(report, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
+        )
     print(
         f"HUNYUAN_MV_PASS output={args.output.resolve()} "
-        f"vertices={len(mesh.vertices)} faces={len(mesh.faces)}",
+        f"vertices={len(mesh.vertices)} faces={len(mesh.faces)} "
+        f"peak_cuda_memory_bytes={peak_memory_bytes}",
         flush=True,
     )
     return 0
