@@ -121,6 +121,7 @@ def main() -> int:
     parser.add_argument("--output-dir", type=Path, required=True)
     parser.add_argument("--sample-count", type=int, default=8)
     parser.add_argument("--resolution", type=int, default=384)
+    parser.add_argument("--actor-object", default="ChibiBaseMesh_AccuRIG_InputMesh")
     raw_args = sys.argv[sys.argv.index("--") + 1 :] if "--" in sys.argv else sys.argv[1:]
     args = parser.parse_args(raw_args)
     args.output_dir.mkdir(parents=True, exist_ok=True)
@@ -133,10 +134,16 @@ def main() -> int:
         for obj in scene.objects
         if obj.type == "MESH" and any(mod.type == "ARMATURE" and mod.object for mod in obj.modifiers)
     ]
-    if len(armatures) != 1 or len(rigged_meshes) != 1:
-        raise RuntimeError(f"Expected one armature and one rigged mesh; got {len(armatures)} and {len(rigged_meshes)}")
+    if len(armatures) != 1 or not rigged_meshes:
+        raise RuntimeError(f"Expected one armature and at least one rigged mesh; got {len(armatures)} and {len(rigged_meshes)}")
     armature = armatures[0]
-    actor = rigged_meshes[0]
+    actor = next((obj for obj in rigged_meshes if obj.name == args.actor_object), None)
+    if actor is None:
+        raise RuntimeError(
+            f"Actor mesh {args.actor_object!r} not found among rigged meshes: "
+            f"{[obj.name for obj in rigged_meshes]}"
+        )
+    attachment_meshes = [obj for obj in rigged_meshes if obj != actor]
     action = armature.animation_data.action if armature.animation_data else None
     if action is None:
         raise RuntimeError("The target armature has no active action")
@@ -153,6 +160,10 @@ def main() -> int:
         scene.frame_set(frame)
         depsgraph.update()
         minimum, maximum, finite = evaluated_bounds(actor, depsgraph)
+        attachment_finite = {}
+        for attachment in attachment_meshes:
+            _, _, is_finite = evaluated_bounds(attachment, depsgraph)
+            attachment_finite[attachment.name] = is_finite
         dimensions = maximum - minimum
         samples.append(
             {
@@ -161,6 +172,7 @@ def main() -> int:
                 "bounds_max": list(maximum),
                 "dimensions": list(dimensions),
                 "finite_geometry": finite,
+                "attachment_finite_geometry": attachment_finite,
                 "landmarks": {name: bone_head_world(armature, name) for name in LANDMARK_BONES},
             }
         )
@@ -181,6 +193,9 @@ def main() -> int:
         "active_action": action is not None,
         "all_landmark_bones_present": all(name in armature.pose.bones for name in LANDMARK_BONES),
         "finite_deformed_geometry": all(sample["finite_geometry"] for sample in samples),
+        "finite_rigged_attachments": all(
+            all(sample["attachment_finite_geometry"].values()) for sample in samples
+        ),
         "no_severe_ground_penetration": min(sample["bounds_min"][2] for sample in samples) >= -nominal_height * 0.03,
         "bounded_height_change": max(heights) - min(heights) <= nominal_height * 0.15,
         "in_place_root": hip_xy_drift <= nominal_height * 0.05,
@@ -217,6 +232,7 @@ def main() -> int:
         "frame_range": [start, end],
         "sample_frames": frames,
         "actor_object": actor.name,
+        "rigged_attachment_objects": [obj.name for obj in attachment_meshes],
         "armature_object": armature.name,
         "overall_bounds_min": list(overall_min),
         "overall_bounds_max": list(overall_max),

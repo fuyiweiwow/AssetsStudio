@@ -2,10 +2,10 @@
 
 ## Status
 
-- Current state: `rig_actions_eyeassembly_earpair_hair_pass_default_outfit_slots_next`
+- Current state: `rig_actions_eyeassembly_earpair_hair_torso_outer_pass_remaining_outfit_slots_next`
 - Actor V1 remains the accepted game Actor.
 - Actor V2 must restart from `image_gen`; no manual proportion morph may enter the source-of-truth chain.
-- The approved visual source has passed local Hunyuan shape reconstruction, Blender static multiview QC, AccuRIG binding, Walk/Run retarget stress tests, EyeAssembly/blink, the detachable default human `EarPair`, and the default `head_hair` static/Walk gates. The seven default outfit slots and final runtime assembly remain pending.
+- The approved visual source has passed local Hunyuan shape reconstruction, Blender static multiview QC, AccuRIG binding, Walk/Run retarget stress tests, EyeAssembly/blink, the detachable default human `EarPair`, default `head_hair`, and default `torso_outer` static/Walk gates. Six outfit slots and final runtime assembly remain pending.
 
 ## Recovered saved workflow
 
@@ -181,6 +181,16 @@ Accepted fit `v10` uses width ratio `1.25`, Q-height ratio `1.25` and top cleara
 
 Detailed rejected-branch evidence and the reusable fitting rule are recorded in `docs/quality/ACTOR_V2_DEFAULT_HAIR_FIT_2026-08-22.md`.
 
+## Default torso_outer result
+
+The isolated jacket source uses the approved assembled master only as design authority. It contains one coherent hollow garment with complete short sleeve tubes, a blue outer shell, cream front/collar/cuffs and a close red scarf. A strict four-way `384 px` crop was rejected because it cut across silhouettes; overlapping `512 x 1024` windows at X `0 / 384 / 768 / 1024` plus largest-component alpha extraction produce one clean component per view.
+
+Local Hunyuan3D-2MV used seed `20260822`, five steps, octree `192`, chunk size `8000` and CPU offload, peaking at about `2.39 GiB` reported CUDA allocation. The source `140,496` vertices / `280,994` faces compile to `25,289` vertices / `50,578` faces over runtime Z `0.50-1.04 m`.
+
+Accepted `fit_v10` preserves the generated silhouette instead of re-bending sleeve geometry. The arm partition is used only for clavicle/upper-arm weights. A separate Actor body mask and neck occlusion seal prevent covered-body leaks. Four-view static review and Walk frames `1-71` sampled eight times pass with finite attachments, stable closed sleeves, visible hands and a stable hem/neck seam.
+
+Projected per-triangle image materials were rejected: they caused triangle confetti, then side/background leakage and hard dominant-view seams. The accepted game material samples the four source views into continuous blue/cream/red/lining semantic regions with adjacency cleanup. Full failure history and reusable rules are recorded in `docs/quality/ACTOR_V2_TORSO_OUTER_FIT_2026-08-22.md`.
+
 ## Rejected branches and why
 
 ### Rejected manual morph
@@ -231,8 +241,8 @@ The first fit-loop invocation treated bright-on-dark registration masks as `wire
 4. Validate identity, silhouette, visual proportion, shoulder/hip width, rounded hands/feet, earless head/ear-root zones and construction-line correspondence across all four views.
 5. Create Actor RGB/RGBA inputs, run Hunyuan base generation, canonicalize in Blender and pass static visual QA. **Completed for base V1.**
 6. Load the passing FBX in AccuRIG, manually confirm pelvis/spine/neck/head, shoulders/elbows/wrists, hips/knees/ankles/toes, select zero fingers, bind skin and export the rigged FBX. Keep `EarRoot_L/R` as separate ActorProfile anchors after re-import. **Completed; Walk, Run, four-weight optimization and EyeAssembly/blink gates also pass.**
-7. Isolate the default `EarPair`, hair and seven wearable slots from the approved master while preserving front/right/back/left correspondence. **`EarPair` and `head_hair` completed.**
-8. Process each slot through RGB/RGBA, Hunyuan3D-2MV, the smallest slot-specific compiler and static/action QA. **Next: the default adventurer outfit slots.**
+7. Isolate the default `EarPair`, hair and seven wearable slots from the approved master while preserving front/right/back/left correspondence. **`EarPair`, `head_hair` and `torso_outer` completed.**
+8. Process each slot through RGB/RGBA, Hunyuan3D-2MV, the smallest slot-specific compiler and static/action QA. **Next: `waist_accessory`, because it owns the belt/hem interface.**
 
 ## Bone calibration gate
 
