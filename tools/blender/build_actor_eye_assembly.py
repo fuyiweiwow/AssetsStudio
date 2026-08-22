@@ -1,4 +1,4 @@
-"""Build the retained single-assembly 3D eye structure on Actor V1.
+"""Build the retained single-assembly 3D eye structure on an AccuRIG Actor.
 
 This stage creates one eyebrow+eye texture surface per eye, parented to
 CC_Base_Head. Open is Actor-native; optional half/closed state materials are
@@ -52,7 +52,25 @@ def cli_args() -> argparse.Namespace:
     parser.add_argument("--height-scale", type=float, default=0.68)
     parser.add_argument("--clearance", type=float, default=0.008)
     parser.add_argument("--curvature", type=float, default=0.018)
+    parser.add_argument("--left-center-x", type=float)
+    parser.add_argument("--right-center-x", type=float)
+    parser.add_argument("--eye-center-z", type=float)
+    parser.add_argument("--eye-width", type=float)
+    parser.add_argument("--eye-height", type=float)
     return parser.parse_args(argv)
+
+
+def explicit_eye_placement(options: argparse.Namespace) -> bool:
+    values = (
+        options.left_center_x,
+        options.right_center_x,
+        options.eye_center_z,
+        options.eye_width,
+        options.eye_height,
+    )
+    if any(value is not None for value in values) and not all(value is not None for value in values):
+        raise RuntimeError("explicit Actor V2 eye placement requires both X centers, Z center, width and height")
+    return all(value is not None for value in values)
 
 
 def validate_blink_texture_args(options: argparse.Namespace) -> bool:
@@ -203,6 +221,7 @@ def eye_world_bounds(obj: bpy.types.Object) -> tuple[Vector, Vector]:
 def main() -> int:
     options = cli_args()
     has_blink_states = validate_blink_texture_args(options)
+    has_explicit_placement = explicit_eye_placement(options)
     output = options.output.resolve()
     output.mkdir(parents=True, exist_ok=True)
     bpy.ops.wm.open_mainfile(filepath=str(options.source_blend.resolve()))
@@ -214,12 +233,28 @@ def main() -> int:
     actor_mesh = next((obj for obj in bpy.data.objects if obj.type == "MESH" and obj.name.startswith("ChibiBaseMesh")), None)
     left_source = bpy.data.objects.get("EyePackageV1_Lens_L")
     right_source = bpy.data.objects.get("EyePackageV1_Lens_R")
-    if armature is None or actor_mesh is None or left_source is None or right_source is None:
-        raise RuntimeError("Actor V1 blend must contain Armature, ChibiBaseMesh, and native eye lens anchors")
+    if armature is None or actor_mesh is None:
+        raise RuntimeError("Actor blend must contain Armature and ChibiBaseMesh")
+    if not has_explicit_placement and (left_source is None or right_source is None):
+        raise RuntimeError("Actor has no native eye anchors; provide explicit Actor V2 eye placement")
     if armature.data.bones.get(HEAD_BONE) is None:
         raise RuntimeError(f"Actor V1 blend is missing {HEAD_BONE}")
 
-    source_bounds = {"L": eye_world_bounds(left_source), "R": eye_world_bounds(right_source)}
+    actor_low, actor_high = bounds(actor_mesh)
+    if has_explicit_placement:
+        eye_centers = {
+            "L": Vector((options.left_center_x, actor_low.y - options.clearance, options.eye_center_z)),
+            "R": Vector((options.right_center_x, actor_low.y - options.clearance, options.eye_center_z)),
+        }
+        source_bounds = {
+            side: (
+                center - Vector((options.eye_width * 0.5, 0.0, options.eye_height * 0.5)),
+                center + Vector((options.eye_width * 0.5, 0.0, options.eye_height * 0.5)),
+            )
+            for side, center in eye_centers.items()
+        }
+    else:
+        source_bounds = {"L": eye_world_bounds(left_source), "R": eye_world_bounds(right_source)}
     remove_old_eye_objects()
     collection = bpy.data.collections.get("EyeAssemblyV1") or bpy.data.collections.new("EyeAssemblyV1")
     if collection.name not in scene.collection.children:
@@ -246,8 +281,8 @@ def main() -> int:
         eye_center = (low + high) * 0.5
         eye_width = high.x - low.x
         eye_height = high.z - low.z
-        width = eye_width * 1.42 * options.width_scale
-        height = eye_height * 1.52 * options.height_scale
+        width = eye_width if has_explicit_placement else eye_width * 1.42 * options.width_scale
+        height = eye_height if has_explicit_placement else eye_height * 1.52 * options.height_scale
         # The generated canvas contains the eyebrow above the eye; shift the
         # assembly center upward so the actual eye remains on the native anchor.
         group_center = Vector((eye_center.x, low.y - options.clearance, eye_center.z + height * 0.10))
@@ -337,10 +372,16 @@ def main() -> int:
         "back_policy": "transparent_no_eye_geometry",
         "blink_amount": 0.0,
         "placement": {
+            "mode": "explicit_actor_v2" if has_explicit_placement else "native_actor_v1_anchors",
             "width_scale": options.width_scale,
             "height_scale": options.height_scale,
             "clearance": options.clearance,
             "curvature": options.curvature,
+            "left_center_x": options.left_center_x,
+            "right_center_x": options.right_center_x,
+            "eye_center_z": options.eye_center_z,
+            "eye_width": options.eye_width,
+            "eye_height": options.eye_height,
         },
         "directions": list(camera_specs),
         "state_outputs": state_outputs,

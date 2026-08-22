@@ -1,0 +1,55 @@
+{
+  "schema": "assetsstudio_actor_v2_face_reference_manifest_v1",
+  "source_files": [
+    "../actor_v2_ratio_style_anchor_user_v1.png",
+    "../../../milestones/body/eye_textures/eye_left.png",
+    "../../../milestones/body/eye_textures/eye_right.png",
+    "../../../milestones/body/eye_textures/eye_half_left.png",
+    "../../../milestones/body/eye_textures/eye_half_right.png",
+    "../../../milestones/body/eye_textures/eye_closed_left.png",
+    "../../../milestones/body/eye_textures/eye_closed_right.png"
+  ],
+  "primary_view": "front",
+  "expected_primary_parts": {
+    "count": 2,
+    "labels": [
+      "EyeAssemblyV1_Front_L",
+      "EyeAssemblyV1_Front_R"
+    ]
+  },
+  "structural_parts": [
+    "left shallow curved eye surface",
+    "right shallow curved eye surface"
+  ],
+  "decorative_parts": [
+    "open eye texture",
+    "half eye texture",
+    "closed eye texture"
+  ],
+  "attachment": {
+    "bone": "CC_Base_Head",
+    "back_policy": "transparent_no_eye_geometry",
+    "placement_m": {
+      "left_center_x": 0.2,
+      "right_center_x": -0.2,
+      "center_z": 1.356,
+      "surface_width": 0.19,
+      "surface_height": 0.27
+    }
+  },
+  "validation_thresholds": {
+    "part_count_exact": true,
+    "parent_bone_exact": true,
+    "blink_states_exact": [
+      "open",
+      "half",
+      "closed"
+    ],
+    "head_follow_frames": [
+      1,
+      31
+    ],
+    "review_directions": 4,
+    "review_frames": 8
+  }
+}

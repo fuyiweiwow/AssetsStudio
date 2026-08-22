@@ -2,10 +2,10 @@
 
 ## Status
 
-- Current state: `accurig_input_ready_manual_guides_pending`
+- Current state: `rig_actions_eyeassembly_pass_slot_isolation_next`
 - Actor V1 remains the accepted game Actor.
 - Actor V2 must restart from `image_gen`; no manual proportion morph may enter the source-of-truth chain.
-- The approved visual source has now passed local Hunyuan shape reconstruction and Blender static multiview QC. Skin binding, animation retarget and slot compilation remain blocked until the provisional bone landmarks are confirmed.
+- The approved visual source has passed local Hunyuan shape reconstruction, Blender static multiview QC, AccuRIG binding, Walk/Run retarget stress tests and the first Actor V2 EyeAssembly/blink gate. Slot isolation and final runtime assembly remain pending.
 
 ## Recovered saved workflow
 
@@ -139,7 +139,19 @@ Manual AccuRIG review remains required for the center line, head/neck, shoulder/
 
 The exporter must consume the original Hunyuan GLB, not the Blender re-exported validation GLB. One diagnostic FBX inherited `366,510` split vertices from the intermediate GLB normal layout while retaining the same face count. It was overwritten and rejected. The accepted FBX preserves the original `61,164` vertices and passes the round-trip count gate.
 
-The shallow generated eye recess does not affect body rigging. It remains provisional until the independent open/half/closed EyeAssembly fully covers it without edge leaks or unwanted socket shadows; if that gate fails, repair only the local eye region rather than regenerating or reshaping the Actor silhouette.
+## AccuRIG, action and EyeAssembly result
+
+The user-exported AccuRIG FBX passes the local audit with one Actor mesh, one 71-bone armature, all 23 required `CC_Base_*` landmarks, no unweighted vertices and normalized weights. The raw skin contains at most six influences per vertex; `13,487` vertices exceed four influences. Motion was first reviewed with the raw weights, then the strongest four influences were retained and renormalized for the game copy. The four-weight Walk has no measured bounds regression against the raw Walk.
+
+- Walk: Mixamo standard walk, frames `1-71`, 22 mapped bones, four directions x eight review frames, pass.
+- Run: Mixamo run, frames `1-43`, 22 mapped bones, four directions x eight review frames, pass.
+- Walk maximum ground penetration: `0.01921 m`, about `0.96%` of Actor height; reserve foot-lock/ground correction for the runtime animation layer.
+- Run minimum geometry Z: `0.00802 m`; no ground penetration in sampled frames.
+- Both actions remain in place, preserve finite geometry and keep the head-to-hip distance within the action gates.
+
+Actor V2 now uses the retained two-surface `EyeAssemblyV1` structure with independent `open / half / closed` texture states. Placement is explicit for the new head profile rather than inherited from Actor V1 lens objects: character-left/right X centers `+/-0.200 m`, eye center Z `1.356 m`, surface width `0.190 m` and height `0.270 m`. The accepted eye shapes remain deterministic; only the eyebrow hue is remapped to the warm brown style authority. The assembly is bone-parented to `CC_Base_Head`, follows Walk from frame 1 to 31, renders no eye geometry from the back, and passes four directions x eight deterministic blink frames.
+
+The shallow generated eye recess does not affect body rigging or the fitted EyeAssembly. A mild socket shadow remains visible through transparent texture areas, but it does not cut through the eye surface or break open/half/closed states. Keep it unless later hair/skin materials amplify it; any repair must remain local to the eye region and must not change the Actor silhouette.
 
 The first automatic report was invalid because alpha segmentation selected the entire opaque panel. It remains local-only under `workspace/actor_v2/base/v1/source_analysis/invalid_alpha_compiled_reference_manifest.json` and `workspace/actor_v2/base/v1/validation/invalid_panel_mask_*`; it must not be cited as Actor geometry evidence.
 
@@ -206,10 +218,10 @@ The first fit-loop invocation treated bright-on-dark registration masks as `wire
 3. From the approved identity, derive a clean Actor calibration set with no hair, no permanent ears and only a neutral fitted construction layer; preserve subtle standardized ear-root attachment zones.
 4. Validate identity, silhouette, visual proportion, shoulder/hip width, rounded hands/feet, earless head/ear-root zones and construction-line correspondence across all four views.
 5. Create Actor RGB/RGBA inputs, run Hunyuan base generation, canonicalize in Blender and pass static visual QA. **Completed for base V1.**
-6. Load the passing FBX in AccuRIG, manually confirm pelvis/spine/neck/head, shoulders/elbows/wrists, hips/knees/ankles/toes, select zero fingers, bind skin and export the rigged FBX. Keep `EarRoot_L/R` as separate ActorProfile anchors after re-import.
+6. Load the passing FBX in AccuRIG, manually confirm pelvis/spine/neck/head, shoulders/elbows/wrists, hips/knees/ankles/toes, select zero fingers, bind skin and export the rigged FBX. Keep `EarRoot_L/R` as separate ActorProfile anchors after re-import. **Completed; Walk, Run, four-weight optimization and EyeAssembly/blink gates also pass.**
 7. Isolate the default `EarPair`, hair and seven wearable slots from the approved master while preserving front/right/back/left correspondence.
 8. Process each slot through RGB/RGBA, Hunyuan3D-2MV, the smallest slot-specific compiler and static/action QA.
 
 ## Bone calibration gate
 
-Bone calibration is deferred. Request human confirmation only after the static multiview body passes. The required landmarks will be pelvis, spine, neck/head, shoulders, elbows, wrists, hips, knees, ankles and toe bases.
+Bone calibration and AccuRIG handoff are complete. The required landmarks are pelvis, spine, neck/head, shoulders, elbows, wrists, hips, knees, ankles and toe bases. Future Actor variants must repeat the same static, Walk and Run gates before slot compilation.

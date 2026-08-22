@@ -17,6 +17,11 @@ This tracked package is the reproducible visual source of truth for the Actor V2
 - `validation/hunyuan_shape_static_fit_v0.json`: local Hunyuan reconstruction, topology, coordinate contract and passing four-view Blender fit metrics.
 - `GENERATION_RECORD.md`: built-in ImageGen prompt summary and correction history.
 
+## Face V1 contents
+
+- `face_v1/eye_textures/`: accepted V1 open/half/closed eye shapes with a deterministic warm-brown eyebrow remap for the Actor V2 style authority.
+- `face_v1/reference_manifest.json`: two-surface part-count, placement, attachment and blink validation contract.
+
 The assembled master may display the default human `EarPair`. The base source contains no permanent ears; `EarRoot_L/R` will be authored as ActorProfile/Blender anchors after shape reconstruction.
 
 Do not send the assembled outfit master directly to Hunyuan. Generate the Actor from `base_v1/rgb/`, then isolate and compile each wearable slot independently.
