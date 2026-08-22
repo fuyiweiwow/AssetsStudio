@@ -2,7 +2,7 @@
 
 ## Status
 
-- Current state: `static_shape_pass_rig_calibration_pending_human_confirmation`
+- Current state: `accurig_input_ready_manual_guides_pending`
 - Actor V1 remains the accepted game Actor.
 - Actor V2 must restart from `image_gen`; no manual proportion morph may enter the source-of-truth chain.
 - The approved visual source has now passed local Hunyuan shape reconstruction and Blender static multiview QC. Skin binding, animation retarget and slot compilation remain blocked until the provisional bone landmarks are confirmed.
@@ -125,6 +125,22 @@ All four views stay within the multiview-fit hard gates: bbox center drift no mo
 
 The provisional unweighted armature now contains the reusable `CC_Base_*` semantic chain plus independent `EarRoot_L/R` anchors. Its preview and JSON live under `workspace/actor_v2/base/v1/rig_calibration/`. No skin binding or animation retarget has been performed.
 
+## AccuRIG handoff
+
+The clean local AccuRIG input is:
+
+- FBX: `workspace/actor_v2/base/v1/accurig/actor_v2_base_v1_accurig_input.fbx`;
+- round-trip manifest: `workspace/actor_v2/base/v1/accurig/accurig_input_manifest.json`;
+- exporter: `tools/model_test/export_actor_v2_accurig_input.py`.
+
+The FBX round trip passes with one unrigged mesh named `ChibiBaseMesh_AccuRIG_InputMesh`, `61,164` vertices, `122,324` triangular faces, `X=0` on the AccuRIG YZ center plane, runtime `Z=0` at the feet and meter units. The Actor uses a relaxed A-pose. Select zero fingers per hand because the approved base has rounded mitten hands without modeled finger separation.
+
+Manual AccuRIG review remains required for the center line, head/neck, shoulder/elbow/wrist, hip/knee/ankle and forward toe direction. AccuRIG body binding does not replace the separate EyeAssembly/blink workflow or the `EarPair` attachment contract.
+
+The exporter must consume the original Hunyuan GLB, not the Blender re-exported validation GLB. One diagnostic FBX inherited `366,510` split vertices from the intermediate GLB normal layout while retaining the same face count. It was overwritten and rejected. The accepted FBX preserves the original `61,164` vertices and passes the round-trip count gate.
+
+The shallow generated eye recess does not affect body rigging. It remains provisional until the independent open/half/closed EyeAssembly fully covers it without edge leaks or unwanted socket shadows; if that gate fails, repair only the local eye region rather than regenerating or reshaping the Actor silhouette.
+
 The first automatic report was invalid because alpha segmentation selected the entire opaque panel. It remains local-only under `workspace/actor_v2/base/v1/source_analysis/invalid_alpha_compiled_reference_manifest.json` and `workspace/actor_v2/base/v1/validation/invalid_panel_mask_*`; it must not be cited as Actor geometry evidence.
 
 ## EarPair variable-asset contract
@@ -190,7 +206,7 @@ The first fit-loop invocation treated bright-on-dark registration masks as `wire
 3. From the approved identity, derive a clean Actor calibration set with no hair, no permanent ears and only a neutral fitted construction layer; preserve subtle standardized ear-root attachment zones.
 4. Validate identity, silhouette, visual proportion, shoulder/hip width, rounded hands/feet, earless head/ear-root zones and construction-line correspondence across all four views.
 5. Create Actor RGB/RGBA inputs, run Hunyuan base generation, canonicalize in Blender and pass static visual QA. **Completed for base V1.**
-6. Confirm the provisional pelvis/spine/neck/head, shoulders/elbows/wrists, hips/knees/ankles/toes and `EarRoot_L/R`; then bind skin and extract the new ActorProfile/calibration views.
+6. Load the passing FBX in AccuRIG, manually confirm pelvis/spine/neck/head, shoulders/elbows/wrists, hips/knees/ankles/toes, select zero fingers, bind skin and export the rigged FBX. Keep `EarRoot_L/R` as separate ActorProfile anchors after re-import.
 7. Isolate the default `EarPair`, hair and seven wearable slots from the approved master while preserving front/right/back/left correspondence.
 8. Process each slot through RGB/RGBA, Hunyuan3D-2MV, the smallest slot-specific compiler and static/action QA.
 

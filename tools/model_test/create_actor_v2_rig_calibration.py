@@ -97,18 +97,24 @@ def main() -> int:
     # Coordinates are proportions of this approved 2.10H candidate. Front is
     # -Y, actor-left is +X, and the feet rest on Z=0.
     specs = {
-        "CC_Base_Hip": ((0, 0, 0.02*h), (0, 0, 0.275*h), None, "torso"),
-        "CC_Base_Pelvis": ((0, 0, 0.275*h), (0, 0, 0.34*h), "CC_Base_Hip", "torso"),
+        # Keep the non-deforming root local to the pelvis. The previous preview
+        # drew it from the floor to the pelvis and falsely read as an overlong
+        # lower spine.
+        "CC_Base_Hip": ((0, 0, 0.285*h), (0, 0, 0.305*h), None, "torso"),
+        "CC_Base_Pelvis": ((0, 0, 0.285*h), (0, 0, 0.34*h), "CC_Base_Hip", "torso"),
         "CC_Base_Waist": ((0, 0, 0.34*h), (0, 0, 0.405*h), "CC_Base_Pelvis", "torso"),
-        "CC_Base_Spine01": ((0, 0, 0.405*h), (0, 0, 0.465*h), "CC_Base_Waist", "torso"),
-        "CC_Base_Spine02": ((0, 0, 0.465*h), (0, 0, 0.505*h), "CC_Base_Spine01", "torso"),
-        "CC_Base_NeckTwist01": ((0, 0, 0.505*h), (0, 0, 0.545*h), "CC_Base_Spine02", "head"),
-        "CC_Base_Head": ((0, 0, 0.545*h), (0, 0, 0.88*h), "CC_Base_NeckTwist01", "head"),
-        "CC_Base_L_Clavicle": ((0, 0, 0.495*h), (0.08*h, 0, 0.49*h), "CC_Base_Spine02", "arm"),
+        "CC_Base_Spine01": ((0, 0, 0.405*h), (0, 0, 0.455*h), "CC_Base_Waist", "torso"),
+        "CC_Base_Spine02": ((0, 0, 0.455*h), (0, 0, 0.49*h), "CC_Base_Spine01", "torso"),
+        "CC_Base_NeckTwist01": ((0, 0, 0.49*h), (0, 0, 0.525*h), "CC_Base_Spine02", "head"),
+        # The head bone pivots at the skull base and only needs to establish an
+        # upward axis through the skull center. Extending it toward the crown
+        # made it look like an invalid continuation of the spine.
+        "CC_Base_Head": ((0, 0, 0.525*h), (0, 0, 0.70*h), "CC_Base_NeckTwist01", "head"),
+        "CC_Base_L_Clavicle": ((0, 0, 0.485*h), (0.08*h, 0, 0.49*h), "CC_Base_Spine02", "arm"),
         "CC_Base_L_Upperarm": ((0.08*h, 0, 0.49*h), (0.15*h, 0, 0.38*h), "CC_Base_L_Clavicle", "arm"),
         "CC_Base_L_Forearm": ((0.15*h, 0, 0.38*h), (0.215*h, 0, 0.255*h), "CC_Base_L_Upperarm", "arm"),
         "CC_Base_L_Hand": ((0.215*h, 0, 0.255*h), (0.235*h, 0, 0.225*h), "CC_Base_L_Forearm", "arm"),
-        "CC_Base_R_Clavicle": ((0, 0, 0.495*h), (-0.08*h, 0, 0.49*h), "CC_Base_Spine02", "arm"),
+        "CC_Base_R_Clavicle": ((0, 0, 0.485*h), (-0.08*h, 0, 0.49*h), "CC_Base_Spine02", "arm"),
         "CC_Base_R_Upperarm": ((-0.08*h, 0, 0.49*h), (-0.15*h, 0, 0.38*h), "CC_Base_R_Clavicle", "arm"),
         "CC_Base_R_Forearm": ((-0.15*h, 0, 0.38*h), (-0.215*h, 0, 0.255*h), "CC_Base_R_Upperarm", "arm"),
         "CC_Base_R_Hand": ((-0.215*h, 0, 0.255*h), (-0.235*h, 0, 0.225*h), "CC_Base_R_Forearm", "arm"),
@@ -152,8 +158,8 @@ def main() -> int:
         guide_joint(name, head_v, h * 0.011, guide_materials[group])
 
     ear_roots = {
-        "EarRoot_L": (0.22*h, 0.0, 0.76*h),
-        "EarRoot_R": (-0.22*h, 0.0, 0.76*h),
+        "EarRoot_L": (0.22*h, 0.0, 0.70*h),
+        "EarRoot_R": (-0.22*h, 0.0, 0.70*h),
     }
     for name, location in ear_roots.items():
         empty = bpy.data.objects.new(name, None)

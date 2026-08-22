@@ -1,7 +1,7 @@
 {
   "schema": "assetsstudio_actor_v2_hunyuan_static_fit_v1",
   "asset_id": "actor_v2_base_v1",
-  "status": "static_shape_pass_rig_calibration_pending_confirmation",
+  "status": "static_shape_pass_accurig_input_ready",
   "source": {
     "turnaround": "references/actor_v2/base_v1/actor_v2_base_turnaround_v1_candidate.png",
     "rgba_manifest": "workspace/actor_v2/base/v1/source_views/rgba/manifest.json"
@@ -102,10 +102,12 @@
     "canonical_blend": "workspace/actor_v2/base/v1/canonical_validation/actor_v2_base_v1_validated.blend",
     "fit_reports": "workspace/actor_v2/base/v1/canonical_validation/fit/",
     "rig_calibration_blend": "workspace/actor_v2/base/v1/rig_calibration/actor_v2_base_v1_rig_calibration.blend",
-    "rig_calibration_report": "workspace/actor_v2/base/v1/rig_calibration/rig_calibration.json"
+    "rig_calibration_report": "workspace/actor_v2/base/v1/rig_calibration/rig_calibration.json",
+    "accurig_input_fbx": "workspace/actor_v2/base/v1/accurig/actor_v2_base_v1_accurig_input.fbx",
+    "accurig_input_manifest": "workspace/actor_v2/base/v1/accurig/accurig_input_manifest.json"
   },
   "deferred": [
-    "human confirmation of bone landmarks and EarRoot_L/R",
+    "manual AccuRIG guide confirmation and rigged FBX export",
     "skin weighting",
     "Mixamo action retarget",
     "face, hair, EarPair and wearable slot compilation"
