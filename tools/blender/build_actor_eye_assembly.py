@@ -57,6 +57,15 @@ def cli_args() -> argparse.Namespace:
     parser.add_argument("--eye-center-z", type=float)
     parser.add_argument("--eye-width", type=float)
     parser.add_argument("--eye-height", type=float)
+    parser.add_argument(
+        "--texture-side-contract",
+        choices=("explicit_paths", "viewer_named_swap"),
+        default="explicit_paths",
+        help=(
+            "Record how source texture labels map to Actor eye objects. "
+            "viewer_named_swap requires Actor L to use *_right and Actor R to use *_left."
+        ),
+    )
     return parser.parse_args(argv)
 
 
@@ -83,6 +92,26 @@ def validate_blink_texture_args(options: argparse.Namespace) -> bool:
     if any(value is not None for value in values) and not all(value is not None for value in values):
         raise RuntimeError("half/closed blink textures must be supplied for both eyes")
     return all(value is not None for value in values)
+
+
+def validate_texture_side_contract(options: argparse.Namespace) -> None:
+    if options.texture_side_contract != "viewer_named_swap":
+        return
+    pairs = [
+        ("open", options.left_texture, options.right_texture),
+        ("half", options.half_left_texture, options.half_right_texture),
+        ("closed", options.closed_left_texture, options.closed_right_texture),
+    ]
+    for state, actor_left, actor_right in pairs:
+        if actor_left is None and actor_right is None:
+            continue
+        left_stem = actor_left.stem.lower()
+        right_stem = actor_right.stem.lower()
+        if "right" not in left_stem or "left" not in right_stem:
+            raise RuntimeError(
+                f"{state} texture mapping violates viewer_named_swap: "
+                f"Actor L={actor_left.name}, Actor R={actor_right.name}"
+            )
 
 
 def remove_old_eye_objects() -> None:
@@ -221,6 +250,7 @@ def eye_world_bounds(obj: bpy.types.Object) -> tuple[Vector, Vector]:
 def main() -> int:
     options = cli_args()
     has_blink_states = validate_blink_texture_args(options)
+    validate_texture_side_contract(options)
     has_explicit_placement = explicit_eye_placement(options)
     output = options.output.resolve()
     output.mkdir(parents=True, exist_ok=True)
@@ -291,6 +321,7 @@ def main() -> int:
         )
         surface["assetslab_native_eye_anchor"] = list(eye_center)
         surface["assetslab_texture"] = str((options.left_texture if side == "L" else options.right_texture).resolve())
+        surface["assetsstudio_texture_side_contract"] = options.texture_side_contract
         surface["assetsstudio_blink_material_open"] = f"EyeAssemblyV1_Open_{side}"
         if has_blink_states:
             surface["assetsstudio_blink_material_half"] = f"EyeAssemblyV1_Half_{side}"
@@ -310,6 +341,7 @@ def main() -> int:
     scene["assetslab_eye_assembly_back_policy"] = "transparent_no_eye_geometry"
     scene["assetslab_eye_assembly_blink_amount"] = 0.0
     scene["assetslab_eye_assembly_blink_states"] = ["Open", "Half", "Closed"] if has_blink_states else ["Open"]
+    scene["assetsstudio_eye_texture_side_contract"] = options.texture_side_contract
 
     low, high = bounds(actor_mesh)
     actor_center = (low + high) * 0.5
@@ -371,6 +403,7 @@ def main() -> int:
         "side_policy": "same_3d_assembly_projection",
         "back_policy": "transparent_no_eye_geometry",
         "blink_amount": 0.0,
+        "texture_side_contract": options.texture_side_contract,
         "placement": {
             "mode": "explicit_actor_v2" if has_explicit_placement else "native_actor_v1_anchors",
             "width_scale": options.width_scale,

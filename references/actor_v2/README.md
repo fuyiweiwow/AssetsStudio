@@ -34,6 +34,12 @@ This tracked package is the reproducible visual source of truth for the Actor V2
 
 The first default `EarPair`, `head_hair`, `torso_outer`, `waist_accessory` and `legs_outer` have passed rest and Walk attachment review. Their generated GLB/Blend and action renders remain reproducible workspace artifacts; this tracked package preserves their visual source and validation contracts.
 
+## Default adventurer V2 head correction contents
+
+- `default_adventurer_v2/earpair_default_human_v2/`: image-authored, Hunyuan-generated detachable human ear source; supersedes the rejected procedural ear draft.
+- `default_adventurer_v2/head_hair_v2/`: rejected sheet/open-cap/closed-cap source experiments retained as failure evidence.
+- `default_adventurer_v2/head_hair_v3/`: correct two-stage, per-view hair-on-Actor then Actor-removal experiment. Its standard 2MV output failed the raw lower-shell gate, so the active review assembly uses the recovered Stage 10 image/Hunyuan source instead of procedural replacement locks.
+
 The assembled master may display the default human `EarPair`. The base source contains no permanent ears; `EarRoot_L/R` will be authored as ActorProfile/Blender anchors after shape reconstruction.
 
 Do not send the assembled outfit master directly to Hunyuan. Generate the Actor from `base_v1/rgb/`, then isolate and compile each wearable slot independently.

@@ -42,6 +42,12 @@ def cli_args() -> argparse.Namespace:
     parser.add_argument("--actor-blend", required=True, type=Path)
     parser.add_argument("--output-blend", required=True, type=Path)
     parser.add_argument("--output-dir", required=True, type=Path)
+    parser.add_argument(
+        "--frame",
+        type=int,
+        default=1,
+        help="actor frame used for fitting and orthographic review",
+    )
     parser.add_argument("--q-height-ratio", type=float, default=1.15)
     parser.add_argument("--width-ratio", type=float, default=1.08)
     parser.add_argument(
@@ -49,6 +55,12 @@ def cli_args() -> argparse.Namespace:
         type=float,
         default=0.06,
         help="world-space distance between actor head top and fitted hair top",
+    )
+    parser.add_argument(
+        "--radial-clearance",
+        type=float,
+        default=0.0,
+        help="ActorProfile adapter clearance applied to the imported hair shell after fitting",
     )
     parser.add_argument("--add-actor-cap", action="store_true")
     parser.add_argument(
@@ -325,6 +337,23 @@ def fit_to_actor(
         )
     )
     bpy.context.view_layer.update()
+    radial_center = Vector(
+        (
+            head_center.x,
+            head_center.y,
+            head_top - head_width * 0.50,
+        )
+    )
+    if options.radial_clearance > 0.0:
+        inverse = tile.matrix_world.inverted()
+        for vertex in tile.data.vertices:
+            world_point = tile.matrix_world @ vertex.co
+            radial = world_point - radial_center
+            if radial.length > 1e-8:
+                world_point += radial.normalized() * options.radial_clearance
+                vertex.co = inverse @ world_point
+        tile.data.update()
+        bpy.context.view_layer.update()
     world = tile.matrix_world.copy()
     tile.parent = armature
     tile.parent_type = "BONE"
@@ -335,6 +364,8 @@ def fit_to_actor(
         "q_height_ratio": options.q_height_ratio,
         "width_ratio": options.width_ratio,
         "top_clearance": options.top_clearance,
+        "radial_clearance": options.radial_clearance,
+        "radial_center": [float(value) for value in radial_center],
         "q_height_scale": q_height_scale,
         "rotation_z_degrees": options.rotation_z,
         "dimensions": [float(value) for value in tile.dimensions],
@@ -848,6 +879,11 @@ def main() -> int:
             "Blend save; use bounded fringe/overlap repair instead"
         )
     bpy.ops.wm.open_mainfile(filepath=str(options.actor_blend.resolve()))
+    # Assembly validation often leaves the source Blend on a walk/blink frame.
+    # Fit rigid head slots in a declared frame so the head target and the bone
+    # parent transform are measured from the same pose.
+    bpy.context.scene.frame_set(options.frame)
+    bpy.context.view_layer.update()
     armature = next(obj for obj in bpy.data.objects if obj.type == "ARMATURE")
     body = next(obj for obj in bpy.data.objects if obj.type == "MESH" and obj.name.startswith("ChibiBase"))
     source_anchor = None
@@ -993,6 +1029,7 @@ def main() -> int:
         "source_objects": hair_names,
         "source_anchor_object": options.source_anchor_object,
         "actor_blend": str(options.actor_blend.resolve()),
+        "fit_frame": options.frame,
         "object": tile.name,
         "actor_cap": cap.name if cap else None,
         "rear_scalp_cap": options.rear_scalp_cap,

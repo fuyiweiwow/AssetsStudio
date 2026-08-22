@@ -1,0 +1,46 @@
+{
+  "schema": "assetsstudio_actor_v2_slot_image_source_v1",
+  "slot": "head_hair",
+  "version": "v3",
+  "status": "source_review_pass_generation_rejected",
+  "generation_model": "OpenAI image generation",
+  "method": [
+    "generate each on-Actor orthographic view independently against the approved Actor V2 calibration render",
+    "remove Actor per view while preserving the wearable shell, face opening and empty ear openings",
+    "apply official Hunyuan background removal",
+    "run standard Hunyuan3D-2MV and stop if raw canonical geometry fails"
+  ],
+  "view_order": ["front", "right", "back", "left"],
+  "on_actor": {
+    "directory": "on_actor",
+    "sha256": {
+      "front": "52019E612D22E02CBE4949EEB26BE4FB3DA035BEEC0E2165E81E4A06F0E6BE3A",
+      "right": "03594854F4EEF7DC5BB31C9E243BBFE420FB71849B5E8EAD956A8C475363E39E",
+      "back": "C450FD41339E8CEA4D7C5201D2C75428B3984CF4F90398C7952AA06232297296",
+      "left": "5B177BD30CB96C8831582031D7B2322835FEC7EF5FB8B3B5458F387B5DD772B3"
+    }
+  },
+  "hunyuan_inputs": {
+    "directory": "rgba",
+    "views_used": ["front", "left", "back"],
+    "sha256": {
+      "front": "D3D9DFBA720766C0DF5A8D56F83C3F12EF783C9FEDC4AA3332290A577A6B1D39",
+      "right": "59A6DB483F9E94947D5E855D6A7B909B1DC6BC81D43E1E0BCD2D9D8592255E7E",
+      "back": "DBC66CF9F5FE2AE048203D45693AECE2C1EE61E9DC83FE58A33CB1E6D0695DFC",
+      "left": "8B626581BF834F28D889B027C95C2E3A9F02C1D8C35061BA0E01BDAC828263E1"
+    }
+  },
+  "hunyuan_run": {
+    "subfolder": "hunyuan3d-dit-v2-mv",
+    "seed": 12345,
+    "steps": 30,
+    "guidance_scale": 5.0,
+    "octree_resolution": 256,
+    "num_chunks": 8000,
+    "vertices": 404403,
+    "faces": 808790,
+    "peak_cuda_memory_bytes": 5828215296,
+    "result": "rejected before Actor fitting because the lower/inner shell melted where independently generated lock topology did not correspond"
+  },
+  "active_candidate_policy": "use the recovered Stage 10 image-first Hunyuan GLB; do not substitute procedural locks"
+}

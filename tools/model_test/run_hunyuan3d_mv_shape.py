@@ -99,6 +99,7 @@ def main() -> int:
     parser.add_argument("--manifest", type=Path)
     parser.add_argument("--seed", type=int, default=20260821)
     parser.add_argument("--steps", type=int, default=5)
+    parser.add_argument("--guidance-scale", type=float)
     parser.add_argument("--octree-resolution", type=int, default=256)
     parser.add_argument("--num-chunks", type=int, default=20000)
     args = parser.parse_args()
@@ -134,14 +135,17 @@ def main() -> int:
     torch.cuda.reset_peak_memory_stats()
     generator = torch.Generator(device="cuda").manual_seed(args.seed)
     with torch.inference_mode():
-        mesh = pipeline(
-            image=images,
-            num_inference_steps=args.steps,
-            octree_resolution=args.octree_resolution,
-            num_chunks=args.num_chunks,
-            generator=generator,
-            output_type="trimesh",
-        )[0]
+        generation_args = {
+            "image": images,
+            "num_inference_steps": args.steps,
+            "octree_resolution": args.octree_resolution,
+            "num_chunks": args.num_chunks,
+            "generator": generator,
+            "output_type": "trimesh",
+        }
+        if args.guidance_scale is not None:
+            generation_args["guidance_scale"] = args.guidance_scale
+        mesh = pipeline(**generation_args)[0]
     mesh.export(args.output)
     peak_memory_bytes = int(torch.cuda.max_memory_allocated())
     report = {
@@ -156,6 +160,7 @@ def main() -> int:
         "output": str(args.output.resolve()),
         "seed": args.seed,
         "steps": args.steps,
+        "guidance_scale": args.guidance_scale,
         "octree_resolution": args.octree_resolution,
         "num_chunks": args.num_chunks,
         "cpu_offload": args.cpu_offload,

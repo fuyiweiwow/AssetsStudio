@@ -17,6 +17,11 @@ def cli_args() -> argparse.Namespace:
     argv = sys.argv[sys.argv.index("--") + 1 :] if "--" in sys.argv else []
     parser = argparse.ArgumentParser()
     parser.add_argument("--blend", type=Path, required=True)
+    parser.add_argument(
+        "--expected-texture-side-contract",
+        choices=("explicit_paths", "viewer_named_swap"),
+        default="explicit_paths",
+    )
     return parser.parse_args(argv)
 
 
@@ -45,6 +50,21 @@ def main() -> int:
         raise RuntimeError("unexpected EyeAssemblyV1 stage")
     if scene.get("assetslab_eye_assembly_parent_bone") != HEAD_BONE:
         raise RuntimeError("unexpected EyeAssemblyV1 parent contract")
+    side_contract = scene.get("assetsstudio_eye_texture_side_contract", "explicit_paths")
+    if side_contract != options.expected_texture_side_contract:
+        raise RuntimeError(
+            f"unexpected eye texture side contract: {side_contract}; "
+            f"expected {options.expected_texture_side_contract}"
+        )
+    if side_contract == "viewer_named_swap":
+        expected_texture_labels = {"L": "right", "R": "left"}
+        for obj in eyes:
+            side = obj.name.rsplit("_", 1)[-1]
+            texture_path = Path(str(obj.get("assetslab_texture", "")))
+            if expected_texture_labels[side] not in texture_path.stem.lower():
+                raise RuntimeError(
+                    f"eye texture side mapping regressed for {obj.name}: {texture_path.name}"
+                )
     blink_states = scene.get("assetslab_eye_assembly_blink_states", ["Open"])
     expected_states = ["Open", "Half", "Closed"]
     if blink_states == expected_states:
@@ -75,6 +95,7 @@ def main() -> int:
     print("EYE_ASSEMBLY_PARENT=Armature/CC_Base_Head")
     print("EYE_ASSEMBLY_BACK_POLICY=transparent_no_eye_geometry")
     print("EYE_ASSEMBLY_HEAD_FOLLOW=frame1_to_frame31")
+    print(f"EYE_ASSEMBLY_TEXTURE_SIDE_CONTRACT={side_contract}")
     return 0
 
 

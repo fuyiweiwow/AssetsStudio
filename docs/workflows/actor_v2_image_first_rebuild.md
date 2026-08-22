@@ -2,7 +2,7 @@
 
 ## Status
 
-- Current state: `rig_actions_eyeassembly_earpair_layered_hair_v2_torso_outer_waist_legs_pass_remaining_slots_next`
+- Current state: `rig_actions_eyeassembly_v2_hunyuan_earpair_v2_recovered_hunyuan_hair_v3_review_pass_remaining_slots_next`
 - Actor V1 remains the accepted game Actor.
 - Actor V2 must restart from `image_gen`; no manual proportion morph may enter the source-of-truth chain.
 - The approved visual source has passed local Hunyuan shape reconstruction, Blender static multiview QC, AccuRIG binding, Walk/Run retarget stress tests, EyeAssembly/blink, the detachable default human `EarPair`, default `head_hair`, `torso_outer`, `waist_accessory` and `legs_outer` static/Walk gates. Three default visual slots (`feet_outer`, `wrist_accessory`, `back_accessory`) and final runtime assembly remain pending.
@@ -149,7 +149,7 @@ The user-exported AccuRIG FBX passes the local audit with one Actor mesh, one 71
 - Run minimum geometry Z: `0.00802 m`; no ground penetration in sampled frames.
 - Both actions remain in place, preserve finite geometry and keep the head-to-hip distance within the action gates.
 
-Actor V2 now uses the retained two-surface `EyeAssemblyV1` structure with independent `open / half / closed` texture states. Placement is explicit for the new head profile rather than inherited from Actor V1 lens objects: character-left/right X centers `+/-0.200 m`, eye center Z `1.356 m`, surface width `0.190 m` and height `0.270 m`. The accepted eye shapes remain deterministic; only the eyebrow hue is remapped to the warm brown style authority. The assembly is bone-parented to `CC_Base_Head`, follows Walk from frame 1 to 31, renders no eye geometry from the back, and passes four directions x eight deterministic blink frames.
+Actor V2 now uses the retained two-surface `EyeAssemblyV1` structure with independent `open / half / closed` texture states. Placement is explicit for the new head profile rather than inherited from Actor V1 lens objects: character-left/right X centers `+/-0.200 m`, eye center Z `1.356 m`, surface width `0.190 m` and height `0.330 m`. User review found that filename-side and Actor-side semantics were reversed; the accepted explicit contract maps Actor L to viewer-named `eye_right` and Actor R to `eye_left`, so both outer lashes point outward. The assembly is bone-parented to `CC_Base_Head`, follows Walk, renders no eye geometry from the back, and passes four directions x eight deterministic blink frames.
 
 The shallow generated eye recess does not affect body rigging or the fitted EyeAssembly. A mild socket shadow remains visible through transparent texture areas, but it does not cut through the eye surface or break open/half/closed states. Keep it unless later hair/skin materials amplify it; any repair must remain local to the eye region and must not change the Actor silhouette.
 
@@ -169,19 +169,17 @@ Actor V2 corrects a legacy coupling in Actor V1: ears must be detached from the 
 
 Do not copy Actor V1's `embedded_objects.ears` policy into Actor V2. `milestones/body/face_contract_v2.json` remains an accurate V1 compatibility record until a separate Actor V2 contract is accepted.
 
-The first default human bundle is now implemented as two distinct meshes, `EarPair_DefaultHuman_L/R`, sharing bundle id `earpair_default_human_v1`. Their accepted centers are `X=+/-0.430 m`, `Y=0.018 m`, `Z=1.325 m`; the earlier `Z=1.390 m` placement was rejected as visibly too high. Both objects follow `CC_Base_Head` and pass rest plus Walk review in four directions x eight frames.
+The procedural UV-sphere ear draft is revoked. The current default human bundle is `EarPair_HunyuanV2_L/R`: one simplified Q-style ear was designed as an image prototype, isolated, reconstructed by Hunyuan, raw-mesh reviewed, then mirrored into two independent Slot objects. Their accepted centers are `X=+/-0.440 m`, `Y=0.018 m`, `Z=1.325 m`; each is approximately `0.110 x 0.075 x 0.190 m`. Both objects follow `CC_Base_Head` and pass rest plus Walk review.
 
 ## Default head-hair result
 
-The approved master was split with overlapping `512 x 1024` view windows at X starts `0 / 384 / 768 / 1024`. A strict four-way `384 px` split was rejected because it clipped front/back hair and admitted neighbouring silhouettes. Brown HSV isolation plus an upper-body cutoff yielded one connected component per view and passed bbox gates, but later visual review proved that these gates were insufficient: eyebrow, skin-edge and neck pixels remained semantically connected to the hair source.
+User review revoked the procedural `head_hair/default_adventurer_v2_layered` replacement. The default hair must originate from the saved two-stage image-first workflow: place hair over each exact Actor calibration view, remove the Actor while preserving the wearable shell and ear openings, then run standard Hunyuan3D-2MV.
 
-The local `Hunyuan3D-2MV` run used seed `20260822`, five steps, octree `192`, chunk size `8000` and CPU offload. It remained within the same reported peak CUDA allocation as the base reconstruction (about `2.39 GiB`). Cleanup retained the largest of 47 loose components, removed 46 fragments and reduced the source from `178,690` vertices / `357,232` faces to `23,982` vertices / `48,000` faces.
+The Stage 10 history restored the exact former successful source set and `adventurer_head_hair_actorfit_2mv_v2.glb`. That source used four independent images, seed `20260820`, 30 steps, guidance `5.0` and octree `256`. Raw Blender validation reports `327,377` vertices / `654,738` faces. Largest-component cleanup and silhouette-preserving decimation produce `31,991` vertices / `63,998` faces.
 
-Former fit `v10` used width ratio `1.25`, Q-height ratio `1.25` and top clearance `0.28 m`. Although it followed `CC_Base_Head` through Walk, the raw canonical render already showed melted bridges, fragments and malformed lower locks. The fit only made the invalid geometry stable and is now revoked.
+The current Actor adapter uses width ratio `1.10`, Q-height ratio `1.15`, top clearance `0.03 m` and radial clearance `0.17 m`. Radial clearance is an ActorProfile interface operation retained from the archived successful adapter; it does not create replacement locks. Static full-body/head close-ups and Walk `1-71` x four directions/eight frames pass with hair, both corrected eye surfaces and both Hunyuan ear objects present.
 
-The replacement `head_hair/default_adventurer_v2_layered` does not reuse the generated mesh. A deterministic compiler builds one hollow scalp shell plus 20 broad tapered locks as one `2,662`-vertex / `2,700`-face runtime object. `fit_v2` has zero non-manifold edges, preserves eye and detachable-ear visibility, follows `CC_Base_Head`, and passes Walk `1-71` in four directions x eight frames. This is the current default hair source for subsequent assemblies.
-
-The revoked generated branch remains in `docs/quality/ACTOR_V2_DEFAULT_HAIR_FIT_2026-08-22.md`; replacement evidence and the corrected source/geometry gates are in `docs/quality/ACTOR_V2_DEFAULT_HAIR_REBUILD_2026-08-22.md`.
+A fresh two-stage source set was also generated and run through standard 2MV at 30 steps/guidance `5.0`/octree `256`, but its raw lower shell still melted because independently generated lock topology did not correspond tightly enough. It is rejected before fitting. Full evidence and reusable gates are in `docs/quality/ACTOR_V2_DEFAULT_HAIR_REBUILD_2026-08-22.md`.
 
 ## Default torso_outer result
 
@@ -256,7 +254,7 @@ The first fit-loop invocation treated bright-on-dark registration masks as `wire
 5. Create Actor RGB/RGBA inputs, run Hunyuan base generation, canonicalize in Blender and pass static visual QA. **Completed for base V1.**
 6. Load the passing FBX in AccuRIG, manually confirm pelvis/spine/neck/head, shoulders/elbows/wrists, hips/knees/ankles/toes, select zero fingers, bind skin and export the rigged FBX. Keep `EarRoot_L/R` as separate ActorProfile anchors after re-import. **Completed; Walk, Run, four-weight optimization and EyeAssembly/blink gates also pass.**
 7. Isolate the default `EarPair` and seven visual slots (hair plus six wearables) from the approved master while preserving front/right/back/left correspondence. **`EarPair`, `head_hair`, `torso_outer`, `waist_accessory` and `legs_outer` completed.**
-8. Process each slot through RGB/RGBA, a validated geometry source, the smallest slot-specific compiler and static/action QA. Hunyuan3D-2MV is optional, not mandatory: raw canonical geometry must pass before fitting, and chunky hair may use the deterministic layered compiler. **Next: `feet_outer`, because it owns the lower-leg/ground interface.**
+8. Process each slot through RGB/RGBA, a validated geometry source, the smallest slot-specific adapter and static/action QA. For the default hair and ears, visible geometry must remain image/Hunyuan-derived; procedural geometry may only serve a documented interface adapter. Raw canonical geometry must pass before fitting. **Next: `feet_outer`, because it owns the lower-leg/ground interface.**
 
 ## Bone calibration gate
 
