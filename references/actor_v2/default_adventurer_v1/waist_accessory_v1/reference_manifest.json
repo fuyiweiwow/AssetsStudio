@@ -1,0 +1,51 @@
+{
+  "schema": "assetsstudio_actor_v2_waist_accessory_reference_manifest_v1",
+  "source_files": [
+    "../../actor_v2_default_adventurer_turnaround_v1_candidate.png",
+    "waist_accessory_turnaround_v1.png",
+    "rgba/front.png",
+    "rgba/right.png",
+    "rgba/back.png",
+    "rgba/left.png"
+  ],
+  "view_order": ["front", "right", "back", "left"],
+  "expected_primary_parts": {
+    "count": 1,
+    "labels": ["WaistAccessory_DefaultAdventurer_V1"]
+  },
+  "structural_parts": [
+    "one closed medium-brown belt loop",
+    "one centered square brass buckle",
+    "one character-left flat pouch with flap and round stud"
+  ],
+  "attachment": {
+    "slot_id": "waist_accessory",
+    "weight_bone": "CC_Base_Waist",
+    "must_not_include": [
+      "actor body or skin",
+      "jacket, shirt or scarf",
+      "shorts, legs, hands or bracers",
+      "backpack, shoulder straps or weapons"
+    ]
+  },
+  "source_analysis": {
+    "component_count_per_view": 1,
+    "alpha_bbox_xyxy": {
+      "front": [45, 438, 402, 565],
+      "right": [76, 428, 351, 560],
+      "back": [25, 437, 378, 560],
+      "left": [188, 428, 464, 560]
+    }
+  },
+  "validation_thresholds": {
+    "part_count_exact": true,
+    "source_component_count_per_view": 1,
+    "right_left_height_drift_px_max": 1,
+    "front_back_height_drift_px_max": 5,
+    "review_directions": 4,
+    "review_frames": 8,
+    "finite_deformed_geometry": true,
+    "stable_waist_attachment": true,
+    "no_persistent_hand_or_thigh_penetration": true
+  }
+}
