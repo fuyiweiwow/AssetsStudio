@@ -2,7 +2,9 @@
 
 ## Decision
 
-`head_hair/default_adventurer_v1` is accepted for the Actor V2 workflow at fit `v10`. It preserves the approved chunky brown lock silhouette, keeps the eye identity readable, closes the scalp from all four directions, follows `CC_Base_Head`, and passes the 71-frame Walk review.
+**Superseded and revoked.** `head_hair/default_adventurer_v1` fit `v10` passed the old attachment and motion gates but was rejected after user visual review. The Hunyuan source visibly contains melted bridges, noisy fragments and malformed lock surfaces. It must remain only as failure evidence and must not be used by later Actor V2 assemblies. The replacement decision is recorded in `ACTOR_V2_DEFAULT_HAIR_REBUILD_2026-08-22.md`.
+
+The sections below preserve the historical branch exactly enough to reproduce and diagnose it; references to “accepted” describe the former automated decision, not the current production state.
 
 ## Source and reconstruction
 

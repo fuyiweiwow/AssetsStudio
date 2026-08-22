@@ -144,6 +144,19 @@ def main() -> int:
             f"{[obj.name for obj in rigged_meshes]}"
         )
     attachment_meshes = [obj for obj in rigged_meshes if obj != actor]
+    # Hair, ears, eyes and other rigid head accessories are intentionally
+    # bone-parented instead of carrying an Armature modifier.  They must be
+    # included in action QA as well; otherwise a drifting or non-finite hair
+    # object can be absent from an otherwise green report.
+    attachment_meshes.extend(
+        obj
+        for obj in scene.objects
+        if obj.type == "MESH"
+        and obj != actor
+        and obj.parent == armature
+        and obj.parent_type == "BONE"
+        and obj not in attachment_meshes
+    )
     action = armature.animation_data.action if armature.animation_data else None
     if action is None:
         raise RuntimeError("The target armature has no active action")
