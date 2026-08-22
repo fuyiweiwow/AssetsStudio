@@ -1,0 +1,52 @@
+{
+  "schema": "assetsstudio_actor_v2_legs_outer_reference_manifest_v1",
+  "source_files": [
+    "../../actor_v2_default_adventurer_turnaround_v1_candidate.png",
+    "legs_outer_turnaround_v1.png",
+    "rgba/front.png",
+    "rgba/right.png",
+    "rgba/back.png",
+    "rgba/left.png"
+  ],
+  "view_order": ["front", "right", "back", "left"],
+  "expected_primary_parts": {
+    "count": 1,
+    "labels": ["LegsOuter_DefaultAdventurer_V1"]
+  },
+  "structural_parts": [
+    "one closed waistband",
+    "one connected crotch bridge",
+    "two complete short leg tubes",
+    "two broad khaki rolled cuffs"
+  ],
+  "attachment": {
+    "slot_id": "legs_outer",
+    "allowed_bones": ["CC_Base_Hip", "CC_Base_L_Thigh", "CC_Base_R_Thigh"],
+    "must_not_include": [
+      "actor body or skin",
+      "belt, buckle or pouch",
+      "jacket, legs, boots or backpack"
+    ]
+  },
+  "source_analysis": {
+    "component_count_per_view": 1,
+    "alpha_bbox_xyxy": {
+      "front": [55, 356, 390, 654],
+      "right": [108, 357, 314, 653],
+      "back": [13, 356, 351, 653],
+      "left": [210, 357, 415, 653]
+    }
+  },
+  "validation_thresholds": {
+    "part_count_exact": true,
+    "source_component_count_per_view": 1,
+    "front_back_height_drift_px_max": 1,
+    "right_left_height_drift_px_max": 1,
+    "review_directions": 4,
+    "review_frames": 8,
+    "finite_deformed_geometry": true,
+    "closed_crotch_bridge": true,
+    "independent_leg_motion_without_tearing": true,
+    "no_body_leak_inside_shorts": true
+  }
+}
