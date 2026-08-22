@@ -2,10 +2,10 @@
 
 ## Status
 
-- Current state: `rig_actions_eyeassembly_pass_slot_isolation_next`
+- Current state: `rig_actions_eyeassembly_earpair_hair_pass_default_outfit_slots_next`
 - Actor V1 remains the accepted game Actor.
 - Actor V2 must restart from `image_gen`; no manual proportion morph may enter the source-of-truth chain.
-- The approved visual source has passed local Hunyuan shape reconstruction, Blender static multiview QC, AccuRIG binding, Walk/Run retarget stress tests and the first Actor V2 EyeAssembly/blink gate. Slot isolation and final runtime assembly remain pending.
+- The approved visual source has passed local Hunyuan shape reconstruction, Blender static multiview QC, AccuRIG binding, Walk/Run retarget stress tests, EyeAssembly/blink, the detachable default human `EarPair`, and the default `head_hair` static/Walk gates. The seven default outfit slots and final runtime assembly remain pending.
 
 ## Recovered saved workflow
 
@@ -169,6 +169,18 @@ Actor V2 corrects a legacy coupling in Actor V1: ears must be detached from the 
 
 Do not copy Actor V1's `embedded_objects.ears` policy into Actor V2. `milestones/body/face_contract_v2.json` remains an accurate V1 compatibility record until a separate Actor V2 contract is accepted.
 
+The first default human bundle is now implemented as two distinct meshes, `EarPair_DefaultHuman_L/R`, sharing bundle id `earpair_default_human_v1`. Their accepted centers are `X=+/-0.430 m`, `Y=0.018 m`, `Z=1.325 m`; the earlier `Z=1.390 m` placement was rejected as visibly too high. Both objects follow `CC_Base_Head` and pass rest plus Walk review in four directions x eight frames.
+
+## Default head-hair result
+
+The approved master was split with overlapping `512 x 1024` view windows at X starts `0 / 384 / 768 / 1024`. A strict four-way `384 px` split was rejected because it clipped front/back hair and admitted neighbouring silhouettes. Brown HSV isolation plus an upper-body cutoff now yields one clean connected hair mask per view and passes the front/back top, width and side-height gates.
+
+The local `Hunyuan3D-2MV` run used seed `20260822`, five steps, octree `192`, chunk size `8000` and CPU offload. It remained within the same reported peak CUDA allocation as the base reconstruction (about `2.39 GiB`). Cleanup retained the largest of 47 loose components, removed 46 fragments and reduced the source from `178,690` vertices / `357,232` faces to `23,982` vertices / `48,000` faces.
+
+Accepted fit `v10` uses width ratio `1.25`, Q-height ratio `1.25` and top clearance `0.28 m`. The imported outer locks remain unchanged outside a narrow central region. To close the forehead seam without a fake cap, 767 central fringe vertices receive a smooth maximum `0.1092 m` downward extension and 827 overlapping vertices receive a smooth maximum `0.0795 m` front offset. The hair is bone-parented to `CC_Base_Head`; rest and Walk `1-71` pass four directions x eight frames with visible eyes, closed scalp coverage, no attachment drift and no new face penetration.
+
+Detailed rejected-branch evidence and the reusable fitting rule are recorded in `docs/quality/ACTOR_V2_DEFAULT_HAIR_FIT_2026-08-22.md`.
+
 ## Rejected branches and why
 
 ### Rejected manual morph
@@ -219,8 +231,8 @@ The first fit-loop invocation treated bright-on-dark registration masks as `wire
 4. Validate identity, silhouette, visual proportion, shoulder/hip width, rounded hands/feet, earless head/ear-root zones and construction-line correspondence across all four views.
 5. Create Actor RGB/RGBA inputs, run Hunyuan base generation, canonicalize in Blender and pass static visual QA. **Completed for base V1.**
 6. Load the passing FBX in AccuRIG, manually confirm pelvis/spine/neck/head, shoulders/elbows/wrists, hips/knees/ankles/toes, select zero fingers, bind skin and export the rigged FBX. Keep `EarRoot_L/R` as separate ActorProfile anchors after re-import. **Completed; Walk, Run, four-weight optimization and EyeAssembly/blink gates also pass.**
-7. Isolate the default `EarPair`, hair and seven wearable slots from the approved master while preserving front/right/back/left correspondence.
-8. Process each slot through RGB/RGBA, Hunyuan3D-2MV, the smallest slot-specific compiler and static/action QA.
+7. Isolate the default `EarPair`, hair and seven wearable slots from the approved master while preserving front/right/back/left correspondence. **`EarPair` and `head_hair` completed.**
+8. Process each slot through RGB/RGBA, Hunyuan3D-2MV, the smallest slot-specific compiler and static/action QA. **Next: the default adventurer outfit slots.**
 
 ## Bone calibration gate
 

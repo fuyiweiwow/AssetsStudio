@@ -1,0 +1,44 @@
+{
+  "schema": "assetsstudio_actor_v2_default_adventurer_reference_manifest_v1",
+  "source_files": [
+    "../actor_v2_default_adventurer_turnaround_v1_candidate.png"
+  ],
+  "primary_view": "front",
+  "view_order": [
+    "front",
+    "right",
+    "back",
+    "left"
+  ],
+  "expected_primary_parts": {
+    "count": 8,
+    "labels": [
+      "EarPair",
+      "head_hair",
+      "torso_outer",
+      "waist_accessory",
+      "legs_outer",
+      "feet_outer",
+      "wrist_accessory",
+      "back_accessory"
+    ]
+  },
+  "structural_parts": [
+    "default human EarPair",
+    "chunky chestnut hair",
+    "short blue jacket with cream inner top and close red scarf",
+    "brown belt with square buckle and one side pouch",
+    "olive cuffed shorts",
+    "rounded brown ankle boots",
+    "compact brown wrist bracers",
+    "small close-fitting brown backpack"
+  ],
+  "decorative_parts": [],
+  "validation_thresholds": {
+    "part_count_exact": true,
+    "view_count_exact": 4,
+    "bbox_center_tolerance_px": 12,
+    "slot_front_mask_iou_min": 0.82,
+    "actor_penetration_policy": "slot_specific_seam_allowance_only"
+  }
+}

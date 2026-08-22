@@ -106,7 +106,12 @@ def configure_scene(scene: bpy.types.Scene, resolution: int, height: float, cent
     scene.render.image_settings.file_format = "PNG"
     scene.render.image_settings.color_mode = "RGBA"
     scene.render.film_transparent = False
-    scene.view_settings.look = "AgX - Medium High Contrast"
+    for look in ("AgX - Medium High Contrast", "Medium High Contrast"):
+        try:
+            scene.view_settings.look = look
+            break
+        except TypeError:
+            continue
     return camera
 
 

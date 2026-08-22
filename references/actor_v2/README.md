@@ -22,6 +22,15 @@ This tracked package is the reproducible visual source of truth for the Actor V2
 - `face_v1/eye_textures/`: accepted V1 open/half/closed eye shapes with a deterministic warm-brown eyebrow remap for the Actor V2 style authority.
 - `face_v1/reference_manifest.json`: two-surface part-count, placement, attachment and blink validation contract.
 
+## Default adventurer V1 contents
+
+- `default_adventurer_v1/rgb/`: overlapping front/right/back/left identity-master windows; overlap is intentional so adjacent views are not clipped.
+- `default_adventurer_v1/reference_manifest.json`: assembled source ordering and slot contract.
+- `default_adventurer_v1/earpair_default_human_v1/`: default detachable human-ear reference, source analysis and attachment contract.
+- `default_adventurer_v1/head_hair_v1/`: isolated brown-hair RGB/RGBA masks, source analysis and reconstruction contract.
+
+The first default `EarPair` and `head_hair` have passed rest and Walk attachment review. Their generated GLB/Blend and action renders remain reproducible workspace artifacts; this tracked package preserves their visual source and validation contracts.
+
 The assembled master may display the default human `EarPair`. The base source contains no permanent ears; `EarRoot_L/R` will be authored as ActorProfile/Blender anchors after shape reconstruction.
 
 Do not send the assembled outfit master directly to Hunyuan. Generate the Actor from `base_v1/rgb/`, then isolate and compile each wearable slot independently.

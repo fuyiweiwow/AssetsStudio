@@ -1,0 +1,82 @@
+{
+  "schema": "assetsstudio_actor_v2_earpair_source_analysis_v1",
+  "source_panel_size": [
+    512,
+    1024
+  ],
+  "observed_ear_height_px": [
+    58,
+    68
+  ],
+  "observed_actor_height_px": [
+    660,
+    675
+  ],
+  "ear_to_actor_height_ratio": [
+    0.086,
+    0.103
+  ],
+  "shape": "small rounded human ear with one broad inner bowl; low-frequency toy-like volume",
+  "regions": {
+    "front_viewer_left": {
+      "source": "E:\\WorkProject\\AssetsStudio\\references\\actor_v2\\default_adventurer_v1\\rgb\\front.png",
+      "context_bbox_xyxy": [
+        76,
+        350,
+        148,
+        458
+      ],
+      "crop": "E:\\WorkProject\\AssetsStudio\\references\\actor_v2\\default_adventurer_v1\\earpair_default_human_v1\\source_analysis\\front_viewer_left.png"
+    },
+    "front_viewer_right": {
+      "source": "E:\\WorkProject\\AssetsStudio\\references\\actor_v2\\default_adventurer_v1\\rgb\\front.png",
+      "context_bbox_xyxy": [
+        350,
+        350,
+        432,
+        458
+      ],
+      "crop": "E:\\WorkProject\\AssetsStudio\\references\\actor_v2\\default_adventurer_v1\\earpair_default_human_v1\\source_analysis\\front_viewer_right.png"
+    },
+    "right_visible": {
+      "source": "E:\\WorkProject\\AssetsStudio\\references\\actor_v2\\default_adventurer_v1\\rgb\\right.png",
+      "context_bbox_xyxy": [
+        222,
+        350,
+        305,
+        458
+      ],
+      "crop": "E:\\WorkProject\\AssetsStudio\\references\\actor_v2\\default_adventurer_v1\\earpair_default_human_v1\\source_analysis\\right_visible.png"
+    },
+    "back_viewer_left": {
+      "source": "E:\\WorkProject\\AssetsStudio\\references\\actor_v2\\default_adventurer_v1\\rgb\\back.png",
+      "context_bbox_xyxy": [
+        54,
+        350,
+        133,
+        458
+      ],
+      "crop": "E:\\WorkProject\\AssetsStudio\\references\\actor_v2\\default_adventurer_v1\\earpair_default_human_v1\\source_analysis\\back_viewer_left.png"
+    },
+    "back_viewer_right": {
+      "source": "E:\\WorkProject\\AssetsStudio\\references\\actor_v2\\default_adventurer_v1\\rgb\\back.png",
+      "context_bbox_xyxy": [
+        326,
+        350,
+        414,
+        458
+      ],
+      "crop": "E:\\WorkProject\\AssetsStudio\\references\\actor_v2\\default_adventurer_v1\\earpair_default_human_v1\\source_analysis\\back_viewer_right.png"
+    },
+    "left_visible": {
+      "source": "E:\\WorkProject\\AssetsStudio\\references\\actor_v2\\default_adventurer_v1\\rgb\\left.png",
+      "context_bbox_xyxy": [
+        270,
+        350,
+        352,
+        458
+      ],
+      "crop": "E:\\WorkProject\\AssetsStudio\\references\\actor_v2\\default_adventurer_v1\\earpair_default_human_v1\\source_analysis\\left_visible.png"
+    }
+  }
+}

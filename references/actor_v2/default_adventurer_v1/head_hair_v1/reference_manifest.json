@@ -1,0 +1,43 @@
+{
+  "schema": "assetsstudio_actor_v2_hair_reference_manifest_v1",
+  "source_files": [
+    "../../actor_v2_default_adventurer_turnaround_v1_candidate.png",
+    "../rgb/front.png",
+    "../rgb/right.png",
+    "../rgb/back.png",
+    "../rgb/left.png"
+  ],
+  "primary_view": "front",
+  "expected_primary_parts": {
+    "count": 1,
+    "labels": [
+      "HeadHair_DefaultAdventurer_V1"
+    ]
+  },
+  "structural_parts": [
+    "one removable chunky chestnut wig shell with coherent large locks"
+  ],
+  "decorative_parts": [],
+  "attachment": {
+    "slot_id": "head_hair",
+    "parent_bone": "CC_Base_Head",
+    "must_not_include": [
+      "face",
+      "eyes",
+      "eyebrows",
+      "ears",
+      "skin",
+      "clothing"
+    ]
+  },
+  "validation_thresholds": {
+    "part_count_exact": true,
+    "source_component_count_per_view": 1,
+    "front_back_bbox_width_drift_max": 0.12,
+    "right_left_bbox_height_drift_max": 0.08,
+    "front_mask_iou_min": 0.82,
+    "bbox_center_tolerance_px": 12,
+    "review_directions": 4,
+    "review_frames": 8
+  }
+}

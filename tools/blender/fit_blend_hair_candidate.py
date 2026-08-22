@@ -44,6 +44,12 @@ def cli_args() -> argparse.Namespace:
     parser.add_argument("--output-dir", required=True, type=Path)
     parser.add_argument("--q-height-ratio", type=float, default=1.15)
     parser.add_argument("--width-ratio", type=float, default=1.08)
+    parser.add_argument(
+        "--top-clearance",
+        type=float,
+        default=0.06,
+        help="world-space distance between actor head top and fitted hair top",
+    )
     parser.add_argument("--add-actor-cap", action="store_true")
     parser.add_argument(
         "--rear-scalp-cap",
@@ -66,9 +72,16 @@ def cli_args() -> argparse.Namespace:
         help="add a small actor-surface hairline patch on the front-right scalp",
     )
     parser.add_argument(
+        "--add-front-center-scalp-patch",
+        action="store_true",
+        help="add a narrow actor-surface patch above the eyes to close a center scalp seam",
+    )
+    parser.add_argument("--front-center-patch-half-width", type=float, default=0.22)
+    parser.add_argument("--front-center-patch-bottom-offset", type=float, default=0.50)
+    parser.add_argument(
         "--add-smooth-scalp-cap",
         action="store_true",
-        help="add a smooth Q-style ellipsoid scalp cap under the imported hair",
+        help="deprecated unsafe legacy option; retained only to reject old invocations explicitly",
     )
     parser.add_argument(
         "--shrinkwrap-hair",
@@ -95,6 +108,15 @@ def cli_args() -> argparse.Namespace:
         action="store_true",
         help="push a bounded crown patch toward the front so it remains outside the head surface",
     )
+    parser.add_argument(
+        "--lower-front-center-fringe",
+        action="store_true",
+        help="smoothly lengthen only the central front fringe to close a forehead seam",
+    )
+    parser.add_argument("--front-fringe-half-width", type=float, default=0.16)
+    parser.add_argument("--front-fringe-center-offset", type=float, default=0.40)
+    parser.add_argument("--front-fringe-half-height", type=float, default=0.24)
+    parser.add_argument("--front-fringe-drop", type=float, default=0.10)
     parser.add_argument("--front-overlap-half-width", type=float, default=0.10)
     parser.add_argument("--front-overlap-head-top-offset", type=float, default=0.26)
     parser.add_argument("--front-overlap-half-height", type=float, default=0.09)
@@ -299,7 +321,7 @@ def fit_to_actor(
         (
             desired_xy.x - (low.x + high.x) * 0.5,
             desired_xy.y - (low.y + high.y) * 0.5,
-            head_top + 0.06 - high.z,
+            head_top + options.top_clearance - high.z,
         )
     )
     bpy.context.view_layer.update()
@@ -312,6 +334,7 @@ def fit_to_actor(
         "fit_scale": fit_scale,
         "q_height_ratio": options.q_height_ratio,
         "width_ratio": options.width_ratio,
+        "top_clearance": options.top_clearance,
         "q_height_scale": q_height_scale,
         "rotation_z_degrees": options.rotation_z,
         "dimensions": [float(value) for value in tile.dimensions],
@@ -457,6 +480,57 @@ def create_right_hairline_patch(
     mesh.from_pydata(vertices, [], faces)
     mesh.update()
     patch = bpy.data.objects.new("HairCandidate_RightHairlinePatch", mesh)
+    bpy.context.scene.collection.objects.link(patch)
+    patch.data.materials.append(material)
+    for polygon in patch.data.polygons:
+        polygon.material_index = 0
+        polygon.use_smooth = True
+    world = patch.matrix_world.copy()
+    patch.parent = armature
+    patch.parent_type = "BONE"
+    patch.parent_bone = fit_tools.HEAD_BONE
+    patch.matrix_world = world
+    return patch
+
+
+def create_front_center_scalp_patch(
+    armature: bpy.types.Object,
+    body: bpy.types.Object,
+    head_center: Vector,
+    head_top: float,
+    half_width: float,
+    bottom_offset: float,
+    surface_offset: float,
+    material: bpy.types.Material,
+) -> bpy.types.Object:
+    """Copy only the upper central forehead needed to close a hair-shell seam."""
+    if min(half_width, bottom_offset, surface_offset) <= 0.0:
+        raise RuntimeError("front-center scalp patch parameters must be positive")
+    body_to_world = body.matrix_world
+    bottom = head_top - bottom_offset
+    selected_faces = []
+    for polygon in body.data.polygons:
+        points = [body_to_world @ body.data.vertices[index].co for index in polygon.vertices]
+        center = sum(points, Vector()) / len(points)
+        if (
+            abs(center.x - head_center.x) <= half_width
+            and center.y < head_center.y - 0.12
+            and center.z >= bottom
+        ):
+            selected_faces.append(polygon)
+    if not selected_faces:
+        raise RuntimeError("front-center scalp patch selection is empty")
+    used = sorted({index for polygon in selected_faces for index in polygon.vertices})
+    index_map = {old: new for new, old in enumerate(used)}
+    vertices = []
+    for old in used:
+        point = body_to_world @ body.data.vertices[old].co
+        vertices.append(tuple(point + Vector((0.0, -surface_offset, 0.0))))
+    faces = [tuple(index_map[index] for index in polygon.vertices) for polygon in selected_faces]
+    mesh = bpy.data.meshes.new("FrontCenterScalpPatchMesh")
+    mesh.from_pydata(vertices, [], faces)
+    mesh.update()
+    patch = bpy.data.objects.new("HairCandidate_FrontCenterScalpPatch", mesh)
     bpy.context.scene.collection.objects.link(patch)
     patch.data.materials.append(material)
     for polygon in patch.data.polygons:
@@ -719,8 +793,60 @@ def repair_front_center_overlap(
     }
 
 
+def lower_front_center_fringe(
+    tile: bpy.types.Object,
+    head_center: Vector,
+    head_top: float,
+    half_width: float,
+    center_offset: float,
+    half_height: float,
+    drop: float,
+) -> dict[str, float | int]:
+    """Lengthen the source fringe locally without translating the whole hairstyle."""
+    if min(half_width, center_offset, half_height, drop) <= 0.0:
+        raise RuntimeError("front fringe deformation parameters must be positive")
+    center_z = head_top - center_offset
+    world_to_local = tile.matrix_world.inverted()
+    tile.data = tile.data.copy()
+    moved = 0
+    maximum_drop = 0.0
+    for vertex in tile.data.vertices:
+        point = tile.matrix_world @ vertex.co
+        dx = abs(point.x - head_center.x)
+        dz = abs(point.z - center_z)
+        if dx >= half_width or dz >= half_height or point.y >= head_center.y - 0.08:
+            continue
+        x_weight = 1.0 - dx / half_width
+        z_weight = 1.0 - dz / half_height
+        x_weight = x_weight * x_weight * (3.0 - 2.0 * x_weight)
+        z_weight = z_weight * z_weight * (3.0 - 2.0 * z_weight)
+        shift = drop * x_weight * z_weight
+        if shift <= 1e-6:
+            continue
+        point.z -= shift
+        vertex.co = world_to_local @ point
+        moved += 1
+        maximum_drop = max(maximum_drop, shift)
+    tile.data.update()
+    if moved == 0:
+        raise RuntimeError("front fringe deformation selected no vertices")
+    return {
+        "moved_vertices": moved,
+        "center_x": float(head_center.x),
+        "center_z": float(center_z),
+        "half_width": half_width,
+        "half_height": half_height,
+        "maximum_drop": maximum_drop,
+    }
+
+
 def main() -> int:
     options = cli_args()
+    if options.add_smooth_scalp_cap:
+        raise RuntimeError(
+            "--add-smooth-scalp-cap is disabled: it can cover the face and caused an unstable "
+            "Blend save; use bounded fringe/overlap repair instead"
+        )
     bpy.ops.wm.open_mainfile(filepath=str(options.actor_blend.resolve()))
     armature = next(obj for obj in bpy.data.objects if obj.type == "ARMATURE")
     body = next(obj for obj in bpy.data.objects if obj.type == "MESH" and obj.name.startswith("ChibiBase"))
@@ -749,12 +875,14 @@ def main() -> int:
     cap = None
     lattice = None
     patch = None
+    front_center_patch = None
     smooth_cap = None
     shrinkwrap = None
     source_cap = None
     side_locks = []
     painted_scalp_faces = 0
     front_center_overlap = None
+    front_center_fringe = None
     if not options.keep_source_materials:
         material = fit_tools.make_material(tuple(options.color))
         tile.data.materials.clear()
@@ -781,6 +909,18 @@ def main() -> int:
                 armature,
                 body,
                 float(fit["head_top"]),
+                options.cap_surface_offset,
+                material,
+            )
+        if options.add_front_center_scalp_patch:
+            head_center, _, head_top = fit_tools.head_target(armature, body)
+            front_center_patch = create_front_center_scalp_patch(
+                armature,
+                body,
+                head_center,
+                head_top,
+                options.front_center_patch_half_width,
+                options.front_center_patch_bottom_offset,
                 options.cap_surface_offset,
                 material,
             )
@@ -829,6 +969,17 @@ def main() -> int:
                 options.front_overlap_half_height,
                 options.front_overlap_offset,
             )
+        if options.lower_front_center_fringe:
+            head_center, _, head_top = fit_tools.head_target(armature, body)
+            front_center_fringe = lower_front_center_fringe(
+                tile,
+                head_center,
+                head_top,
+                options.front_fringe_half_width,
+                options.front_fringe_center_offset,
+                options.front_fringe_half_height,
+                options.front_fringe_drop,
+            )
     fit_tools.configure_render(bpy.context.scene)
     output_dir = options.output_dir.resolve()
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -847,12 +998,14 @@ def main() -> int:
         "rear_scalp_cap": options.rear_scalp_cap,
         "lattice": lattice.name if lattice else None,
         "right_hairline_patch": patch.name if patch else None,
+        "front_center_scalp_patch": front_center_patch.name if front_center_patch else None,
         "smooth_scalp_cap": smooth_cap.name if smooth_cap else None,
         "hair_shrinkwrap": shrinkwrap.name if shrinkwrap else None,
         "source_scalp_cap": source_cap.name if source_cap else None,
         "side_locks": [lock.name for lock in side_locks],
         "painted_scalp_faces": painted_scalp_faces,
         "front_center_overlap": front_center_overlap,
+        "front_center_fringe": front_center_fringe,
         "vertices": len(tile.data.vertices),
         "polygons": len(tile.data.polygons),
         "repaired_images": repaired_images,
