@@ -21,6 +21,9 @@ REQUIRED = [
     "tools/model_test/run_comfy_flux2_klein.py",
     "tools/model_test/studio_local_generation_api.py",
     "tools/start_studio_local_generation.ps1",
+    "tools/build_studio_style_slot_registry.py",
+    "tools/validate_accessory_generation_contract.py",
+    "studio/src/generated/style-slot-profiles.json",
     "docs/workflows/assets/studio_prompt_turnaround_e2e_20260823.png",
     "docs/workflows/assets/studio_prompt_turnaround_e2e_20260823.metrics.json",
 ]
@@ -53,12 +56,16 @@ def main() -> int:
     require_marker("studio/src/App.tsx", "本地三视图")
     require_marker("studio/vite.config.ts", '"/api/local-generation"')
     require_marker("tools/model_test/studio_local_generation_api.py", '"visual_review_required"')
+    require_marker("tools/model_test/studio_local_generation_api.py", '"/api/accessories"')
     require_marker("tools/start_studio_local_generation.ps1", "--disable-pinned-memory")
     require_marker("start-local-generation-studio.bat", "Start-Process $url")
     require_marker("docs/features/README.md", "F009")
 
     py_compile.compile(
         str(ROOT / "tools/model_test/studio_local_generation_api.py"), doraise=True
+    )
+    py_compile.compile(
+        str(ROOT / "tools/validate_accessory_generation_contract.py"), doraise=True
     )
     metrics = json.loads(
         (

@@ -60,27 +60,21 @@ def histogram(panel: np.ndarray, mask: np.ndarray) -> np.ndarray:
     return hist
 
 
-def main() -> int:
-    parser = argparse.ArgumentParser()
-    parser.add_argument("image", type=Path)
-    parser.add_argument("--output", type=Path)
-    parser.add_argument("--panels", type=int, default=3)
-    args = parser.parse_args()
-
-    image = cv2.imread(str(args.image), cv2.IMREAD_COLOR)
+def analyze_turnaround(image_path: Path, panel_count: int = 3) -> dict:
+    image = cv2.imread(str(image_path), cv2.IMREAD_COLOR)
     if image is None:
-        raise SystemExit(f"Unable to read {args.image}")
+        raise RuntimeError(f"Unable to read {image_path}")
     image_height, image_width = image.shape[:2]
-    edges = np.linspace(0, image_width, args.panels + 1, dtype=int)
+    edges = np.linspace(0, image_width, panel_count + 1, dtype=int)
     panel_reports = []
     histograms = []
 
-    for index in range(args.panels):
+    for index in range(panel_count):
         panel = image[:, edges[index] : edges[index + 1]]
         mask = foreground_mask(panel)
         points = cv2.findNonZero(mask)
         if points is None:
-            raise SystemExit(f"No foreground detected in panel {index + 1}")
+            raise RuntimeError(f"No foreground detected in panel {index + 1}")
         x, y, width, height = cv2.boundingRect(points)
         panel_width = panel.shape[1]
         panel_reports.append(
@@ -99,7 +93,7 @@ def main() -> int:
     ground_values = np.array([p["ground_y_ratio"] for p in panel_reports])
     center_values = np.array([p["center_x_ratio"] for p in panel_reports])
     pairwise = {}
-    for left, right in combinations(range(args.panels), 2):
+    for left, right in combinations(range(panel_count), 2):
         key = f"{left + 1}-{right + 1}"
         pairwise[key] = round(
             float(cv2.compareHist(histograms[left], histograms[right], cv2.HISTCMP_CORREL)),
@@ -113,7 +107,7 @@ def main() -> int:
         "minimum_color_histogram_correlation": min(pairwise.values()),
     }
     gates = {
-        "panel_count_matches_expected": len(panel_reports) == args.panels,
+        "panel_count_matches_expected": len(panel_reports) == panel_count,
         "height_cv_lte_0_05": metrics["height_cv"] <= 0.05,
         "ground_range_lte_0_03": metrics["ground_range"] <= 0.03,
         "center_offset_lte_0_08": metrics["center_max_offset"] <= 0.08,
@@ -122,8 +116,8 @@ def main() -> int:
         ]
         >= 0.55,
     }
-    report = {
-        "image": str(args.image.resolve()),
+    return {
+        "image": str(image_path.resolve()),
         "image_size": [image_width, image_height],
         "panels": panel_reports,
         "pairwise_color_histogram_correlation": pairwise,
@@ -136,6 +130,16 @@ def main() -> int:
             "no extra limbs, props, or perspective pose",
         ],
     }
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("image", type=Path)
+    parser.add_argument("--output", type=Path)
+    parser.add_argument("--panels", type=int, default=3)
+    args = parser.parse_args()
+
+    report = analyze_turnaround(args.image, args.panels)
     serialized = json.dumps(report, ensure_ascii=False, indent=2)
     if args.output:
         args.output.parent.mkdir(parents=True, exist_ok=True)

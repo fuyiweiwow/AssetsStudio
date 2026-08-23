@@ -1,0 +1,844 @@
+{
+  "schema": "assetsstudio_style_slot_registry_v1",
+  "updated": "2026-08-23",
+  "styles": [
+    {
+      "schema": "assetsstudio_style_profile_v1",
+      "id": "western_fantasy_qstyle_soft3d_v1",
+      "label": "西方奇幻 Q 版软 3D",
+      "revision": 1,
+      "status": "approved",
+      "scope": [
+        "character",
+        "wearable",
+        "prop"
+      ],
+      "authorities": [
+        {
+          "id": "ratio_style_anchor",
+          "path": "references/actor_v2/actor_v2_ratio_style_anchor_user_v1.png",
+          "sha256": "ce589213993cff489e59789dc2ca28a32b3fabc6a51860bb4b73217baed756d6",
+          "role": "primary_proportion",
+          "required": true
+        },
+        {
+          "id": "default_adventurer_identity",
+          "path": "references/actor_v2/actor_v2_default_adventurer_turnaround_v1_candidate.png",
+          "sha256": "b41409320f8b6c9faef3df17f5d0693b8a4971f3b221354428e2e9c377849f51",
+          "role": "character_identity",
+          "required": true
+        },
+        {
+          "id": "local_reference_turnaround_evidence",
+          "path": "docs/workflows/assets/flux2_klein_reference_adventurer_turnaround_4view_registered_20260823.png",
+          "sha256": "daaa6e2046f998ce2e4a16ededfdb4285bc0199296a8048984df526b637a20c2",
+          "role": "turnaround_evidence",
+          "required": false
+        }
+      ],
+      "proportions": {
+        "measured_actor_height_m": 1.990555,
+        "measured_head_height_m": 0.931863,
+        "measured_total_heads": 2.136102,
+        "target_total_heads_range": [
+          2.1,
+          2.5
+        ],
+        "silhouette": "moderate compact chibi; large rounded head, short sturdy limbs, small torso and readable hands/feet"
+      },
+      "shape_language": [
+        "large simple rounded masses",
+        "low-frequency silhouette before surface detail",
+        "soft bevels and thick readable accessory shapes",
+        "oversized expressive eyes with compact facial spacing",
+        "avoid thin fragile straps and realistic micro-detail"
+      ],
+      "render_language": {
+        "medium": "polished soft 3D Japanese-anime game figurine",
+        "surface": "clean matte colors with restrained roughness variation",
+        "lighting": "soft studio key and fill with subtle ambient occlusion",
+        "linework": "no heavy outline; shape separation comes from value and occlusion",
+        "detail_density": "low to medium; every detail must remain readable at game camera distance"
+      },
+      "palette": [
+        {
+          "role": "hair_chestnut",
+          "color_srgb": "#6B4B3A"
+        },
+        {
+          "role": "eye_blue",
+          "color_srgb": "#2D78C4"
+        },
+        {
+          "role": "jacket_blue",
+          "color_srgb": "#3E6F9F"
+        },
+        {
+          "role": "scarf_red",
+          "color_srgb": "#A83D32"
+        },
+        {
+          "role": "cloth_cream",
+          "color_srgb": "#E8D3A4"
+        },
+        {
+          "role": "leather_brown",
+          "color_srgb": "#765133"
+        },
+        {
+          "role": "cloth_olive",
+          "color_srgb": "#626B3E"
+        },
+        {
+          "role": "metal_brass",
+          "color_srgb": "#B08A50"
+        }
+      ],
+      "prompt_contract": {
+        "positive": [
+          "moderate compact chibi proportions around 2.1 to 2.5 heads tall",
+          "polished soft 3D Japanese-anime game figurine",
+          "smooth rounded low-frequency geometry and thick readable silhouettes",
+          "clean matte material colors, soft studio light, subtle ambient occlusion",
+          "western fantasy adventurer design language"
+        ],
+        "negative": [
+          "realistic adult proportions or long slender limbs",
+          "extreme one-and-a-half-head super deformed proportions",
+          "photoreal skin, painterly brushwork, noisy micro-texture",
+          "thin fragile straps, excessive ornaments, sharp high-frequency detail",
+          "perspective distortion, action pose, dramatic lighting"
+        ],
+        "immutable_traits": [
+          "rounded moderate-chibi silhouette",
+          "soft 3D anime figurine material response",
+          "low-frequency readable geometry",
+          "shared semantic palette roles"
+        ]
+      },
+      "qa": {
+        "required_views": [
+          "front",
+          "right",
+          "back",
+          "left"
+        ],
+        "checks": [
+          "target total-head range",
+          "silhouette readability at thumbnail size",
+          "semantic palette continuity",
+          "same material response across character and accessory",
+          "no realism or detail-density drift"
+        ],
+        "human_review_required": true
+      }
+    }
+  ],
+  "actors": [
+    {
+      "schema": "assetsstudio_actor_slot_profile_v1",
+      "id": "default_adventurer_v2_slots_v1",
+      "label": "Default Adventurer V2 装配槽位",
+      "revision": 1,
+      "status": "measured_provisional",
+      "actor_asset_id": "actor_v2_base_v1",
+      "style_profile_id": "western_fantasy_qstyle_soft3d_v1",
+      "coordinate_contract": {
+        "unit": "meter",
+        "up": "+Z",
+        "front": "-Y",
+        "actor_left": "+X",
+        "ground_z": 0.0
+      },
+      "measurements": {
+        "actor_bounds_m": {
+          "min": [
+            -0.478113,
+            -0.43527,
+            0.0
+          ],
+          "max": [
+            0.46716,
+            0.451069,
+            1.990555
+          ]
+        },
+        "head_bounds_m": {
+          "min": [
+            -0.407973,
+            -0.408928,
+            1.060268
+          ],
+          "max": [
+            0.476498,
+            0.477374,
+            1.992131
+          ]
+        },
+        "actor_height_m": 1.990555,
+        "total_heads": 2.136102,
+        "source": "workspace/actor_v2/base/v1/canonical/measurements.json + workspace/actor_v2/calibration/head_feature_calibration_v1.json"
+      },
+      "slots": [
+        {
+          "slot_id": "EarPair",
+          "label": "可替换双耳",
+          "category": "body_feature",
+          "side": "bilateral",
+          "status": "validated",
+          "attachment": {
+            "mode": "skin_surface_pair",
+            "parent_bones": [
+              "CC_Base_Head"
+            ],
+            "anchors": [
+              {
+                "id": "EarRoot_L",
+                "parent_bone": "CC_Base_Head",
+                "position_m": [
+                  0.448,
+                  -0.001229,
+                  1.353805
+                ],
+                "normal": [
+                  0.964196,
+                  -0.073257,
+                  -0.254872
+                ]
+              },
+              {
+                "id": "EarRoot_R",
+                "parent_bone": "CC_Base_Head",
+                "position_m": [
+                  -0.376785,
+                  -0.001229,
+                  1.353805
+                ],
+                "normal": [
+                  -0.962913,
+                  -0.070231,
+                  -0.26051
+                ]
+              }
+            ]
+          },
+          "fit_envelope": null,
+          "generation_policy": {
+            "preferred_mode": "reuse_only",
+            "allowed_asset_kinds": [
+              "human_ear_pair",
+              "elf_ear_pair",
+              "fantasy_ear_pair"
+            ],
+            "include_actor_context": true
+          },
+          "validation": {
+            "required_views": 4,
+            "required_frames": 3,
+            "collision_policy": "project root vertices to head surface; preserve two separate meshes",
+            "human_review_required": true
+          },
+          "evidence": [
+            {
+              "path": "references/actor_v2/default_adventurer_v2/earpair_default_human_v2/reference_manifest.json",
+              "kind": "reference_manifest",
+              "tracked": true
+            },
+            {
+              "path": "workspace/actor_v2/calibration/head_feature_calibration_v1.json",
+              "kind": "measurement",
+              "tracked": false,
+              "sha256": "08cd19298c002fa60683fa1db602acd199e8bf9c880442491ca970fd302d8d94"
+            }
+          ]
+        },
+        {
+          "slot_id": "head_hair",
+          "label": "独立发套",
+          "category": "hair",
+          "side": "center",
+          "status": "validated",
+          "attachment": {
+            "mode": "bone",
+            "parent_bones": [
+              "CC_Base_Head"
+            ],
+            "anchors": [
+              {
+                "id": "HeadSurfaceCenter",
+                "parent_bone": "CC_Base_Head",
+                "position_m": [
+                  0.034263,
+                  0.034223,
+                  1.526199
+                ]
+              }
+            ]
+          },
+          "fit_envelope": {
+            "frame": "actor_world_rest",
+            "kind": "surface",
+            "bounds_m": {
+              "min": [
+                -0.407973,
+                -0.408928,
+                1.060268
+              ],
+              "max": [
+                0.476498,
+                0.477374,
+                1.992131
+              ]
+            },
+            "clearance_m": 0.01
+          },
+          "generation_policy": {
+            "preferred_mode": "on_actor_then_isolate",
+            "allowed_asset_kinds": [
+              "hair_cap",
+              "bangs",
+              "side_locks",
+              "back_hair"
+            ],
+            "include_actor_context": true
+          },
+          "validation": {
+            "required_views": 4,
+            "required_frames": 3,
+            "collision_policy": "closed crown; no forehead band; preserve ear clearance",
+            "human_review_required": true
+          },
+          "evidence": [
+            {
+              "path": "docs/quality/ACTOR_V2_DEFAULT_HAIR_REBUILD_2026-08-22.md",
+              "kind": "review",
+              "tracked": true
+            }
+          ]
+        },
+        {
+          "slot_id": "headwear",
+          "label": "帽子与头盔",
+          "category": "headwear",
+          "side": "center",
+          "status": "measured_provisional",
+          "attachment": {
+            "mode": "bone",
+            "parent_bones": [
+              "CC_Base_Head"
+            ],
+            "anchors": [
+              {
+                "id": "HeadTop",
+                "parent_bone": "CC_Base_Head",
+                "position_m": [
+                  0.034263,
+                  0.034223,
+                  1.992131
+                ],
+                "normal": [
+                  0.0,
+                  0.0,
+                  1.0
+                ]
+              }
+            ]
+          },
+          "fit_envelope": {
+            "frame": "actor_world_rest",
+            "kind": "surface",
+            "bounds_m": {
+              "min": [
+                -0.407973,
+                -0.408928,
+                1.060268
+              ],
+              "max": [
+                0.476498,
+                0.477374,
+                1.992131
+              ]
+            },
+            "clearance_m": 0.025
+          },
+          "generation_policy": {
+            "preferred_mode": "on_actor_then_isolate",
+            "allowed_asset_kinds": [
+              "hat",
+              "helmet",
+              "hood"
+            ],
+            "include_actor_context": true
+          },
+          "validation": {
+            "required_views": 4,
+            "required_frames": 8,
+            "collision_policy": "validate against selected hair envelope and ears",
+            "human_review_required": true
+          },
+          "evidence": [
+            {
+              "path": "workspace/actor_v2/calibration/head_feature_calibration_v1.json",
+              "kind": "measurement",
+              "tracked": false,
+              "sha256": "08cd19298c002fa60683fa1db602acd199e8bf9c880442491ca970fd302d8d94"
+            }
+          ]
+        },
+        {
+          "slot_id": "torso_outer",
+          "label": "躯干外层",
+          "category": "wearable",
+          "side": "center",
+          "status": "validated",
+          "attachment": {
+            "mode": "multi_bone",
+            "parent_bones": [
+              "CC_Base_Waist",
+              "CC_Base_Spine01",
+              "CC_Base_Spine02",
+              "CC_Base_L_Clavicle",
+              "CC_Base_R_Clavicle"
+            ],
+            "anchors": [
+              {
+                "id": "UpperTorsoCenter",
+                "parent_bone": "CC_Base_Spine02",
+                "position_m": [
+                  0.0,
+                  0.0,
+                  0.905702
+                ]
+              }
+            ]
+          },
+          "fit_envelope": null,
+          "generation_policy": {
+            "preferred_mode": "parametric",
+            "allowed_asset_kinds": [
+              "jacket",
+              "shirt",
+              "robe",
+              "scarf"
+            ],
+            "include_actor_context": true
+          },
+          "validation": {
+            "required_views": 4,
+            "required_frames": 8,
+            "collision_policy": "slot-specific seam allowance only; preserve hand and neck clearance",
+            "human_review_required": true
+          },
+          "evidence": [
+            {
+              "path": "references/actor_v2/default_adventurer_v1/torso_outer_v1/reference_manifest.json",
+              "kind": "reference_manifest",
+              "tracked": true
+            }
+          ]
+        },
+        {
+          "slot_id": "waist_accessory",
+          "label": "腰带与腰包",
+          "category": "prop",
+          "side": "center",
+          "status": "validated",
+          "attachment": {
+            "mode": "bone",
+            "parent_bones": [
+              "CC_Base_Waist"
+            ],
+            "anchors": [
+              {
+                "id": "WaistCenter",
+                "parent_bone": "CC_Base_Waist",
+                "position_m": [
+                  0.0,
+                  0.0,
+                  0.676789
+                ]
+              }
+            ]
+          },
+          "fit_envelope": {
+            "frame": "actor_world_rest",
+            "kind": "aabb",
+            "bounds_m": {
+              "min": [
+                -0.295,
+                -0.2,
+                0.37
+              ],
+              "max": [
+                0.295,
+                0.21,
+                0.59
+              ]
+            },
+            "clearance_m": 0.008
+          },
+          "generation_reference": {
+            "path": "references/actor_v2/default_adventurer_v1/waist_accessory_v1/waist_accessory_turnaround_v1.png",
+            "sha256": "3756c5dc6042a03fbf4e60a2e1cc6bacfd1ebad5d9718482763152e19c553e18",
+            "role": "isolated_slot_authority"
+          },
+          "generation_policy": {
+            "preferred_mode": "standalone",
+            "allowed_asset_kinds": [
+              "belt",
+              "waist_pouch",
+              "buckle",
+              "small_holster"
+            ],
+            "include_actor_context": true
+          },
+          "validation": {
+            "required_views": 4,
+            "required_frames": 8,
+            "collision_policy": "no persistent hand or thigh penetration during Walk",
+            "human_review_required": true
+          },
+          "evidence": [
+            {
+              "path": "references/actor_v2/default_adventurer_v1/waist_accessory_v1/reference_manifest.json",
+              "kind": "reference_manifest",
+              "tracked": true
+            },
+            {
+              "path": "workspace/actor_v2/slots/waist_accessory/v1/fit_v1/compile.json",
+              "kind": "fit_report",
+              "tracked": false,
+              "sha256": "22db748ce23c439e3f745a850715e0098d82fad6764c78a02a84af4d5510630d"
+            }
+          ]
+        },
+        {
+          "slot_id": "legs_outer",
+          "label": "骨盆与腿部外层",
+          "category": "wearable",
+          "side": "bilateral",
+          "status": "validated",
+          "attachment": {
+            "mode": "multi_bone",
+            "parent_bones": [
+              "CC_Base_Pelvis",
+              "CC_Base_L_Thigh",
+              "CC_Base_R_Thigh"
+            ],
+            "anchors": [
+              {
+                "id": "PelvisCenter",
+                "parent_bone": "CC_Base_Pelvis",
+                "position_m": [
+                  0.0,
+                  0.0,
+                  0.567308
+                ]
+              }
+            ]
+          },
+          "fit_envelope": null,
+          "generation_policy": {
+            "preferred_mode": "parametric",
+            "allowed_asset_kinds": [
+              "shorts",
+              "pants",
+              "skirt",
+              "leg_armor"
+            ],
+            "include_actor_context": true
+          },
+          "validation": {
+            "required_views": 4,
+            "required_frames": 8,
+            "collision_policy": "preserve pelvis seam and independent thigh motion",
+            "human_review_required": true
+          },
+          "evidence": [
+            {
+              "path": "references/actor_v2/default_adventurer_v1/legs_outer_v1/reference_manifest.json",
+              "kind": "reference_manifest",
+              "tracked": true
+            }
+          ]
+        },
+        {
+          "slot_id": "feet_outer",
+          "label": "鞋靴",
+          "category": "wearable",
+          "side": "bilateral",
+          "status": "measured_provisional",
+          "attachment": {
+            "mode": "bone_pair",
+            "parent_bones": [
+              "CC_Base_L_Foot",
+              "CC_Base_R_Foot"
+            ],
+            "anchors": [
+              {
+                "id": "FootRoot_L",
+                "parent_bone": "CC_Base_L_Foot",
+                "position_m": [
+                  0.129386,
+                  0.0,
+                  0.109481
+                ]
+              },
+              {
+                "id": "FootRoot_R",
+                "parent_bone": "CC_Base_R_Foot",
+                "position_m": [
+                  -0.129386,
+                  0.0,
+                  0.109481
+                ]
+              }
+            ]
+          },
+          "fit_envelope": null,
+          "generation_policy": {
+            "preferred_mode": "on_actor_then_isolate",
+            "allowed_asset_kinds": [
+              "boots",
+              "shoes",
+              "greaves"
+            ],
+            "include_actor_context": true
+          },
+          "validation": {
+            "required_views": 4,
+            "required_frames": 8,
+            "collision_policy": "preserve ground contact and toe direction through Walk",
+            "human_review_required": true
+          },
+          "evidence": [
+            {
+              "path": "workspace/actor_v2/base/v1/rig_calibration/rig_calibration.json",
+              "kind": "measurement",
+              "tracked": false,
+              "sha256": "e4514feaf37b21e893ab0255bf19be15278410157d9e4640904f77d8d1649357"
+            }
+          ]
+        },
+        {
+          "slot_id": "wrist_accessory",
+          "label": "护腕",
+          "category": "prop",
+          "side": "bilateral",
+          "status": "measured_provisional",
+          "attachment": {
+            "mode": "bone_pair",
+            "parent_bones": [
+              "CC_Base_L_Forearm",
+              "CC_Base_R_Forearm"
+            ],
+            "anchors": [
+              {
+                "id": "Wrist_L",
+                "parent_bone": "CC_Base_L_Forearm",
+                "position_m": [
+                  0.427969,
+                  0.0,
+                  0.507591
+                ]
+              },
+              {
+                "id": "Wrist_R",
+                "parent_bone": "CC_Base_R_Forearm",
+                "position_m": [
+                  -0.427969,
+                  0.0,
+                  0.507591
+                ]
+              }
+            ]
+          },
+          "fit_envelope": null,
+          "generation_policy": {
+            "preferred_mode": "standalone",
+            "allowed_asset_kinds": [
+              "bracer",
+              "bracelet",
+              "wrist_guard"
+            ],
+            "include_actor_context": true
+          },
+          "validation": {
+            "required_views": 4,
+            "required_frames": 8,
+            "collision_policy": "preserve wrist articulation and hand clearance",
+            "human_review_required": true
+          },
+          "evidence": [
+            {
+              "path": "workspace/actor_v2/base/v1/rig_calibration/rig_calibration.json",
+              "kind": "measurement",
+              "tracked": false,
+              "sha256": "e4514feaf37b21e893ab0255bf19be15278410157d9e4640904f77d8d1649357"
+            }
+          ]
+        },
+        {
+          "slot_id": "hand_prop_l",
+          "label": "左手道具",
+          "category": "prop",
+          "side": "left",
+          "status": "measured_provisional",
+          "attachment": {
+            "mode": "bone",
+            "parent_bones": [
+              "CC_Base_L_Hand"
+            ],
+            "anchors": [
+              {
+                "id": "Grip_L",
+                "parent_bone": "CC_Base_L_Hand",
+                "position_m": [
+                  0.427969,
+                  0.0,
+                  0.507591
+                ]
+              }
+            ]
+          },
+          "fit_envelope": null,
+          "generation_policy": {
+            "preferred_mode": "standalone",
+            "allowed_asset_kinds": [
+              "weapon",
+              "tool",
+              "shield",
+              "lantern"
+            ],
+            "include_actor_context": false
+          },
+          "validation": {
+            "required_views": 4,
+            "required_frames": 8,
+            "collision_policy": "grip pivot must follow hand bone; test arm swing clearance",
+            "human_review_required": true
+          },
+          "evidence": [
+            {
+              "path": "workspace/actor_v2/base/v1/rig_calibration/rig_calibration.json",
+              "kind": "measurement",
+              "tracked": false,
+              "sha256": "e4514feaf37b21e893ab0255bf19be15278410157d9e4640904f77d8d1649357"
+            }
+          ]
+        },
+        {
+          "slot_id": "hand_prop_r",
+          "label": "右手道具",
+          "category": "prop",
+          "side": "right",
+          "status": "measured_provisional",
+          "attachment": {
+            "mode": "bone",
+            "parent_bones": [
+              "CC_Base_R_Hand"
+            ],
+            "anchors": [
+              {
+                "id": "Grip_R",
+                "parent_bone": "CC_Base_R_Hand",
+                "position_m": [
+                  -0.427969,
+                  0.0,
+                  0.507591
+                ]
+              }
+            ]
+          },
+          "fit_envelope": null,
+          "generation_policy": {
+            "preferred_mode": "standalone",
+            "allowed_asset_kinds": [
+              "weapon",
+              "tool",
+              "shield",
+              "lantern"
+            ],
+            "include_actor_context": false
+          },
+          "validation": {
+            "required_views": 4,
+            "required_frames": 8,
+            "collision_policy": "grip pivot must follow hand bone; test arm swing clearance",
+            "human_review_required": true
+          },
+          "evidence": [
+            {
+              "path": "workspace/actor_v2/base/v1/rig_calibration/rig_calibration.json",
+              "kind": "measurement",
+              "tracked": false,
+              "sha256": "e4514feaf37b21e893ab0255bf19be15278410157d9e4640904f77d8d1649357"
+            }
+          ]
+        },
+        {
+          "slot_id": "back_accessory",
+          "label": "背部附件",
+          "category": "prop",
+          "side": "center",
+          "status": "measured_provisional",
+          "attachment": {
+            "mode": "bone",
+            "parent_bones": [
+              "CC_Base_Spine02"
+            ],
+            "anchors": [
+              {
+                "id": "BackCenter",
+                "parent_bone": "CC_Base_Spine02",
+                "position_m": [
+                  0.0,
+                  0.0,
+                  0.975372
+                ],
+                "normal": [
+                  0.0,
+                  1.0,
+                  0.0
+                ]
+              }
+            ]
+          },
+          "fit_envelope": null,
+          "generation_policy": {
+            "preferred_mode": "standalone",
+            "allowed_asset_kinds": [
+              "backpack",
+              "quiver",
+              "sheath",
+              "cape_mount"
+            ],
+            "include_actor_context": true
+          },
+          "validation": {
+            "required_views": 4,
+            "required_frames": 8,
+            "collision_policy": "test shoulder, hair and arm-swing clearance; keep attachment close to back",
+            "human_review_required": true
+          },
+          "evidence": [
+            {
+              "path": "workspace/actor_v2/base/v1/rig_calibration/rig_calibration.json",
+              "kind": "measurement",
+              "tracked": false,
+              "sha256": "e4514feaf37b21e893ab0255bf19be15278410157d9e4640904f77d8d1649357"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "sources": {
+    "styles": [
+      "references/style_profiles/western_fantasy_qstyle_soft3d_v1.json"
+    ],
+    "actors": [
+      "references/actor_v2/default_adventurer_v2/actor_slot_profile_v1.json"
+    ]
+  }
+}

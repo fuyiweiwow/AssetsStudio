@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://assetsstudio.local/schemas/style-profile.v1.schema.json",
+  "title": "AssetsStudio reusable visual style profile v1",
+  "type": "object",
+  "required": ["schema", "id", "label", "revision", "status", "scope", "authorities", "proportions", "shape_language", "render_language", "palette", "prompt_contract", "qa"],
+  "properties": {
+    "schema": { "const": "assetsstudio_style_profile_v1" },
+    "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9_-]+$" },
+    "label": { "type": "string", "minLength": 1 },
+    "revision": { "type": "integer", "minimum": 1 },
+    "status": { "enum": ["approved", "provisional", "retired"] },
+    "scope": {
+      "type": "array", "minItems": 1, "uniqueItems": true,
+      "items": { "enum": ["character", "wearable", "prop", "environment"] }
+    },
+    "authorities": {
+      "type": "array", "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "path", "sha256", "role", "required"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "path": { "type": "string", "minLength": 1 },
+          "sha256": { "type": "string", "pattern": "^[A-Fa-f0-9]{64}$" },
+          "role": { "enum": ["primary_proportion", "character_identity", "turnaround_evidence", "material_evidence"] },
+          "required": { "type": "boolean" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "proportions": {
+      "type": "object",
+      "required": ["measured_actor_height_m", "measured_head_height_m", "measured_total_heads", "target_total_heads_range", "silhouette"],
+      "properties": {
+        "measured_actor_height_m": { "type": "number", "exclusiveMinimum": 0 },
+        "measured_head_height_m": { "type": "number", "exclusiveMinimum": 0 },
+        "measured_total_heads": { "type": "number", "exclusiveMinimum": 1 },
+        "target_total_heads_range": {
+          "type": "array",
+          "prefixItems": [{ "type": "number", "exclusiveMinimum": 1 }, { "type": "number", "exclusiveMinimum": 1 }],
+          "items": false
+        },
+        "silhouette": { "type": "string", "minLength": 1 }
+      },
+      "additionalProperties": false
+    },
+    "shape_language": {
+      "type": "array", "minItems": 3, "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "render_language": {
+      "type": "object",
+      "required": ["medium", "surface", "lighting", "linework", "detail_density"],
+      "properties": {
+        "medium": { "type": "string", "minLength": 1 },
+        "surface": { "type": "string", "minLength": 1 },
+        "lighting": { "type": "string", "minLength": 1 },
+        "linework": { "type": "string", "minLength": 1 },
+        "detail_density": { "type": "string", "minLength": 1 }
+      },
+      "additionalProperties": false
+    },
+    "palette": {
+      "type": "array", "minItems": 3,
+      "items": {
+        "type": "object",
+        "required": ["role", "color_srgb"],
+        "properties": {
+          "role": { "type": "string", "minLength": 1 },
+          "color_srgb": { "type": "string", "pattern": "^#[A-Fa-f0-9]{6}$" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "prompt_contract": {
+      "type": "object",
+      "required": ["positive", "negative", "immutable_traits"],
+      "properties": {
+        "positive": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+        "negative": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+        "immutable_traits": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } }
+      },
+      "additionalProperties": false
+    },
+    "qa": {
+      "type": "object",
+      "required": ["required_views", "checks", "human_review_required"],
+      "properties": {
+        "required_views": {
+          "type": "array", "minItems": 3, "uniqueItems": true,
+          "items": { "enum": ["front", "right", "back", "left"] }
+        },
+        "checks": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+        "human_review_required": { "const": true }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

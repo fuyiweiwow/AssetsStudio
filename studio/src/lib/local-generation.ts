@@ -12,6 +12,7 @@ export interface LocalGenerationHealth {
 
 export interface TurnaroundJob {
   id: string;
+  job_kind: "turnaround" | "accessory";
   status: TurnaroundStatus;
   created_at: string;
   updated_at: string;
@@ -21,8 +22,12 @@ export interface TurnaroundJob {
   seed: number;
   image_url?: string;
   record_url?: string;
-  qa_status?: "visual_review_required";
+  metrics_url?: string;
+  qa_status?: "visual_review_required" | "automatic_review_failed";
   error?: string;
+  style_profile_id?: string;
+  actor_profile_id?: string;
+  slot_id?: string;
 }
 
 const API_ROOT = "/api/local-generation";
@@ -54,8 +59,32 @@ export async function createTurnaround(subject: string, style: TurnaroundStyle, 
   }));
 }
 
+export async function createAccessoryTurnaround(
+  subject: string,
+  styleProfileId: string,
+  actorProfileId: string,
+  slotId: string,
+  seed: number,
+) {
+  return responseJson<TurnaroundJob>(await fetch(`${API_ROOT}/accessories`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      subject,
+      style_profile_id: styleProfileId,
+      actor_profile_id: actorProfileId,
+      slot_id: slotId,
+      seed,
+    }),
+  }));
+}
+
 export async function fetchTurnaround(jobId: string, signal?: AbortSignal) {
   return responseJson<TurnaroundJob>(await fetch(`${API_ROOT}/turnarounds/${jobId}`, { cache: "no-store", signal }));
+}
+
+export async function fetchAccessoryTurnaround(jobId: string, signal?: AbortSignal) {
+  return responseJson<TurnaroundJob>(await fetch(`${API_ROOT}/accessories/${jobId}`, { cache: "no-store", signal }));
 }
 
 export function proxiedArtifactUrl(url: string) {

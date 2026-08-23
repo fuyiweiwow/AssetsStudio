@@ -1,0 +1,131 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://assetsstudio.local/schemas/actor-slot-profile.v1.schema.json",
+  "title": "AssetsStudio actor attachment slot profile v1",
+  "type": "object",
+  "required": ["schema", "id", "label", "revision", "status", "actor_asset_id", "style_profile_id", "coordinate_contract", "measurements", "slots"],
+  "properties": {
+    "schema": { "const": "assetsstudio_actor_slot_profile_v1" },
+    "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9_-]+$" },
+    "label": { "type": "string", "minLength": 1 },
+    "revision": { "type": "integer", "minimum": 1 },
+    "status": { "enum": ["validated", "measured_provisional", "retired"] },
+    "actor_asset_id": { "type": "string", "minLength": 1 },
+    "style_profile_id": { "type": "string", "minLength": 1 },
+    "coordinate_contract": {
+      "type": "object",
+      "required": ["unit", "up", "front", "actor_left", "ground_z"],
+      "properties": {
+        "unit": { "const": "meter" }, "up": { "const": "+Z" }, "front": { "const": "-Y" },
+        "actor_left": { "const": "+X" }, "ground_z": { "type": "number" }
+      },
+      "additionalProperties": false
+    },
+    "measurements": {
+      "type": "object",
+      "required": ["actor_bounds_m", "head_bounds_m", "actor_height_m", "total_heads", "source"],
+      "properties": {
+        "actor_bounds_m": { "$ref": "#/$defs/bounds" },
+        "head_bounds_m": { "$ref": "#/$defs/bounds" },
+        "actor_height_m": { "type": "number", "exclusiveMinimum": 0 },
+        "total_heads": { "type": "number", "exclusiveMinimum": 1 },
+        "source": { "type": "string", "minLength": 1 }
+      },
+      "additionalProperties": false
+    },
+    "slots": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/slot" } }
+  },
+  "$defs": {
+    "vector3": {
+      "type": "array",
+      "prefixItems": [{ "type": "number" }, { "type": "number" }, { "type": "number" }],
+      "items": false
+    },
+    "bounds": {
+      "type": "object", "required": ["min", "max"],
+      "properties": { "min": { "$ref": "#/$defs/vector3" }, "max": { "$ref": "#/$defs/vector3" } },
+      "additionalProperties": false
+    },
+    "anchor": {
+      "type": "object", "required": ["id", "parent_bone", "position_m"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "parent_bone": { "type": "string", "minLength": 1 },
+        "position_m": { "$ref": "#/$defs/vector3" },
+        "normal": { "$ref": "#/$defs/vector3" }
+      },
+      "additionalProperties": false
+    },
+    "fitEnvelope": {
+      "type": ["object", "null"], "required": ["frame", "kind", "bounds_m", "clearance_m"],
+      "properties": {
+        "frame": { "const": "actor_world_rest" }, "kind": { "enum": ["aabb", "surface"] },
+        "bounds_m": { "$ref": "#/$defs/bounds" }, "clearance_m": { "type": "number", "minimum": 0 }
+      },
+      "additionalProperties": false
+    },
+    "evidence": {
+      "type": "object", "required": ["path", "kind", "tracked"],
+      "properties": {
+        "path": { "type": "string", "minLength": 1 },
+        "kind": { "enum": ["reference_manifest", "measurement", "fit_report", "review"] },
+        "tracked": { "type": "boolean" },
+        "sha256": { "type": "string", "pattern": "^[A-Fa-f0-9]{64}$" }
+      },
+      "additionalProperties": false
+    },
+    "slot": {
+      "type": "object",
+      "required": ["slot_id", "label", "category", "side", "status", "attachment", "fit_envelope", "generation_policy", "validation", "evidence"],
+      "properties": {
+        "slot_id": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]+$" },
+        "label": { "type": "string", "minLength": 1 },
+        "category": { "enum": ["body_feature", "hair", "headwear", "wearable", "prop"] },
+        "side": { "enum": ["center", "left", "right", "bilateral", "full_body"] },
+        "status": { "enum": ["validated", "measured_provisional", "source_contract", "blocked"] },
+        "attachment": {
+          "type": "object", "required": ["mode", "parent_bones", "anchors"],
+          "properties": {
+            "mode": { "enum": ["bone", "bone_pair", "multi_bone", "skin_surface_pair"] },
+            "parent_bones": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+            "anchors": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/anchor" } }
+          },
+          "additionalProperties": false
+        },
+        "fit_envelope": { "$ref": "#/$defs/fitEnvelope" },
+        "generation_reference": {
+          "type": ["object", "null"],
+          "required": ["path", "sha256", "role"],
+          "properties": {
+            "path": { "type": "string", "minLength": 1 },
+            "sha256": { "type": "string", "pattern": "^[A-Fa-f0-9]{64}$" },
+            "role": { "const": "isolated_slot_authority" }
+          },
+          "additionalProperties": false
+        },
+        "generation_policy": {
+          "type": "object", "required": ["preferred_mode", "allowed_asset_kinds", "include_actor_context"],
+          "properties": {
+            "preferred_mode": { "enum": ["standalone", "on_actor_then_isolate", "parametric", "reuse_only"] },
+            "allowed_asset_kinds": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+            "include_actor_context": { "type": "boolean" }
+          },
+          "additionalProperties": false
+        },
+        "validation": {
+          "type": "object", "required": ["required_views", "required_frames", "collision_policy", "human_review_required"],
+          "properties": {
+            "required_views": { "type": "integer", "minimum": 1, "maximum": 4 },
+            "required_frames": { "type": "integer", "minimum": 1 },
+            "collision_policy": { "type": "string", "minLength": 1 },
+            "human_review_required": { "const": true }
+          },
+          "additionalProperties": false
+        },
+        "evidence": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/evidence" } }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

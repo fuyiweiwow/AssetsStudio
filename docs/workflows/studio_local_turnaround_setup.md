@@ -126,12 +126,24 @@ Vite 将 `/api/local-generation/*` 代理到本地桥接：
 | GET | `/api/turnarounds/<id>` | 查询任务状态 |
 | GET | `/api/turnarounds/<id>/image` | 读取生成 PNG |
 | GET | `/api/turnarounds/<id>/record` | 下载可追溯 JSON |
+| POST | `/api/accessories` | 创建绑定 StyleProfile/ActorSlotProfile 的独立配件三视图任务 |
+| GET | `/api/accessories/<id>` | 查询配件任务状态 |
+| GET | `/api/accessories/<id>/image` | 读取配件联合三视图 PNG |
+| GET | `/api/accessories/<id>/record` | 下载含 Profile 快照的配件任务记录 |
 
 项目记录写入：
 
 ```text
 workspace/local_generation/turnarounds/<job-id>/
 ├── turnaround.png
+└── record.json
+```
+
+独立配件写入：
+
+```text
+workspace/local_generation/accessories/<job-id>/
+├── accessory_turnaround.png
 └── record.json
 ```
 
@@ -209,3 +221,5 @@ python .\tools\validate_studio_local_generation.py --check-models
 4. 调用 `normalize_turnaround_panels.py` 和 `analyze_turnaround_sheet.py`；
 5. 人工确认后生成 RGB/RGBA，并排队 Hunyuan3D-2MV；
 6. 在 Studio 中显示 2D 源、3D 候选和 Blender QA 的晋级状态。
+
+独立配件路线的实测结论见 `docs/workflows/accessory_style_slot_validation_2026-08-23.md`。FLUX.2 配件联合图必须先通过自动一致性 Gate；当前腰包实验未通过，下一步改为批准单图经 Hunyuan3D 建模后由同一网格渲染三视图。

@@ -34,6 +34,16 @@ function Test-LocalEndpoint([string]$Url) {
     }
 }
 
+function Test-CurrentBridge() {
+    try {
+        $payload = Invoke-RestMethod -Uri "http://127.0.0.1:$bridgePort/api/health" -TimeoutSec 2
+        return [bool]$payload.profile_registry -and [int]$payload.style_profiles -ge 1 -and [int]$payload.actor_profiles -ge 1
+    }
+    catch {
+        return $false
+    }
+}
+
 $startedComfy = $null
 $startedBridge = $null
 try {
@@ -65,18 +75,20 @@ try {
 
     $env:ASSETSSTUDIO_COMFY_ROOT = $ComfyRoot
     $env:ASSETSSTUDIO_COMFY_URL = "http://127.0.0.1:$ComfyPort"
-    $startedBridge = Start-Process -FilePath $Python -ArgumentList @($bridgeScript, "--host", "127.0.0.1", "--port", "$bridgePort") -WorkingDirectory $projectRoot -WindowStyle Hidden -RedirectStandardOutput (Join-Path $logRoot "studio_bridge_stdout.log") -RedirectStandardError (Join-Path $logRoot "studio_bridge_stderr.log") -PassThru
+    if (-not (Test-CurrentBridge)) {
+        $startedBridge = Start-Process -FilePath $Python -ArgumentList @($bridgeScript, "--host", "127.0.0.1", "--port", "$bridgePort") -WorkingDirectory $projectRoot -WindowStyle Hidden -RedirectStandardOutput (Join-Path $logRoot "studio_bridge_stdout.log") -RedirectStandardError (Join-Path $logRoot "studio_bridge_stderr.log") -PassThru
+    }
 
     $bridgeReady = $false
     for ($attempt = 0; $attempt -lt 20; $attempt++) {
-        if (Test-LocalEndpoint "http://127.0.0.1:$bridgePort/api/health") {
+        if (Test-CurrentBridge) {
             $bridgeReady = $true
             break
         }
         Start-Sleep -Milliseconds 500
     }
     if (-not $bridgeReady) {
-        throw "AssetsStudio local generation bridge did not become ready on port $bridgePort"
+        throw "Current AssetsStudio profile-aware bridge did not become ready on port $bridgePort. Close any older launcher using 8765, then retry."
     }
 
     Push-Location $studioRoot
@@ -85,6 +97,9 @@ try {
         # native-control milestones. F009 consumes the checked-in registry and
         # starts Vite directly until that separate registry migration is done.
         npm exec vite -- --host 127.0.0.1 --port 4173
+        if ($LASTEXITCODE -ne 0) {
+            throw "Studio Vite stopped with exit code $LASTEXITCODE"
+        }
     }
     finally {
         Pop-Location
