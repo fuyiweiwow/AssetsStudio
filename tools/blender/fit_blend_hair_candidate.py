@@ -40,6 +40,11 @@ def cli_args() -> argparse.Namespace:
     )
     parser.add_argument("--texture-root", type=Path)
     parser.add_argument("--actor-blend", required=True, type=Path)
+    parser.add_argument(
+        "--head-calibration",
+        type=Path,
+        help="Actor V2 head_feature_calibration_v1 JSON used as the head coordinate authority",
+    )
     parser.add_argument("--output-blend", required=True, type=Path)
     parser.add_argument("--output-dir", required=True, type=Path)
     parser.add_argument(
@@ -139,6 +144,18 @@ def cli_args() -> argparse.Namespace:
     parser.add_argument("--color", nargs=4, type=float, default=(0.12, 0.045, 0.025, 1.0))
     parser.add_argument("--keep-source-materials", action="store_true")
     return parser.parse_args(argv)
+
+
+def load_head_calibration(path: Path | None) -> dict | None:
+    if path is None:
+        return None
+    payload = json.loads(path.resolve().read_text(encoding="utf-8"))
+    if payload.get("schema") != "assetsstudio_actor_v2_head_feature_calibration_v1":
+        raise RuntimeError(f"unsupported head calibration schema: {payload.get('schema')}")
+    bounds_payload = payload.get("head_bounds", {})
+    if not all(name in bounds_payload for name in ("center", "dimensions", "max")):
+        raise RuntimeError("head calibration is missing center, dimensions, or maximum bounds")
+    return payload
 
 
 def append_object(
@@ -295,6 +312,7 @@ def fit_to_actor(
     body: bpy.types.Object,
     options: argparse.Namespace,
     source_anchor: bpy.types.Object | None = None,
+    head_calibration: dict | None = None,
 ) -> dict[str, object]:
     bake_source_transform(tile)
     # Blend hair objects often carry authored location, rotation and non-uniform
@@ -313,7 +331,20 @@ def fit_to_actor(
     if source_anchor is not None:
         anchor_low, anchor_high = fit_tools.bounds(source_anchor)
         source_anchor_center = (anchor_low + anchor_high) * 0.5
-    head_center, head_width, head_top = fit_tools.head_target(armature, body)
+    if head_calibration is None:
+        head_center, head_width, head_top = fit_tools.head_target(armature, body)
+    else:
+        calibrated_bounds = head_calibration["head_bounds"]
+        calibrated_center = calibrated_bounds["center"]
+        head_center = Vector(
+            (
+                float(calibrated_center[0]),
+                float(calibrated_center[1]),
+                float(calibrated_bounds["max"][2]),
+            )
+        )
+        head_width = float(calibrated_bounds["dimensions"][0])
+        head_top = float(calibrated_bounds["max"][2])
     current_width = max(high.x - low.x, 0.001)
     fit_scale = (head_width * options.width_ratio) / current_width
     tile.scale = (fit_scale, fit_scale, fit_scale)
@@ -372,6 +403,10 @@ def fit_to_actor(
         "parent_bone": fit_tools.HEAD_BONE,
         "head_width": head_width,
         "head_top": head_top,
+        "head_center": [float(value) for value in head_center],
+        "head_coordinate_mode": (
+            "head_feature_calibration_v1" if head_calibration is not None else "legacy_head_target"
+        ),
         "source_anchor": source_anchor.name if source_anchor else None,
     }
 
@@ -379,6 +414,8 @@ def fit_to_actor(
 def create_actor_cap(
     armature: bpy.types.Object,
     body: bpy.types.Object,
+    head_center: Vector,
+    head_width: float,
     head_top: float,
     bottom_offset: float,
     surface_offset: float,
@@ -386,14 +423,21 @@ def create_actor_cap(
     surface_fit: bool = False,
     rear_only: bool = False,
 ) -> bpy.types.Object:
-    """Create a thin, actor-shaped cap to hide source-hair scalp gaps."""
-    body.data.update()
-    body_to_world = body.matrix_world
-    normal_to_world = body.matrix_world.to_3x3()
+    """Create a bounded actor-surface undercap behind source-locked hair locks."""
+    # Use the evaluated pose mesh. Copying raw datablock vertices here leaves
+    # the cap inside the deformed Actor head when an Armature modifier or shape
+    # correction is active, which presents as irregular scalp-colored holes.
+    depsgraph = bpy.context.evaluated_depsgraph_get()
+    evaluated_body = body.evaluated_get(depsgraph)
+    source_mesh = evaluated_body.to_mesh()
+    body_to_world = evaluated_body.matrix_world
     bottom = head_top - bottom_offset
+    crown_bottom = head_top - min(bottom_offset, head_width * 0.50)
+    side_bottom = head_top - min(bottom_offset, head_width * 0.67)
+    half_width = max(head_width * 0.5, 1e-6)
     selected_faces = []
-    for polygon in body.data.polygons:
-        points = [body_to_world @ body.data.vertices[index].co for index in polygon.vertices]
+    for polygon in source_mesh.polygons:
+        points = [body_to_world @ source_mesh.vertices[index].co for index in polygon.vertices]
         center = sum(points, Vector()) / len(points)
         if rear_only:
             # Front is -Y. Keep the forehead clear and begin around the ears:
@@ -405,8 +449,26 @@ def create_actor_cap(
                 continue
             if center.z < bottom:
                 continue
-        elif not any(point.z >= bottom for point in points):
-            continue
+        else:
+            # Restore only the smooth base shell that should sit behind the
+            # recovered source locks. The lower face and eye region are never
+            # selected, so the cap cannot mask a bad feature placement.
+            x_ratio = abs(center.x - head_center.x) / half_width
+            # A flat crown cutoff leaves a straight brown edge across the
+            # forehead. Keep the undercap behind the source bangs with a high
+            # centre hairline that falls gradually toward both temples.
+            in_front = center.y < head_center.y - head_width * 0.06
+            front_drop = head_width * (0.20 + 0.22 * min(x_ratio, 1.0) ** 1.7)
+            front_crown_bottom = head_top - min(bottom_offset, front_drop)
+            on_crown = center.z >= (front_crown_bottom if in_front else crown_bottom)
+            on_rear = center.y >= head_center.y - head_width * 0.03 and center.z >= bottom
+            on_temple = (
+                x_ratio >= 0.70
+                and center.y >= head_center.y - head_width * 0.30
+                and center.z >= side_bottom
+            )
+            if not (on_crown or on_rear or on_temple):
+                continue
         selected_faces.append(polygon)
     if not selected_faces:
         raise RuntimeError(f"actor cap selection is empty at z={bottom}")
@@ -414,13 +476,21 @@ def create_actor_cap(
     index_map = {old: new for new, old in enumerate(used)}
     vertices = []
     for old in used:
-        vertex = body.data.vertices[old]
-        point = body_to_world @ vertex.co
-        # The source actor has a few inconsistent local normals.  For this
-        # camera-facing patch, use an explicit front offset instead of
-        # trusting the mesh normal and accidentally pushing the patch inside.
-        front_offset = max(0.10, surface_offset * 4.0)
-        vertices.append(tuple(point + Vector((0.0, -front_offset, surface_offset * 0.2))))
+        point = body_to_world @ source_mesh.vertices[old].co
+        radial_center = Vector((head_center.x, head_center.y, head_top - head_width * 0.50))
+        radial = point - radial_center
+        # A purely radial displacement loses front clearance near the side of
+        # a wide chibi head: most of the offset goes into X and the Actor can
+        # still win the front-view depth test. Use a small orthographic shell
+        # dilation so front/back/side reviews all retain declared clearance.
+        offset = Vector(
+            (
+                surface_offset if radial.x >= 0.0 else -surface_offset,
+                surface_offset if radial.y >= 0.0 else -surface_offset,
+                surface_offset * 0.5 if radial.z >= 0.0 else -surface_offset * 0.5,
+            )
+        )
+        vertices.append(tuple(point + offset))
     faces = [tuple(index_map[index] for index in polygon.vertices) for polygon in selected_faces]
     mesh = bpy.data.meshes.new("ActorHairCapMesh")
     mesh.from_pydata(vertices, [], faces)
@@ -446,6 +516,10 @@ def create_actor_cap(
         shrink.wrap_method = "NEAREST_SURFACEPOINT"
         shrink.wrap_mode = "OUTSIDE_SURFACE"
         shrink.offset = surface_offset
+    cap["assetsstudio_source"] = "evaluated_actor_head_surface"
+    cap["assetsstudio_front_hairline_policy"] = "curved_source_bangs_occlusion_v1"
+    cap["assetsstudio_surface_offset"] = surface_offset
+    evaluated_body.to_mesh_clear()
     return cap
 
 
@@ -540,8 +614,8 @@ def create_front_center_scalp_patch(
     body_to_world = body.matrix_world
     bottom = head_top - bottom_offset
     selected_faces = []
-    for polygon in body.data.polygons:
-        points = [body_to_world @ body.data.vertices[index].co for index in polygon.vertices]
+    for polygon in source_mesh.polygons:
+        points = [body_to_world @ source_mesh.vertices[index].co for index in polygon.vertices]
         center = sum(points, Vector()) / len(points)
         if (
             abs(center.x - head_center.x) <= half_width
@@ -555,9 +629,10 @@ def create_front_center_scalp_patch(
     index_map = {old: new for new, old in enumerate(used)}
     vertices = []
     for old in used:
-        point = body_to_world @ body.data.vertices[old].co
+        point = body_to_world @ source_mesh.vertices[old].co
         vertices.append(tuple(point + Vector((0.0, -surface_offset, 0.0))))
     faces = [tuple(index_map[index] for index in polygon.vertices) for polygon in selected_faces]
+    evaluated_body.to_mesh_clear()
     mesh = bpy.data.meshes.new("FrontCenterScalpPatchMesh")
     mesh.from_pydata(vertices, [], faces)
     mesh.update()
@@ -873,6 +948,7 @@ def lower_front_center_fringe(
 
 def main() -> int:
     options = cli_args()
+    head_calibration = load_head_calibration(options.head_calibration)
     if options.add_smooth_scalp_cap:
         raise RuntimeError(
             "--add-smooth-scalp-cap is disabled: it can cover the face and caused an unstable "
@@ -907,7 +983,7 @@ def main() -> int:
         options.normalize_components_to_head,
     )
     repaired_images = repair_texture_paths(tile, options.texture_root.resolve() if options.texture_root else None)
-    fit = fit_to_actor(tile, armature, body, options, source_anchor)
+    fit = fit_to_actor(tile, armature, body, options, source_anchor, head_calibration)
     cap = None
     lattice = None
     patch = None
@@ -931,6 +1007,8 @@ def main() -> int:
             cap = create_actor_cap(
                 armature,
                 body,
+                Vector(fit["head_center"]),
+                float(fit["head_width"]),
                 head_top,
                 options.cap_bottom_offset,
                 options.cap_surface_offset,
@@ -1029,6 +1107,7 @@ def main() -> int:
         "source_objects": hair_names,
         "source_anchor_object": options.source_anchor_object,
         "actor_blend": str(options.actor_blend.resolve()),
+        "head_calibration": str(options.head_calibration.resolve()) if options.head_calibration else None,
         "fit_frame": options.frame,
         "object": tile.name,
         "actor_cap": cap.name if cap else None,

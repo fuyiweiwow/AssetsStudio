@@ -16,7 +16,10 @@ import bpy
 from mathutils import Vector
 
 
-ACTOR_EARS = {"L": "CartoonEar_L_Downloaded", "R": "CartoonEar_R_Downloaded"}
+ACTOR_EAR_CANDIDATES = {
+    "L": ("CartoonEar_L_Downloaded", "EarPair_HunyuanV2_L", "EarPair_DefaultHuman_L"),
+    "R": ("CartoonEar_R_Downloaded", "EarPair_HunyuanV2_R", "EarPair_DefaultHuman_R"),
+}
 HEAD_BONE = "CC_Base_Head"
 SOURCE_HEAD = "head_org_0_0_node"
 
@@ -95,6 +98,18 @@ def target_root_and_height(ear: bpy.types.Object, side: str) -> tuple[Vector, fl
     return root, max(point.z for point in points) - min(point.z for point in points), ear.active_material
 
 
+def find_actor_ears() -> dict[str, bpy.types.Object]:
+    result = {}
+    for side, candidates in ACTOR_EAR_CANDIDATES.items():
+        result[side] = next((bpy.data.objects.get(name) for name in candidates if bpy.data.objects.get(name)), None)
+    if any(ear is None for ear in result.values()):
+        raise RuntimeError(
+            "expected one detachable ear pair; tried "
+            + ", ".join(name for names in ACTOR_EAR_CANDIDATES.values() for name in names)
+        )
+    return result
+
+
 def create_component(source: bpy.types.Object, component: set[int], source_root: Vector, target_root: Vector, target_height: float, size_scale: float, side: str, material, collection) -> bpy.types.Object:
     source_points = {index: source.matrix_world @ source.data.vertices[index].co for index in component}
     source_height = max(point.z for point in source_points.values()) - min(point.z for point in source_points.values())
@@ -124,9 +139,7 @@ def main() -> int:
     armature = bpy.data.objects.get("Armature")
     if armature is None or HEAD_BONE not in armature.pose.bones:
         raise RuntimeError("actor head bone not found")
-    old = {side: bpy.data.objects.get(name) for side, name in ACTOR_EARS.items()}
-    if any(ear is None for ear in old.values()):
-        raise RuntimeError("expected both baseline downloaded ears")
+    old = find_actor_ears()
     targets = {side: target_root_and_height(ear, side) for side, ear in old.items()}
     before = set(bpy.data.objects)
     bpy.ops.import_scene.fbx(filepath=str(options.miku_fbx.resolve()), use_anim=False)

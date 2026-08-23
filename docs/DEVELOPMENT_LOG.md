@@ -4,6 +4,9 @@
 
 | 时间（Asia/Shanghai） | 类型 | 范围 | 事件 | 原因/结果 |
 | --- | --- | --- | --- | --- |
+| 2026-08-15 | decision/planning | clothing/workflows | 将服装开发从 DressCode/GarmentCode 单一路线改为三路线筛选：Seamly2D + Blender Cloth、Blender 原生版片缝合、免费基础网格拟合 | 当前 DressCode/GarmentCode 长袍候选未通过轮廓、Actor 穿着、碰撞和自碰撞门；先用统一斗篷目标验证可负担的离线主线，相关候选和验收记录写入 `docs/workflows/` |
+| 2026-08-15 | decision/planning | F008/clothing | 将服装主路线从 GarmentCode 短袖扩展切换为本地 DressCode 参数化生成，首个目标为 Q 版日漫 JRPG 魔法师长袍与兜帽 | DressCode 负责版型/材质候选，AssetsStudio 负责 recipe、Actor 适配、四向动作审查和候选晋级；F006 保留为旧基线 |
+| 2026-08-15 | implementation/validation | F008/clothing | 打通 DressCode canonical pattern → GarmentCode BoxMesh/Warp → Actor 蒙皮 → Blender 四向预览/GLB 的离线桥 | 证明格式、静态网格、定制 Warp、panel membership 和资产导出链路可运行；当前 Actor 烟雾仿真仍有 158 身体穿透与 1248 自交，候选保持 `review_required`，下一轮优先修正版型尺寸与空间布局 |
 | 2026-08-09 | migration | repository | 从 AssetsLab 白名单迁移并建立 AssetsStudio | 只保留当前里程碑、必要模型、重建脚本、Gallery 和工作流 |
 | 2026-08-09 | milestone | shoes | Cartoon sneaker v10 晋级为 `accepted` | 用户确认外观相当不错，可作为鞋里程碑 |
 | 2026-08-09 | governance | development | 建立开发原则、功能文档/ADR 模板、删除审计和产品技术讨论稿 | 防止上下文丢失、重复实验和正式分支持续膨胀 |

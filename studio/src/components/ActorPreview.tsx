@@ -1,10 +1,20 @@
-import { Component, Suspense, useEffect, useRef, type ErrorInfo, type ReactNode } from "react";
-import { Grid, Html, OrbitControls, useAnimations, useGLTF } from "@react-three/drei";
+import { Component, Suspense, useCallback, useEffect, useRef, useState, type ErrorInfo, type ReactNode } from "react";
+import { Grid, Html, OrbitControls, TransformControls, useAnimations, useGLTF } from "@react-three/drei";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import type { PreviewFocus } from "../lib/preview-focus";
 import type { GarmentMaterialLibrary, VisibilityGroup } from "../lib/registry";
 import { applyGarmentMaterial, type GarmentMaterialSelection } from "../lib/garment-material";
+import {
+  buildHeadFeatureFeedback,
+  captureWorldTransform,
+  findHeadFeatureTargets,
+  pivotWorldAdjustment,
+  type HeadFeatureFeedbackPayload,
+  type HeadFeatureNudge,
+  type HeadFeatureTarget,
+  type HeadFeatureTransformMode,
+} from "../lib/head-feature-feedback";
 import { applyHairPreviewDebugMaterial, applyHairPreviewParameters, applyPreviewVisibility, blinkStateAt, preparePreviewScene, type BlinkState, type HairPreviewParameterReport, type HairPreviewParameters } from "../lib/scene-preparation";
 
 export type CameraView = "front" | "right" | "back" | "left" | "free";
@@ -22,11 +32,32 @@ interface ActorPreviewProps {
   focus: PreviewFocus;
   hairParameters: HairPreviewParameters;
   hairDebugMaterial: boolean;
+  calibrationEnabled: boolean;
+  calibrationTargetId: string;
+  calibrationMode: HeadFeatureTransformMode;
+  calibrationResetToken: number;
+  calibrationNudge: HeadFeatureNudge;
+  onCalibrationTargets: (targets: HeadFeatureTarget[]) => void;
+  onCalibrationFeedback: (payload: HeadFeatureFeedbackPayload) => void;
   onHairParameterReport: (report: HairPreviewParameterReport) => void;
   onTimeChange: (value: number) => void;
   onDuration: (duration: number, animationName: string) => void;
   onModelError: () => void;
   onOrbitStart: () => void;
+}
+
+type ResolvedHeadFeatureTarget = ReturnType<typeof findHeadFeatureTargets>[number];
+
+interface HeadFeatureCalibrationRuntime {
+  target: ResolvedHeadFeatureTarget;
+  proxy: THREE.Object3D;
+  initialPivot: THREE.Vector3;
+  initialObjectWorld: THREE.Matrix4;
+  initialLocal: {
+    position: THREE.Vector3;
+    quaternion: THREE.Quaternion;
+    scale: THREE.Vector3;
+  };
 }
 
 interface BoundaryProps {
@@ -117,6 +148,13 @@ function ActorModel({
   garmentMaterial,
   hairParameters,
   hairDebugMaterial,
+  calibrationEnabled,
+  calibrationTargetId,
+  calibrationMode,
+  calibrationResetToken,
+  calibrationNudge,
+  onCalibrationTargets,
+  onCalibrationFeedback,
   onHairParameterReport,
   onTimeChange,
   onDuration,
@@ -130,10 +168,147 @@ function ActorModel({
   const action = names.length > 0 ? actions[names[0]] : undefined;
   const lastReport = useRef(0);
   const currentBlink = useRef<BlinkState>("open");
+  const calibrationObjects = useRef<ReturnType<typeof findHeadFeatureTargets>>([]);
+  const calibrationRuntimes = useRef(new Map<string, HeadFeatureCalibrationRuntime>());
+  const [selectedCalibrationObject, setSelectedCalibrationObject] = useState<THREE.Object3D | null>(null);
 
   useEffect(() => {
     preparePreviewScene(scene);
   }, [scene]);
+
+  useEffect(() => {
+    const targets = findHeadFeatureTargets(scene);
+    calibrationObjects.current = targets;
+    onCalibrationTargets(targets.map(({ object: _object, ...target }) => target));
+    return () => {
+      for (const runtime of calibrationRuntimes.current.values()) runtime.proxy.removeFromParent();
+      calibrationRuntimes.current.clear();
+      calibrationObjects.current = [];
+    };
+  }, [onCalibrationTargets, scene]);
+
+  const reportCalibration = useCallback(() => {
+    const adjustments = Array.from(calibrationRuntimes.current.values()).map((runtime) =>
+      pivotWorldAdjustment(
+        runtime.target,
+        [runtime.initialPivot.x, runtime.initialPivot.y, runtime.initialPivot.z],
+        captureWorldTransform(runtime.proxy),
+      ),
+    );
+    onCalibrationFeedback(buildHeadFeatureFeedback(modelUrl, adjustments));
+  }, [modelUrl, onCalibrationFeedback]);
+
+  useEffect(() => {
+    if (!calibrationEnabled) {
+      setSelectedCalibrationObject(null);
+      return;
+    }
+    if (action) {
+      action.time = 0;
+      mixer.update(0);
+    }
+    scene.updateMatrixWorld(true);
+    if (calibrationRuntimes.current.size === 0) {
+      for (const target of calibrationObjects.current) {
+        const pivot = new THREE.Box3().setFromObject(target.object).getCenter(new THREE.Vector3());
+        const proxy = new THREE.Object3D();
+        proxy.name = `AssetsStudioCalibrationPivot_${target.id}`;
+        proxy.position.copy(pivot);
+        scene.add(proxy);
+        proxy.updateWorldMatrix(true, false);
+        calibrationRuntimes.current.set(target.id, {
+          target,
+          proxy,
+          initialPivot: pivot.clone(),
+          initialObjectWorld: target.object.matrixWorld.clone(),
+          initialLocal: {
+            position: target.object.position.clone(),
+            quaternion: target.object.quaternion.clone(),
+            scale: target.object.scale.clone(),
+          },
+        });
+      }
+      reportCalibration();
+    }
+    setSelectedCalibrationObject(calibrationRuntimes.current.get(calibrationTargetId)?.proxy ?? null);
+  }, [action, calibrationEnabled, calibrationTargetId, mixer, reportCalibration, scene]);
+
+  const applyRuntimeCalibration = useCallback((runtime: HeadFeatureCalibrationRuntime) => {
+    runtime.proxy.updateWorldMatrix(true, false);
+    runtime.target.object.parent?.updateWorldMatrix(true, false);
+    const pivotInverse = new THREE.Matrix4().makeTranslation(
+      -runtime.initialPivot.x,
+      -runtime.initialPivot.y,
+      -runtime.initialPivot.z,
+    );
+    const deltaWorld = runtime.proxy.matrixWorld.clone().multiply(pivotInverse);
+    const nextWorld = deltaWorld.multiply(runtime.initialObjectWorld);
+    const parentInverse = runtime.target.object.parent
+      ? runtime.target.object.parent.matrixWorld.clone().invert()
+      : new THREE.Matrix4();
+    const nextLocal = parentInverse.multiply(nextWorld);
+    nextLocal.decompose(
+      runtime.target.object.position,
+      runtime.target.object.quaternion,
+      runtime.target.object.scale,
+    );
+    runtime.target.object.updateMatrix();
+    runtime.target.object.updateWorldMatrix(true, false);
+  }, []);
+
+  const applySelectedCalibration = useCallback(() => {
+    const runtime = calibrationRuntimes.current.get(calibrationTargetId);
+    if (!runtime) return;
+    applyRuntimeCalibration(runtime);
+    reportCalibration();
+  }, [applyRuntimeCalibration, calibrationTargetId, reportCalibration]);
+
+  useEffect(() => {
+    if (calibrationNudge.token === 0 || !calibrationEnabled) return;
+    const runtime = calibrationRuntimes.current.get(calibrationTargetId);
+    if (!runtime) return;
+    const applyNudge = (candidate: typeof runtime, delta: number) => {
+      if (calibrationNudge.operation === "translate") {
+        candidate.proxy.position[calibrationNudge.axis] += delta;
+      } else {
+        candidate.proxy.scale[calibrationNudge.axis] = THREE.MathUtils.clamp(
+          candidate.proxy.scale[calibrationNudge.axis] + delta,
+          0.5,
+          1.75,
+        );
+      }
+      candidate.proxy.updateMatrix();
+      applyRuntimeCalibration(candidate);
+    };
+    applyNudge(runtime, calibrationNudge.delta);
+    if (calibrationNudge.mirrorPair && runtime.target.kind === "eye") {
+      const counterpartId = runtime.target.side === "L" ? "eye_r" : "eye_l";
+      const counterpart = calibrationRuntimes.current.get(counterpartId);
+      if (counterpart) {
+        const mirroredDelta = calibrationNudge.operation === "translate" && calibrationNudge.axis === "x"
+          ? -calibrationNudge.delta
+          : calibrationNudge.delta;
+        applyNudge(counterpart, mirroredDelta);
+      }
+    }
+    reportCalibration();
+  }, [applyRuntimeCalibration, calibrationEnabled, calibrationNudge, calibrationTargetId, reportCalibration]);
+
+  useEffect(() => {
+    if (calibrationResetToken === 0) return;
+    for (const runtime of calibrationRuntimes.current.values()) {
+      runtime.target.object.position.copy(runtime.initialLocal.position);
+      runtime.target.object.quaternion.copy(runtime.initialLocal.quaternion);
+      runtime.target.object.scale.copy(runtime.initialLocal.scale);
+      runtime.target.object.updateMatrix();
+      runtime.proxy.position.copy(runtime.initialPivot);
+      runtime.proxy.quaternion.identity();
+      runtime.proxy.scale.set(1, 1, 1);
+      runtime.proxy.updateMatrix();
+      runtime.proxy.updateWorldMatrix(true, false);
+    }
+    reportCalibration();
+  }, [calibrationResetToken, reportCalibration]);
 
   useEffect(() => {
     applyGarmentMaterial(scene, garmentMaterialLibrary, garmentMaterial);
@@ -198,7 +373,23 @@ function ActorModel({
     }
   });
 
-  return <primitive object={scene} />;
+  return (
+    <>
+      <primitive object={scene} />
+      {calibrationEnabled && selectedCalibrationObject && (
+        <TransformControls
+          object={selectedCalibrationObject}
+          mode={calibrationMode}
+          space="world"
+          size={0.72}
+          translationSnap={0.001}
+          rotationSnap={THREE.MathUtils.degToRad(1)}
+          scaleSnap={0.01}
+          onObjectChange={applySelectedCalibration}
+        />
+      )}
+    </>
+  );
 }
 
 export function ActorPreview(props: ActorPreviewProps) {

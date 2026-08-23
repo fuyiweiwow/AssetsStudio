@@ -23,6 +23,8 @@ def args() -> argparse.Namespace:
     parser.add_argument("--review-dir", type=Path, required=True)
     parser.add_argument("--resolution", type=int, default=512)
     parser.add_argument("--center-x", type=float, default=0.430)
+    parser.add_argument("--left-center-x", type=float)
+    parser.add_argument("--right-center-x", type=float)
     parser.add_argument("--center-y", type=float, default=0.018)
     parser.add_argument("--center-z", type=float, default=1.325)
     parser.add_argument("--width-x", type=float, default=0.100)
@@ -148,9 +150,13 @@ def main() -> int:
     template.data.materials.append(material)
     ears = []
     anchors = []
+    left_center_x = options.left_center_x if options.left_center_x is not None else options.center_x
+    right_center_x = options.right_center_x if options.right_center_x is not None else -options.center_x
+    if left_center_x <= 0.0 or right_center_x >= 0.0:
+        raise RuntimeError("EarPair centers require left-center-x > 0 and right-center-x < 0")
     centers = {
-        "L": Vector((options.center_x, options.center_y, options.center_z)),
-        "R": Vector((-options.center_x, options.center_y, options.center_z)),
+        "L": Vector((left_center_x, options.center_y, options.center_z)),
+        "R": Vector((right_center_x, options.center_y, options.center_z)),
     }
     for side, center in centers.items():
         ear = template.copy()
@@ -169,7 +175,7 @@ def main() -> int:
         ear["assetsstudio_parent_bone"] = HEAD_BONE
         ear["assetsstudio_source_kind"] = "hunyuan3d_2mv"
         ear["assetsstudio_source_glb"] = str(options.ear_glb.resolve())
-        ear["assetsstudio_root_overlap_m"] = max(0.0, options.center_x + options.width_x * 0.5 - 0.467)
+        ear["assetsstudio_center_x"] = center.x
         parent_to_head(ear, armature)
         for linked in list(ear.users_collection):
             if linked != collection:

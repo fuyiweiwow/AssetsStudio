@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
 from collections import Counter, defaultdict, deque
 from pathlib import Path
@@ -40,20 +41,23 @@ PANTS_BONES = TORSO_BONES - {"CC_Base_L_Upperarm", "CC_Base_R_Upperarm"} | {
 def cli_args() -> argparse.Namespace:
     argv = sys.argv[sys.argv.index("--") + 1 :] if "--" in sys.argv else []
     parser = argparse.ArgumentParser()
-    parser.add_argument("--blend", required=True, type=Path)
-    parser.add_argument("--output", required=True, type=Path)
+    parser.add_argument("--blend", type=Path)
+    parser.add_argument("--output", type=Path)
     parser.add_argument("--garment-kind", choices=("shirt", "pants"), default="shirt")
-    parser.add_argument("--garment-name", default="GarmentCodeShirt_RenderGarment")
+    parser.add_argument("--garment-name", default=os.environ.get("GARMENT_FIT_NAME", "GarmentCodeShirt_RenderGarment"))
     parser.add_argument(
         "--garment-names",
-        default="",
+        default=os.environ.get("GARMENT_FIT_NAMES", ""),
         help="comma-separated garment object names; the first object is the torso for hem checks",
     )
     parser.add_argument("--actor-name", default="ChibiBaseMesh_AccuRIG_InputMesh")
     parser.add_argument("--armature-name", default="Armature")
     parser.add_argument("--penetration-threshold", type=float, default=0.010)
     parser.add_argument("--detached-threshold", type=float, default=0.12)
-    return parser.parse_args(argv)
+    options = parser.parse_args(argv)
+    options.blend = options.blend or Path(os.environ["GARMENT_FIT_BLEND"])
+    options.output = options.output or Path(os.environ["GARMENT_FIT_REPORT"])
+    return options
 
 
 def evaluated_points(

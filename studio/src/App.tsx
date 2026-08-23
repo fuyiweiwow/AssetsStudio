@@ -3,8 +3,15 @@ import rawRegistry from "./generated/asset-registry.json";
 import { ActorPreview, PreviewFallback, type CameraView, type VisibilityState } from "./components/ActorPreview";
 import { AssetShelf } from "./components/AssetShelf";
 import { WorkflowRail, type WorkflowStepId } from "./components/WorkflowRail";
+import { TurnaroundGenerator } from "./components/TurnaroundGenerator";
 import { drawHairRecipe, type HairRecipe } from "./lib/hair-recipe";
 import { compileEquipmentBrief, type EquipmentBrief } from "./lib/equipment-brief";
+import type {
+  HeadFeatureFeedbackPayload,
+  HeadFeatureNudge,
+  HeadFeatureTarget,
+  HeadFeatureTransformMode,
+} from "./lib/head-feature-feedback";
 import {
   defaultMaterialSelection,
   materialRenderRequest,
@@ -49,8 +56,12 @@ const CATEGORY_TO_GROUP: Partial<Record<AssetCategory, VisibilityGroup>> = {
   shoes: "shoes",
 };
 const EMPTY_VISIBILITY: VisibilityState = { hair: false, face: false, top: false, pants: false, shoes: false };
+const ACTOR_V2_HEAD_CALIBRATION_PREVIEW = {
+  model_url: "/generated/actor-v2-head-calibration.glb",
+  manifest_url: "/generated/actor-v2-head-calibration.manifest.json",
+};
 
-type WorkspaceView = "workbench" | "review" | "baseline";
+type WorkspaceView = "workbench" | "review" | "baseline" | "generation";
 type AssetPreviewMode = "isolated" | "actor";
 type HairPreviewTarget = "bundle" | "under_cap" | "assembly";
 
@@ -129,6 +140,14 @@ function App() {
   const [hairScalpVariant, setHairScalpVariant] = useState<HairScalpVariant>("conservative");
   const [hairParameters, setHairParameters] = useState<HairPreviewParameters>({ scalpWidth: 1, frontRetraction: 0.04 });
   const [hairParameterReport, setHairParameterReport] = useState<HairPreviewParameterReport>({ matchedMeshes: 0, xSpan: 0, zSpan: 0, zCenter: 0 });
+  const [headCalibrationEnabled, setHeadCalibrationEnabled] = useState(false);
+  const [headCalibrationTargetId, setHeadCalibrationTargetId] = useState("eye_l");
+  const [headCalibrationMode, setHeadCalibrationMode] = useState<HeadFeatureTransformMode>("translate");
+  const [headCalibrationResetToken, setHeadCalibrationResetToken] = useState(0);
+  const [headCalibrationPairLinked, setHeadCalibrationPairLinked] = useState(true);
+  const [headCalibrationNudge, setHeadCalibrationNudge] = useState<HeadFeatureNudge>({ token: 0, operation: "translate", axis: "x", delta: 0, mirrorPair: true });
+  const [headCalibrationTargets, setHeadCalibrationTargets] = useState<HeadFeatureTarget[]>([]);
+  const [headFeatureFeedback, setHeadFeatureFeedback] = useState<HeadFeatureFeedbackPayload | null>(null);
   const [hairRecipe, setHairRecipe] = useState<HairRecipe>(() =>
     drawHairRecipe(registry.hair.random_pool, "female", 104729),
   );
@@ -141,7 +160,9 @@ function App() {
   );
   const selectedHairCandidate = registry.hair.candidate_previews.find((preview) => preview.id === `hair_seed04_scalp_${hairScalpVariant}_v1`);
   const selectedHairAssembly = registry.hair.candidate_previews.find((preview) => preview.id === `hair_workflow_seed04_scalp_${hairScalpVariant}_v1`);
-  const previewTarget = activeStep === "hair"
+  const previewTarget = activeStep === "face"
+    ? ACTOR_V2_HEAD_CALIBRATION_PREVIEW
+    : activeStep === "hair"
     ? hairPreviewTarget === "under_cap" && selectedHairCandidate
       ? selectedHairCandidate
       : hairPreviewTarget === "assembly" && selectedHairAssembly
@@ -197,6 +218,9 @@ function App() {
     return group ? { ...EMPTY_VISIBILITY, [group]: true } : EMPTY_VISIBILITY;
   }, [activeStep, reviewVisibility]);
   const activeVisibility = workspaceView === "workbench" ? workbenchVisibility : reviewVisibility;
+  const previewVisibility = workspaceView === "workbench" && activeStep === "face" && headCalibrationEnabled
+    ? { ...activeVisibility, hair: true }
+    : activeVisibility;
   const showBody = workspaceView !== "workbench" || !isAssetStep(activeStep) || previewMode === "actor";
   const focusedCategory: AssetCategory = workspaceView === "workbench" && isAssetStep(activeStep) ? activeStep : "body";
   const previewFocus = getPreviewFocus(focusedCategory);
@@ -226,12 +250,39 @@ function App() {
   const handleTimeChange = useCallback((value: number) => {
     if (playingRef.current) setTimeline(value);
   }, []);
+  const handleCalibrationTargets = useCallback((targets: HeadFeatureTarget[]) => {
+    setHeadCalibrationTargets(targets);
+    setHeadCalibrationTargetId((current) => targets.some((target) => target.id === current) ? current : targets[0]?.id ?? "");
+  }, []);
+  const handleCalibrationFeedback = useCallback((payload: HeadFeatureFeedbackPayload) => {
+    setHeadFeatureFeedback(payload);
+  }, []);
 
   function selectWorkflowStep(step: WorkflowStepId) {
+    if (step !== "face") setHeadCalibrationEnabled(false);
     setWorkspaceView("workbench");
     setActiveStep(step);
     setPreviewMode("actor");
     setView("front");
+  }
+
+  function enterHeadCalibration() {
+    playingRef.current = false;
+    setPlaying(false);
+    setTimeline(0);
+    setPreviewMode("actor");
+    setView("front");
+    setHeadCalibrationEnabled(true);
+  }
+
+  function nudgeHeadFeature(operation: HeadFeatureNudge["operation"], axis: HeadFeatureNudge["axis"], delta: number) {
+    setHeadCalibrationNudge((current) => ({
+      token: current.token + 1,
+      operation,
+      axis,
+      delta,
+      mirrorPair: headCalibrationPairLinked,
+    }));
   }
 
   function toggleWorkflowPreview() {
@@ -311,11 +362,12 @@ function App() {
           <button type="button" className={workspaceView === "workbench" ? "active" : ""} onClick={() => setWorkspaceView("workbench")}>资产工作台</button>
           <button type="button" className={workspaceView === "review" ? "active" : ""} onClick={() => setWorkspaceView("review")}>组合预览</button>
           <button type="button" className={workspaceView === "baseline" ? "active" : ""} onClick={() => { setWorkspaceView("baseline"); setView("front"); }}>Actor 基准</button>
+          <button type="button" className={workspaceView === "generation" ? "active" : ""} onClick={() => setWorkspaceView("generation")}>本地三视图</button>
         </nav>
         <div className="topbar-meta"><span className="build-pill">F005 · v{registry.studio_version}</span><span className="storage-pill"><i /> 本地资产</span></div>
       </header>
 
-      <div className={`studio-grid ${workspaceView !== "workbench" ? "review-layout" : ""}`}>
+      {workspaceView === "generation" ? <TurnaroundGenerator /> : <div className={`studio-grid ${workspaceView !== "workbench" ? "review-layout" : ""}`}>
         {workspaceView === "workbench" ? (
           <WorkflowRail activeStep={activeStep} animationLabel={manifest?.animations[0]?.name ?? "Walk · 正在读取"} loadedCategories={loadedCategories} onSelect={selectWorkflowStep} />
         ) : workspaceView === "baseline" ? (
@@ -389,7 +441,7 @@ function App() {
           {!workflowPreviewCollapsed && <div className="preview-frame">
             <div className="frame-corner corner-tl" /><div className="frame-corner corner-tr" /><div className="frame-corner corner-bl" /><div className="frame-corner corner-br" />
             {availability === "available" ? (
-              <ActorPreview key={previewTarget.model_url} modelUrl={previewTarget.model_url} view={view} playing={playing} normalizedTime={timeline} visibility={activeVisibility} showBody={showBody} garmentMaterialLibrary={registry.garment_materials} garmentMaterial={garmentMaterial} focus={previewFocus} hairParameters={hairParameters} hairDebugMaterial={activeStep === "hair" && hairPreviewTarget === "under_cap" && previewMode === "isolated"} onHairParameterReport={setHairParameterReport} onTimeChange={handleTimeChange} onDuration={handleDuration} onModelError={() => setAvailability("error")} onOrbitStart={() => setView("free")} />
+              <ActorPreview key={previewTarget.model_url} modelUrl={previewTarget.model_url} view={view} playing={playing} normalizedTime={timeline} visibility={previewVisibility} showBody={showBody} garmentMaterialLibrary={registry.garment_materials} garmentMaterial={garmentMaterial} focus={previewFocus} hairParameters={hairParameters} hairDebugMaterial={activeStep === "hair" && hairPreviewTarget === "under_cap" && previewMode === "isolated"} calibrationEnabled={workspaceView === "workbench" && activeStep === "face" && headCalibrationEnabled} calibrationTargetId={headCalibrationTargetId} calibrationMode={headCalibrationMode} calibrationResetToken={headCalibrationResetToken} calibrationNudge={headCalibrationNudge} onCalibrationTargets={handleCalibrationTargets} onCalibrationFeedback={handleCalibrationFeedback} onHairParameterReport={setHairParameterReport} onTimeChange={handleTimeChange} onDuration={handleDuration} onModelError={() => setAvailability("error")} onOrbitStart={() => setView("free")} />
             ) : <PreviewFallback label={previewState.title} />}
             {workspaceView === "workbench" && selectedPreviewMissing && (
               <div className="preview-empty-card"><strong>当前资产尚未装入交互 GLB</strong><p>源模型和工作流数据已保留。生成 Actor bundle 后，这里会自动显示真实结果。</p></div>
@@ -534,7 +586,47 @@ function App() {
                 </>
               )}
 
-              {activeStep !== "hair" && activeStep !== "tops" && (
+              {activeStep === "face" && (
+                <section className="inspector-section parameter-panel head-calibration-panel">
+                  <div className="section-heading"><div><p className="eyebrow">MANUAL FIT FEEDBACK</p><h3>头部标准件校准</h3></div><span>{headCalibrationEnabled ? "编辑中" : "待进入"}</span></div>
+                  <div className="capability-note"><strong>Three.js 只产生校准增量</strong><p>在第 1 帧手动移动、旋转或缩放标准件；导出的 JSON 会由 Blender 回写，然后重新执行贴面、眨眼、耳根和动作门禁。</p></div>
+                  {!headCalibrationEnabled ? (
+                    <button type="button" className="console-primary" onClick={enterHeadCalibration}>进入手动校准</button>
+                  ) : (
+                    <>
+                      <label className="field-label">编辑对象
+                        <select value={headCalibrationTargetId} onChange={(event) => setHeadCalibrationTargetId(event.target.value)}>
+                          {headCalibrationTargets.map((target) => <option key={target.id} value={target.id}>{target.label} · {target.objectName}</option>)}
+                        </select>
+                      </label>
+                      <div className="calibration-mode-switcher" aria-label="校准变换模式">
+                        {(["translate", "rotate", "scale"] as HeadFeatureTransformMode[]).map((mode) => <button type="button" key={mode} className={headCalibrationMode === mode ? "active" : ""} onClick={() => setHeadCalibrationMode(mode)}>{mode === "translate" ? "移动" : mode === "rotate" ? "旋转" : "缩放"}</button>)}
+                      </div>
+                      <small className="parameter-report">红 X=左右 · 绿 Y=上下 · 蓝 Z=前后；移动吸附 1 mm，旋转吸附 1°，缩放步进 1%。</small>
+                      {headCalibrationTargets.find((target) => target.id === headCalibrationTargetId)?.kind === "eye" && <button type="button" className={`pair-link-toggle ${headCalibrationPairLinked ? "active" : ""}`} onClick={() => setHeadCalibrationPairLinked((value) => !value)}>双眼镜像联动 · {headCalibrationPairLinked ? "开" : "关"}</button>}
+                      <div className="calibration-nudge-grid" aria-label="精确微调">
+                        <button type="button" onClick={() => nudgeHeadFeature("translate", "x", -0.001)}>左移 1mm</button>
+                        <button type="button" onClick={() => nudgeHeadFeature("translate", "x", 0.001)}>右移 1mm</button>
+                        <button type="button" onClick={() => nudgeHeadFeature("translate", "y", 0.001)}>上移 1mm</button>
+                        <button type="button" onClick={() => nudgeHeadFeature("translate", "y", -0.001)}>下移 1mm</button>
+                        <button type="button" onClick={() => nudgeHeadFeature("translate", "z", 0.001)}>向外 1mm</button>
+                        <button type="button" onClick={() => nudgeHeadFeature("translate", "z", -0.001)}>向内 1mm</button>
+                        <button type="button" onClick={() => nudgeHeadFeature("scale", "x", -0.01)}>宽度 -1%</button>
+                        <button type="button" onClick={() => nudgeHeadFeature("scale", "x", 0.01)}>宽度 +1%</button>
+                        <button type="button" onClick={() => nudgeHeadFeature("scale", "y", -0.01)}>高度 -1%</button>
+                        <button type="button" onClick={() => nudgeHeadFeature("scale", "y", 0.01)}>高度 +1%</button>
+                      </div>
+                      <div className="calibration-actions">
+                        <button type="button" className="parameter-reset" onClick={() => setHeadCalibrationResetToken((value) => value + 1)}>全部复位</button>
+                        <button type="button" className="console-primary" disabled={!headFeatureFeedback || headFeatureFeedback.adjustments.length === 0} onClick={() => headFeatureFeedback && downloadJson("actor-v2-head-feature-feedback-v1.json", headFeatureFeedback)}>导出 Blender 回写 JSON（{headFeatureFeedback?.adjustments.length ?? 0} 项）</button>
+                      </div>
+                      <button type="button" className="review-entry-button secondary" onClick={() => setHeadCalibrationEnabled(false)}>退出校准预览</button>
+                    </>
+                  )}
+                </section>
+              )}
+
+              {activeStep !== "hair" && activeStep !== "tops" && activeStep !== "face" && (
                 <section className="inspector-section parameter-panel">
                   <div className="section-heading"><div><p className="eyebrow">PARAMETERS</p><h3>参数与随机化</h3></div><span>合同阶段</span></div>
                   <div className="capability-note"><strong>当前使用固定里程碑</strong><p>{isAssetStep(activeStep) ? "本轮先把预览和审查入口做可信；参数 Schema 将在 Blender 作业桥接前逐类定义。" : "结构资产目前只有一套真实选项，不显示虚假的第二模型、骨骼或动作。"}</p></div>
@@ -565,7 +657,7 @@ function App() {
             </>
           )}
         </aside>
-      </div>
+      </div>}
 
       <footer className="statusbar"><span>Registry · {registry.schema}</span><span>更新于 {registry.updated}</span><span className="statusbar-right">Blender 权威输出 · Three.js 决策预览</span></footer>
     </main>

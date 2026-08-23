@@ -1,0 +1,56 @@
+{
+  "schema": "assetsstudio_alignment_repair_queue_v1",
+  "asset": "qstyle_partitioned_external_robe",
+  "baseline": "E:/Env/Assets/clothing/opensource/blendswap_6385_long_robe/qstyle_partition_v2",
+  "mode": "sequential",
+  "items": [
+    {
+      "id": "qstyle-sleeve-landmarks",
+      "stage": 2,
+      "view_scope": ["front", "side", "motion"],
+      "failure": "The source robe's sleeve band was above the Q-style Actor shoulder.",
+      "measured_delta": "Source sleeve pivot z was about 2.04; Actor upper-arm heads are about 1.35.",
+      "proposed_action": "Repose negative/positive-X sleeve regions around the corresponding Actor upper-arm landmarks and transfer semantic arm weights.",
+      "write_scope": ["tools/blender/build_qstyle_partitioned_robe.py"],
+      "parallel_group": null,
+      "blocked_by": [],
+      "acceptance_gate": "actor_fit_check.shoulder_placement == true"
+    },
+    {
+      "id": "qstyle-collar-head-opening",
+      "stage": 2,
+      "view_scope": ["front", "side", "three_quarter"],
+      "failure": "The downloaded source has no dedicated hood topology and its upper central region approaches the Actor face/neck envelope.",
+      "measured_delta": "Head-weighted Actor region starts at z about 1.51; source collar/hood region is not independently bounded.",
+      "proposed_action": "Split or mask a dedicated collar/hood region, open the face boundary, and preserve the head clearance during later torso fits.",
+      "write_scope": ["tools/blender/build_qstyle_partitioned_robe.py", "tools/blender/generate_actor_split_hood_cowl.py"],
+      "parallel_group": null,
+      "blocked_by": ["qstyle-sleeve-landmarks"],
+      "acceptance_gate": "four-view head clearance review passes"
+    },
+    {
+      "id": "qstyle-torso-clearance",
+      "stage": 3,
+      "view_scope": ["front", "side", "back", "motion"],
+      "failure": "The candidate still has local penetration and a large intentional-but-uncontrolled body gap.",
+      "measured_delta": "Q-style v2 audit: 102..133 penetrating vertices across samples; max gap about 0.72..0.75 m.",
+      "proposed_action": "Use torso-only exclusive fitting and a robe-specific clearance envelope; do not collapse the hem to the Actor surface.",
+      "write_scope": ["tools/blender/fit_external_robe_to_actor.py", "tools/blender/check_garment_actor_fit.py"],
+      "parallel_group": null,
+      "blocked_by": ["qstyle-collar-head-opening"],
+      "acceptance_gate": "no visible body exposure/penetration in four views and motion review_required with documented loose-fit envelope"
+    },
+    {
+      "id": "qstyle-promotion",
+      "stage": 6,
+      "view_scope": ["all"],
+      "failure": "The candidate is still a technical adaptation, not a production garment.",
+      "measured_delta": "Shoulder placement passes, but hem penetration, body clearance, and nonmanifold checks fail.",
+      "proposed_action": "Keep the candidate as an adapter test and do not enter the formal clothing pool until the preceding gates pass.",
+      "write_scope": ["milestones/robes", "docs/ASSET_STATUS.json"],
+      "parallel_group": null,
+      "blocked_by": ["qstyle-torso-clearance"],
+      "acceptance_gate": "all prior gates pass"
+    }
+  ]
+}

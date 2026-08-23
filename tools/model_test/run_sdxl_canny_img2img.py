@@ -29,6 +29,25 @@ def parse_args() -> argparse.Namespace:
         "--output",
         default=r"E:\env\outputs\qwen_standard_slot_test_20260820\sdxl_canny_img2img_front.png",
     )
+    parser.add_argument(
+        "--prompt",
+        default=(
+            "replace only the torso garment with a teal short tunic and cream collar, "
+            "preserve subject silhouette, camera angle, pose and plain background, no text"
+        ),
+    )
+    parser.add_argument(
+        "--negative-prompt",
+        default=(
+            "text, watermark, logo, collage, extra object, changed camera, duplicate, "
+            "extra limbs, distorted anatomy"
+        ),
+    )
+    parser.add_argument(
+        "--variant",
+        default="fp16",
+        help="Diffusers weight variant; use 'none' for models without an fp16 variant.",
+    )
     parser.add_argument("--seed", type=int, default=20260821)
     parser.add_argument("--width", type=int, default=512)
     parser.add_argument("--height", type=int, default=512)
@@ -61,26 +80,25 @@ def main() -> None:
         variant="fp16",
         use_safetensors=True,
     )
+    pipeline_kwargs = {
+        "controlnet": controlnet,
+        "torch_dtype": torch.float16,
+        "use_safetensors": True,
+    }
+    if args.variant.lower() != "none":
+        pipeline_kwargs["variant"] = args.variant
     pipe = StableDiffusionXLControlNetImg2ImgPipeline.from_pretrained(
         args.model,
-        controlnet=controlnet,
-        torch_dtype=torch.float16,
-        variant="fp16",
-        use_safetensors=True,
+        **pipeline_kwargs,
     )
     pipe.enable_model_cpu_offload()
     pipe.vae.enable_slicing()
+    pipe.enable_attention_slicing()
 
     generator = torch.Generator(device="cpu").manual_seed(args.seed)
     result = pipe(
-        prompt=(
-            "replace only the torso garment with a teal short tunic and cream collar, "
-            "preserve subject silhouette, camera angle, pose and plain background, no text"
-        ),
-        negative_prompt=(
-            "text, watermark, logo, collage, extra object, changed camera, duplicate, "
-            "extra limbs, distorted anatomy"
-        ),
+        prompt=args.prompt,
+        negative_prompt=args.negative_prompt,
         image=input_image,
         control_image=control_image,
         strength=args.strength,

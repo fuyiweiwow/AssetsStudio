@@ -35,6 +35,9 @@ def cli_args() -> argparse.Namespace:
         type=Path,
         help="exact GarmentCode global-vertex panel membership JSON",
     )
+    parser.add_argument("--left-sleeve-panels", default="")
+    parser.add_argument("--right-sleeve-panels", default="")
+    parser.add_argument("--torso-panels", default="")
     parser.add_argument(
         "--armhole-arm-weight",
         type=float,
@@ -117,6 +120,19 @@ def transfer_weights(
     options: argparse.Namespace,
     panel_memberships: list[list[str]] | None,
 ) -> dict[str, object]:
+    left_sleeve_panels = {item.strip() for item in options.left_sleeve_panels.split(",") if item.strip()}
+    right_sleeve_panels = {item.strip() for item in options.right_sleeve_panels.split(",") if item.strip()}
+    torso_panels = {item.strip() for item in options.torso_panels.split(",") if item.strip()}
+
+    def is_left_sleeve_panel(name: str) -> bool:
+        return name in left_sleeve_panels or name.startswith("left_sleeve_") or name.startswith("sl_left_cuff_")
+
+    def is_right_sleeve_panel(name: str) -> bool:
+        return name in right_sleeve_panels or name.startswith("right_sleeve_") or name.startswith("sl_right_cuff_")
+
+    def is_torso_panel(name: str) -> bool:
+        return name in torso_panels or "torso" in name
+
     group_names = {group.index: group.name for group in actor.vertex_groups}
     torso_groups = {
         name for name in group_names.values()
@@ -271,12 +287,12 @@ def transfer_weights(
     if panel_memberships is not None:
         for vertex in garment.data.vertices:
             panels = set(panel_memberships[vertex.index])
-            is_torso = any("torso" in name for name in panels)
-            if not is_torso:
+            torso_present = any(is_torso_panel(name) for name in panels)
+            if not torso_present:
                 continue
-            if any(name.startswith("left_sleeve_") or name.startswith("sl_left_cuff_") for name in panels):
+            if any(is_left_sleeve_panel(name) for name in panels):
                 armhole_points["left_arm"].append(garment.matrix_world @ vertex.co)
-            if any(name.startswith("right_sleeve_") or name.startswith("sl_right_cuff_") for name in panels):
+            if any(is_right_sleeve_panel(name) for name in panels):
                 armhole_points["right_arm"].append(garment.matrix_world @ vertex.co)
     for vertex in garment.data.vertices:
         point = garment.matrix_world @ vertex.co
@@ -285,15 +301,9 @@ def transfer_weights(
         upperarm_group_name: str | None = None
         if panel_memberships is not None:
             panels = set(panel_memberships[vertex.index])
-            is_left_sleeve = any(
-                name.startswith("left_sleeve_") or name.startswith("sl_left_cuff_")
-                for name in panels
-            )
-            is_right_sleeve = any(
-                name.startswith("right_sleeve_") or name.startswith("sl_right_cuff_")
-                for name in panels
-            )
-            is_torso = any("torso" in name for name in panels)
+            is_left_sleeve = any(is_left_sleeve_panel(name) for name in panels)
+            is_right_sleeve = any(is_right_sleeve_panel(name) for name in panels)
+            is_torso = any(is_torso_panel(name) for name in panels)
             is_posterior_sleeve = any(name.endswith("_sleeve_b") for name in panels)
             if is_left_sleeve and is_right_sleeve:
                 raise RuntimeError(f"vertex {vertex.index} belongs to both left and right sleeves")

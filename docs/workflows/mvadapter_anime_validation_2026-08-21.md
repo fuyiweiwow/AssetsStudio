@@ -1,6 +1,8 @@
 # MV-Adapter 动漫多视图验证（2026-08-21）
 
-## 结论
+> **状态：已于 2026-08-23 撤销。** 重新目视检查 768 输出后，发现明显块状伪影和跨视图角色不一致；脚本完成不等于视觉通过。I2MV SDXL 的 ModelScope 权重也在官方版本组合下复现 70 个 reference layer cache 缺失。当前本地候选已改为 `FLUX.2 Klein ReferenceLatent`，详见 `local_reference_turnaround_validation_2026-08-23.md`。
+
+## 历史结论（已撤销）
 
 `MV-Adapter + Animagine XL 3.1` 已在当前 RTX 3060 12GB Windows 主机上完成稳定的 768×768、50 步文生四视图测试。结果具备统一的 Q 版日漫倾向、服装主色、披风、腰带和人物比例在 front/right/back/left 之间基本对应；没有 OOM、蓝屏或 CUDA 崩溃。
 
@@ -33,7 +35,7 @@
 
 若要固定一个长期复用的女冒险者，下一步应在 MV-Adapter 之上增加项目自有的风格 LoRA/角色 LoRA；IP-Adapter 或 InstantStyle 可作为参考图风格/身份辅助，但不能替代 MV-Adapter 的多视图条件。
 
-## 当前决策
+## 原决策（已撤销）
 
 1. 本地多视图实验后端：`MV-Adapter + Animagine XL 3.1`。
 2. 默认生成：四视图联合生成，取前三视图交付，left 保留 QA。

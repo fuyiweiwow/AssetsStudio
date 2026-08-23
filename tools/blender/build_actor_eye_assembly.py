@@ -24,7 +24,15 @@ from actor_asset_render_utils import configure_lighting, make_camera  # noqa: E4
 
 
 HEAD_BONE = "CC_Base_Head"
-OLD_EYE_PREFIXES = ("EyePackageV1_", "EyePackageV2_", "EyeBlinkV1_")
+OLD_EYE_PREFIXES = (
+    "EyePackageV1_",
+    "EyePackageV2_",
+    "EyeBlinkV1_",
+    # Rebuilding from an assembled Actor must not leave a second EyeAssembly
+    # pair underneath the new surfaces; overlapping textured shells read as
+    # lateral drift and striping in the review render.
+    "EyeAssemblyV1_",
+)
 
 
 def bounds(obj: bpy.types.Object) -> tuple[Vector, Vector]:
@@ -52,6 +60,11 @@ def cli_args() -> argparse.Namespace:
     parser.add_argument("--height-scale", type=float, default=0.68)
     parser.add_argument("--clearance", type=float, default=0.008)
     parser.add_argument("--curvature", type=float, default=0.018)
+    parser.add_argument(
+        "--calibration",
+        type=Path,
+        help="Actor V2 head_feature_calibration_v1 JSON; overrides explicit placement values",
+    )
     parser.add_argument("--left-center-x", type=float)
     parser.add_argument("--right-center-x", type=float)
     parser.add_argument("--eye-center-z", type=float)
@@ -67,6 +80,43 @@ def cli_args() -> argparse.Namespace:
         ),
     )
     return parser.parse_args(argv)
+
+
+def apply_head_feature_calibration(options: argparse.Namespace) -> dict | None:
+    if options.calibration is None:
+        return None
+    explicit_values = (
+        options.left_center_x,
+        options.right_center_x,
+        options.eye_center_z,
+        options.eye_width,
+        options.eye_height,
+    )
+    if any(value is not None for value in explicit_values):
+        raise RuntimeError("--calibration cannot be combined with explicit eye placement values")
+    path = options.calibration.resolve()
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    if payload.get("schema") != "assetsstudio_actor_v2_head_feature_calibration_v1":
+        raise RuntimeError(f"unsupported head feature calibration schema: {payload.get('schema')}")
+    values = payload.get("eye", {}).get("builder_values", {})
+    required = (
+        "left_center_x",
+        "right_center_x",
+        "eye_center_z",
+        "eye_width",
+        "eye_height",
+        "clearance",
+    )
+    missing = [name for name in required if name not in values]
+    if missing:
+        raise RuntimeError(f"head feature calibration is missing eye builder values: {missing}")
+    options.left_center_x = float(values["left_center_x"])
+    options.right_center_x = float(values["right_center_x"])
+    options.eye_center_z = float(values["eye_center_z"])
+    options.eye_width = float(values["eye_width"])
+    options.eye_height = float(values["eye_height"])
+    options.clearance = float(values["clearance"])
+    return payload
 
 
 def explicit_eye_placement(options: argparse.Namespace) -> bool:
@@ -118,6 +168,15 @@ def remove_old_eye_objects() -> None:
     for obj in list(bpy.data.objects):
         if obj.name.startswith(OLD_EYE_PREFIXES):
             bpy.data.objects.remove(obj, do_unlink=True)
+
+
+def remove_old_eye_materials() -> None:
+    # Object deletion does not remove orphaned material datablocks. Without
+    # this pass, a replay creates EyeAssemblyV1_Open_L.001 and the deterministic
+    # blink contract can no longer resolve its canonical state names.
+    for material in list(bpy.data.materials):
+        if material.name.startswith("EyeAssemblyV1_"):
+            bpy.data.materials.remove(material, do_unlink=True)
 
 
 def configure_alpha(material: bpy.types.Material) -> None:
@@ -249,6 +308,7 @@ def eye_world_bounds(obj: bpy.types.Object) -> tuple[Vector, Vector]:
 
 def main() -> int:
     options = cli_args()
+    calibration = apply_head_feature_calibration(options)
     has_blink_states = validate_blink_texture_args(options)
     validate_texture_side_contract(options)
     has_explicit_placement = explicit_eye_placement(options)
@@ -286,6 +346,7 @@ def main() -> int:
     else:
         source_bounds = {"L": eye_world_bounds(left_source), "R": eye_world_bounds(right_source)}
     remove_old_eye_objects()
+    remove_old_eye_materials()
     collection = bpy.data.collections.get("EyeAssemblyV1") or bpy.data.collections.new("EyeAssemblyV1")
     if collection.name not in scene.collection.children:
         scene.collection.children.link(collection)
@@ -405,7 +466,12 @@ def main() -> int:
         "blink_amount": 0.0,
         "texture_side_contract": options.texture_side_contract,
         "placement": {
-            "mode": "explicit_actor_v2" if has_explicit_placement else "native_actor_v1_anchors",
+            "mode": (
+                "head_feature_calibration_v1"
+                if calibration is not None
+                else ("explicit_actor_v2" if has_explicit_placement else "native_actor_v1_anchors")
+            ),
+            "calibration": str(options.calibration.resolve()) if options.calibration else None,
             "width_scale": options.width_scale,
             "height_scale": options.height_scale,
             "clearance": options.clearance,

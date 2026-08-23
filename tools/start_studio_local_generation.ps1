@@ -1,0 +1,100 @@
+param(
+    [string]$ComfyRoot = "E:\Env\ComfyUI",
+    [string]$Python = "C:\Users\Admin\AppData\Local\Programs\Python\Python311\python.exe",
+    [int]$ComfyPort = 8190
+)
+
+$ErrorActionPreference = "Stop"
+$projectRoot = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot ".."))
+$studioRoot = Join-Path $projectRoot "studio"
+$bridgeScript = Join-Path $projectRoot "tools\model_test\studio_local_generation_api.py"
+$logRoot = Join-Path $ComfyRoot "logs"
+$bridgePort = 8765
+New-Item -ItemType Directory -Path $logRoot -Force | Out-Null
+
+$requiredFiles = @(
+    (Join-Path $ComfyRoot "models\diffusion_models\flux-2-klein-4b-fp8.safetensors"),
+    (Join-Path $ComfyRoot "models\text_encoders\qwen_3_4b.safetensors"),
+    (Join-Path $ComfyRoot "models\vae\flux2-vae.safetensors"),
+    $bridgeScript
+)
+foreach ($requiredFile in $requiredFiles) {
+    if (-not (Test-Path -LiteralPath $requiredFile -PathType Leaf)) {
+        throw "Required local-generation file is missing: $requiredFile"
+    }
+}
+
+function Test-LocalEndpoint([string]$Url) {
+    try {
+        Invoke-WebRequest -Uri $Url -UseBasicParsing -TimeoutSec 2 | Out-Null
+        return $true
+    }
+    catch {
+        return $false
+    }
+}
+
+$startedComfy = $null
+$startedBridge = $null
+try {
+    if (-not (Test-LocalEndpoint "http://127.0.0.1:$ComfyPort/system_stats")) {
+        $comfyArgs = @(
+            "main.py",
+            "--lowvram",
+            "--disable-async-offload",
+            "--disable-pinned-memory",
+            "--cache-none",
+            "--preview-method", "none",
+            "--reserve-vram", "1.5",
+            "--listen", "127.0.0.1",
+            "--port", "$ComfyPort"
+        )
+        $startedComfy = Start-Process -FilePath $Python -ArgumentList $comfyArgs -WorkingDirectory $ComfyRoot -WindowStyle Hidden -RedirectStandardOutput (Join-Path $logRoot "studio_flux2_stdout.log") -RedirectStandardError (Join-Path $logRoot "studio_flux2_stderr.log") -PassThru
+        $ready = $false
+        for ($attempt = 0; $attempt -lt 60; $attempt++) {
+            if (Test-LocalEndpoint "http://127.0.0.1:$ComfyPort/system_stats") {
+                $ready = $true
+                break
+            }
+            Start-Sleep -Seconds 1
+        }
+        if (-not $ready) {
+            throw "ComfyUI did not become ready on port $ComfyPort"
+        }
+    }
+
+    $env:ASSETSSTUDIO_COMFY_ROOT = $ComfyRoot
+    $env:ASSETSSTUDIO_COMFY_URL = "http://127.0.0.1:$ComfyPort"
+    $startedBridge = Start-Process -FilePath $Python -ArgumentList @($bridgeScript, "--host", "127.0.0.1", "--port", "$bridgePort") -WorkingDirectory $projectRoot -WindowStyle Hidden -RedirectStandardOutput (Join-Path $logRoot "studio_bridge_stdout.log") -RedirectStandardError (Join-Path $logRoot "studio_bridge_stderr.log") -PassThru
+
+    $bridgeReady = $false
+    for ($attempt = 0; $attempt -lt 20; $attempt++) {
+        if (Test-LocalEndpoint "http://127.0.0.1:$bridgePort/api/health") {
+            $bridgeReady = $true
+            break
+        }
+        Start-Sleep -Milliseconds 500
+    }
+    if (-not $bridgeReady) {
+        throw "AssetsStudio local generation bridge did not become ready on port $bridgePort"
+    }
+
+    Push-Location $studioRoot
+    try {
+        # The historical npm predev path still rebuilds retired GarmentCode and
+        # native-control milestones. F009 consumes the checked-in registry and
+        # starts Vite directly until that separate registry migration is done.
+        npm exec vite -- --host 127.0.0.1 --port 4173
+    }
+    finally {
+        Pop-Location
+    }
+}
+finally {
+    if ($startedBridge -and (Get-Process -Id $startedBridge.Id -ErrorAction SilentlyContinue)) {
+        Stop-Process -Id $startedBridge.Id -Force
+    }
+    if ($startedComfy -and (Get-Process -Id $startedComfy.Id -ErrorAction SilentlyContinue)) {
+        Stop-Process -Id $startedComfy.Id -Force
+    }
+}
