@@ -54,8 +54,6 @@ def discover_comfy_root(requested: str | None) -> Path:
         os.environ.get("ASSETSSTUDIO_COMFY_ROOT"),
         ROOT.parent / "ComfyUI",
         Path.home() / "ComfyUI",
-        Path(r"D:\Env\ComfyUI"),
-        Path(r"E:\Env\ComfyUI"),
     ]
     for value in candidates:
         if not value:
@@ -97,7 +95,10 @@ def main() -> int:
     require_marker("studio/src/components/TurnaroundGenerator.tsx", "选择骨骼 FBX")
     require_marker("tools/model_test/studio_local_generation_api.py", '"head is completely bald and earless in every view"')
     require_marker("tools/start_studio_local_generation.ps1", "--disable-pinned-memory")
+    require_marker("tools/start_studio_local_generation.ps1", "$env:VIRTUAL_ENV")
+    require_marker("tools/start_studio_local_generation.ps1", '"python.exe"')
     require_marker("start-local-generation-studio.bat", "Start-Process $url")
+    require_marker("start-local-generation-studio.bat", "ASSETSSTUDIO_PYTHON")
     require_marker("docs/features/README.md", "F009")
 
     py_compile.compile(

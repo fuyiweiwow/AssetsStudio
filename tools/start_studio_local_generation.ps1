@@ -23,9 +23,7 @@ function Resolve-ComfyRoot([string]$RequestedPath) {
     $candidates = @(
         $env:ASSETSSTUDIO_COMFY_ROOT,
         (Join-Path $projectParent "ComfyUI"),
-        (Join-Path $env:USERPROFILE "ComfyUI"),
-        "D:\Env\ComfyUI",
-        "E:\Env\ComfyUI"
+        (Join-Path $env:USERPROFILE "ComfyUI")
     )
     foreach ($candidate in $candidates) {
         if ([string]::IsNullOrWhiteSpace($candidate)) {
@@ -36,37 +34,60 @@ function Resolve-ComfyRoot([string]$RequestedPath) {
             return $resolved
         }
     }
-    throw "ComfyUI was not found. Pass -ComfyRoot, set ASSETSSTUDIO_COMFY_ROOT, or place ComfyUI beside AssetsStudio."
+    throw "ComfyUI was not found. Pass -ComfyRoot, set ASSETSSTUDIO_COMFY_ROOT, or place ComfyUI beside AssetsStudio/in the current user profile."
 }
 
 function Resolve-ComfyPython([string]$RequestedPath, [string]$ResolvedComfyRoot) {
-    $requestedValue = $RequestedPath
-    if ([string]::IsNullOrWhiteSpace($requestedValue)) {
-        $requestedValue = $env:ASSETSSTUDIO_PYTHON
-    }
-    if (-not [string]::IsNullOrWhiteSpace($requestedValue)) {
-        $command = Get-Command $requestedValue -ErrorAction SilentlyContinue
+    function Resolve-PythonCandidate([string]$Candidate) {
+        if ([string]::IsNullOrWhiteSpace($Candidate)) {
+            return $null
+        }
+        if (Test-Path -LiteralPath $Candidate -PathType Leaf) {
+            return (Resolve-Path -LiteralPath $Candidate).Path
+        }
+        $command = Get-Command $Candidate -ErrorAction SilentlyContinue
         if ($null -ne $command -and $command.CommandType -eq "Application") {
             return $command.Source
         }
-        if (Test-Path -LiteralPath $requestedValue -PathType Leaf) {
-            return (Resolve-Path -LiteralPath $requestedValue).Path
+        return $null
+    }
+
+    $requestedValues = @(
+        @{ Source = "-Python"; Value = $RequestedPath },
+        @{ Source = "ASSETSSTUDIO_PYTHON"; Value = $env:ASSETSSTUDIO_PYTHON }
+    )
+    foreach ($requested in $requestedValues) {
+        if ([string]::IsNullOrWhiteSpace($requested.Value)) {
+            continue
         }
-        throw "Python was not found at '$requestedValue'."
+        $resolved = Resolve-PythonCandidate $requested.Value
+        if ($null -ne $resolved) {
+            return $resolved
+        }
+        throw "Python configured by $($requested.Source) was not found at '$($requested.Value)'."
     }
 
     $candidates = @(
         (Join-Path $ResolvedComfyRoot ".venv\Scripts\python.exe"),
         (Join-Path $ResolvedComfyRoot "venv\Scripts\python.exe"),
         (Join-Path $ResolvedComfyRoot "python_embeded\python.exe"),
-        (Join-Path $ResolvedComfyRoot "python.exe")
+        (Join-Path $ResolvedComfyRoot "python.exe"),
+        $(if (-not [string]::IsNullOrWhiteSpace($env:VIRTUAL_ENV)) {
+            Join-Path $env:VIRTUAL_ENV "Scripts\python.exe"
+        }),
+        $(if (-not [string]::IsNullOrWhiteSpace($env:CONDA_PREFIX)) {
+            Join-Path $env:CONDA_PREFIX "python.exe"
+        }),
+        "python.exe",
+        "python3.exe"
     )
     foreach ($candidate in $candidates) {
-        if (Test-Path -LiteralPath $candidate -PathType Leaf) {
-            return (Resolve-Path -LiteralPath $candidate).Path
+        $resolved = Resolve-PythonCandidate $candidate
+        if ($null -ne $resolved) {
+            return $resolved
         }
     }
-    throw "ComfyUI Python was not found. Pass -Python, set ASSETSSTUDIO_PYTHON, or create a ComfyUI virtual environment."
+    throw "ComfyUI Python was not found. Pass -Python, set ASSETSSTUDIO_PYTHON, activate a venv/conda environment, add Python to PATH, or create a ComfyUI virtual environment."
 }
 
 $ComfyRoot = Resolve-ComfyRoot $ComfyRoot

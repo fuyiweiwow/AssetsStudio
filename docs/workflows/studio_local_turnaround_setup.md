@@ -108,7 +108,17 @@ powershell -ExecutionPolicy Bypass -File .\tools\start_studio_local_generation.p
 
 该启动脚本直接运行 Vite，不触发历史 `npm predev` 资产重建。原因是全局 registry 构建器仍引用已经按 `docs/REMOVALS.md` 删除的 GarmentCode 短袖和 native-control 短裤；在它迁移到 Actor V2 Slot 合同前，不应为了启动 F009 恢复旧资产。
 
-启动器按以下顺序发现环境：显式 `-ComfyRoot` / `-Python` 参数、`ASSETSSTUDIO_COMFY_ROOT` / `ASSETSSTUDIO_PYTHON` 环境变量、AssetsStudio 同级 `ComfyUI`，再检查用户目录及旧机兼容位置。Python 在已找到的 ComfyUI 内按 `.venv`、`venv`、`python_embeded` 顺序选择。路径不同或需要覆盖自动发现时：
+启动器按以下顺序发现 ComfyUI：显式 `-ComfyRoot` 参数、`ASSETSSTUDIO_COMFY_ROOT` 环境变量、AssetsStudio 同级 `ComfyUI`，再检查当前用户目录。Python 按显式 `-Python` 参数、`ASSETSSTUDIO_PYTHON` 环境变量、ComfyUI 内的 `.venv` / `venv` / `python_embeded`、当前激活的 `VIRTUAL_ENV` / `CONDA_PREFIX`、系统 `PATH` 顺序选择。仓库代码不包含固定盘符路径；环境变量既可使用环境变量展开后的路径，也可使用当前目录可解析的相对路径，Python 还可以直接写 PATH 中的命令名。
+
+不同机器推荐在启动前设置环境变量，`.bat` 和 PowerShell 入口都会读取：
+
+```powershell
+$env:ASSETSSTUDIO_COMFY_ROOT = Join-Path $env:USERPROFILE 'ComfyUI'
+$env:ASSETSSTUDIO_PYTHON = 'python.exe'
+.\start-local-generation-studio.bat
+```
+
+需要长期保留时，可在 Windows 用户环境变量中创建同名变量；路径不同或只想单次覆盖自动发现时也可直接调用 PowerShell：
 
 ```powershell
 .\tools\start_studio_local_generation.ps1 `

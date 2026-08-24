@@ -68,6 +68,15 @@ echo Usage:
 echo   start-local-generation-studio.bat
 echo   start-local-generation-studio.bat --no-open
 echo.
+echo Optional environment variables:
+echo   ASSETSSTUDIO_COMFY_ROOT  Path to the ComfyUI directory
+echo   ASSETSSTUDIO_PYTHON      Python command or path used by ComfyUI
+echo.
+echo Example:
+echo   set "ASSETSSTUDIO_COMFY_ROOT=%%USERPROFILE%%\ComfyUI"
+echo   set "ASSETSSTUDIO_PYTHON=python.exe"
+echo   start-local-generation-studio.bat
+echo.
 echo The default command starts ComfyUI, the local generation bridge, and
 echo Studio, then opens %STUDIO_URL% in the default browser.
 endlocal
