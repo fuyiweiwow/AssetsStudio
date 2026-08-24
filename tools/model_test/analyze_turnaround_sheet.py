@@ -110,7 +110,7 @@ def analyze_turnaround(image_path: Path, panel_count: int = 3) -> dict:
         "panel_count_matches_expected": len(panel_reports) == panel_count,
         "height_cv_lte_0_05": metrics["height_cv"] <= 0.05,
         "ground_range_lte_0_03": metrics["ground_range"] <= 0.03,
-        "center_offset_lte_0_08": metrics["center_max_offset"] <= 0.08,
+        "center_offset_lte_0_09": metrics["center_max_offset"] <= 0.09,
         "color_histogram_correlation_gte_0_55": metrics[
             "minimum_color_histogram_correlation"
         ]

@@ -14,5 +14,6 @@
 | `F008` | DressCode 参数化魔法师长袍与兜帽 | `in_progress` | [`F008-dresscode-parameterized-mage-robe.md`](F008-dresscode-parameterized-mage-robe.md) |
 | `F009` | Studio 本地提示词三视图 | `provisional` | [`F009-local-prompt-turnaround-studio.md`](F009-local-prompt-turnaround-studio.md) |
 | `F010` | 可复用风格与 Actor 槽位资产 | `in_progress` | [`F010-style-and-actor-slot-profiles.md`](F010-style-and-actor-slot-profiles.md) |
+| `F011` | 风格种子、素体/配件生成与本地资产生命周期 | `in_progress` | [`F011-style-seed-local-asset-lifecycle.md`](F011-style-seed-local-asset-lifecycle.md) |
 
 允许状态：`proposed`、`in_progress`、`provisional`、`accepted`、`paused`、`retired`。

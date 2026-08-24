@@ -7,6 +7,7 @@ import argparse
 import json
 import os
 import shutil
+import subprocess
 import threading
 import time
 import urllib.error
@@ -22,15 +23,45 @@ from typing import Any
 
 from analyze_turnaround_sheet import analyze_turnaround
 from run_comfy_flux2_klein import build_prompt
+from blender_environment import discover_blender
 
 
 ROOT = Path(__file__).resolve().parents[2]
-COMFY_ROOT = Path(os.environ.get("ASSETSSTUDIO_COMFY_ROOT", r"E:\Env\ComfyUI"))
+
+
+def discover_comfy_root() -> Path:
+    configured = os.environ.get("ASSETSSTUDIO_COMFY_ROOT")
+    candidates = [
+        configured,
+        ROOT.parent / "ComfyUI",
+        Path.home() / "ComfyUI",
+        Path(r"D:\Env\ComfyUI"),
+        Path(r"E:\Env\ComfyUI"),
+    ]
+    for value in candidates:
+        if not value:
+            continue
+        candidate = Path(value).expanduser().resolve()
+        if (candidate / "main.py").is_file():
+            return candidate
+    raise RuntimeError(
+        "ComfyUI was not found. Set ASSETSSTUDIO_COMFY_ROOT or place it beside AssetsStudio."
+    )
+
+
+COMFY_ROOT = discover_comfy_root()
 COMFY_URL = os.environ.get("ASSETSSTUDIO_COMFY_URL", "http://127.0.0.1:8190").rstrip("/")
 COMFY_OUTPUT = COMFY_ROOT / "output"
 COMFY_INPUT = COMFY_ROOT / "input"
 TURNAROUND_ARTIFACT_ROOT = ROOT / "workspace" / "local_generation" / "turnarounds"
+STYLE_SEED_ARTIFACT_ROOT = ROOT / "workspace" / "local_generation" / "style_seeds"
+BASE_ACTOR_ARTIFACT_ROOT = ROOT / "workspace" / "local_generation" / "base_actors"
 ACCESSORY_ARTIFACT_ROOT = ROOT / "workspace" / "local_generation" / "accessories"
+LOCAL_LIBRARY_ROOT = ROOT / "workspace" / "local_asset_library"
+LOCAL_3D_CANDIDATE_ROOT = ROOT / "workspace" / "local_3d_generation" / "base_actors"
+LOCAL_3D_LIBRARY_ROOT = ROOT / "workspace" / "local_3d_asset_library" / "base_actors"
+WORKSPACE_ROOT = ROOT / "workspace"
+MAX_RIG_UPLOAD_BYTES = 1024 * 1024 * 1024
 PROFILE_REGISTRY_PATH = ROOT / "studio" / "src" / "generated" / "style-slot-profiles.json"
 
 MODEL_FILES = {
@@ -59,6 +90,43 @@ STYLE_PROMPTS = {
 JOBS: dict[str, dict[str, Any]] = {}
 JOBS_LOCK = threading.Lock()
 
+ROUTE_CONFIG = {
+    "style-seeds": {
+        "kind": "style_seed",
+        "root": STYLE_SEED_ARTIFACT_ROOT,
+        "filename": "style_seed.png",
+    },
+    "base-actors": {
+        "kind": "base_actor",
+        "root": BASE_ACTOR_ARTIFACT_ROOT,
+        "filename": "base_actor_turnaround.png",
+    },
+    "turnarounds": {
+        "kind": "base_actor",
+        "root": BASE_ACTOR_ARTIFACT_ROOT,
+        "filename": "base_actor_turnaround.png",
+    },
+    "accessories": {
+        "kind": "accessory",
+        "root": ACCESSORY_ARTIFACT_ROOT,
+        "filename": "accessory_turnaround.png",
+    },
+}
+
+LIBRARY_KIND_DIR = {
+    "style_seed": "style_seeds",
+    "base_actor": "base_actors",
+    "accessory": "accessories",
+}
+
+THREE_D_MANUAL_GATES = [
+    "front/right/back/left renders preserve the approved canonical Actor silhouette",
+    "head is bald and earless with a smooth blank face and no facial-feature geometry",
+    "mesh contains no hair, garment, footwear, accessory, cuff, seam, or clothing relief",
+    "no obvious fused limbs or missing body parts",
+    "candidate is acknowledged as an untextured source mesh, not game-ready",
+]
+
 
 def load_profile_registry() -> tuple[dict[str, dict[str, Any]], dict[str, dict[str, Any]]]:
     payload = json.loads(PROFILE_REGISTRY_PATH.read_text(encoding="utf-8"))
@@ -76,6 +144,22 @@ STYLE_PROFILES, ACTOR_PROFILES = load_profile_registry()
 
 def utc_now() -> str:
     return datetime.now(timezone.utc).isoformat()
+
+
+def normalize_request_path(path: str) -> str:
+    if path.startswith("/api/local-generation/"):
+        return "/api/" + path.removeprefix("/api/local-generation/")
+    first = path.strip("/").split("/", 1)[0]
+    if first in {
+        "health",
+        "library",
+        "3d-assets",
+        "3d-candidates",
+        "3d-library",
+        *ROUTE_CONFIG.keys(),
+    }:
+        return "/api" + path
+    return path
 
 
 def request_json(url: str, payload: dict[str, Any] | None = None, timeout: int = 30) -> dict:
@@ -110,6 +194,63 @@ def compile_prompt(subject: str, style: str) -> str:
     )
 
 
+def compile_profile_turnaround_prompt(
+    subject: str, style_profile: dict[str, Any], *, style_seed: bool = False
+) -> str:
+    positive = ", ".join(style_profile["prompt_contract"]["positive"])
+    negative = ", ".join(style_profile["prompt_contract"]["negative"])
+    immutable = ", ".join(style_profile["prompt_contract"]["immutable_traits"])
+    if not style_seed:
+        actor_contract = style_profile.get(
+            "actor_core_contract", style_profile["prompt_contract"]
+        )
+        actor_positive = ", ".join(actor_contract["positive"])
+        actor_negative = ", ".join(actor_contract["negative"])
+        actor_immutable = ", ".join(actor_contract["immutable_traits"])
+        return (
+            f"Design ONE canonical modular Actor body core: {subject.strip()}. "
+            "This is not a complete character and must contain no identity or equipment slots. "
+            "Create one production orthographic turnaround sheet with exactly three separate "
+            "full-body views arranged left to right: exact front, exact right profile, exact "
+            "back. Keep exactly the same smooth body shell, body proportions, neutral "
+            "symmetrical A-pose, scale and ground line in every view. The head must be fully "
+            "bald and earless. The face must be a smooth blank surface with no eyes, eyebrows, "
+            "eyelashes, eye sockets, mouth, mouth line, lips, nose, nose bridge or nostrils. "
+            "The body must be a non-sexual neutral mannequin shell with no anatomical detail. "
+            "There must be no hair, scalp cap, ears, clothes, bodysuit, underwear, shoes, gloves, "
+            "jewelry, accessory, prop, seam, cuff, collar, waistband, boot sole or garment-like "
+            "topology. Use a single matte neutral clay material; color regions must not imply "
+            "clothing. Preserve only the Actor-safe projection of the selected style profile: "
+            f"{actor_positive}. Actor-core immutable traits: {actor_immutable}. Uniform light "
+            "gray background, soft neutral studio lighting, no "
+            "perspective, no three-quarter view, no action pose, no props, no text, no labels, "
+            "no borders, no extra characters, no duplicated body parts and no cropped feet. "
+            f"Avoid: {actor_negative}."
+        )
+    purpose = (
+        "This is a style-seed calibration image: identity, hair, outfit and colors are "
+        "examples only; the selected profile's immutable grammar is the authority."
+    )
+    return (
+        f"Design ONE neutral game character: {subject.strip()}. {purpose} "
+        "Create one production orthographic turnaround sheet with exactly three separate "
+        "full-body views arranged left to right: exact front, exact right profile, exact "
+        "back. Keep the same character, body proportions, face, hair, construction, colors, "
+        "neutral symmetrical A-pose, scale and ground line in every view. "
+        "Treat the hairstyle as one fixed three-dimensional construction: its length, rear "
+        "mass, side locks, bangs and parting must be geometrically compatible in front, "
+        "right profile and back. If any hair hangs below the head in profile, the same hair "
+        "must remain visible at the matching length in back; never turn long hair into a "
+        "short rear hair cap. "
+        f"Selected style profile: {positive}. Immutable traits: {immutable}. "
+        "The face must have large expressive anime eyes and simple eyebrows, but absolutely "
+        "no visible mouth, mouth line, lips, nose, nose bridge or nostrils. Uniform light gray "
+        "background, soft neutral studio lighting, no perspective, no three-quarter view, "
+        "no action pose, no props, no text, no labels, no borders, no extra characters, no "
+        f"duplicated body parts and no cropped feet. Avoid: {negative}."
+    )
+
+
 def find_slot(actor: dict[str, Any], slot_id: str) -> dict[str, Any]:
     slot = next((item for item in actor["slots"] if item["slot_id"] == slot_id), None)
     if slot is None:
@@ -122,6 +263,7 @@ def compile_accessory_prompt(
     style_profile: dict[str, Any],
     actor_profile: dict[str, Any],
     slot: dict[str, Any],
+    base_actor_asset_id: str | None = None,
 ) -> str:
     policy = slot["generation_policy"]
     if policy["preferred_mode"] in {"reuse_only", "parametric"}:
@@ -150,6 +292,8 @@ def compile_accessory_prompt(
     return (
         f"Design ONE standalone game accessory: {subject.strip()}. It belongs to Actor "
         f"slot {slot['slot_id']} ({slot['label']}) on {actor_profile['label']}. "
+        f"Its accepted base-actor lineage is {base_actor_asset_id or actor_profile['actor_asset_id']}; "
+        "use that lineage for scale and fit, not as an image to reproduce. "
         f"Allowed asset kinds: {', '.join(policy['allowed_asset_kinds'])}.{fit_text} "
         "Use the supplied reference image only as visual style, proportion, material, and "
         "palette authority; do not reproduce the person. Create one production orthographic "
@@ -177,6 +321,426 @@ def prepare_slot_reference(slot: dict[str, Any]) -> tuple[str, str]:
     return relative, authority["path"]
 
 
+def prepare_reference_file(source: Path, source_label: str) -> tuple[str, str]:
+    source = source.resolve()
+    allowed_roots = [ROOT.resolve(), LOCAL_LIBRARY_ROOT.resolve()]
+    if not source.is_file() or not any(
+        source == root or root in source.parents for root in allowed_roots
+    ):
+        raise FileNotFoundError(source)
+    destination_dir = COMFY_INPUT / "assetsstudio" / "style_refs"
+    destination_dir.mkdir(parents=True, exist_ok=True)
+    import hashlib
+
+    digest = hashlib.sha256(source.read_bytes()).hexdigest()[:16]
+    destination = destination_dir / f"{digest}{source.suffix.lower()}"
+    if not destination.is_file() or destination.stat().st_size != source.stat().st_size:
+        shutil.copy2(source, destination)
+    return destination.relative_to(COMFY_INPUT).as_posix(), source_label
+
+
+def prepare_style_reference(style_profile: dict[str, Any]) -> tuple[str, str]:
+    authority = next(
+        (
+            item
+            for item in style_profile["authorities"]
+            if item["role"] == "primary_proportion" and item["required"]
+        ),
+        None,
+    )
+    if authority is None:
+        raise ValueError("StyleProfile has no required primary proportion authority")
+    return prepare_reference_file(ROOT / authority["path"], authority["path"])
+
+
+def library_asset_dir(kind: str, asset_id: str) -> Path:
+    if kind not in LIBRARY_KIND_DIR or not asset_id or any(
+        character not in "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-"
+        for character in asset_id
+    ):
+        raise ValueError("invalid local library asset id")
+    return LOCAL_LIBRARY_ROOT / LIBRARY_KIND_DIR[kind] / asset_id
+
+
+def resolve_library_reference(kind: str, asset_id: str) -> tuple[str, str]:
+    asset_dir = library_asset_dir(kind, asset_id)
+    manifest_path = asset_dir / "asset_manifest.json"
+    if not manifest_path.is_file():
+        raise ValueError(f"local {kind} asset is not accepted: {asset_id}")
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    if manifest.get("review_status", "approved") != "approved":
+        raise ValueError(f"local {kind} asset is not approved: {asset_id}")
+    artifact = asset_dir / manifest["artifact_filename"]
+    return prepare_reference_file(
+        artifact, f"local_asset_library/{LIBRARY_KIND_DIR[kind]}/{asset_id}"
+    )
+
+
+def list_library_assets(kind: str | None = None) -> list[dict[str, Any]]:
+    kinds = [kind] if kind else list(LIBRARY_KIND_DIR)
+    assets: list[dict[str, Any]] = []
+    for current_kind in kinds:
+        if current_kind not in LIBRARY_KIND_DIR:
+            raise ValueError("unsupported library kind")
+        root = LOCAL_LIBRARY_ROOT / LIBRARY_KIND_DIR[current_kind]
+        if not root.is_dir():
+            continue
+        for manifest_path in root.glob("*/asset_manifest.json"):
+            try:
+                manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+            except (OSError, json.JSONDecodeError):
+                continue
+            manifest = dict(manifest)
+            manifest["image_url"] = (
+                f"/api/library/{current_kind}/{manifest['asset_id']}/image"
+            )
+            assets.append(manifest)
+    return sorted(assets, key=lambda item: item.get("accepted_at", ""), reverse=True)
+
+
+def safe_asset_id(asset_id: str) -> str:
+    if not asset_id or any(
+        character not in "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-"
+        for character in asset_id
+    ):
+        raise ValueError("invalid local 3D asset id")
+    return asset_id
+
+
+def local_3d_dir(scope: str, asset_id: str) -> Path:
+    root = {
+        "candidate": LOCAL_3D_CANDIDATE_ROOT,
+        "library": LOCAL_3D_LIBRARY_ROOT,
+    }.get(scope)
+    if root is None:
+        raise ValueError("invalid local 3D asset scope")
+    return root / safe_asset_id(asset_id)
+
+
+def safe_3d_artifact(asset_dir: Path, relative_path: str) -> Path:
+    candidate = (asset_dir / relative_path).resolve()
+    resolved_root = asset_dir.resolve()
+    if resolved_root not in candidate.parents:
+        raise ValueError("unsafe local 3D artifact path")
+    return candidate
+
+
+def rig_artifact(manifest: dict[str, Any], relative_path: str) -> Path:
+    preparation = manifest.get("rig_preparation")
+    if not isinstance(preparation, dict):
+        raise FileNotFoundError("Actor rig preparation is not available")
+    rig_root_relative = preparation.get("workspace_root_relative")
+    if not isinstance(rig_root_relative, str):
+        raise ValueError("Actor rig workspace root is missing")
+    workspace_root = WORKSPACE_ROOT.resolve()
+    rig_root = (workspace_root / rig_root_relative).resolve()
+    if workspace_root not in rig_root.parents:
+        raise ValueError("unsafe Actor rig workspace root")
+    candidate = (rig_root / relative_path).resolve()
+    if rig_root not in candidate.parents:
+        raise ValueError("unsafe Actor rig artifact path")
+    return candidate
+
+
+def actor_core_workspace_dir(manifest: dict[str, Any]) -> Path:
+    preparation = manifest.get("rig_preparation")
+    if not isinstance(preparation, dict):
+        raise FileNotFoundError("Actor rig preparation is not available")
+    relative = preparation.get("workspace_root_relative")
+    if not isinstance(relative, str):
+        raise ValueError("Actor rig workspace root is missing")
+    workspace_root = WORKSPACE_ROOT.resolve()
+    directory = (workspace_root / relative).resolve()
+    if workspace_root not in directory.parents:
+        raise ValueError("unsafe Actor rig workspace root")
+    return directory
+
+
+def rig_intake_directory(asset_id: str, job_id: str | None = None) -> Path:
+    library_manifest = json.loads(
+        (local_3d_dir("library", asset_id) / "candidate_manifest.json").read_text(encoding="utf-8")
+    )
+    root = actor_core_workspace_dir(library_manifest) / "manual_accurig"
+    if job_id is None:
+        return root
+    return root / "intakes" / safe_asset_id(job_id)
+
+
+def write_rig_intake(directory: Path, manifest: dict[str, Any]) -> None:
+    directory.mkdir(parents=True, exist_ok=True)
+    (directory / "intake.json").write_text(
+        json.dumps(manifest, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+
+
+def current_rig_intake(asset_id: str) -> dict[str, Any] | None:
+    root = rig_intake_directory(asset_id)
+    current_path = root / "current.json"
+    if not current_path.is_file():
+        return None
+    pointer = json.loads(current_path.read_text(encoding="utf-8"))
+    job_id = safe_asset_id(str(pointer.get("job_id", "")))
+    directory = rig_intake_directory(asset_id, job_id)
+    intake = json.loads((directory / "intake.json").read_text(encoding="utf-8"))
+    public = dict(intake)
+    route = f"/api/3d-library/{asset_id}"
+    if intake.get("status") == "ready":
+        public["preview_urls"] = {
+            view: f"{route}/rigged-preview/{view}"
+            for view in ("front", "right", "back", "left")
+        }
+        public["model_url"] = f"{route}/rigged-model"
+        public["blend_url"] = f"{route}/rigged-blend"
+        public["validation_url"] = f"{route}/rigged-validation"
+    return public
+
+
+def process_rig_intake(asset_id: str, job_id: str) -> None:
+    directory = rig_intake_directory(asset_id, job_id)
+    manifest_path = directory / "intake.json"
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    manifest.update(status="processing", updated_at=utc_now())
+    write_rig_intake(directory, manifest)
+    try:
+        blender = discover_blender()
+        library_manifest = json.loads(
+            (local_3d_dir("library", asset_id) / "candidate_manifest.json").read_text(encoding="utf-8")
+        )
+        preparation = library_manifest["rig_preparation"]
+        expected_manifest = (WORKSPACE_ROOT / preparation["accurig_manifest"]).resolve()
+        workspace_root = WORKSPACE_ROOT.resolve()
+        if workspace_root not in expected_manifest.parents or not expected_manifest.is_file():
+            raise FileNotFoundError("AccuRIG handoff manifest for the selected Actor is missing")
+        processed = directory / "processed"
+        processed.mkdir(parents=True, exist_ok=True)
+        command = [
+            str(blender),
+            "--factory-startup",
+            "--background",
+            "--python-exit-code",
+            "1",
+            "--python",
+            str((ROOT / "tools" / "model_test" / "process_actor_core_accurig_rig.py").resolve()),
+            "--",
+            "--input",
+            str((directory / manifest["source_relative_path"]).resolve()),
+            "--output-dir",
+            str(processed.resolve()),
+            "--asset-id",
+            preparation["asset_id"],
+            "--expected-manifest",
+            str(expected_manifest),
+        ]
+        result = subprocess.run(
+            command,
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+            timeout=1800,
+            check=False,
+        )
+        (directory / "blender.stdout.log").write_text(result.stdout, encoding="utf-8")
+        (directory / "blender.stderr.log").write_text(result.stderr, encoding="utf-8")
+        if result.returncode != 0:
+            stderr_lines = [line.strip() for line in result.stderr.splitlines() if line.strip()]
+            detail = next(
+                (
+                    line
+                    for line in reversed(stderr_lines)
+                    if line.startswith(("RuntimeError:", "ValueError:", "FileNotFoundError:"))
+                ),
+                stderr_lines[-1] if stderr_lines else f"Blender exited with code {result.returncode}",
+            )
+            raise RuntimeError(detail)
+        validation = json.loads((processed / "validation.json").read_text(encoding="utf-8"))
+        if validation.get("status") != "pass":
+            raise RuntimeError("AccuRIG validation report did not pass")
+        manifest.update(
+            status="ready",
+            updated_at=utc_now(),
+            blender=str(blender),
+            validation_summary={
+                "bones": validation["armature"]["bones"],
+                "vertices": validation["mesh"]["vertices"],
+                "faces": validation["mesh"]["faces"],
+                "max_influences_runtime": validation["runtime_weight_optimization"]["after_max_influences"],
+            },
+            error=None,
+        )
+    except Exception as exc:  # Keep the failed upload available for diagnosis.
+        manifest.update(status="failed", updated_at=utc_now(), error=str(exc))
+    write_rig_intake(directory, manifest)
+
+
+def create_rig_intake(
+    asset_id: str,
+    filename: str,
+    length: int,
+    source,
+) -> dict[str, Any]:
+    library_manifest = load_3d_manifest("library", asset_id)
+    if not isinstance(library_manifest.get("rig_preparation"), dict):
+        raise ValueError("Selected 3D Actor has no AccuRIG handoff contract")
+    original_name = Path(filename).name
+    if not original_name or Path(original_name).suffix.lower() != ".fbx":
+        raise ValueError("AccuRIG upload must be an .fbx file")
+    if length <= 0 or length > MAX_RIG_UPLOAD_BYTES:
+        raise ValueError("AccuRIG FBX size must be between 1 byte and 1 GiB")
+
+    job_id = uuid.uuid4().hex
+    directory = rig_intake_directory(asset_id, job_id)
+    source_dir = directory / "source"
+    source_dir.mkdir(parents=True, exist_ok=False)
+    destination = source_dir / "accurig_export.fbx"
+    remaining = length
+    with destination.open("wb") as output:
+        while remaining:
+            chunk = source.read(min(1024 * 1024, remaining))
+            if not chunk:
+                raise OSError("AccuRIG upload ended before Content-Length bytes were received")
+            output.write(chunk)
+            remaining -= len(chunk)
+
+    now = utc_now()
+    manifest = {
+        "schema": "assetsstudio_actor_rig_intake_v1",
+        "job_id": job_id,
+        "asset_id": asset_id,
+        "rig_asset_id": library_manifest["rig_preparation"]["asset_id"],
+        "status": "uploaded",
+        "created_at": now,
+        "updated_at": now,
+        "original_filename": original_name,
+        "bytes": length,
+        "source_relative_path": "source/accurig_export.fbx",
+        "local_only": True,
+        "one_to_one_contract": {
+            "source_3d_asset_id": asset_id,
+            "accurig_handoff_manifest": library_manifest["rig_preparation"]["accurig_manifest"],
+        },
+    }
+    write_rig_intake(directory, manifest)
+    root = rig_intake_directory(asset_id)
+    root.mkdir(parents=True, exist_ok=True)
+    (root / "current.json").write_text(
+        json.dumps({"job_id": job_id}, indent=2) + "\n",
+        encoding="utf-8",
+    )
+    threading.Thread(
+        target=process_rig_intake,
+        args=(asset_id, job_id),
+        daemon=True,
+        name=f"accurig-{asset_id[:8]}-{job_id[:8]}",
+    ).start()
+    return manifest
+
+
+def load_3d_manifest(scope: str, asset_id: str) -> dict[str, Any]:
+    asset_dir = local_3d_dir(scope, asset_id)
+    manifest_path = asset_dir / "candidate_manifest.json"
+    if not manifest_path.is_file():
+        raise FileNotFoundError("local 3D manifest not found")
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    if manifest.get("candidate_id") != asset_id:
+        raise ValueError("local 3D manifest id mismatch")
+    route = "3d-candidates" if scope == "candidate" else "3d-library"
+    public = dict(manifest)
+    public["model_url"] = f"/api/{route}/{asset_id}/model"
+    public["preview_urls"] = {
+        view: f"/api/{route}/{asset_id}/preview/{view}"
+        for view in manifest.get("preview_filenames", {})
+    }
+    if scope == "library" and isinstance(manifest.get("rig_preparation"), dict):
+        rig_asset_id = safe_asset_id(manifest["rig_preparation"]["asset_id"])
+        public["rig_preview_urls"] = {
+            view: f"/api/{route}/{asset_id}/rig-preview/{view}"
+            for view in ("front", "right", "back", "left")
+        }
+        public["rig_mesh_url"] = f"/api/{route}/{asset_id}/rig-mesh"
+        public["accurig_fbx_url"] = f"/api/{route}/{asset_id}/accurig-fbx"
+        public["rig_preparation"]["asset_id"] = rig_asset_id
+        try:
+            public["rig_intake"] = current_rig_intake(asset_id)
+        except (OSError, ValueError, KeyError, json.JSONDecodeError):
+            public["rig_intake"] = None
+    return public
+
+
+def list_3d_assets() -> dict[str, list[dict[str, Any]]]:
+    result: dict[str, list[dict[str, Any]]] = {"candidates": [], "assets": []}
+    for scope, root, key in (
+        ("candidate", LOCAL_3D_CANDIDATE_ROOT, "candidates"),
+        ("library", LOCAL_3D_LIBRARY_ROOT, "assets"),
+    ):
+        if not root.is_dir():
+            continue
+        for manifest_path in root.glob("*/candidate_manifest.json"):
+            try:
+                manifest = load_3d_manifest(scope, manifest_path.parent.name)
+            except (OSError, ValueError, json.JSONDecodeError):
+                continue
+            if scope == "candidate" and manifest.get("library_status") != "candidate":
+                continue
+            result[key].append(manifest)
+        result[key].sort(key=lambda item: item.get("created_at", ""), reverse=True)
+    return result
+
+
+def write_3d_manifest(directory: Path, manifest: dict[str, Any]) -> None:
+    (directory / "candidate_manifest.json").write_text(
+        json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+    )
+
+
+def accept_3d_candidate(asset_id: str, confirmations: list[str]) -> dict[str, Any]:
+    candidate_dir = local_3d_dir("candidate", asset_id)
+    manifest = load_3d_manifest("candidate", asset_id)
+    if manifest.get("library_status") != "candidate":
+        raise ValueError("local 3D candidate is no longer pending review")
+    required = manifest.get("manual_gates_required", THREE_D_MANUAL_GATES)
+    missing = [gate for gate in required if gate not in confirmations]
+    if not required or missing:
+        raise ValueError(
+            "manual 3D review is incomplete: "
+            + "; ".join(missing or ["no gates recorded"])
+        )
+    destination = local_3d_dir("library", asset_id)
+    if destination.exists():
+        raise FileExistsError("local 3D library destination already exists")
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copytree(candidate_dir, destination)
+    accepted_at = utc_now()
+    accepted = {
+        key: value
+        for key, value in manifest.items()
+        if key not in {"model_url", "preview_urls"}
+    }
+    accepted.update(
+        library_status="accepted",
+        accepted_at=accepted_at,
+        manual_confirmations=confirmations,
+        local_only=True,
+    )
+    write_3d_manifest(destination, accepted)
+    source_manifest = dict(accepted)
+    write_3d_manifest(candidate_dir, source_manifest)
+    return load_3d_manifest("library", asset_id)
+
+
+def destroy_3d_candidate(asset_id: str) -> None:
+    candidate_dir = local_3d_dir("candidate", asset_id).resolve()
+    expected_root = LOCAL_3D_CANDIDATE_ROOT.resolve()
+    if expected_root not in candidate_dir.parents:
+        raise ValueError("unsafe local 3D candidate path")
+    manifest = load_3d_manifest("candidate", asset_id)
+    if manifest.get("library_status") != "candidate":
+        raise ValueError("accepted local 3D assets must be removed from the library explicitly")
+    shutil.rmtree(candidate_dir)
+
+
 def update_job(job_id: str, **updates: Any) -> None:
     with JOBS_LOCK:
         JOBS[job_id].update(updates)
@@ -196,7 +760,7 @@ def run_generation(job_id: str) -> None:
         job = dict(JOBS[job_id])
     try:
         update_job(job_id, status="submitting")
-        job_kind = job.get("job_kind", "turnaround")
+        job_kind = job.get("job_kind", "base_actor")
         if job_kind == "accessory":
             reference_image, reference_source = prepare_slot_reference(
                 job["profile_snapshot"]["slot"]
@@ -205,13 +769,33 @@ def run_generation(job_id: str) -> None:
             artifact_name = "accessory_turnaround.png"
             route = "accessories"
             prefix = f"assetsstudio/accessories/{job_id}"
+        elif job_kind == "style_seed":
+            reference_image, reference_source = prepare_style_reference(
+                job["profile_snapshot"]["style"]
+            )
+            artifact_root = STYLE_SEED_ARTIFACT_ROOT
+            artifact_name = "style_seed.png"
+            route = "style-seeds"
+            prefix = f"assetsstudio/style_seeds/{job_id}"
         else:
+            if job.get("style_seed_asset_id"):
+                _, lineage_source = resolve_library_reference(
+                    "style_seed", job["style_seed_asset_id"]
+                )
+                reference_source = f"lineage-only:{lineage_source}"
+            else:
+                reference_source = (
+                    "actor-core-contract:"
+                    + job["profile_snapshot"]["style"]["id"]
+                )
+            # Complete-character style images carry hair, face and garment identity.
+            # Actor Core consumes their versioned lineage and prompt projection, not
+            # their raw ReferenceLatent pixels.
             reference_image = None
-            reference_source = None
-            artifact_root = TURNAROUND_ARTIFACT_ROOT
-            artifact_name = "turnaround.png"
-            route = "turnarounds"
-            prefix = f"assetsstudio/turnarounds/{job_id}"
+            artifact_root = BASE_ACTOR_ARTIFACT_ROOT
+            artifact_name = "base_actor_turnaround.png"
+            route = "base-actors"
+            prefix = f"assetsstudio/base_actors/{job_id}"
         args = Namespace(
             model="flux-2-klein-4b-fp8.safetensors",
             text_encoder="qwen_3_4b.safetensors",
@@ -263,16 +847,43 @@ def run_generation(job_id: str) -> None:
         automatic_qa = None
         qa_status = "visual_review_required"
         metrics_url = None
+        automatic_qa = analyze_turnaround(artifact, 3)
         if job_kind == "accessory":
-            automatic_qa = analyze_turnaround(artifact, 3)
-            metrics_path = job_dir / "accessory_turnaround.metrics.json"
-            metrics_path.write_text(
-                json.dumps(automatic_qa, ensure_ascii=False, indent=2) + "\n",
-                encoding="utf-8",
-            )
-            metrics_url = f"/api/{route}/{job_id}/metrics"
-            if not automatic_qa["automatic_pass"]:
-                qa_status = "automatic_review_failed"
+            manual_gates_required = [
+                "front/right-profile/back orientation is correct",
+                "same accessory construction and attachment geometry in every view",
+                "no wearer, body, hands, mannequin or unrelated object",
+                "material and detail density match the selected StyleProfile",
+                "scale, pivot and slot-fit intent are plausible",
+            ]
+        elif job_kind == "style_seed":
+            manual_gates_required = [
+                "front/right-profile/back orientation is correct",
+                "same character identity and body proportions in every view",
+                "hair length, rear mass, side locks, bangs and parting form one compatible topology",
+                "no visible mouth, mouth line, lips, nose, nose bridge or nostrils",
+                "same outfit construction and colors in every view",
+                "no extra limbs, props, perspective pose or cropped feet",
+            ]
+        else:
+            manual_gates_required = [
+                "front/right-profile/back orientation is correct",
+                "same canonical Actor body proportions and neutral A-pose in every view",
+                "head is completely bald and earless in every view",
+                "face is a smooth blank surface with no eyes, eyebrows, eyelashes, mouth, or nose",
+                "no hair, clothes, bodysuit, underwear, footwear, gloves, accessories, seams, cuffs, or garment-like topology",
+                "single neutral mannequin material does not imply clothing or identity",
+                "no extra limbs, props, perspective pose or cropped feet",
+            ]
+        automatic_qa["manual_gates_required"] = manual_gates_required
+        metrics_path = job_dir / "turnaround.metrics.json"
+        metrics_path.write_text(
+            json.dumps(automatic_qa, ensure_ascii=False, indent=2) + "\n",
+            encoding="utf-8",
+        )
+        metrics_url = f"/api/{route}/{job_id}/metrics"
+        if not automatic_qa["automatic_pass"]:
+            qa_status = "automatic_review_failed"
 
         record = {
             **job,
@@ -282,6 +893,7 @@ def run_generation(job_id: str) -> None:
             "artifact": str(artifact),
             "qa_status": qa_status,
             "automatic_qa": automatic_qa,
+            "manual_gates_required": manual_gates_required,
             "generation_contract": {
                 "views": ["front", "right", "back"],
                 "width": 1536,
@@ -302,6 +914,8 @@ def run_generation(job_id: str) -> None:
             record_url=f"/api/{route}/{job_id}/record",
             metrics_url=metrics_url,
             qa_status=qa_status,
+            library_status="candidate",
+            manual_gates_required=manual_gates_required,
         )
     except Exception as exc:  # expose a concise local diagnostic to Studio
         update_job(job_id, status="failed", error=str(exc))
@@ -320,18 +934,144 @@ def public_job(job: dict[str, Any]) -> dict[str, Any]:
         "style_profile_id",
         "actor_profile_id",
         "slot_id",
+        "style_seed_asset_id",
+        "base_actor_asset_id",
         "seed",
         "image_url",
         "record_url",
         "metrics_url",
         "qa_status",
+        "library_status",
+        "library_asset_id",
+        "manual_gates_required",
+        "manual_confirmations",
         "error",
     }
     return {key: value for key, value in job.items() if key in allowed}
 
 
+def config_for_job(job: dict[str, Any]) -> tuple[str, dict[str, Any]]:
+    kind = job.get("job_kind", "base_actor")
+    route = {
+        "style_seed": "style-seeds",
+        "base_actor": "base-actors",
+        "accessory": "accessories",
+    }.get(kind)
+    if route is None:
+        raise ValueError("unsupported job kind")
+    return route, ROUTE_CONFIG[route]
+
+
+def accept_job_into_library(
+    job_id: str, manual_confirmations: list[str]
+) -> dict[str, Any]:
+    with JOBS_LOCK:
+        job = JOBS.get(job_id)
+        if job is None:
+            raise KeyError("job not found")
+        snapshot = dict(job)
+    if snapshot.get("status") != "completed":
+        raise ValueError("only completed candidates can enter the local library")
+    if snapshot.get("qa_status") == "automatic_review_failed":
+        raise ValueError("automatic QA failed; regenerate or destroy this candidate")
+    required = snapshot.get("manual_gates_required", [])
+    missing = [gate for gate in required if gate not in manual_confirmations]
+    if not required or missing:
+        raise ValueError(
+            "manual review is incomplete: " + "; ".join(missing or ["no gates recorded"])
+        )
+    route, config = config_for_job(snapshot)
+    asset_id = snapshot.get("library_asset_id") or job_id
+    source_dir = (config["root"] / job_id).resolve()
+    expected_root = config["root"].resolve()
+    if expected_root not in source_dir.parents or not source_dir.is_dir():
+        raise FileNotFoundError("candidate artifact directory is missing")
+    destination = library_asset_dir(config["kind"], asset_id)
+    if destination.exists():
+        manifest_path = destination / "asset_manifest.json"
+        if manifest_path.is_file():
+            update_job(
+                job_id,
+                library_status="accepted",
+                library_asset_id=asset_id,
+                manual_confirmations=manual_confirmations,
+            )
+            return json.loads(manifest_path.read_text(encoding="utf-8"))
+        raise FileExistsError("local library destination already exists")
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copytree(source_dir, destination)
+    manifest = {
+        "schema": "assetsstudio_local_asset_v1",
+        "asset_id": asset_id,
+        "kind": config["kind"],
+        "asset_role": {
+            "style_seed": "style_calibration_anchor",
+            "base_actor": "canonical_actor_core",
+            "accessory": "isolated_slot_source",
+        }[config["kind"]],
+        "subject": snapshot["subject"],
+        "style_profile_id": snapshot.get("style_profile_id"),
+        "consumer_tags": snapshot.get("profile_snapshot", {})
+        .get("style", {})
+        .get("consumer_tags", []),
+        "parent_asset_ids": [
+            asset_id
+            for asset_id in (
+                snapshot.get("style_seed_asset_id"),
+                snapshot.get("base_actor_asset_id"),
+            )
+            if asset_id
+        ],
+        "source_job_id": job_id,
+        "accepted_at": utc_now(),
+        "artifact_filename": config["filename"],
+        "record_filename": "record.json",
+        "local_only": True,
+        "review_status": "approved",
+        "reviewed_at": utc_now(),
+        "manual_confirmations": manual_confirmations,
+        "route": route,
+    }
+    (destination / "asset_manifest.json").write_text(
+        json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+    )
+    update_job(
+        job_id,
+        library_status="accepted",
+        library_asset_id=asset_id,
+        manual_confirmations=manual_confirmations,
+    )
+    return manifest
+
+
+def destroy_candidate(job_id: str) -> None:
+    with JOBS_LOCK:
+        job = JOBS.get(job_id)
+        if job is None:
+            raise KeyError("job not found")
+        snapshot = dict(job)
+    if snapshot.get("status") not in {"completed", "failed"}:
+        raise ValueError("a running job cannot be destroyed")
+    if snapshot.get("library_status") == "accepted":
+        raise ValueError("accepted library assets are preserved; remove them from the library explicitly")
+    _, config = config_for_job(snapshot)
+    candidate_dir = (config["root"] / job_id).resolve()
+    expected_root = config["root"].resolve()
+    if expected_root not in candidate_dir.parents:
+        raise ValueError("unsafe candidate path")
+    if candidate_dir.is_dir():
+        shutil.rmtree(candidate_dir)
+    update_job(
+        job_id,
+        library_status="destroyed",
+        image_url=None,
+        record_url=None,
+        metrics_url=None,
+    )
+
+
 class Handler(BaseHTTPRequestHandler):
-    server_version = "AssetsStudioLocalGeneration/0.2"
+    server_version = "AssetsStudioLocalGeneration/0.3"
 
     def log_message(self, format: str, *args: object) -> None:
         print(f"[{self.log_date_time_string()}] {format % args}", flush=True)
@@ -348,24 +1088,28 @@ class Handler(BaseHTTPRequestHandler):
     def do_OPTIONS(self) -> None:
         self.send_response(HTTPStatus.NO_CONTENT)
         self.send_header("Access-Control-Allow-Origin", "http://127.0.0.1:4173")
-        self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
-        self.send_header("Access-Control-Allow-Headers", "Content-Type")
+        self.send_header("Access-Control-Allow-Methods", "GET, POST, DELETE, OPTIONS")
+        self.send_header("Access-Control-Allow-Headers", "Content-Type, X-AssetsStudio-Filename")
         self.end_headers()
 
     def do_GET(self) -> None:
-        path = urllib.parse.urlparse(self.path).path
+        parsed = urllib.parse.urlparse(self.path)
+        path = normalize_request_path(parsed.path)
         if path == "/api/health":
             models = {name: file.is_file() for name, file in MODEL_FILES.items()}
             self.send_json(
                 HTTPStatus.OK,
                 {
                     "status": "ready" if comfy_reachable() and all(models.values()) else "offline",
-                    "api_version": 2,
+                    "api_version": 4,
                     "comfyui": comfy_reachable(),
                     "model_ready": all(models.values()),
                     "models": models,
                     "comfy_url": COMFY_URL,
                     "artifact_root": str(TURNAROUND_ARTIFACT_ROOT.parent),
+                    "local_library_root": str(LOCAL_LIBRARY_ROOT),
+                    "local_3d_candidate_root": str(LOCAL_3D_CANDIDATE_ROOT),
+                    "local_3d_library_root": str(LOCAL_3D_LIBRARY_ROOT),
                     "profile_registry": str(PROFILE_REGISTRY_PATH),
                     "style_profiles": len(STYLE_PROFILES),
                     "actor_profiles": len(ACTOR_PROFILES),
@@ -373,8 +1117,114 @@ class Handler(BaseHTTPRequestHandler):
             )
             return
 
+        if path == "/api/library":
+            query = urllib.parse.parse_qs(parsed.query)
+            kind = query.get("kind", [None])[0]
+            try:
+                assets = list_library_assets(kind)
+            except ValueError as exc:
+                self.send_json(HTTPStatus.BAD_REQUEST, {"error": str(exc)})
+                return
+            self.send_json(HTTPStatus.OK, {"assets": assets})
+            return
+
+        if path == "/api/3d-assets":
+            self.send_json(HTTPStatus.OK, list_3d_assets())
+            return
+
         parts = [part for part in path.split("/") if part]
-        if len(parts) >= 3 and parts[0] == "api" and parts[1] in {"turnarounds", "accessories"}:
+        if (
+            len(parts) in {4, 5}
+            and parts[0] == "api"
+            and parts[1] in {"3d-candidates", "3d-library"}
+        ):
+            scope = "candidate" if parts[1] == "3d-candidates" else "library"
+            asset_id = parts[2]
+            try:
+                manifest = load_3d_manifest(scope, asset_id)
+                asset_dir = local_3d_dir(scope, asset_id)
+                if len(parts) == 4 and parts[3] == "model":
+                    artifact = safe_3d_artifact(asset_dir, manifest["model_filename"])
+                    self.send_file(artifact, "model/gltf-binary")
+                    return
+                if len(parts) == 5 and parts[3] == "preview":
+                    relative = manifest.get("preview_filenames", {}).get(parts[4])
+                    if not relative:
+                        raise FileNotFoundError("local 3D preview not found")
+                    artifact = safe_3d_artifact(asset_dir, relative)
+                    self.send_file(artifact, "image/png")
+                    return
+                if scope == "library" and len(parts) == 5 and parts[3] == "rig-preview":
+                    if parts[4] not in {"front", "right", "back", "left"}:
+                        raise FileNotFoundError("Actor rig preview view is invalid")
+                    artifact = rig_artifact(
+                        manifest,
+                        f"rig_calibration_v2/preview/{parts[4]}.png",
+                    )
+                    self.send_file(artifact, "image/png")
+                    return
+                if scope == "library" and len(parts) == 4 and parts[3] == "rig-mesh":
+                    rig_asset_id = safe_asset_id(manifest["rig_preparation"]["asset_id"])
+                    artifact = rig_artifact(
+                        manifest,
+                        f"rig_mesh_lod0/{rig_asset_id}_rig_mesh.glb",
+                    )
+                    self.send_file(artifact, "model/gltf-binary")
+                    return
+                if scope == "library" and len(parts) == 4 and parts[3] == "accurig-fbx":
+                    rig_asset_id = safe_asset_id(manifest["rig_preparation"]["asset_id"])
+                    artifact = rig_artifact(
+                        manifest,
+                        f"accurig_handoff/{rig_asset_id}_accurig_input.fbx",
+                    )
+                    self.send_file(artifact, "application/octet-stream")
+                    return
+                if scope == "library" and len(parts) == 5 and parts[3] == "rigged-preview":
+                    if parts[4] not in {"front", "right", "back", "left"}:
+                        raise FileNotFoundError("rigged Actor preview view is invalid")
+                    intake = current_rig_intake(asset_id)
+                    if not intake or intake.get("status") != "ready":
+                        raise FileNotFoundError("rigged Actor preview is not ready")
+                    directory = rig_intake_directory(asset_id, intake["job_id"])
+                    self.send_file(directory / "processed" / "preview" / f"{parts[4]}.png", "image/png")
+                    return
+                if scope == "library" and len(parts) == 4 and parts[3] in {
+                    "rigged-model",
+                    "rigged-blend",
+                    "rigged-validation",
+                }:
+                    intake = current_rig_intake(asset_id)
+                    if not intake or intake.get("status") != "ready":
+                        raise FileNotFoundError("rigged Actor artifact is not ready")
+                    directory = rig_intake_directory(asset_id, intake["job_id"]) / "processed"
+                    rig_asset_id = safe_asset_id(manifest["rig_preparation"]["asset_id"])
+                    if parts[3] == "rigged-model":
+                        self.send_file(directory / f"{rig_asset_id}_rigged_preview.glb", "model/gltf-binary")
+                    elif parts[3] == "rigged-blend":
+                        self.send_file(directory / f"{rig_asset_id}_runtime_4weights.blend", "application/octet-stream")
+                    else:
+                        self.send_file(directory / "validation.json", "application/json; charset=utf-8")
+                    return
+            except (OSError, ValueError, KeyError, json.JSONDecodeError) as exc:
+                self.send_json(HTTPStatus.NOT_FOUND, {"error": str(exc)})
+                return
+        if (
+            len(parts) == 5
+            and parts[:2] == ["api", "library"]
+            and parts[4] == "image"
+        ):
+            kind, asset_id = parts[2], parts[3]
+            try:
+                asset_dir = library_asset_dir(kind, asset_id)
+                manifest = json.loads(
+                    (asset_dir / "asset_manifest.json").read_text(encoding="utf-8")
+                )
+            except (ValueError, OSError, json.JSONDecodeError) as exc:
+                self.send_json(HTTPStatus.NOT_FOUND, {"error": str(exc)})
+                return
+            self.send_file(asset_dir / manifest["artifact_filename"], "image/png")
+            return
+        if len(parts) >= 3 and parts[0] == "api" and parts[1] in ROUTE_CONFIG:
             route = parts[1]
             job_id = parts[2]
             with JOBS_LOCK:
@@ -385,21 +1235,20 @@ class Handler(BaseHTTPRequestHandler):
             if len(parts) == 3:
                 self.send_json(HTTPStatus.OK, public_job(job))
                 return
-            expected_kind = "accessory" if route == "accessories" else "turnaround"
-            if job.get("job_kind", "turnaround") != expected_kind:
+            config = ROUTE_CONFIG[route]
+            if job.get("job_kind", "base_actor") != config["kind"]:
                 self.send_json(HTTPStatus.NOT_FOUND, {"error": "job not found"})
                 return
-            job_dir = (ACCESSORY_ARTIFACT_ROOT if route == "accessories" else TURNAROUND_ARTIFACT_ROOT) / job_id
+            job_dir = config["root"] / job_id
             if len(parts) == 4 and parts[3] == "image":
-                filename = "accessory_turnaround.png" if route == "accessories" else "turnaround.png"
-                self.send_file(job_dir / filename, "image/png")
+                self.send_file(job_dir / config["filename"], "image/png")
                 return
             if len(parts) == 4 and parts[3] == "record":
                 self.send_file(job_dir / "record.json", "application/json; charset=utf-8")
                 return
-            if len(parts) == 4 and parts[3] == "metrics" and route == "accessories":
+            if len(parts) == 4 and parts[3] == "metrics":
                 self.send_file(
-                    job_dir / "accessory_turnaround.metrics.json",
+                    job_dir / "turnaround.metrics.json",
                     "application/json; charset=utf-8",
                 )
                 return
@@ -419,8 +1268,79 @@ class Handler(BaseHTTPRequestHandler):
         self.wfile.write(data)
 
     def do_POST(self) -> None:
-        path = urllib.parse.urlparse(self.path).path
-        if path not in {"/api/turnarounds", "/api/accessories"}:
+        path = normalize_request_path(urllib.parse.urlparse(self.path).path)
+        parts = [part for part in path.split("/") if part]
+        if (
+            len(parts) == 4
+            and parts[:2] == ["api", "3d-library"]
+            and parts[3] == "rig-intakes"
+        ):
+            try:
+                length = int(self.headers.get("Content-Length", "0"))
+                filename = urllib.parse.unquote(
+                    self.headers.get("X-AssetsStudio-Filename", "")
+                )
+                intake = create_rig_intake(parts[2], filename, length, self.rfile)
+            except FileNotFoundError as exc:
+                self.send_json(HTTPStatus.NOT_FOUND, {"error": str(exc)})
+                return
+            except (ValueError, OSError, KeyError, json.JSONDecodeError) as exc:
+                self.send_json(HTTPStatus.BAD_REQUEST, {"error": str(exc)})
+                return
+            self.send_json(HTTPStatus.ACCEPTED, {"rig_intake": intake})
+            return
+        if (
+            len(parts) == 4
+            and parts[:2] == ["api", "3d-candidates"]
+            and parts[3] == "accept"
+        ):
+            try:
+                length = int(self.headers.get("Content-Length", "0"))
+                payload = (
+                    json.loads(self.rfile.read(length)) if 0 < length <= 16_384 else {}
+                )
+                confirmations = payload.get("manual_confirmations", [])
+                if not isinstance(confirmations, list) or not all(
+                    isinstance(item, str) for item in confirmations
+                ):
+                    raise ValueError("manual_confirmations must be a string array")
+                asset = accept_3d_candidate(parts[2], confirmations)
+            except FileNotFoundError as exc:
+                self.send_json(HTTPStatus.NOT_FOUND, {"error": str(exc)})
+                return
+            except (ValueError, FileExistsError, json.JSONDecodeError) as exc:
+                self.send_json(HTTPStatus.CONFLICT, {"error": str(exc)})
+                return
+            self.send_json(HTTPStatus.OK, {"asset": asset})
+            return
+        if (
+            len(parts) == 4
+            and parts[0] == "api"
+            and parts[1] in ROUTE_CONFIG
+            and parts[3] == "accept"
+        ):
+            try:
+                length = int(self.headers.get("Content-Length", "0"))
+                payload = (
+                    json.loads(self.rfile.read(length)) if 0 < length <= 16_384 else {}
+                )
+                confirmations = payload.get("manual_confirmations", [])
+                if not isinstance(confirmations, list) or not all(
+                    isinstance(item, str) for item in confirmations
+                ):
+                    raise ValueError("manual_confirmations must be a string array")
+                manifest = accept_job_into_library(parts[2], confirmations)
+            except KeyError as exc:
+                self.send_json(HTTPStatus.NOT_FOUND, {"error": str(exc)})
+                return
+            except (ValueError, FileNotFoundError, FileExistsError) as exc:
+                self.send_json(HTTPStatus.CONFLICT, {"error": str(exc)})
+                return
+            self.send_json(HTTPStatus.OK, {"job": public_job(JOBS[parts[2]]), "asset": manifest})
+            return
+
+        create_paths = {f"/api/{route}" for route in ROUTE_CONFIG}
+        if path not in create_paths:
             self.send_json(HTTPStatus.NOT_FOUND, {"error": "route not found"})
             return
         try:
@@ -463,8 +1383,15 @@ class Handler(BaseHTTPRequestHandler):
                 if actor_profile["style_profile_id"] != style_profile_id:
                     raise ValueError("Actor profile does not belong to selected style")
                 slot = find_slot(actor_profile, slot_id)
+                base_actor_asset_id = str(payload.get("base_actor_asset_id", "")).strip()
+                if base_actor_asset_id:
+                    resolve_library_reference("base_actor", base_actor_asset_id)
                 compiled_prompt = compile_accessory_prompt(
-                    subject, style_profile, actor_profile, slot
+                    subject,
+                    style_profile,
+                    actor_profile,
+                    slot,
+                    base_actor_asset_id or None,
                 )
             except ValueError as exc:
                 self.send_json(HTTPStatus.BAD_REQUEST, {"error": str(exc)})
@@ -480,7 +1407,9 @@ class Handler(BaseHTTPRequestHandler):
                 "style_profile_id": style_profile_id,
                 "actor_profile_id": actor_profile_id,
                 "slot_id": slot_id,
+                "base_actor_asset_id": base_actor_asset_id or None,
                 "seed": seed,
+                "library_status": "candidate",
                 "profile_snapshot": {
                     "style": style_profile,
                     "actor": {
@@ -492,22 +1421,83 @@ class Handler(BaseHTTPRequestHandler):
                     "slot": slot,
                 },
             }
-        else:
+        elif path in {"/api/style-seeds", "/api/base-actors"}:
+            try:
+                style_profile_id = str(payload.get("style_profile_id", ""))
+                style_profile = STYLE_PROFILES.get(style_profile_id)
+                if style_profile is None:
+                    raise ValueError("unknown style_profile_id")
+                style_seed_asset_id = str(payload.get("style_seed_asset_id", "")).strip()
+                if path == "/api/base-actors" and style_seed_asset_id:
+                    resolve_library_reference("style_seed", style_seed_asset_id)
+            except ValueError as exc:
+                self.send_json(HTTPStatus.BAD_REQUEST, {"error": str(exc)})
+                return
+            job_kind = "style_seed" if path == "/api/style-seeds" else "base_actor"
             job = {
                 "id": job_id,
-                "job_kind": "turnaround",
+                "job_kind": job_kind,
                 "status": "queued",
                 "created_at": created,
                 "updated_at": created,
                 "subject": subject,
-                "compiled_prompt": compile_prompt(subject, style),
-                "style": style,
+                "compiled_prompt": compile_profile_turnaround_prompt(
+                    subject, style_profile, style_seed=job_kind == "style_seed"
+                ),
+                "style": "soft_3d",
+                "style_profile_id": style_profile_id,
+                "style_seed_asset_id": style_seed_asset_id or None,
                 "seed": seed,
+                "library_status": "candidate",
+                "profile_snapshot": {"style": style_profile},
+            }
+        else:
+            style_profile = next(iter(STYLE_PROFILES.values()))
+            job = {
+                "id": job_id,
+                "job_kind": "base_actor",
+                "status": "queued",
+                "created_at": created,
+                "updated_at": created,
+                "subject": subject,
+                "compiled_prompt": compile_profile_turnaround_prompt(subject, style_profile),
+                "style": style,
+                "style_profile_id": style_profile["id"],
+                "seed": seed,
+                "library_status": "candidate",
+                "profile_snapshot": {"style": style_profile},
             }
         with JOBS_LOCK:
             JOBS[job_id] = job
         threading.Thread(target=run_generation, args=(job_id,), daemon=True).start()
         self.send_json(HTTPStatus.ACCEPTED, public_job(job))
+
+    def do_DELETE(self) -> None:
+        path = normalize_request_path(urllib.parse.urlparse(self.path).path)
+        parts = [part for part in path.split("/") if part]
+        if len(parts) == 3 and parts[:2] == ["api", "3d-candidates"]:
+            try:
+                destroy_3d_candidate(parts[2])
+            except FileNotFoundError as exc:
+                self.send_json(HTTPStatus.NOT_FOUND, {"error": str(exc)})
+                return
+            except (ValueError, OSError, json.JSONDecodeError) as exc:
+                self.send_json(HTTPStatus.CONFLICT, {"error": str(exc)})
+                return
+            self.send_json(HTTPStatus.OK, {"candidate_id": parts[2], "library_status": "destroyed"})
+            return
+        if len(parts) != 3 or parts[0] != "api" or parts[1] not in ROUTE_CONFIG:
+            self.send_json(HTTPStatus.NOT_FOUND, {"error": "route not found"})
+            return
+        try:
+            destroy_candidate(parts[2])
+        except KeyError as exc:
+            self.send_json(HTTPStatus.NOT_FOUND, {"error": str(exc)})
+            return
+        except ValueError as exc:
+            self.send_json(HTTPStatus.CONFLICT, {"error": str(exc)})
+            return
+        self.send_json(HTTPStatus.OK, public_job(JOBS[parts[2]]))
 
 
 def main() -> int:
@@ -516,7 +1506,10 @@ def main() -> int:
     parser.add_argument("--port", type=int, default=8765)
     args = parser.parse_args()
     TURNAROUND_ARTIFACT_ROOT.mkdir(parents=True, exist_ok=True)
+    STYLE_SEED_ARTIFACT_ROOT.mkdir(parents=True, exist_ok=True)
+    BASE_ACTOR_ARTIFACT_ROOT.mkdir(parents=True, exist_ok=True)
     ACCESSORY_ARTIFACT_ROOT.mkdir(parents=True, exist_ok=True)
+    LOCAL_LIBRARY_ROOT.mkdir(parents=True, exist_ok=True)
     server = ThreadingHTTPServer((args.host, args.port), Handler)
     print(f"AssetsStudio local generation API: http://{args.host}:{args.port}", flush=True)
     try:

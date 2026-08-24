@@ -356,7 +356,7 @@ function App() {
       <header className="topbar">
         <div className="brand-lockup">
           <div className="brand-mark" aria-hidden="true"><span>AS</span></div>
-          <div><p className="eyebrow">BOMBOADVENTURE TOOLCHAIN</p><h1>AssetsStudio</h1></div>
+          <div><p className="eyebrow">LOCAL ART ASSET SUPPLY LAB</p><h1>AssetsStudio</h1></div>
         </div>
         <nav className="workspace-tabs" aria-label="Studio 主界面">
           <button type="button" className={workspaceView === "workbench" ? "active" : ""} onClick={() => setWorkspaceView("workbench")}>资产工作台</button>

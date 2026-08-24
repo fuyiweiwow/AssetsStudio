@@ -10,7 +10,7 @@
 
 - `assetsstudio_style_profile_v1`：保存权威参考图及 SHA-256、头身比、造型语言、渲染语言、语义色板、正负提示词和 QA 规则；
 - `assetsstudio_actor_slot_profile_v1`：保存 Actor 坐标系、测量值、骨骼/表面锚点、适配包络、推荐生成模式、碰撞策略和证据状态；
-- 首个风格实例 `western_fantasy_qstyle_soft3d_v1`；
+- 首个消费者风格实例 `bombo_adventure_qstyle_no_face_v1`，带 `bombadvanture/ba` 标签；Studio 本身不固定该风格；
 - 首个 Actor 实例 `default_adventurer_v2_slots_v1`，共 11 个槽位；
 - 独立校验器 `tools/validate_style_slot_profiles.py`。
 
@@ -33,6 +33,7 @@
 
 ## 后续阶段
 
+- [ ] 完成 BA 风格稳定化：以已批准正面锚点和 StyleProfile immutable traits 进入 FLUX.2 ReferenceLatent，跨 seed 检查头身比、无嘴鼻脸部、块面语言、语义色板和槽位边界；任何单次好图不能直接替代重复性 Gate；
 - [x] Studio 通过独立生成注册表加载并展示 StyleProfile/ActorSlotProfile；
 - [x] 配件生成表单强制选择风格、Actor 和可生成槽位；
 - [x] 本地桥接把 Profile 编译到 FLUX.2 ReferenceLatent 提示词与任务记录；

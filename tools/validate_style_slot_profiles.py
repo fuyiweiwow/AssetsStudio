@@ -12,7 +12,7 @@ from jsonschema import Draft202012Validator
 
 
 ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_STYLE = ROOT / "references/style_profiles/western_fantasy_qstyle_soft3d_v1.json"
+DEFAULT_STYLE = ROOT / "references/style_profiles/bombo_adventure_qstyle_no_face_v1.json"
 DEFAULT_ACTOR = ROOT / "references/actor_v2/default_adventurer_v2/actor_slot_profile_v1.json"
 STYLE_SCHEMA = ROOT / "schemas/style-profile.v1.schema.json"
 ACTOR_SCHEMA = ROOT / "schemas/actor-slot-profile.v1.schema.json"

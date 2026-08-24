@@ -68,6 +68,11 @@ def main() -> int:
     parser.add_argument("--output-dir", type=Path, required=True)
     parser.add_argument("--asset-id", default="actor_v2_base_v1")
     parser.add_argument("--resolution", type=int, default=1024)
+    parser.add_argument(
+        "--landmark-profile",
+        type=Path,
+        help="Optional height-normalized bone and slot-anchor overrides.",
+    )
     raw_args = sys.argv[sys.argv.index("--") + 1 :] if "--" in sys.argv else sys.argv[1:]
     args = parser.parse_args(raw_args)
     args.output_dir.mkdir(parents=True, exist_ok=True)
@@ -126,6 +131,22 @@ def main() -> int:
         "CC_Base_R_Foot": ((-0.065*h, 0, 0.055*h), (-0.065*h, -0.11*h, 0.025*h), "CC_Base_R_Calf", "leg"),
     }
 
+    landmark_profile = None
+    if args.landmark_profile:
+        landmark_profile = json.loads(args.landmark_profile.read_text(encoding="utf-8"))
+        if landmark_profile.get("schema") != "assetsstudio_actor_rig_landmark_profile_v1":
+            raise ValueError("Unsupported Actor rig landmark profile")
+        for name, override in landmark_profile.get("bone_overrides", {}).items():
+            if name not in specs:
+                raise ValueError(f"Unknown bone in landmark profile: {name}")
+            old_head, old_tail, old_parent, old_group = specs[name]
+            specs[name] = (
+                tuple(value * h for value in override.get("head_h", [value / h for value in old_head])),
+                tuple(value * h for value in override.get("tail_h", [value / h for value in old_tail])),
+                override.get("parent", old_parent),
+                override.get("group", old_group),
+            )
+
     armature_data = bpy.data.armatures.new("ActorV2_ArmatureData")
     armature = bpy.data.objects.new("Armature", armature_data)
     bpy.context.collection.objects.link(armature)
@@ -161,6 +182,11 @@ def main() -> int:
         "EarRoot_L": (0.22*h, 0.0, 0.70*h),
         "EarRoot_R": (-0.22*h, 0.0, 0.70*h),
     }
+    if landmark_profile:
+        for name, location_h in landmark_profile.get("slot_anchors_h", {}).items():
+            if name not in ear_roots:
+                raise ValueError(f"Unknown slot anchor in landmark profile: {name}")
+            ear_roots[name] = tuple(value * h for value in location_h)
     for name, location in ear_roots.items():
         empty = bpy.data.objects.new(name, None)
         empty.empty_display_type = "SPHERE"
@@ -220,6 +246,7 @@ def main() -> int:
         "schema": "assetsstudio_actor_v2_rig_calibration_v1",
         "asset_id": args.asset_id,
         "input": str(args.input.resolve()),
+        "landmark_profile": str(args.landmark_profile.resolve()) if args.landmark_profile else None,
         "blend": str(blend_path.resolve()),
         "status": "needs_human_landmark_confirmation",
         "coordinate_contract": {"up": "+Z", "front": "-Y", "actor_left": "+X", "ground_z": 0.0},

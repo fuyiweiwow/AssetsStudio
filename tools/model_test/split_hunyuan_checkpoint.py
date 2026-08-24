@@ -7,16 +7,23 @@ from pathlib import Path
 
 import torch
 
+from hunyuan_environment import discover_model_root, discover_subfolder
+
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--model", type=Path, required=True)
+    parser.add_argument("--model", type=Path)
     parser.add_argument(
         "--subfolder",
-        default="hunyuan3d-dit-v2-mini-turbo",
+        default=None,
         help="Checkpoint subfolder inside the model directory.",
     )
     args = parser.parse_args()
+    args.model = discover_model_root(args.model)
+    args.subfolder = discover_subfolder(args.model, args.subfolder)
+    print(
+        f"HUNYUAN_ENV model={args.model} subfolder={args.subfolder}", flush=True
+    )
     model_dir = args.model.resolve() / args.subfolder
     source = model_dir / "model.fp16.ckpt"
     cache_dir = model_dir / "split_components"

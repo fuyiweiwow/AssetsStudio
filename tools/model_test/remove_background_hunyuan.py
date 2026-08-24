@@ -8,15 +8,19 @@ from pathlib import Path
 
 from PIL import Image
 
+from hunyuan_environment import discover_code_root
+
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--code-root", type=Path, default=Path(r"E:\Env\Hunyuan3D-2"))
+    parser.add_argument("--code-root", type=Path)
     parser.add_argument("--input", type=Path)
     parser.add_argument("--output", type=Path)
     parser.add_argument("--input-dir", type=Path)
     parser.add_argument("--output-dir", type=Path)
     args = parser.parse_args()
+    args.code_root = discover_code_root(args.code_root)
+    print(f"HUNYUAN_ENV code_root={args.code_root}", flush=True)
 
     single_mode = args.input is not None or args.output is not None
     directory_mode = args.input_dir is not None or args.output_dir is not None

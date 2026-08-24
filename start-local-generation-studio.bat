@@ -30,7 +30,7 @@ if errorlevel 1 (
 if not exist "%STUDIO_ROOT%\node_modules\.bin\vite.cmd" (
     echo [SETUP] Studio dependencies are missing. Installing them now...
     pushd "%STUDIO_ROOT%"
-    call npm.cmd install --no-audit --no-fund
+    call npm.cmd install --package-lock=false --no-audit --no-fund
     set "NPM_EXIT=%ERRORLEVEL%"
     popd
     if not "!NPM_EXIT!"=="0" (

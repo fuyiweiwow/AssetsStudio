@@ -1,0 +1,73 @@
+{
+  "schema": "assetsstudio_actor_rig_landmark_profile_v1",
+  "id": "chibi_featureless_v1",
+  "revision": 1,
+  "description": "Height-normalized corrections for a 2.1-2.5H featureless chibi Actor Core with separated fingers and feet.",
+  "coordinate_contract": {
+    "up": "+Z",
+    "front": "-Y",
+    "actor_left": "+X",
+    "unit": "actor_height"
+  },
+  "bone_overrides": {
+    "CC_Base_Head": {
+      "head_h": [0.0, 0.0, 0.54],
+      "tail_h": [0.0, 0.0, 0.72]
+    },
+    "CC_Base_L_Clavicle": {
+      "tail_h": [0.095, 0.0, 0.49]
+    },
+    "CC_Base_R_Clavicle": {
+      "tail_h": [-0.095, 0.0, 0.49]
+    },
+    "CC_Base_L_Upperarm": {
+      "head_h": [0.095, 0.0, 0.49]
+    },
+    "CC_Base_R_Upperarm": {
+      "head_h": [-0.095, 0.0, 0.49]
+    },
+    "CC_Base_L_Forearm": {
+      "tail_h": [0.205, 0.0, 0.275]
+    },
+    "CC_Base_R_Forearm": {
+      "tail_h": [-0.205, 0.0, 0.275]
+    },
+    "CC_Base_L_Hand": {
+      "head_h": [0.205, 0.0, 0.275],
+      "tail_h": [0.22, 0.0, 0.25]
+    },
+    "CC_Base_R_Hand": {
+      "head_h": [-0.205, 0.0, 0.275],
+      "tail_h": [-0.22, 0.0, 0.25]
+    },
+    "CC_Base_L_Thigh": {
+      "head_h": [0.075, 0.0, 0.285],
+      "tail_h": [0.08, 0.0, 0.15]
+    },
+    "CC_Base_R_Thigh": {
+      "head_h": [-0.075, 0.0, 0.285],
+      "tail_h": [-0.08, 0.0, 0.15]
+    },
+    "CC_Base_L_Calf": {
+      "head_h": [0.08, 0.0, 0.15],
+      "tail_h": [0.08, 0.0, 0.055]
+    },
+    "CC_Base_R_Calf": {
+      "head_h": [-0.08, 0.0, 0.15],
+      "tail_h": [-0.08, 0.0, 0.055]
+    },
+    "CC_Base_L_Foot": {
+      "head_h": [0.08, 0.0, 0.055],
+      "tail_h": [0.08, -0.11, 0.025]
+    },
+    "CC_Base_R_Foot": {
+      "head_h": [-0.08, 0.0, 0.055],
+      "tail_h": [-0.08, -0.11, 0.025]
+    }
+  },
+  "slot_anchors_h": {
+    "EarRoot_L": [0.195, 0.0, 0.70],
+    "EarRoot_R": [-0.195, 0.0, 0.70]
+  },
+  "human_review_required": true
+}

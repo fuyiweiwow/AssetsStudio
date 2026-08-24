@@ -39,6 +39,15 @@
 | 2026-08-14 | fix/preview | F007/hair | 修正 scalp base 前缘回缩的 Blender→Three.js 深度轴，并增加正面宽度/右侧回缩快捷检查 | 原实现把深度变化写到 Three.js 高度轴，状态变化但视觉不明显；修正为 -Z 后侧视可见，参数验收不再依赖错误的正面组合截图 |
 | 2026-08-14 | validation/fix | F007/Studio | 将 scalp base 参数改为直接 position buffer 变形，增加命中网格、X/Z 跨度、Z 中心报告和单独检查高对比材质 | 复核确认宽度与回缩均作用于真实 GLB 网格；宽度 0.94→1.10 改变 X 跨度，回缩 0→0.16 改变 Z 中心，解决“数值变化但预览看不出”的验收歧义 |
 | 2026-08-14 | metadata | repository | 将 `docs/ASSET_STATUS.json` 的来源快照更新为当前 AssetsStudio `main` 基线 | 修正迁移遗留的 AssetsLab `clothes_test` 来源，避免机器注册表误报资产来源 |
+| 2026-08-24 | environment/validation | F009/F010 | 在远程机自动发现同级 ComfyUI，使用 ModelScope 逐文件重建 FLUX.2 Klein FP8、Qwen 3 4B 与 VAE，并完成真实三视图烟雾作业 | 移除活跃入口对旧机盘符和用户名的依赖；RTX 5070 Ti 上 1536×768 四步作业通过，下一阶段明确为 ReferenceLatent 风格稳定化 |
+| 2026-08-24 | requirements/implementation | F010/F011 | 明确 AssetsStudio 是通用美术素材供给实验室，BA 只是近期消费者；建立带消费者标签的风格种子、素体/配件父子引用与候选入库/销毁合同 | 去除 Studio 全局 BA 风格绑定；本地库默认不上传，按 StyleProfile 隔离风格，压力测试后再决定是否训练 LoRA |
+| 2026-08-24 | quality/correction | F011/style-seed | 用户复核发现旧种子正/侧长发、背面短发帽；撤销整条资产链批准并增加后端强制发型拓扑人工 Gate | 六组种子和两组下游素体复测后，只批准拓扑一致的短发/长发各一组；配件复测因混入人物和尺度漂移继续保持未批准 |
+| 2026-08-24 | cleanup/validation | F011/3D intake | 从 Studio 本地库物理删除失效种子、素体和父链配件，并用批准短发素体完成首个 Hunyuan3D-2MV/Blender 四向 PoC | 库只剩 4 项 approved；本地 3D 候选为单连通 watertight 网格并保留 Q 版比例与短发拓扑，但仍是无纹理高模来源，未入库；Hunyuan 入口改为环境发现而非旧盘符默认值 |
+| 2026-08-24 | implementation/decision | F011/Studio/texture | Studio 接入本地 3D 候选的真实 GLB 预览、四向图、强制人工 Gate、销毁/入库 API，并确定 12GB 显存纹理策略 | 3D 入库仍只代表 shape source；默认采用 Blender UV + 多视图颜色投影/烘焙，Hunyuan Paint low-vram 作为需单独验证的可选增强，避免把 16GB 级完整纹理链写成 3060 必需环境 |
+| 2026-08-24 | quality/rejection | F011/texture | 两次隔离验证高模 AABB 四向顶点色直投，并在修正图片坐标原点后仍予以销毁 | 透明取样已大幅改善，但高模与 2D 无逐点对应，仍有前后串投、接缝和顶点膨胀；后续必须先重拓扑/UV，再做正交相机可见性烘焙与接缝修复 |
+| 2026-08-24 | correction/validation | F011/Actor Core | 复核确认此前带头发、眼睛、训练服和鞋的“素体”实际是完整角色锚点；将其全部移出 Studio 活跃目录，并把 `base_actor` 收紧为 `canonical_actor_core` | StyleProfile 新增用途隔离的 `actor_core_contract`；完整角色风格图只记录谱系、不再作为 Actor ReferenceLatent。首个真正光头、无耳、无五官、无服装鞋饰品的 2D Actor `0ef398ca...` 已入本地库，其 Hunyuan 高模为 118,564 顶点、单连通、watertight，现作为 3D 候选等待远程人工审查，不进入 Gallery/随机池 |
+| 2026-08-24 | validation/rig-prep | F011/Actor Core | 用户确认 `0ef398ca...` 四向形体并将高模 shape source 加入本地 3D 库；建立 Q 版归一化骨点 Profile、非破坏性 61,002 顶点绑定副本和 AccuRIG FBX 交接包，并接入 Studio 已批准资产卡片 | 绑定副本保持单连通/watertight/manifold，四向轮廓最差 IoU 0.999944，FBX 往返 Gate 全通过；它仍不是已绑定 Actor 或完整四边面重拓扑，下一步必须在 AccuRIG 人工确认落点并做基础动作变形 QA |
+| 2026-08-24 | implementation/validation | F011/Studio/AccuRIG | 把人工 AccuRIG 回传实现为所选 Actor 卡片上的 FBX 上传、Actor 专属本地 intake、后台一对一审计、四权重运行副本与四向实际骨架预览 | 历史已绑定 Actor 成功通过完整处理烟雾测试，当前未绑定 FBX 被正确拒绝；Studio 不建立可跨 Actor 复用的骨骼库，真实 `0ef398ca...` 结果等待用户以后手工标定回传 |
 
 ## 记录规则
 

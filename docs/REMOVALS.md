@@ -17,6 +17,7 @@
 | 2026-08-09 | `face_contract_v1.json` 与旧 `EyePackageV1` 预览合同 | 被 v2 取代 | 用户审查发现旧眼框/镜片叠层悬浮、遮挡且遗漏已经验证的眨眼流程 | `face_contract_v2.json`、`chibi_actor_eye_assembly_v2.blend` 和可复现眼睛脚本 | Git 历史；AssetsLab `origin/eye_anime` 历史 |
 | 2026-08-09 | `studio/src/components/AssetRail.tsx` | 删除 | 只切换资产详情文字，不能表达模型→骨骼→动画→拼装→结果的工作流 | `WorkflowRail.tsx` 与 F002 五步装配流程 | Git 提交 `a2a5688` 之前的 F001 历史 |
 | 2026-08-21 | `milestones/pants/native_control_v0/`、`milestones/tops/garmentcode_short_sleeve_v1/` 与专用 `tools/garmentcode/` 工具链 | 用户确认后从正式分支删除 | 这些旧短裤/短袖里程碑与 Actor 专用 GarmentCode 路线已不在当前计划内；继续保留会让新 Actor V2 与分 Slot Hunyuan 工作流误选旧基线 | `docs/workflows/actor_v2_image_first_rebuild.md`、`references/actor_v2/` 和恢复的 `experiments/` ActorProfile/Slot 文档归档 | 本次删除前的 Git 历史（`5c0263e` 及更早提交） |
+| 2026-08-24 | 本地库 `decf3169...` 风格种子、`ed509f5a...` 素体、`f9e85af2...` 配件 | 从 Studio 本地资产库物理删除 | 种子和素体存在正/侧长发、背面短发冲突；配件父链随之失效，继续展示会误导后续 3D/配件生成 | 已批准的短发/长发种子与素体共 4 项；新配件必须从批准素体重建 | `workspace/local_generation/` 的原始候选与 `docs/workflows/ba_style_seed_stabilization_2026-08-24.md`；本地库副本本身不可直接恢复 |
 
 ## 新记录要求
 

@@ -2,9 +2,9 @@
 
 ## 当前能力
 
-Studio 的第一阶段入口支持：
+Studio 的本地入口支持：
 
-`中文角色提示词 -> 固定生产合同 -> 本机 FLUX.2 Klein 4B -> 1536x768 正/右/背联合图 -> Studio 预览与生成记录`
+`StyleProfile/父资产 -> 本机 FLUX.2 Klein 4B ReferenceLatent -> 1536x768 正/右/背联合图 -> 候选预览 -> 本地入库或销毁`
 
 它是提示词三视图候选生成器，不是自动验收器。页面输出必须人工确认视角、同一角色、服装结构、附件左右关系和多余肢体后，才能进入分栏注册与 Hunyuan3D。
 
@@ -17,8 +17,8 @@ Studio 的第一阶段入口支持：
 | GPU | NVIDIA RTX 3060 12GB |
 | 系统内存 | 24GB |
 | 系统 | Windows，NVIDIA Driver 560.94 |
-| ComfyUI | `E:\Env\ComfyUI`，版本 `0.28.0` |
-| Python | `3.11.3` |
+| ComfyUI | 启动器自动发现，旧机验证版本为 `0.28.0` |
+| Python | 优先使用 ComfyUI 自带 `.venv` / `venv` / `python_embeded` |
 | PyTorch | `2.6.0+cu124` |
 | Studio | Node 22+、Vite 8、React 19 |
 | 本地桥接 | Python 标准库 HTTP server，`127.0.0.1:8765` |
@@ -28,7 +28,7 @@ Studio 的第一阶段入口支持：
 ## 必需模型文件
 
 ```text
-E:\Env\ComfyUI\models\
+<ComfyUI>\models\
 ├── diffusion_models\
 │   └── flux-2-klein-4b-fp8.safetensors  # 4,070,624,520 bytes
 ├── text_encoders\
@@ -37,8 +37,9 @@ E:\Env\ComfyUI\models\
     └── flux2-vae.safetensors             #   336,213,556 bytes
 ```
 
-权威下载位置：
+权威文件来源：
 
+- 大文件下载默认使用 ModelScope，避免占用受限网络流量：`black-forest-labs/FLUX.2-klein-4b-fp8`、`Comfy-Org/flux2-klein-4B` 和 `Comfy-Org/flux2-dev`。
 - FLUX.2 Klein 4B：[ModelScope 模型页](https://modelscope.cn/models/black-forest-labs/FLUX.2-klein-4B)；[BFL 官方模型卡](https://huggingface.co/black-forest-labs/FLUX.2-klein-4B)。
 - FP8 单文件：[BFL 官方 FP8 仓库](https://huggingface.co/black-forest-labs/FLUX.2-klein-4b-fp8)。
 - ComfyUI 编辑模板与其文本编码器/VAE链接：[官方 FLUX.2 Klein 教程](https://docs.comfy.org/tutorials/flux/flux-2-klein)。
@@ -50,7 +51,7 @@ ModelScope 的完整 `black-forest-labs/FLUX.2-klein-4B` 仓库约 23.74GB，不
 ```text
 modelscope download --model AI-ModelScope/mv-adapter \
   mvadapter_i2mv_sdxl.safetensors \
-  --local_dir E:\env\models\mv-adapter
+  --local_dir <model-cache>\mv-adapter
 ```
 
 该 I2MV 权重下载成功但运行链被否决：当前 Windows/PyTorch 组合缺失 70 个 reference attention cache，不能作为 Studio 后端。不要把“下载成功”写成“模型通过”。
@@ -60,7 +61,7 @@ modelscope download --model AI-ModelScope/mv-adapter \
 RTX 3060 12GB 使用：
 
 ```powershell
-python E:\Env\ComfyUI\main.py `
+& <ComfyUI-Python> <ComfyUI>\main.py `
   --lowvram `
   --disable-async-offload `
   --disable-pinned-memory `
@@ -107,13 +108,28 @@ powershell -ExecutionPolicy Bypass -File .\tools\start_studio_local_generation.p
 
 该启动脚本直接运行 Vite，不触发历史 `npm predev` 资产重建。原因是全局 registry 构建器仍引用已经按 `docs/REMOVALS.md` 删除的 GarmentCode 短袖和 native-control 短裤；在它迁移到 Actor V2 Slot 合同前，不应为了启动 F009 恢复旧资产。
 
-如果项目或 Python 路径不同：
+启动器按以下顺序发现环境：显式 `-ComfyRoot` / `-Python` 参数、`ASSETSSTUDIO_COMFY_ROOT` / `ASSETSSTUDIO_PYTHON` 环境变量、AssetsStudio 同级 `ComfyUI`，再检查用户目录及旧机兼容位置。Python 在已找到的 ComfyUI 内按 `.venv`、`venv`、`python_embeded` 顺序选择。路径不同或需要覆盖自动发现时：
 
 ```powershell
 .\tools\start_studio_local_generation.ps1 `
-  -ComfyRoot 'E:\Env\ComfyUI' `
-  -Python 'C:\Path\To\python.exe'
+  -ComfyRoot '<ComfyUI>' `
+  -Python '<ComfyUI-Python>'
 ```
+
+只检查自动发现和三个模型文件、不启动任何服务：
+
+```powershell
+.\tools\start_studio_local_generation.ps1 -CheckEnvironment
+```
+
+## 2026-08-24 远程机重建验证
+
+- GPU：NVIDIA RTX 5070 Ti 16GB；系统内存 32GB；
+- ComfyUI：自动发现 AssetsStudio 同级安装，运行时版本 `0.33.0`；
+- Python：自动发现 ComfyUI `.venv`，版本 `3.10.20`；
+- PyTorch：`2.11.0+cu128`，CUDA 可用；cu130 优化内核提示不阻断当前 eager/PyTorch attention 路线；
+- 模型：三个文件均通过精确字节数和 safetensors 头校验；大文件通过 ModelScope 逐文件下载，未下载 23.74GB 全仓库；
+- 实测：固定 1536×768、4 steps、CFG 1.0 的三视图作业完成，ComfyUI 报告单次 Prompt 执行 `6.21s`；烟雾作业 `84169b5e49d04d29996c90c9f095c070` 保留在被 Git 忽略的 `workspace/local_generation/turnarounds/`。
 
 ## 接口与文件合同
 
@@ -122,35 +138,36 @@ Vite 将 `/api/local-generation/*` 代理到本地桥接：
 | 方法 | 路径 | 用途 |
 | --- | --- | --- |
 | GET | `/api/health` | 检查 ComfyUI 与三个模型文件 |
-| POST | `/api/turnarounds` | 创建提示词三视图任务 |
-| GET | `/api/turnarounds/<id>` | 查询任务状态 |
-| GET | `/api/turnarounds/<id>/image` | 读取生成 PNG |
-| GET | `/api/turnarounds/<id>/record` | 下载可追溯 JSON |
+| POST | `/api/style-seeds` | 创建带 StyleProfile/消费者标签的风格种子候选 |
+| POST | `/api/base-actors` | 创建可引用已入库风格种子的素体候选 |
 | POST | `/api/accessories` | 创建绑定 StyleProfile/ActorSlotProfile 的独立配件三视图任务 |
-| GET | `/api/accessories/<id>` | 查询配件任务状态 |
-| GET | `/api/accessories/<id>/image` | 读取配件联合三视图 PNG |
-| GET | `/api/accessories/<id>/record` | 下载含 Profile 快照的配件任务记录 |
+| GET | `/api/<route>/<id>[/image|/record|/metrics]` | 查询任务或读取候选证据 |
+| POST | `/api/<route>/<id>/accept` | 人工确认后复制到本地资产库 |
+| DELETE | `/api/<route>/<id>` | 销毁未入库且不在运行的候选 |
+| GET | `/api/library` | 列出本地已入库风格种子、素体和配件 |
 
 项目记录写入：
 
 ```text
-workspace/local_generation/turnarounds/<job-id>/
-├── turnaround.png
+workspace/local_generation/{style_seeds|base_actors|accessories}/<job-id>/
+├── <kind>.png
+├── turnaround.metrics.json
 └── record.json
 ```
 
-独立配件写入：
+人工确认后的本地资产写入（整个 `workspace/` 被 Git 忽略，不上传）：
 
 ```text
-workspace/local_generation/accessories/<job-id>/
-├── accessory_turnaround.png
+workspace/local_asset_library/{style_seeds|base_actors|accessories}/<asset-id>/
+├── asset_manifest.json
+├── <kind>.png
 └── record.json
 ```
 
 ComfyUI 的原始 SaveImage 输出仍位于：
 
 ```text
-E:\Env\ComfyUI\output\assetsstudio\turnarounds\<job-id>_*.png
+<ComfyUI>\output\assetsstudio\turnarounds\<job-id>_*.png
 ```
 
 ## 固定生成参数

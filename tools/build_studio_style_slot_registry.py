@@ -18,7 +18,7 @@ from validate_style_slot_profiles import (
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / "studio/src/generated/style-slot-profiles.json"
 STYLE_PATHS = [
-    ROOT / "references/style_profiles/western_fantasy_qstyle_soft3d_v1.json",
+    ROOT / "references/style_profiles/bombo_adventure_qstyle_no_face_v1.json",
 ]
 ACTOR_PATHS = [
     ROOT / "references/actor_v2/default_adventurer_v2/actor_slot_profile_v1.json",
@@ -44,7 +44,7 @@ def main() -> int:
 
     payload = {
         "schema": "assetsstudio_style_slot_registry_v1",
-        "updated": "2026-08-23",
+        "updated": "2026-08-24",
         "styles": styles,
         "actors": actors,
         "sources": {

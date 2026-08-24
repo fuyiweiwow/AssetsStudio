@@ -1,17 +1,22 @@
 {
   "schema": "assetsstudio_style_slot_registry_v1",
-  "updated": "2026-08-23",
+  "updated": "2026-08-24",
   "styles": [
     {
       "schema": "assetsstudio_style_profile_v1",
-      "id": "western_fantasy_qstyle_soft3d_v1",
-      "label": "西方奇幻 Q 版软 3D",
+      "id": "bombo_adventure_qstyle_no_face_v1",
+      "label": "BomboAdventure 无嘴鼻 Q 版日漫西幻",
       "revision": 1,
-      "status": "approved",
+      "status": "provisional",
+      "consumer_tags": [
+        "bombadvanture",
+        "ba"
+      ],
       "scope": [
         "character",
         "wearable",
-        "prop"
+        "prop",
+        "environment"
       ],
       "authorities": [
         {
@@ -19,13 +24,6 @@
           "path": "references/actor_v2/actor_v2_ratio_style_anchor_user_v1.png",
           "sha256": "ce589213993cff489e59789dc2ca28a32b3fabc6a51860bb4b73217baed756d6",
           "role": "primary_proportion",
-          "required": true
-        },
-        {
-          "id": "default_adventurer_identity",
-          "path": "references/actor_v2/actor_v2_default_adventurer_turnaround_v1_candidate.png",
-          "sha256": "b41409320f8b6c9faef3df17f5d0693b8a4971f3b221354428e2e9c377849f51",
-          "role": "character_identity",
           "required": true
         },
         {
@@ -44,76 +42,100 @@
           2.1,
           2.5
         ],
-        "silhouette": "moderate compact chibi; large rounded head, short sturdy limbs, small torso and readable hands/feet"
+        "silhouette": "compact chibi with an oversized round head, very small torso, short sturdy limbs, large readable hands and feet"
       },
       "shape_language": [
-        "large simple rounded masses",
-        "low-frequency silhouette before surface detail",
-        "soft bevels and thick readable accessory shapes",
-        "oversized expressive eyes with compact facial spacing",
-        "avoid thin fragile straps and realistic micro-detail"
+        "oversized round head and compact facial spacing",
+        "large expressive anime eyes; emotion comes from eyes, eyebrows, ears and pose",
+        "no visible mouth, lips, nose, nose bridge or nostrils",
+        "large simple rounded masses and low-frequency silhouette before surface detail",
+        "soft bevels and thick readable fantasy accessory shapes",
+        "avoid thin fragile straps, realistic anatomy and decorative micro-detail"
       ],
       "render_language": {
-        "medium": "polished soft 3D Japanese-anime game figurine",
-        "surface": "clean matte colors with restrained roughness variation",
-        "lighting": "soft studio key and fill with subtle ambient occlusion",
-        "linework": "no heavy outline; shape separation comes from value and occlusion",
-        "detail_density": "low to medium; every detail must remain readable at game camera distance"
+        "medium": "polished soft 3D Japanese-anime western-fantasy game figurine",
+        "surface": "clean matte color blocks with restrained roughness variation and no skin pores",
+        "lighting": "soft neutral studio key and fill with subtle ambient occlusion",
+        "linework": "no heavy outline; separation comes from broad value blocks and occlusion",
+        "detail_density": "low to medium; every feature remains readable at game camera distance"
       },
       "palette": [
         {
-          "role": "hair_chestnut",
-          "color_srgb": "#6B4B3A"
-        },
-        {
-          "role": "eye_blue",
-          "color_srgb": "#2D78C4"
-        },
-        {
-          "role": "jacket_blue",
-          "color_srgb": "#3E6F9F"
-        },
-        {
-          "role": "scarf_red",
-          "color_srgb": "#A83D32"
-        },
-        {
-          "role": "cloth_cream",
+          "role": "warm_light_neutral",
           "color_srgb": "#E8D3A4"
         },
         {
-          "role": "leather_brown",
+          "role": "cool_mid_neutral",
+          "color_srgb": "#60788A"
+        },
+        {
+          "role": "dark_structure",
+          "color_srgb": "#3E3A3A"
+        },
+        {
+          "role": "warm_natural",
           "color_srgb": "#765133"
         },
         {
-          "role": "cloth_olive",
-          "color_srgb": "#626B3E"
+          "role": "hero_accent",
+          "color_srgb": "#A83D32"
         },
         {
-          "role": "metal_brass",
+          "role": "magic_accent",
+          "color_srgb": "#3E78A8"
+        },
+        {
+          "role": "aged_metal",
           "color_srgb": "#B08A50"
         }
       ],
       "prompt_contract": {
         "positive": [
-          "moderate compact chibi proportions around 2.1 to 2.5 heads tall",
-          "polished soft 3D Japanese-anime game figurine",
-          "smooth rounded low-frequency geometry and thick readable silhouettes",
-          "clean matte material colors, soft studio light, subtle ambient occlusion",
-          "western fantasy adventurer design language"
+          "BA consumer style profile, Q-style Japanese-anime western fantasy",
+          "compact 2.1 to 2.5 heads-tall body with an oversized round head",
+          "large expressive anime eyes and simple eyebrows on a completely mouthless and noseless face",
+          "polished soft 3D game figurine with smooth rounded low-frequency geometry",
+          "clean matte semantic color blocks, soft neutral studio light and subtle ambient occlusion",
+          "thick readable construction suitable for a small game camera"
         ],
         "negative": [
-          "realistic adult proportions or long slender limbs",
-          "extreme one-and-a-half-head super deformed proportions",
-          "photoreal skin, painterly brushwork, noisy micro-texture",
-          "thin fragile straps, excessive ornaments, sharp high-frequency detail",
-          "perspective distortion, action pose, dramatic lighting"
+          "visible mouth, lips, teeth, tongue, smile line, nose, nose bridge, nostrils or muzzle",
+          "realistic adult anatomy, long slender limbs or small head",
+          "extreme one-and-a-half-head super-deformed proportions",
+          "photoreal skin, pores, painterly brushwork or noisy micro-texture",
+          "thin fragile straps, excessive ornaments or sharp high-frequency detail",
+          "perspective distortion, action pose, dramatic lighting, text or labels"
         ],
         "immutable_traits": [
-          "rounded moderate-chibi silhouette",
+          "no visible mouth or mouth line",
+          "no visible nose, nose bridge or nostrils",
+          "oversized round head and 2.1 to 2.5 heads-tall compact silhouette",
+          "large expressive anime eyes with simple eyebrows",
           "soft 3D anime figurine material response",
-          "low-frequency readable geometry",
-          "shared semantic palette roles"
+          "low-frequency readable western-fantasy geometry",
+          "semantic palette roles without fixed character identity colors"
+        ]
+      },
+      "actor_core_contract": {
+        "positive": [
+          "compact 2.1 to 2.5 heads-tall body with an oversized round head",
+          "very small torso with short sturdy limbs and large simple hands and feet",
+          "polished soft 3D game figurine with smooth rounded low-frequency geometry",
+          "single clean matte neutral material with soft studio light and subtle ambient occlusion"
+        ],
+        "negative": [
+          "eyes, eyebrows, eyelashes, eye sockets, mouth, lips, nose, ears or any facial feature",
+          "hair, scalp cap, clothes, bodysuit, underwear, shoes, boots, gloves, jewelry or accessories",
+          "seams, cuffs, collars, waistbands, hems, soles, color blocking or garment-like topology",
+          "realistic adult anatomy, sexual anatomy, long slender limbs, small head or skin pores",
+          "perspective distortion, action pose, dramatic lighting, text or labels"
+        ],
+        "immutable_traits": [
+          "fully bald and earless smooth head",
+          "completely blank featureless face",
+          "single continuous non-sexual neutral mannequin body shell",
+          "oversized round head and 2.1 to 2.5 heads-tall compact silhouette",
+          "soft rounded low-frequency volume language"
         ]
       },
       "qa": {
@@ -124,9 +146,11 @@
           "left"
         ],
         "checks": [
+          "no visible mouth, mouth line, lips, nose, nose bridge or nostrils",
           "target total-head range",
-          "silhouette readability at thumbnail size",
-          "semantic palette continuity",
+          "oversized round-head silhouette readability at thumbnail size",
+          "identity and outfit may vary while shape and render grammar remain stable",
+          "hair length, rear mass, side locks, bangs and parting describe one compatible topology across all views",
           "same material response across character and accessory",
           "no realism or detail-density drift"
         ],
@@ -142,7 +166,7 @@
       "revision": 1,
       "status": "measured_provisional",
       "actor_asset_id": "actor_v2_base_v1",
-      "style_profile_id": "western_fantasy_qstyle_soft3d_v1",
+      "style_profile_id": "bombo_adventure_qstyle_no_face_v1",
       "coordinate_contract": {
         "unit": "meter",
         "up": "+Z",
@@ -835,7 +859,7 @@
   ],
   "sources": {
     "styles": [
-      "references/style_profiles/western_fantasy_qstyle_soft3d_v1.json"
+      "references/style_profiles/bombo_adventure_qstyle_no_face_v1.json"
     ],
     "actors": [
       "references/actor_v2/default_adventurer_v2/actor_slot_profile_v1.json"

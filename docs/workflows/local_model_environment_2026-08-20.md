@@ -1,20 +1,23 @@
 # 本机模型环境与本地图片模型评估（2026-08-20）
 
-## 本机基线
+## 历史基线与当前发现规则
 
-- GPU：NVIDIA GeForce RTX 3060，12GB 显存（CUDA capability 可用）。
-- 驱动：560.94，系统报告 CUDA 12.6。
-- 内存：约 24GB，测试时空闲约 13.4GB。
-- Hunyuan venv：`E:\Env\Hunyuan3D-2.1-venv`，Python 3.11、PyTorch 2.5.1+cu124、torchvision 0.20.1+cu124。
-- Hunyuan 代码：`E:\Env\Hunyuan3D-2`、`E:\Env\Hunyuan3D-2.1`。
-- ModelScope SDK：1.39.1，使用 `E:\Env\Hunyuan3D-2.1-venv\Scripts\python.exe`。
-- 模型盘剩余空间：约 372GB。
+本节原先记录的是 2026-08-20 那台机器的盘符快照，不再作为运行合同。切换机器后必须重新查询 GPU、磁盘和 Python 环境，不能复用旧绝对路径。
+
+当前入口按以下顺序发现环境：命令行显式参数；`HUNYUAN3D_SOURCE` / `HUNYUAN3D_MODEL_ROOT`；仓库相邻的 `Hunyuan3D_Experiment`；ModelScope/Hugging Face 本地缓存。找不到时停止并列出已检查位置。模型缺失时优先通过 ModelScope 下载到本机模型目录。
+
+```powershell
+nvidia-smi --query-gpu=name,memory.total,memory.free --format=csv,noheader
+Get-PSDrive -PSProvider FileSystem
+Get-ChildItem .. -Directory | Where-Object Name -Match 'Hunyuan|Comfy|Blender'
+& <发现到的Python> tools/model_test/run_hunyuan3d_mv_shape.py --help
+```
 
 ## Hunyuan3D 结果
 
 ### Hunyuan3D-2.1
 
-已有形状权重位于 `E:\Env\models\Hunyuan3D-2.1`，约 7.47GB；当前目录只有 Shape/Shape-VAE，没有完整 PBR Paint 权重。
+历史验证使用约 7.47GB 的 2.1 Shape/Shape-VAE 权重，没有下载完整 PBR Paint 权重。当前机器的实际位置必须通过上述发现规则确认。
 
 已尝试：
 
@@ -29,22 +32,22 @@
 
 从 ModelScope 的 `Tencent-Hunyuan/Hunyuan3D-2mv` 下载了仅形状 Turbo 所需文件：
 
-`E:\Env\models\Hunyuan3D-2mv\hunyuan3d-dit-v2-mv-turbo\model.fp16.ckpt`
+实际文件由入口搜索 `<模型根>/hunyuan3d-dit-v2-mv*/model.fp16.ckpt`，不固定盘符；当前机器可用标准、fast 或 turbo 子目录中的一个。
 
 约 4.93GB，未下载标准/fast 的重复权重，也未下载纹理模型。
 
 通过 `tools/model_test/split_hunyuan_checkpoint.py` 拆分后，使用：
 
 ```powershell
-& E:\Env\Hunyuan3D-2.1-venv\Scripts\python.exe `
+& <发现到的Python> `
   tools\model_test\run_hunyuan3d_mv_shape.py `
-  --model E:\Env\models\Hunyuan3D-2mv `
-  --code-root E:\Env\Hunyuan3D-2 `
-  --front E:\Env\Hunyuan3D-2\assets\example_mv_images\1\front.png `
-  --left E:\Env\Hunyuan3D-2\assets\example_mv_images\1\left.png `
-  --back E:\Env\Hunyuan3D-2\assets\example_mv_images\1\back.png `
-  --output E:\Env\outputs\hunyuan3d_2mv_turbo_smoke.glb
+  --front <注册后的front.png> `
+  --left <注册后的left.png> `
+  --back <注册后的back.png> `
+  --output <候选输出目录>\shape.glb
 ```
+
+通常不需要传 `--model`、`--code-root` 或 `--subfolder`；只有自动发现失败或需要覆盖选择时才显式提供。
 
 已通过 5 步、256 八叉树、20,000 chunks 的三视图形状生成，输出约 139,828 顶点、279,660 面。结论：2MV Turbo 可以在本机部署，适合作为当前多视图形状候选生成器；纹理仍应使用 Blender/现有材质流程，不把 2.1 PBR Paint 强行塞进 12GB 显存。
 

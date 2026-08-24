@@ -12,7 +12,7 @@ export interface LocalGenerationHealth {
 
 export interface TurnaroundJob {
   id: string;
-  job_kind: "turnaround" | "accessory";
+  job_kind: "style_seed" | "base_actor" | "accessory";
   status: TurnaroundStatus;
   created_at: string;
   updated_at: string;
@@ -28,6 +28,88 @@ export interface TurnaroundJob {
   style_profile_id?: string;
   actor_profile_id?: string;
   slot_id?: string;
+  style_seed_asset_id?: string;
+  base_actor_asset_id?: string;
+  library_status?: "candidate" | "accepted" | "destroyed";
+  library_asset_id?: string;
+  manual_gates_required?: string[];
+  manual_confirmations?: string[];
+}
+
+export interface LocalLibraryAsset {
+  schema: "assetsstudio_local_asset_v1";
+  asset_id: string;
+  kind: "style_seed" | "base_actor" | "accessory";
+  asset_role?: "style_calibration_anchor" | "canonical_actor_core" | "isolated_slot_source";
+  subject: string;
+  style_profile_id?: string;
+  consumer_tags?: string[];
+  parent_asset_ids?: string[];
+  source_job_id: string;
+  accepted_at: string;
+  artifact_filename: string;
+  local_only: true;
+  image_url?: string;
+  review_status?: "approved" | "invalidated" | "blocked_by_parent";
+  review_notes?: string[];
+}
+
+export interface Local3DAsset {
+  schema: "assetsstudio_local_3d_candidate_v1";
+  candidate_id: string;
+  asset_kind: "base_actor_3d";
+  source_base_actor_asset_id: string;
+  style_profile_id: string;
+  subject: string;
+  created_at: string;
+  accepted_at?: string;
+  library_status: "candidate" | "accepted";
+  local_only: true;
+  model_url: string;
+  preview_urls: Partial<Record<"front" | "right" | "back" | "left", string>>;
+  mesh_audit: {
+    vertices: number;
+    faces: number;
+    connected_components: number;
+    watertight: boolean;
+    winding_consistent: boolean;
+    peak_cuda_memory_bytes: number;
+  };
+  qa_status: "visual_review_required" | "shape_source_accepted";
+  manual_gates_required: string[];
+  manual_confirmations?: string[];
+  rig_preparation?: {
+    status: "accurig_handoff_ready";
+    asset_id: string;
+    binding_performed: boolean;
+    manual_accurig_landmark_confirmation_required: boolean;
+  };
+  rig_preview_urls?: Partial<Record<"front" | "right" | "back" | "left", string>>;
+  rig_mesh_url?: string;
+  accurig_fbx_url?: string;
+  rig_intake?: {
+    schema: "assetsstudio_actor_rig_intake_v1";
+    job_id: string;
+    asset_id: string;
+    rig_asset_id: string;
+    status: "uploaded" | "processing" | "ready" | "failed";
+    created_at: string;
+    updated_at: string;
+    original_filename: string;
+    bytes: number;
+    local_only: true;
+    error?: string | null;
+    validation_summary?: {
+      bones: number;
+      vertices: number;
+      faces: number;
+      max_influences_runtime: number;
+    };
+    preview_urls?: Partial<Record<"front" | "right" | "back" | "left", string>>;
+    model_url?: string;
+    blend_url?: string;
+    validation_url?: string;
+  } | null;
 }
 
 const API_ROOT = "/api/local-generation";
@@ -59,11 +141,38 @@ export async function createTurnaround(subject: string, style: TurnaroundStyle, 
   }));
 }
 
+export async function createStyleSeed(subject: string, styleProfileId: string, seed: number) {
+  return responseJson<TurnaroundJob>(await fetch(`${API_ROOT}/style-seeds`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ subject, style_profile_id: styleProfileId, seed }),
+  }));
+}
+
+export async function createBaseActorTurnaround(
+  subject: string,
+  styleProfileId: string,
+  styleSeedAssetId: string | undefined,
+  seed: number,
+) {
+  return responseJson<TurnaroundJob>(await fetch(`${API_ROOT}/base-actors`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      subject,
+      style_profile_id: styleProfileId,
+      style_seed_asset_id: styleSeedAssetId,
+      seed,
+    }),
+  }));
+}
+
 export async function createAccessoryTurnaround(
   subject: string,
   styleProfileId: string,
   actorProfileId: string,
   slotId: string,
+  baseActorAssetId: string | undefined,
   seed: number,
 ) {
   return responseJson<TurnaroundJob>(await fetch(`${API_ROOT}/accessories`, {
@@ -74,17 +183,94 @@ export async function createAccessoryTurnaround(
       style_profile_id: styleProfileId,
       actor_profile_id: actorProfileId,
       slot_id: slotId,
+      base_actor_asset_id: baseActorAssetId,
       seed,
     }),
   }));
 }
 
 export async function fetchTurnaround(jobId: string, signal?: AbortSignal) {
-  return responseJson<TurnaroundJob>(await fetch(`${API_ROOT}/turnarounds/${jobId}`, { cache: "no-store", signal }));
+  return responseJson<TurnaroundJob>(await fetch(`${API_ROOT}/base-actors/${jobId}`, { cache: "no-store", signal }));
+}
+
+export async function fetchStyleSeed(jobId: string, signal?: AbortSignal) {
+  return responseJson<TurnaroundJob>(await fetch(`${API_ROOT}/style-seeds/${jobId}`, { cache: "no-store", signal }));
 }
 
 export async function fetchAccessoryTurnaround(jobId: string, signal?: AbortSignal) {
   return responseJson<TurnaroundJob>(await fetch(`${API_ROOT}/accessories/${jobId}`, { cache: "no-store", signal }));
+}
+
+
+function routeForJob(job: TurnaroundJob) {
+  if (job.job_kind === "style_seed") return "style-seeds";
+  if (job.job_kind === "accessory") return "accessories";
+  return "base-actors";
+}
+
+export async function acceptLocalCandidate(job: TurnaroundJob, manualConfirmations: string[]) {
+  const payload = await responseJson<{ job: TurnaroundJob; asset: LocalLibraryAsset }>(await fetch(
+    `${API_ROOT}/${routeForJob(job)}/${job.id}/accept`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ manual_confirmations: manualConfirmations }),
+    },
+  ));
+  return payload;
+}
+
+export async function destroyLocalCandidate(job: TurnaroundJob) {
+  return responseJson<TurnaroundJob>(await fetch(`${API_ROOT}/${routeForJob(job)}/${job.id}`, {
+    method: "DELETE",
+  }));
+}
+
+export async function fetchLocalLibrary(kind?: LocalLibraryAsset["kind"], signal?: AbortSignal) {
+  const query = kind ? `?kind=${encodeURIComponent(kind)}` : "";
+  return responseJson<{ assets: LocalLibraryAsset[] }>(await fetch(`${API_ROOT}/library${query}`, {
+    cache: "no-store",
+    signal,
+  }));
+}
+
+export async function fetchLocal3DAssets(signal?: AbortSignal) {
+  return responseJson<{ candidates: Local3DAsset[]; assets: Local3DAsset[] }>(await fetch(
+    `${API_ROOT}/3d-assets`,
+    { cache: "no-store", signal },
+  ));
+}
+
+export async function uploadActorCoreRig(assetId: string, file: File) {
+  return responseJson<{ rig_intake: NonNullable<Local3DAsset["rig_intake"]> }>(await fetch(
+    `${API_ROOT}/3d-library/${encodeURIComponent(assetId)}/rig-intakes`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/octet-stream",
+        "X-AssetsStudio-Filename": encodeURIComponent(file.name),
+      },
+      body: file,
+    },
+  ));
+}
+
+export async function acceptLocal3DCandidate(candidateId: string, manualConfirmations: string[]) {
+  return responseJson<{ asset: Local3DAsset }>(await fetch(
+    `${API_ROOT}/3d-candidates/${encodeURIComponent(candidateId)}/accept`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ manual_confirmations: manualConfirmations }),
+    },
+  ));
+}
+
+export async function destroyLocal3DCandidate(candidateId: string) {
+  return responseJson<{ candidate_id: string; library_status: "destroyed" }>(await fetch(
+    `${API_ROOT}/3d-candidates/${encodeURIComponent(candidateId)}`,
+    { method: "DELETE" },
+  ));
 }
 
 export function proxiedArtifactUrl(url: string) {

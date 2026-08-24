@@ -10,6 +10,7 @@ export interface StyleProfile {
   label: string;
   revision: number;
   status: "approved" | "provisional" | "retired";
+  consumer_tags?: string[];
   scope: Array<"character" | "wearable" | "prop" | "environment">;
   proportions: {
     measured_total_heads: number;

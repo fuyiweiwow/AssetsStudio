@@ -16,6 +16,14 @@ def clear_scene() -> None:
     bpy.ops.object.delete(use_global=False)
 
 
+def load_source(path: Path) -> None:
+    if path.suffix.lower() == ".blend":
+        bpy.ops.wm.open_mainfile(filepath=str(path.resolve()))
+        return
+    clear_scene()
+    bpy.ops.import_scene.gltf(filepath=str(path.resolve()))
+
+
 def world_bounds(objects: list[bpy.types.Object]) -> tuple[Vector, Vector]:
     points = [obj.matrix_world @ Vector(corner) for obj in objects for corner in obj.bound_box]
     return (
@@ -39,14 +47,25 @@ def main() -> int:
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--manifest", type=Path, required=True)
     parser.add_argument("--rig-calibration-report", type=Path)
+    parser.add_argument("--asset-id", default="actor_v2_base_v1")
     parser.add_argument("--object-name", default="ChibiBaseMesh_AccuRIG_InputMesh")
+    parser.add_argument("--mesh-data-name")
+    parser.add_argument("--manifest-schema", default="assetsstudio_actor_v2_accurig_input_v1")
+    parser.add_argument("--finger-count", type=int, default=0)
+    parser.add_argument(
+        "--finger-policy-reason",
+        default="The Actor has rounded mitten hands with no modeled finger separation.",
+    )
+    parser.add_argument(
+        "--face-rig-policy",
+        default="not supplied by AccuRIG; keep EyeAssembly and blink workflow separate",
+    )
     raw_args = sys.argv[sys.argv.index("--") + 1 :] if "--" in sys.argv else sys.argv[1:]
     args = parser.parse_args(raw_args)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.manifest.parent.mkdir(parents=True, exist_ok=True)
 
-    clear_scene()
-    bpy.ops.import_scene.gltf(filepath=str(args.input.resolve()))
+    load_source(args.input)
     meshes = [obj for obj in bpy.context.scene.objects if obj.type == "MESH"]
     armatures = [obj for obj in bpy.context.scene.objects if obj.type == "ARMATURE"]
     if len(meshes) != 1:
@@ -61,7 +80,7 @@ def main() -> int:
     actor.data.transform(Matrix.Translation(canonical_offset) @ actor.matrix_world)
     actor.matrix_world = Matrix.Identity(4)
     actor.name = args.object_name
-    actor.data.name = "ActorV2_BaseShape"
+    actor.data.name = args.mesh_data_name or f"{args.asset_id}_RigMeshData"
     actor.data.validate(clean_customdata=False)
     actor.data.update()
     bpy.context.view_layer.update()
@@ -129,8 +148,8 @@ def main() -> int:
         calibration = json.loads(args.rig_calibration_report.read_text(encoding="utf-8"))
 
     manifest = {
-        "schema": "assetsstudio_actor_v2_accurig_input_v1",
-        "asset_id": "actor_v2_base_v1",
+        "schema": args.manifest_schema,
+        "asset_id": args.asset_id,
         "status": "pass" if all(gates.values()) else "fail",
         "input": str(args.input.resolve()),
         "fbx": str(args.output.resolve()),
@@ -156,9 +175,9 @@ def main() -> int:
         "gates": gates,
         "accurig_setup": {
             "body_type": "biped",
-            "finger_count_per_hand": 0,
+            "finger_count_per_hand": args.finger_count,
             "force_symmetry": False,
-            "reason_no_fingers": "The Actor has rounded mitten hands with no modeled finger separation.",
+            "finger_policy_reason": args.finger_policy_reason,
             "manual_review_required": [
                 "center line through pelvis",
                 "head and neck guides",
@@ -166,7 +185,7 @@ def main() -> int:
                 "hips, knees and ankles",
                 "toe direction toward character front",
             ],
-            "face_rig": "not supplied by AccuRIG; keep EyeAssembly and blink workflow separate",
+            "face_rig": args.face_rig_policy,
         },
         "provisional_landmarks": calibration.get("bones") if calibration else None,
         "ear_roots": calibration.get("ear_roots") if calibration else None,

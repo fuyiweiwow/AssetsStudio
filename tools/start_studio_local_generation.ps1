@@ -1,13 +1,76 @@
 param(
-    [string]$ComfyRoot = "E:\Env\ComfyUI",
-    [string]$Python = "C:\Users\Admin\AppData\Local\Programs\Python\Python311\python.exe",
-    [int]$ComfyPort = 8190
+    [string]$ComfyRoot,
+    [string]$Python,
+    [int]$ComfyPort = 8190,
+    [switch]$CheckEnvironment
 )
 
 $ErrorActionPreference = "Stop"
 $projectRoot = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot ".."))
 $studioRoot = Join-Path $projectRoot "studio"
 $bridgeScript = Join-Path $projectRoot "tools\model_test\studio_local_generation_api.py"
+$projectParent = Split-Path -Parent $projectRoot
+
+function Resolve-ComfyRoot([string]$RequestedPath) {
+    if (-not [string]::IsNullOrWhiteSpace($RequestedPath)) {
+        $resolved = [System.IO.Path]::GetFullPath($RequestedPath)
+        if (Test-Path -LiteralPath (Join-Path $resolved "main.py") -PathType Leaf) {
+            return $resolved
+        }
+        throw "ComfyUI was not found at '$resolved'. Expected main.py in that directory."
+    }
+
+    $candidates = @(
+        $env:ASSETSSTUDIO_COMFY_ROOT,
+        (Join-Path $projectParent "ComfyUI"),
+        (Join-Path $env:USERPROFILE "ComfyUI"),
+        "D:\Env\ComfyUI",
+        "E:\Env\ComfyUI"
+    )
+    foreach ($candidate in $candidates) {
+        if ([string]::IsNullOrWhiteSpace($candidate)) {
+            continue
+        }
+        $resolved = [System.IO.Path]::GetFullPath($candidate)
+        if (Test-Path -LiteralPath (Join-Path $resolved "main.py") -PathType Leaf) {
+            return $resolved
+        }
+    }
+    throw "ComfyUI was not found. Pass -ComfyRoot, set ASSETSSTUDIO_COMFY_ROOT, or place ComfyUI beside AssetsStudio."
+}
+
+function Resolve-ComfyPython([string]$RequestedPath, [string]$ResolvedComfyRoot) {
+    $requestedValue = $RequestedPath
+    if ([string]::IsNullOrWhiteSpace($requestedValue)) {
+        $requestedValue = $env:ASSETSSTUDIO_PYTHON
+    }
+    if (-not [string]::IsNullOrWhiteSpace($requestedValue)) {
+        $command = Get-Command $requestedValue -ErrorAction SilentlyContinue
+        if ($null -ne $command -and $command.CommandType -eq "Application") {
+            return $command.Source
+        }
+        if (Test-Path -LiteralPath $requestedValue -PathType Leaf) {
+            return (Resolve-Path -LiteralPath $requestedValue).Path
+        }
+        throw "Python was not found at '$requestedValue'."
+    }
+
+    $candidates = @(
+        (Join-Path $ResolvedComfyRoot ".venv\Scripts\python.exe"),
+        (Join-Path $ResolvedComfyRoot "venv\Scripts\python.exe"),
+        (Join-Path $ResolvedComfyRoot "python_embeded\python.exe"),
+        (Join-Path $ResolvedComfyRoot "python.exe")
+    )
+    foreach ($candidate in $candidates) {
+        if (Test-Path -LiteralPath $candidate -PathType Leaf) {
+            return (Resolve-Path -LiteralPath $candidate).Path
+        }
+    }
+    throw "ComfyUI Python was not found. Pass -Python, set ASSETSSTUDIO_PYTHON, or create a ComfyUI virtual environment."
+}
+
+$ComfyRoot = Resolve-ComfyRoot $ComfyRoot
+$Python = Resolve-ComfyPython $Python $ComfyRoot
 $logRoot = Join-Path $ComfyRoot "logs"
 $bridgePort = 8765
 New-Item -ItemType Directory -Path $logRoot -Force | Out-Null
@@ -22,6 +85,13 @@ foreach ($requiredFile in $requiredFiles) {
     if (-not (Test-Path -LiteralPath $requiredFile -PathType Leaf)) {
         throw "Required local-generation file is missing: $requiredFile"
     }
+}
+
+if ($CheckEnvironment) {
+    Write-Output "ASSETSSTUDIO_LOCAL_ENVIRONMENT_READY"
+    Write-Output "ComfyRoot=$ComfyRoot"
+    Write-Output "Python=$Python"
+    exit 0
 }
 
 function Test-LocalEndpoint([string]$Url) {

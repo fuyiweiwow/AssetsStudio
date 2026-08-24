@@ -14,6 +14,12 @@ import torch
 import yaml
 from PIL import Image
 
+from hunyuan_environment import (
+    discover_code_root,
+    discover_model_root,
+    discover_subfolder,
+)
+
 
 def load_split_pipeline(
     model_dir: Path,
@@ -86,12 +92,12 @@ def enable_manual_cpu_offload(pipeline) -> None:
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--model", type=Path, default=Path(r"E:\env\models\Hunyuan3D-2mv"))
-    parser.add_argument("--code-root", type=Path, default=Path(r"E:\env\Hunyuan3D-2"))
+    parser.add_argument("--model", type=Path)
+    parser.add_argument("--code-root", type=Path)
     parser.add_argument("--pipeline-module", default="hy3dgen.shapegen.pipelines")
     parser.add_argument("--device", default="cuda")
     parser.add_argument("--cpu-offload", action="store_true")
-    parser.add_argument("--subfolder", default="hunyuan3d-dit-v2-mv-turbo")
+    parser.add_argument("--subfolder")
     parser.add_argument("--front", type=Path, required=True)
     parser.add_argument("--left", type=Path)
     parser.add_argument("--back", type=Path)
@@ -103,6 +109,15 @@ def main() -> int:
     parser.add_argument("--octree-resolution", type=int, default=256)
     parser.add_argument("--num-chunks", type=int, default=20000)
     args = parser.parse_args()
+
+    args.model = discover_model_root(args.model)
+    args.code_root = discover_code_root(args.code_root)
+    args.subfolder = discover_subfolder(args.model, args.subfolder)
+    print(
+        "HUNYUAN_ENV "
+        f"model={args.model} code_root={args.code_root} subfolder={args.subfolder}",
+        flush=True,
+    )
 
     os.environ.setdefault("PYTHONUNBUFFERED", "1")
     if not torch.cuda.is_available():

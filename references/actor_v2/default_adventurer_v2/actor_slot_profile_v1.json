@@ -5,7 +5,7 @@
   "revision": 1,
   "status": "measured_provisional",
   "actor_asset_id": "actor_v2_base_v1",
-  "style_profile_id": "western_fantasy_qstyle_soft3d_v1",
+  "style_profile_id": "bombo_adventure_qstyle_no_face_v1",
   "coordinate_contract": { "unit": "meter", "up": "+Z", "front": "-Y", "actor_left": "+X", "ground_z": 0.0 },
   "measurements": {
     "actor_bounds_m": { "min": [-0.478113, -0.43527, 0.0], "max": [0.46716, 0.451069, 1.990555] },
