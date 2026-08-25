@@ -3,9 +3,9 @@ import { parseStyleSlotRegistry, styleSlotRegistry } from "./style-slot-profiles
 
 describe("style and actor slot registry", () => {
   it("loads the checked-in reusable profiles", () => {
-    expect(styleSlotRegistry.styles[0].id).toBe("bombo_adventure_qstyle_no_face_v1");
+    expect(styleSlotRegistry.styles[0].id).toBe("qstyle_anime_western_fantasy_no_face_v1");
     expect(styleSlotRegistry.actors[0].slots).toHaveLength(11);
-    expect(styleSlotRegistry.actors[0].slots.find((slot) => slot.slot_id === "waist_accessory")?.status).toBe("validated");
+    expect(styleSlotRegistry.actors[0].slots.find((slot) => slot.slot_id === "waist_accessory")?.status).toBe("measured_provisional");
   });
 
   it("rejects actors that reference an unknown style", () => {

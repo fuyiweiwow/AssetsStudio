@@ -184,9 +184,8 @@ try {
 
     Push-Location $studioRoot
     try {
-        # The historical npm predev path still rebuilds retired GarmentCode and
-        # native-control milestones. F009 consumes the checked-in registry and
-        # starts Vite directly until that separate registry migration is done.
+        # The checked-in registry is rebuilt by the validation workflow. Start
+        # Vite directly so launching the UI never mutates production profiles.
         npm exec vite -- --host 127.0.0.1 --port 4173
         if ($LASTEXITCODE -ne 0) {
             throw "Studio Vite stopped with exit code $LASTEXITCODE"

@@ -1,0 +1,171 @@
+{
+  "schema": "assetsstudio_actor_slot_profile_v1",
+  "id": "actor_core_0ef398ca_slots_v1",
+  "label": "Canonical Actor Core 0ef398ca attachment slots",
+  "revision": 1,
+  "status": "measured_provisional",
+  "actor_asset_id": "0ef398ca94d445f18226a8bf2a991c79",
+  "style_profile_id": "qstyle_anime_western_fantasy_no_face_v1",
+  "coordinate_contract": {
+    "unit": "meter",
+    "up": "+Z",
+    "front": "-Y",
+    "actor_left": "+X",
+    "ground_z": 0.0
+  },
+  "measurements": {
+    "actor_bounds_m": {
+      "min": [-0.598004, -0.414203, 0.0],
+      "max": [0.590607, 0.424399, 1.988268]
+    },
+    "head_bounds_m": {
+      "min": [-0.41, -0.414203, 1.073665],
+      "max": [0.41, 0.424399, 1.988268]
+    },
+    "actor_height_m": 1.988268,
+    "total_heads": 2.174,
+    "source": "workspace/actor_core/0ef398ca94d445f18226a8bf2a991c79/rig_calibration_v2/rig_calibration.json"
+  },
+  "slots": [
+    {
+      "slot_id": "EarPair",
+      "label": "Replaceable ear pair",
+      "category": "body_feature",
+      "side": "bilateral",
+      "status": "measured_provisional",
+      "attachment": {
+        "mode": "skin_surface_pair",
+        "parent_bones": ["CC_Base_Head"],
+        "anchors": [
+          {"id": "EarRoot_L", "parent_bone": "CC_Base_Head", "position_m": [0.387712, 0.0, 1.391787], "normal": [1.0, 0.0, 0.0]},
+          {"id": "EarRoot_R", "parent_bone": "CC_Base_Head", "position_m": [-0.387712, 0.0, 1.391787], "normal": [-1.0, 0.0, 0.0]}
+        ]
+      },
+      "fit_envelope": null,
+      "generation_policy": {"preferred_mode": "on_actor_then_isolate", "allowed_asset_kinds": ["human_ear_pair", "elf_ear_pair", "fantasy_ear_pair"], "include_actor_context": true},
+      "validation": {"required_views": 4, "required_frames": 3, "collision_policy": "project roots to the head surface and preserve two separate meshes", "human_review_required": true},
+      "evidence": [{"path": "workspace/actor_core/0ef398ca94d445f18226a8bf2a991c79/rig_calibration_v2/rig_calibration.json", "kind": "measurement", "tracked": false}]
+    },
+    {
+      "slot_id": "head_hair",
+      "label": "Independent hair shell",
+      "category": "hair",
+      "side": "center",
+      "status": "measured_provisional",
+      "attachment": {"mode": "bone", "parent_bones": ["CC_Base_Head"], "anchors": [{"id": "HeadSurfaceCenter", "parent_bone": "CC_Base_Head", "position_m": [0.0, 0.0, 1.531]}]},
+      "fit_envelope": {"frame": "actor_world_rest", "kind": "surface", "bounds_m": {"min": [-0.41, -0.414203, 1.073665], "max": [0.41, 0.424399, 1.988268]}, "clearance_m": 0.01},
+      "generation_policy": {"preferred_mode": "on_actor_then_isolate", "allowed_asset_kinds": ["hair_cap", "bangs", "side_locks", "back_hair"], "include_actor_context": true},
+      "validation": {"required_views": 4, "required_frames": 3, "collision_policy": "closed crown, no forehead band, preserve ear clearance", "human_review_required": true},
+      "evidence": [{"path": "workspace/actor_core/0ef398ca94d445f18226a8bf2a991c79/rig_calibration_v2/rig_calibration.json", "kind": "measurement", "tracked": false}]
+    },
+    {
+      "slot_id": "headwear",
+      "label": "Headwear",
+      "category": "headwear",
+      "side": "center",
+      "status": "measured_provisional",
+      "attachment": {"mode": "bone", "parent_bones": ["CC_Base_Head"], "anchors": [{"id": "HeadTop", "parent_bone": "CC_Base_Head", "position_m": [0.0, 0.0, 1.988268], "normal": [0.0, 0.0, 1.0]}]},
+      "fit_envelope": {"frame": "actor_world_rest", "kind": "surface", "bounds_m": {"min": [-0.41, -0.414203, 1.073665], "max": [0.41, 0.424399, 1.988268]}, "clearance_m": 0.025},
+      "generation_policy": {"preferred_mode": "on_actor_then_isolate", "allowed_asset_kinds": ["hat", "helmet", "hood"], "include_actor_context": true},
+      "validation": {"required_views": 4, "required_frames": 8, "collision_policy": "validate against selected hair envelope and ears", "human_review_required": true},
+      "evidence": [{"path": "workspace/actor_core/0ef398ca94d445f18226a8bf2a991c79/rig_calibration_v2/rig_calibration.json", "kind": "measurement", "tracked": false}]
+    },
+    {
+      "slot_id": "torso_outer",
+      "label": "Torso outer layer",
+      "category": "wearable",
+      "side": "center",
+      "status": "measured_provisional",
+      "attachment": {"mode": "multi_bone", "parent_bones": ["CC_Base_Waist", "CC_Base_Spine01", "CC_Base_Spine02", "CC_Base_L_Clavicle", "CC_Base_R_Clavicle"], "anchors": [{"id": "UpperTorsoCenter", "parent_bone": "CC_Base_Spine02", "position_m": [0.0, 0.0, 0.904662]}]},
+      "fit_envelope": null,
+      "generation_policy": {"preferred_mode": "on_actor_then_isolate", "allowed_asset_kinds": ["jacket", "shirt", "robe", "scarf"], "include_actor_context": true},
+      "validation": {"required_views": 4, "required_frames": 8, "collision_policy": "preserve hand, neck, and arm-swing clearance", "human_review_required": true},
+      "evidence": [{"path": "workspace/actor_core/0ef398ca94d445f18226a8bf2a991c79/rig_calibration_v2/rig_calibration.json", "kind": "measurement", "tracked": false}]
+    },
+    {
+      "slot_id": "waist_accessory",
+      "label": "Belt and waist pouch",
+      "category": "prop",
+      "side": "center",
+      "status": "measured_provisional",
+      "attachment": {"mode": "bone", "parent_bones": ["CC_Base_Waist"], "anchors": [{"id": "WaistCenter", "parent_bone": "CC_Base_Waist", "position_m": [0.0, 0.0, 0.676011]}]},
+      "fit_envelope": {"frame": "actor_world_rest", "kind": "aabb", "bounds_m": {"min": [-0.32, -0.22, 0.5], "max": [0.32, 0.24, 0.78]}, "clearance_m": 0.008},
+      "generation_reference": {"path": "references/slot_authorities/waist_accessory/waist_accessory_turnaround_v1.png", "sha256": "3756c5dc6042a03fbf4e60a2e1cc6bacfd1ebad5d9718482763152e19c553e18", "role": "isolated_slot_authority"},
+      "generation_policy": {"preferred_mode": "standalone", "allowed_asset_kinds": ["belt", "waist_pouch", "buckle", "small_holster"], "include_actor_context": true},
+      "validation": {"required_views": 4, "required_frames": 8, "collision_policy": "no persistent hand or thigh penetration during locomotion", "human_review_required": true},
+      "evidence": [{"path": "references/slot_authorities/waist_accessory/waist_accessory_turnaround_v1.png", "kind": "review", "tracked": true}]
+    },
+    {
+      "slot_id": "legs_outer",
+      "label": "Leg outer layer",
+      "category": "wearable",
+      "side": "bilateral",
+      "status": "measured_provisional",
+      "attachment": {"mode": "multi_bone", "parent_bones": ["CC_Base_Pelvis", "CC_Base_L_Thigh", "CC_Base_R_Thigh"], "anchors": [{"id": "PelvisCenter", "parent_bone": "CC_Base_Pelvis", "position_m": [0.0, 0.0, 0.566656]}]},
+      "fit_envelope": null,
+      "generation_policy": {"preferred_mode": "on_actor_then_isolate", "allowed_asset_kinds": ["shorts", "pants", "skirt", "leg_armor"], "include_actor_context": true},
+      "validation": {"required_views": 4, "required_frames": 8, "collision_policy": "preserve pelvis clearance and independent thigh motion", "human_review_required": true},
+      "evidence": [{"path": "workspace/actor_core/0ef398ca94d445f18226a8bf2a991c79/rig_calibration_v2/rig_calibration.json", "kind": "measurement", "tracked": false}]
+    },
+    {
+      "slot_id": "feet_outer",
+      "label": "Footwear",
+      "category": "wearable",
+      "side": "bilateral",
+      "status": "measured_provisional",
+      "attachment": {"mode": "bone_pair", "parent_bones": ["CC_Base_L_Foot", "CC_Base_R_Foot"], "anchors": [{"id": "FootRoot_L", "parent_bone": "CC_Base_L_Foot", "position_m": [0.159061, 0.0, 0.109355]}, {"id": "FootRoot_R", "parent_bone": "CC_Base_R_Foot", "position_m": [-0.159061, 0.0, 0.109355]}]},
+      "fit_envelope": null,
+      "generation_policy": {"preferred_mode": "on_actor_then_isolate", "allowed_asset_kinds": ["boots", "shoes", "greaves"], "include_actor_context": true},
+      "validation": {"required_views": 4, "required_frames": 8, "collision_policy": "preserve ground contact and toe direction", "human_review_required": true},
+      "evidence": [{"path": "workspace/actor_core/0ef398ca94d445f18226a8bf2a991c79/rig_calibration_v2/rig_calibration.json", "kind": "measurement", "tracked": false}]
+    },
+    {
+      "slot_id": "wrist_accessory",
+      "label": "Wrist accessory",
+      "category": "prop",
+      "side": "bilateral",
+      "status": "measured_provisional",
+      "attachment": {"mode": "bone_pair", "parent_bones": ["CC_Base_L_Forearm", "CC_Base_R_Forearm"], "anchors": [{"id": "Wrist_L", "parent_bone": "CC_Base_L_Forearm", "position_m": [0.407595, 0.0, 0.546774]}, {"id": "Wrist_R", "parent_bone": "CC_Base_R_Forearm", "position_m": [-0.407595, 0.0, 0.546774]}]},
+      "fit_envelope": null,
+      "generation_policy": {"preferred_mode": "standalone", "allowed_asset_kinds": ["bracer", "bracelet", "wrist_guard"], "include_actor_context": true},
+      "validation": {"required_views": 4, "required_frames": 8, "collision_policy": "preserve wrist articulation and hand clearance", "human_review_required": true},
+      "evidence": [{"path": "workspace/actor_core/0ef398ca94d445f18226a8bf2a991c79/rig_calibration_v2/rig_calibration.json", "kind": "measurement", "tracked": false}]
+    },
+    {
+      "slot_id": "hand_prop_l",
+      "label": "Left-hand prop",
+      "category": "prop",
+      "side": "left",
+      "status": "measured_provisional",
+      "attachment": {"mode": "bone", "parent_bones": ["CC_Base_L_Hand"], "anchors": [{"id": "Grip_L", "parent_bone": "CC_Base_L_Hand", "position_m": [0.407595, 0.0, 0.546774]}]},
+      "fit_envelope": null,
+      "generation_policy": {"preferred_mode": "standalone", "allowed_asset_kinds": ["weapon", "tool", "shield", "lantern"], "include_actor_context": false},
+      "validation": {"required_views": 4, "required_frames": 8, "collision_policy": "grip pivot follows the hand bone and clears the arm swing", "human_review_required": true},
+      "evidence": [{"path": "workspace/actor_core/0ef398ca94d445f18226a8bf2a991c79/rig_calibration_v2/rig_calibration.json", "kind": "measurement", "tracked": false}]
+    },
+    {
+      "slot_id": "hand_prop_r",
+      "label": "Right-hand prop",
+      "category": "prop",
+      "side": "right",
+      "status": "measured_provisional",
+      "attachment": {"mode": "bone", "parent_bones": ["CC_Base_R_Hand"], "anchors": [{"id": "Grip_R", "parent_bone": "CC_Base_R_Hand", "position_m": [-0.407595, 0.0, 0.546774]}]},
+      "fit_envelope": null,
+      "generation_policy": {"preferred_mode": "standalone", "allowed_asset_kinds": ["weapon", "tool", "shield", "lantern"], "include_actor_context": false},
+      "validation": {"required_views": 4, "required_frames": 8, "collision_policy": "grip pivot follows the hand bone and clears the arm swing", "human_review_required": true},
+      "evidence": [{"path": "workspace/actor_core/0ef398ca94d445f18226a8bf2a991c79/rig_calibration_v2/rig_calibration.json", "kind": "measurement", "tracked": false}]
+    },
+    {
+      "slot_id": "back_accessory",
+      "label": "Back accessory",
+      "category": "prop",
+      "side": "center",
+      "status": "measured_provisional",
+      "attachment": {"mode": "bone", "parent_bones": ["CC_Base_Spine02"], "anchors": [{"id": "BackCenter", "parent_bone": "CC_Base_Spine02", "position_m": [0.0, 0.0, 0.904662], "normal": [0.0, 1.0, 0.0]}]},
+      "fit_envelope": null,
+      "generation_policy": {"preferred_mode": "standalone", "allowed_asset_kinds": ["backpack", "quiver", "sheath", "cape_mount"], "include_actor_context": true},
+      "validation": {"required_views": 4, "required_frames": 8, "collision_policy": "clear shoulders, hair, and arm swing while staying close to the back", "human_review_required": true},
+      "evidence": [{"path": "workspace/actor_core/0ef398ca94d445f18226a8bf2a991c79/rig_calibration_v2/rig_calibration.json", "kind": "measurement", "tracked": false}]
+    }
+  ]
+}

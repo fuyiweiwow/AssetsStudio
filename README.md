@@ -1,72 +1,41 @@
 # AssetsStudio
 
-AssetsStudio 是从 AssetsLab 的长实验分支整理出的正式资产工作区。它只保存可继续使用的里程碑、重建脚本、人工审查素材和当前工作流；失败参数扫掠与重复试验仍留在原 `AssetsLab` Git 历史中。
+AssetsStudio 是一个通用、本地优先的美术素材供给实验室。BombAdventure（`ba`）是当前消费者标签，不是 Studio 的项目边界。
 
-当前工作流实际依赖的模型文件会随仓库上传，包括 `.blend`、`.fbx`、动作源、眼睛贴图和鞋源模型，换机后不需要回到 AssetsLab 找模型。第三方鞋源包未附明确许可证，因此远程仓库默认保持私有。
+当前唯一生产链：
 
-## 当前入口
+`StyleProfile → 风格种子 → 无部件 Actor Core → Hunyuan3D 形体 → 手工 AccuRIG → Slot 部件 → Recipe/组合预览`
 
-- 开发原则：[`PRINCIPLES.md`](PRINCIPLES.md)
-- 开发管理基准：[`docs/DEVELOPMENT.md`](docs/DEVELOPMENT.md)
-- 产品与技术基线讨论稿：[`docs/PRODUCT_TECH_BASELINE.md`](docs/PRODUCT_TECH_BASELINE.md)
-- 美术方向基准：[`docs/ART_DIRECTION.md`](docs/ART_DIRECTION.md)
-- 总里程碑清单：[`docs/MILESTONES.md`](docs/MILESTONES.md)
-- 迁移边界：[`docs/MIGRATION.md`](docs/MIGRATION.md)
-- 静态审查页：[`gallery/index.html`](gallery/index.html)
-- 机器可读状态：[`docs/ASSET_STATUS.json`](docs/ASSET_STATUS.json)
+旧 Actor、完整角色直出、GarmentCode 扫参、历史 Gallery 与失败候选已从当前工作树移除；精确历史仍可从 Git 恢复。
 
-## 目录
+## 启动
 
-```text
-milestones/
-  body/       Actor V1、Walk/Run、眼睛贴图与耳朵源
-  hair/       `sources/female|male` 源发型、组件 catalog 与随机池
-  body/       Actor、骨架、动作、眼睛纹理、内嵌3D耳朵与 Face 合同
-  tops/       当前短袖候选
-  pants/      当前 Blender-native 短裤里程碑
-  shoes/      已确认的卡通运动鞋 v10
-references/   外部参考源与来源清单
-tools/        仅保留当前重建、渲染、随机化与 Gallery 工具
-docs/         总文档和各类别唯一工作流
-gallery/      无需 Blender 即可查看的人工审查入口
-workspace/    本地实验输出，不提交 Git
-```
-
-## 状态词义
-
-- `accepted`：用户已明确认可，可作为下一阶段正式基线。
-- `provisional`：当前最值得继续的版本，但仍带已知视觉缺陷。
-- `source_contract`：源资产、随机池或生成接口已经固定，但没有单个“最终造型”。
-- `technical_baseline`：技术闭环通过，不等同于最终美术验收。
-
-不要通过自动碰撞统计把 `provisional` 自动提升为 `accepted`。所有衣物与鞋子必须保留人工 GIF 审查。
-
-## 快速检查
+双击 `start-local-generation-studio.bat`，或：
 
 ```powershell
-python .\tools\validate_studio.py
-python .\tools\build_studio_gallery.py
+.\start-local-generation-studio.bat --no-open
 ```
 
-## 启动 Studio（F001）
+入口会搜索 ComfyUI 与 Python，并检查 FLUX.2 Klein 所需模型。Studio 地址是 `http://127.0.0.1:4173/`。
 
-第一版 Studio 是 Windows 单用户本地工具。Node.js 与 Blender 可用后：
+## 当前文档
 
-- 最简单：双击仓库根目录的 `start-studio.cmd`，保持弹出的命令窗口开启；脚本会在服务就绪后打开浏览器。重复双击不会再次启动服务：若检测到 AssetsStudio 已在 `4173` 端口运行，脚本会直接打开现有页面；若该端口被其他程序占用，会明确提示并停止。
-- 命令行方式：
+- [当前工作流](docs/CURRENT_WORKFLOW.md)
+- [环境发现与模型](docs/ENVIRONMENT.md)
+- [AccuRIG 手工交接](docs/ACCURIG_HANDOFF.md)
+- [本地资产生命周期](docs/ASSET_LIFECYCLE.md)
+
+## 验证
 
 ```powershell
+python .\tools\build_studio_style_slot_registry.py
+python .\tools\validate_style_slot_profiles.py
+python .\tools\validate_accessory_generation_contract.py
+python .\tools\validate_studio_local_generation.py --check-models
 cd .\studio
-npm.cmd install
-npm.cmd run dev
+npm.cmd run typecheck
+npm.cmd test
+npm.cmd run build
 ```
 
-Studio 不是可以双击或复制 `file://` 地址打开的单个离线 HTML；浏览器的 ES Module、GLB 和 JSON 加载需要本机 HTTP 服务。请使用上述启动入口，再访问 `http://127.0.0.1:4173/`。`npm run dev` 的预启动步骤会从正式状态生成六类前端注册表和本地静态缩略图缓存，并把当前 Actor、首套固定女性发型、短袖、短裤和鞋导出为被 Git 忽略的本地 GLB。发型 v2 已通过中心头皮覆盖检测，但仍为 `provisional`，必须由用户人工审查后才能晋级。需要只重建本地预览时可运行 `npm.cmd run assets:prepare`。
-
-首套发型可单独执行 `npm.cmd run assets:hair` 重建并验证；执行 `npm.cmd run assets:hair:review` 会在 `workspace/cache/hair/first_bundle_v2/walk_review/` 生成 512px、浅色 Actor 的四方向 Walk GIF，便于不打开 Blend 文件完成审查。
-
-页面分为“资产工作台 / 组合预览 / Actor 基准”三个入口。资产工作台的仓库只显示左侧当前工作流对应的资产；每个组件只缓存一张固定正面图，四视图和 GIF 留在审查层。工作流 3D 预览可独立隐藏/显示，并支持滚轮缩放、拖动旋转和“放大预览”。Actor 基准页专门检查模型、骨骼、Walk、眨眼及服饰装配，不与参数编辑混用。当前模型、骨骼和动画各只有一套经过登记的选项；多模型导入、自动绑定和动画重定向仍是后续功能。
-
-生成新候选时输出到 `workspace/`。只有人工审核通过后，才替换对应 `milestones/<category>/` 内容并更新 `docs/ASSET_STATUS.json`。
-
-开始 Studio 功能开发前，必须先按 `PRINCIPLES.md` 的顺序阅读开发基准、产品技术基线、里程碑和对应功能文档。技术变化、内容删除与重要保存检查点必须同步更新仓库内的追溯记录。
+`workspace/`、模型权重和第三方运行时均保持本地，不上传 Git。

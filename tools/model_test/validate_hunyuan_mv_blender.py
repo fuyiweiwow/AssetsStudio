@@ -67,7 +67,7 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--input", type=Path, required=True)
     parser.add_argument("--output-dir", type=Path, required=True)
-    parser.add_argument("--asset-id", default="actor_v2_base_v1")
+    parser.add_argument("--asset-id", default="actor_core_0ef398ca_v1")
     parser.add_argument("--registration", type=Path)
     parser.add_argument("--target-height-ratio", type=float, default=0.6005859375)
     parser.add_argument("--resolution", type=int, default=1024)

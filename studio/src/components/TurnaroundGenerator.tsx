@@ -237,7 +237,7 @@ export function TurnaroundGenerator() {
   return (
     <div className="generation-workspace">
       <aside className="generation-rail" aria-label="本地三视图生成流程">
-        <div className="rail-heading"><span className="eyebrow">LOCAL IMAGE PIPELINE</span><h2>三视图生成</h2><span className="asset-count">F009</span></div>
+        <div className="rail-heading"><span className="eyebrow">LOCAL IMAGE PIPELINE</span><h2>三视图生成</h2><span className="asset-count">MODULAR</span></div>
         <ol className="generation-steps">
           <li className="active"><span>01</span><div><strong>{assetMode === "style_seed" ? "风格契约" : assetMode === "base_actor" ? "Actor Core 与种子" : "部件与 Actor"}</strong><small>{assetMode === "style_seed" ? "只校准 Q 版西幻视觉语法" : assetMode === "base_actor" ? "生成无任何可替换部件的标准素体" : "引用标准 Actor 与装配槽位"}</small></div></li>
           <li className={busy ? "active" : ""}><span>02</span><div><strong>FLUX.2 联合生成</strong><small>正面 / 右侧 / 背面</small></div></li>

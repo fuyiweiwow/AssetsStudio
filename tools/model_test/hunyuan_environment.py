@@ -81,12 +81,13 @@ def discover_model_root(explicit: Path | None = None) -> Path:
         ]
     )
     for candidate in candidates:
-        if any(candidate.glob("hunyuan3d-dit-v2-mv*/model.fp16.ckpt")):
+        if any(_is_shape_subfolder(path) for path in candidate.glob("hunyuan3d-dit-v2-mv*")):
             return candidate
         if candidate.name == "snapshots" and candidate.is_dir():
             for snapshot in candidate.iterdir():
                 if snapshot.is_dir() and any(
-                    snapshot.glob("hunyuan3d-dit-v2-mv*/model.fp16.ckpt")
+                    _is_shape_subfolder(path)
+                    for path in snapshot.glob("hunyuan3d-dit-v2-mv*")
                 ):
                     return snapshot
     checked = "\n  - ".join(str(path) for path in candidates)
@@ -94,6 +95,14 @@ def discover_model_root(explicit: Path | None = None) -> Path:
         "No usable Hunyuan3D-2mv model was found. Prefer a ModelScope local "
         "download, set HUNYUAN3D_MODEL_ROOT, or pass --model. "
         f"Checked:\n  - {checked}"
+    )
+
+
+def _is_shape_subfolder(path: Path) -> bool:
+    split_root = path / "split_components"
+    return (path / "config.yaml").is_file() and (
+        (path / "model.fp16.ckpt").is_file()
+        or all((split_root / name).is_file() for name in ("model.pt", "vae.pt", "conditioner.pt"))
     )
 
 
@@ -105,7 +114,7 @@ def discover_subfolder(model_root: Path, requested: str | None = None) -> str:
         "hunyuan3d-dit-v2-mv",
     ]
     for name in dict.fromkeys(name for name in names if name):
-        if (model_root / name / "model.fp16.ckpt").is_file():
+        if _is_shape_subfolder(model_root / name):
             return name
     raise FileNotFoundError(
         f"No Hunyuan3D-2mv checkpoint subfolder was found under {model_root}"

@@ -1,11 +1,11 @@
 {
   "schema": "assetsstudio_style_slot_registry_v1",
-  "updated": "2026-08-24",
+  "updated": "2026-08-25",
   "styles": [
     {
       "schema": "assetsstudio_style_profile_v1",
-      "id": "bombo_adventure_qstyle_no_face_v1",
-      "label": "BomboAdventure 无嘴鼻 Q 版日漫西幻",
+      "id": "qstyle_anime_western_fantasy_no_face_v1",
+      "label": "无嘴鼻 Q 版日漫西幻通用风格",
       "revision": 1,
       "status": "provisional",
       "consumer_tags": [
@@ -21,14 +21,14 @@
       "authorities": [
         {
           "id": "ratio_style_anchor",
-          "path": "references/actor_v2/actor_v2_ratio_style_anchor_user_v1.png",
+          "path": "references/style_profiles/assets/qstyle_ratio_anchor_user_v1.png",
           "sha256": "ce589213993cff489e59789dc2ca28a32b3fabc6a51860bb4b73217baed756d6",
           "role": "primary_proportion",
           "required": true
         },
         {
           "id": "local_reference_turnaround_evidence",
-          "path": "docs/workflows/assets/flux2_klein_reference_adventurer_turnaround_4view_registered_20260823.png",
+          "path": "references/style_profiles/assets/ba_turnaround_evidence_v1.png",
           "sha256": "daaa6e2046f998ce2e4a16ededfdb4285bc0199296a8048984df526b637a20c2",
           "role": "turnaround_evidence",
           "required": false
@@ -91,7 +91,7 @@
       ],
       "prompt_contract": {
         "positive": [
-          "BA consumer style profile, Q-style Japanese-anime western fantasy",
+          "Q-style Japanese-anime western fantasy game asset profile",
           "compact 2.1 to 2.5 heads-tall body with an oversized round head",
           "large expressive anime eyes and simple eyebrows on a completely mouthless and noseless face",
           "polished soft 3D game figurine with smooth rounded low-frequency geometry",
@@ -161,12 +161,12 @@
   "actors": [
     {
       "schema": "assetsstudio_actor_slot_profile_v1",
-      "id": "default_adventurer_v2_slots_v1",
-      "label": "Default Adventurer V2 装配槽位",
+      "id": "actor_core_0ef398ca_slots_v1",
+      "label": "Canonical Actor Core 0ef398ca attachment slots",
       "revision": 1,
       "status": "measured_provisional",
-      "actor_asset_id": "actor_v2_base_v1",
-      "style_profile_id": "bombo_adventure_qstyle_no_face_v1",
+      "actor_asset_id": "0ef398ca94d445f18226a8bf2a991c79",
+      "style_profile_id": "qstyle_anime_western_fantasy_no_face_v1",
       "coordinate_contract": {
         "unit": "meter",
         "up": "+Z",
@@ -177,39 +177,39 @@
       "measurements": {
         "actor_bounds_m": {
           "min": [
-            -0.478113,
-            -0.43527,
+            -0.598004,
+            -0.414203,
             0.0
           ],
           "max": [
-            0.46716,
-            0.451069,
-            1.990555
+            0.590607,
+            0.424399,
+            1.988268
           ]
         },
         "head_bounds_m": {
           "min": [
-            -0.407973,
-            -0.408928,
-            1.060268
+            -0.41,
+            -0.414203,
+            1.073665
           ],
           "max": [
-            0.476498,
-            0.477374,
-            1.992131
+            0.41,
+            0.424399,
+            1.988268
           ]
         },
-        "actor_height_m": 1.990555,
-        "total_heads": 2.136102,
-        "source": "workspace/actor_v2/base/v1/canonical/measurements.json + workspace/actor_v2/calibration/head_feature_calibration_v1.json"
+        "actor_height_m": 1.988268,
+        "total_heads": 2.174,
+        "source": "workspace/actor_core/0ef398ca94d445f18226a8bf2a991c79/rig_calibration_v2/rig_calibration.json"
       },
       "slots": [
         {
           "slot_id": "EarPair",
-          "label": "可替换双耳",
+          "label": "Replaceable ear pair",
           "category": "body_feature",
           "side": "bilateral",
-          "status": "validated",
+          "status": "measured_provisional",
           "attachment": {
             "mode": "skin_surface_pair",
             "parent_bones": [
@@ -220,35 +220,35 @@
                 "id": "EarRoot_L",
                 "parent_bone": "CC_Base_Head",
                 "position_m": [
-                  0.448,
-                  -0.001229,
-                  1.353805
+                  0.387712,
+                  0.0,
+                  1.391787
                 ],
                 "normal": [
-                  0.964196,
-                  -0.073257,
-                  -0.254872
+                  1.0,
+                  0.0,
+                  0.0
                 ]
               },
               {
                 "id": "EarRoot_R",
                 "parent_bone": "CC_Base_Head",
                 "position_m": [
-                  -0.376785,
-                  -0.001229,
-                  1.353805
+                  -0.387712,
+                  0.0,
+                  1.391787
                 ],
                 "normal": [
-                  -0.962913,
-                  -0.070231,
-                  -0.26051
+                  -1.0,
+                  0.0,
+                  0.0
                 ]
               }
             ]
           },
           "fit_envelope": null,
           "generation_policy": {
-            "preferred_mode": "reuse_only",
+            "preferred_mode": "on_actor_then_isolate",
             "allowed_asset_kinds": [
               "human_ear_pair",
               "elf_ear_pair",
@@ -259,29 +259,23 @@
           "validation": {
             "required_views": 4,
             "required_frames": 3,
-            "collision_policy": "project root vertices to head surface; preserve two separate meshes",
+            "collision_policy": "project roots to the head surface and preserve two separate meshes",
             "human_review_required": true
           },
           "evidence": [
             {
-              "path": "references/actor_v2/default_adventurer_v2/earpair_default_human_v2/reference_manifest.json",
-              "kind": "reference_manifest",
-              "tracked": true
-            },
-            {
-              "path": "workspace/actor_v2/calibration/head_feature_calibration_v1.json",
+              "path": "workspace/actor_core/0ef398ca94d445f18226a8bf2a991c79/rig_calibration_v2/rig_calibration.json",
               "kind": "measurement",
-              "tracked": false,
-              "sha256": "08cd19298c002fa60683fa1db602acd199e8bf9c880442491ca970fd302d8d94"
+              "tracked": false
             }
           ]
         },
         {
           "slot_id": "head_hair",
-          "label": "独立发套",
+          "label": "Independent hair shell",
           "category": "hair",
           "side": "center",
-          "status": "validated",
+          "status": "measured_provisional",
           "attachment": {
             "mode": "bone",
             "parent_bones": [
@@ -292,9 +286,9 @@
                 "id": "HeadSurfaceCenter",
                 "parent_bone": "CC_Base_Head",
                 "position_m": [
-                  0.034263,
-                  0.034223,
-                  1.526199
+                  0.0,
+                  0.0,
+                  1.531
                 ]
               }
             ]
@@ -304,14 +298,14 @@
             "kind": "surface",
             "bounds_m": {
               "min": [
-                -0.407973,
-                -0.408928,
-                1.060268
+                -0.41,
+                -0.414203,
+                1.073665
               ],
               "max": [
-                0.476498,
-                0.477374,
-                1.992131
+                0.41,
+                0.424399,
+                1.988268
               ]
             },
             "clearance_m": 0.01
@@ -329,20 +323,20 @@
           "validation": {
             "required_views": 4,
             "required_frames": 3,
-            "collision_policy": "closed crown; no forehead band; preserve ear clearance",
+            "collision_policy": "closed crown, no forehead band, preserve ear clearance",
             "human_review_required": true
           },
           "evidence": [
             {
-              "path": "docs/quality/ACTOR_V2_DEFAULT_HAIR_REBUILD_2026-08-22.md",
-              "kind": "review",
-              "tracked": true
+              "path": "workspace/actor_core/0ef398ca94d445f18226a8bf2a991c79/rig_calibration_v2/rig_calibration.json",
+              "kind": "measurement",
+              "tracked": false
             }
           ]
         },
         {
           "slot_id": "headwear",
-          "label": "帽子与头盔",
+          "label": "Headwear",
           "category": "headwear",
           "side": "center",
           "status": "measured_provisional",
@@ -356,9 +350,9 @@
                 "id": "HeadTop",
                 "parent_bone": "CC_Base_Head",
                 "position_m": [
-                  0.034263,
-                  0.034223,
-                  1.992131
+                  0.0,
+                  0.0,
+                  1.988268
                 ],
                 "normal": [
                   0.0,
@@ -373,14 +367,14 @@
             "kind": "surface",
             "bounds_m": {
               "min": [
-                -0.407973,
-                -0.408928,
-                1.060268
+                -0.41,
+                -0.414203,
+                1.073665
               ],
               "max": [
-                0.476498,
-                0.477374,
-                1.992131
+                0.41,
+                0.424399,
+                1.988268
               ]
             },
             "clearance_m": 0.025
@@ -402,19 +396,18 @@
           },
           "evidence": [
             {
-              "path": "workspace/actor_v2/calibration/head_feature_calibration_v1.json",
+              "path": "workspace/actor_core/0ef398ca94d445f18226a8bf2a991c79/rig_calibration_v2/rig_calibration.json",
               "kind": "measurement",
-              "tracked": false,
-              "sha256": "08cd19298c002fa60683fa1db602acd199e8bf9c880442491ca970fd302d8d94"
+              "tracked": false
             }
           ]
         },
         {
           "slot_id": "torso_outer",
-          "label": "躯干外层",
+          "label": "Torso outer layer",
           "category": "wearable",
           "side": "center",
-          "status": "validated",
+          "status": "measured_provisional",
           "attachment": {
             "mode": "multi_bone",
             "parent_bones": [
@@ -431,14 +424,14 @@
                 "position_m": [
                   0.0,
                   0.0,
-                  0.905702
+                  0.904662
                 ]
               }
             ]
           },
           "fit_envelope": null,
           "generation_policy": {
-            "preferred_mode": "parametric",
+            "preferred_mode": "on_actor_then_isolate",
             "allowed_asset_kinds": [
               "jacket",
               "shirt",
@@ -450,23 +443,23 @@
           "validation": {
             "required_views": 4,
             "required_frames": 8,
-            "collision_policy": "slot-specific seam allowance only; preserve hand and neck clearance",
+            "collision_policy": "preserve hand, neck, and arm-swing clearance",
             "human_review_required": true
           },
           "evidence": [
             {
-              "path": "references/actor_v2/default_adventurer_v1/torso_outer_v1/reference_manifest.json",
-              "kind": "reference_manifest",
-              "tracked": true
+              "path": "workspace/actor_core/0ef398ca94d445f18226a8bf2a991c79/rig_calibration_v2/rig_calibration.json",
+              "kind": "measurement",
+              "tracked": false
             }
           ]
         },
         {
           "slot_id": "waist_accessory",
-          "label": "腰带与腰包",
+          "label": "Belt and waist pouch",
           "category": "prop",
           "side": "center",
-          "status": "validated",
+          "status": "measured_provisional",
           "attachment": {
             "mode": "bone",
             "parent_bones": [
@@ -479,7 +472,7 @@
                 "position_m": [
                   0.0,
                   0.0,
-                  0.676789
+                  0.676011
                 ]
               }
             ]
@@ -489,20 +482,20 @@
             "kind": "aabb",
             "bounds_m": {
               "min": [
-                -0.295,
-                -0.2,
-                0.37
+                -0.32,
+                -0.22,
+                0.5
               ],
               "max": [
-                0.295,
-                0.21,
-                0.59
+                0.32,
+                0.24,
+                0.78
               ]
             },
             "clearance_m": 0.008
           },
           "generation_reference": {
-            "path": "references/actor_v2/default_adventurer_v1/waist_accessory_v1/waist_accessory_turnaround_v1.png",
+            "path": "references/slot_authorities/waist_accessory/waist_accessory_turnaround_v1.png",
             "sha256": "3756c5dc6042a03fbf4e60a2e1cc6bacfd1ebad5d9718482763152e19c553e18",
             "role": "isolated_slot_authority"
           },
@@ -519,29 +512,23 @@
           "validation": {
             "required_views": 4,
             "required_frames": 8,
-            "collision_policy": "no persistent hand or thigh penetration during Walk",
+            "collision_policy": "no persistent hand or thigh penetration during locomotion",
             "human_review_required": true
           },
           "evidence": [
             {
-              "path": "references/actor_v2/default_adventurer_v1/waist_accessory_v1/reference_manifest.json",
-              "kind": "reference_manifest",
+              "path": "references/slot_authorities/waist_accessory/waist_accessory_turnaround_v1.png",
+              "kind": "review",
               "tracked": true
-            },
-            {
-              "path": "workspace/actor_v2/slots/waist_accessory/v1/fit_v1/compile.json",
-              "kind": "fit_report",
-              "tracked": false,
-              "sha256": "22db748ce23c439e3f745a850715e0098d82fad6764c78a02a84af4d5510630d"
             }
           ]
         },
         {
           "slot_id": "legs_outer",
-          "label": "骨盆与腿部外层",
+          "label": "Leg outer layer",
           "category": "wearable",
           "side": "bilateral",
-          "status": "validated",
+          "status": "measured_provisional",
           "attachment": {
             "mode": "multi_bone",
             "parent_bones": [
@@ -556,14 +543,14 @@
                 "position_m": [
                   0.0,
                   0.0,
-                  0.567308
+                  0.566656
                 ]
               }
             ]
           },
           "fit_envelope": null,
           "generation_policy": {
-            "preferred_mode": "parametric",
+            "preferred_mode": "on_actor_then_isolate",
             "allowed_asset_kinds": [
               "shorts",
               "pants",
@@ -575,20 +562,20 @@
           "validation": {
             "required_views": 4,
             "required_frames": 8,
-            "collision_policy": "preserve pelvis seam and independent thigh motion",
+            "collision_policy": "preserve pelvis clearance and independent thigh motion",
             "human_review_required": true
           },
           "evidence": [
             {
-              "path": "references/actor_v2/default_adventurer_v1/legs_outer_v1/reference_manifest.json",
-              "kind": "reference_manifest",
-              "tracked": true
+              "path": "workspace/actor_core/0ef398ca94d445f18226a8bf2a991c79/rig_calibration_v2/rig_calibration.json",
+              "kind": "measurement",
+              "tracked": false
             }
           ]
         },
         {
           "slot_id": "feet_outer",
-          "label": "鞋靴",
+          "label": "Footwear",
           "category": "wearable",
           "side": "bilateral",
           "status": "measured_provisional",
@@ -603,18 +590,18 @@
                 "id": "FootRoot_L",
                 "parent_bone": "CC_Base_L_Foot",
                 "position_m": [
-                  0.129386,
+                  0.159061,
                   0.0,
-                  0.109481
+                  0.109355
                 ]
               },
               {
                 "id": "FootRoot_R",
                 "parent_bone": "CC_Base_R_Foot",
                 "position_m": [
-                  -0.129386,
+                  -0.159061,
                   0.0,
-                  0.109481
+                  0.109355
                 ]
               }
             ]
@@ -632,21 +619,20 @@
           "validation": {
             "required_views": 4,
             "required_frames": 8,
-            "collision_policy": "preserve ground contact and toe direction through Walk",
+            "collision_policy": "preserve ground contact and toe direction",
             "human_review_required": true
           },
           "evidence": [
             {
-              "path": "workspace/actor_v2/base/v1/rig_calibration/rig_calibration.json",
+              "path": "workspace/actor_core/0ef398ca94d445f18226a8bf2a991c79/rig_calibration_v2/rig_calibration.json",
               "kind": "measurement",
-              "tracked": false,
-              "sha256": "e4514feaf37b21e893ab0255bf19be15278410157d9e4640904f77d8d1649357"
+              "tracked": false
             }
           ]
         },
         {
           "slot_id": "wrist_accessory",
-          "label": "护腕",
+          "label": "Wrist accessory",
           "category": "prop",
           "side": "bilateral",
           "status": "measured_provisional",
@@ -661,18 +647,18 @@
                 "id": "Wrist_L",
                 "parent_bone": "CC_Base_L_Forearm",
                 "position_m": [
-                  0.427969,
+                  0.407595,
                   0.0,
-                  0.507591
+                  0.546774
                 ]
               },
               {
                 "id": "Wrist_R",
                 "parent_bone": "CC_Base_R_Forearm",
                 "position_m": [
-                  -0.427969,
+                  -0.407595,
                   0.0,
-                  0.507591
+                  0.546774
                 ]
               }
             ]
@@ -695,16 +681,15 @@
           },
           "evidence": [
             {
-              "path": "workspace/actor_v2/base/v1/rig_calibration/rig_calibration.json",
+              "path": "workspace/actor_core/0ef398ca94d445f18226a8bf2a991c79/rig_calibration_v2/rig_calibration.json",
               "kind": "measurement",
-              "tracked": false,
-              "sha256": "e4514feaf37b21e893ab0255bf19be15278410157d9e4640904f77d8d1649357"
+              "tracked": false
             }
           ]
         },
         {
           "slot_id": "hand_prop_l",
-          "label": "左手道具",
+          "label": "Left-hand prop",
           "category": "prop",
           "side": "left",
           "status": "measured_provisional",
@@ -718,9 +703,9 @@
                 "id": "Grip_L",
                 "parent_bone": "CC_Base_L_Hand",
                 "position_m": [
-                  0.427969,
+                  0.407595,
                   0.0,
-                  0.507591
+                  0.546774
                 ]
               }
             ]
@@ -739,21 +724,20 @@
           "validation": {
             "required_views": 4,
             "required_frames": 8,
-            "collision_policy": "grip pivot must follow hand bone; test arm swing clearance",
+            "collision_policy": "grip pivot follows the hand bone and clears the arm swing",
             "human_review_required": true
           },
           "evidence": [
             {
-              "path": "workspace/actor_v2/base/v1/rig_calibration/rig_calibration.json",
+              "path": "workspace/actor_core/0ef398ca94d445f18226a8bf2a991c79/rig_calibration_v2/rig_calibration.json",
               "kind": "measurement",
-              "tracked": false,
-              "sha256": "e4514feaf37b21e893ab0255bf19be15278410157d9e4640904f77d8d1649357"
+              "tracked": false
             }
           ]
         },
         {
           "slot_id": "hand_prop_r",
-          "label": "右手道具",
+          "label": "Right-hand prop",
           "category": "prop",
           "side": "right",
           "status": "measured_provisional",
@@ -767,9 +751,9 @@
                 "id": "Grip_R",
                 "parent_bone": "CC_Base_R_Hand",
                 "position_m": [
-                  -0.427969,
+                  -0.407595,
                   0.0,
-                  0.507591
+                  0.546774
                 ]
               }
             ]
@@ -788,21 +772,20 @@
           "validation": {
             "required_views": 4,
             "required_frames": 8,
-            "collision_policy": "grip pivot must follow hand bone; test arm swing clearance",
+            "collision_policy": "grip pivot follows the hand bone and clears the arm swing",
             "human_review_required": true
           },
           "evidence": [
             {
-              "path": "workspace/actor_v2/base/v1/rig_calibration/rig_calibration.json",
+              "path": "workspace/actor_core/0ef398ca94d445f18226a8bf2a991c79/rig_calibration_v2/rig_calibration.json",
               "kind": "measurement",
-              "tracked": false,
-              "sha256": "e4514feaf37b21e893ab0255bf19be15278410157d9e4640904f77d8d1649357"
+              "tracked": false
             }
           ]
         },
         {
           "slot_id": "back_accessory",
-          "label": "背部附件",
+          "label": "Back accessory",
           "category": "prop",
           "side": "center",
           "status": "measured_provisional",
@@ -818,7 +801,7 @@
                 "position_m": [
                   0.0,
                   0.0,
-                  0.975372
+                  0.904662
                 ],
                 "normal": [
                   0.0,
@@ -842,15 +825,14 @@
           "validation": {
             "required_views": 4,
             "required_frames": 8,
-            "collision_policy": "test shoulder, hair and arm-swing clearance; keep attachment close to back",
+            "collision_policy": "clear shoulders, hair, and arm swing while staying close to the back",
             "human_review_required": true
           },
           "evidence": [
             {
-              "path": "workspace/actor_v2/base/v1/rig_calibration/rig_calibration.json",
+              "path": "workspace/actor_core/0ef398ca94d445f18226a8bf2a991c79/rig_calibration_v2/rig_calibration.json",
               "kind": "measurement",
-              "tracked": false,
-              "sha256": "e4514feaf37b21e893ab0255bf19be15278410157d9e4640904f77d8d1649357"
+              "tracked": false
             }
           ]
         }
@@ -859,10 +841,10 @@
   ],
   "sources": {
     "styles": [
-      "references/style_profiles/bombo_adventure_qstyle_no_face_v1.json"
+      "references/style_profiles/qstyle_anime_western_fantasy_no_face_v1.json"
     ],
     "actors": [
-      "references/actor_v2/default_adventurer_v2/actor_slot_profile_v1.json"
+      "references/actor_core/actor_core_0ef398ca/actor_slot_profile_v1.json"
     ]
   }
 }

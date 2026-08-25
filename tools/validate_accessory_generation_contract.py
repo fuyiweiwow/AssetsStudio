@@ -20,45 +20,42 @@ from analyze_turnaround_sheet import analyze_turnaround  # noqa: E402
 
 
 def main() -> int:
-    style = STYLE_PROFILES["western_fantasy_qstyle_soft3d_v1"]
-    actor = ACTOR_PROFILES["default_adventurer_v2_slots_v1"]
+    style = STYLE_PROFILES["qstyle_anime_western_fantasy_no_face_v1"]
+    actor = ACTOR_PROFILES["actor_core_0ef398ca_slots_v1"]
     waist = find_slot(actor, "waist_accessory")
     prompt = compile_accessory_prompt(
         "rounded leather adventurer waist pouch", style, actor, waist
     )
     required_markers = [
         "waist_accessory",
-        "0.59m wide",
+        "0.64m wide",
         "reference image only as visual style",
         "exact right profile",
         "no wearer",
-        "leather_brown #765133",
+        "warm_natural #765133",
     ]
     missing = [marker for marker in required_markers if marker not in prompt]
     if missing:
         raise RuntimeError("compiled accessory prompt is missing: " + ", ".join(missing))
 
-    ear = find_slot(actor, "EarPair")
+    hair = find_slot(actor, "head_hair")
     try:
-        compile_accessory_prompt("new ears", style, actor, ear)
+        compile_accessory_prompt("short hair shell", style, actor, hair)
     except ValueError as exc:
-        if "reuse_only" not in str(exc):
+        if "no isolated generation reference" not in str(exc):
             raise
     else:
-        raise RuntimeError("reuse_only EarPair was incorrectly accepted for image generation")
+        raise RuntimeError("a slot without an isolated authority was incorrectly accepted")
 
-    tracked_candidate = (
-        ROOT
-        / "docs/workflows/assets/accessory_isolated_multiview_candidate_20260823.png"
-    )
-    report = analyze_turnaround(tracked_candidate, 3)
-    if report["automatic_pass"]:
-        raise RuntimeError("known inconsistent accessory candidate unexpectedly passed QA")
+    authority = ROOT / waist["generation_reference"]["path"]
+    report = analyze_turnaround(authority, 4)
+    if not report["automatic_pass"]:
+        raise RuntimeError("current isolated accessory authority failed automatic QA")
 
     print(
         "ASSETSSTUDIO_ACCESSORY_GENERATION_CONTRACT_PASS "
         f"style={style['id']} actor={actor['id']} slot={waist['slot_id']} "
-        f"known_failure_gate={not report['automatic_pass']}"
+        f"authority_gate={report['automatic_pass']}"
     )
     return 0
 

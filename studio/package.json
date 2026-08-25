@@ -4,20 +4,12 @@
   "version": "0.6.0",
   "type": "module",
   "scripts": {
-    "predev": "npm run assets:prepare",
     "dev": "vite",
     "build": "tsc -b && vite build",
     "typecheck": "tsc -b --pretty false",
     "test": "vitest run",
     "test:watch": "vitest",
-    "assets:registry": "python ../tools/build_studio_registry.py",
-    "assets:profiles": "python ../tools/build_studio_style_slot_registry.py",
-    "assets:materials:validate": "python ../tools/validate_garment_material_recipes.py --library ../milestones/tops/garmentcode_short_sleeve_v1/materials/material_recipes.json",
-    "assets:hair": "powershell -ExecutionPolicy Bypass -File ../tools/build_first_hair_bundle.ps1",
-    "assets:hair:review": "powershell -ExecutionPolicy Bypass -File ../tools/render_first_hair_bundle_review.ps1",
-    "assets:actor": "powershell -ExecutionPolicy Bypass -File ../tools/export_studio_actor_preview.ps1",
-    "assets:actor-v2-head": "powershell -ExecutionPolicy Bypass -File ../tools/export_studio_actor_v2_head_calibration_preview.ps1",
-    "assets:prepare": "npm run assets:hair && npm run assets:registry && npm run assets:actor"
+    "assets:profiles": "python ../tools/build_studio_style_slot_registry.py"
   },
   "engines": {
     "node": ">=22"

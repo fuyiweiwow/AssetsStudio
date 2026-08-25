@@ -185,7 +185,7 @@ dl { margin: 0; } dl div { padding: 8px 0; border-top: 1px solid #282f3f; } dt {
   .statusbar { flex-wrap: wrap; }.statusbar-right { width: 100%; margin-left: 0; }
 }
 
-/* F003: separate asset production from final composite review. */
+/* Current modular production and review workspace. */
 .workspace-tabs, .mode-switcher, .gender-switcher {
   display: flex; gap: 4px; padding: 4px; border: 1px solid var(--line); border-radius: 11px; background: #151a25;
 }
@@ -239,7 +239,7 @@ dl { margin: 0; } dl div { padding: 8px 0; border-top: 1px solid #282f3f; } dt {
   .has-collapsed-workflow-preview .studio-grid { grid-template-columns: 230px minmax(440px, 1fr); }
 }
 
-/* F009: local prompt-to-turnaround generation workspace. */
+/* Local prompt-to-turnaround generation workspace. */
 .generation-workspace {
   display: grid;
   grid-template-columns: 250px minmax(560px, 1fr) 340px;

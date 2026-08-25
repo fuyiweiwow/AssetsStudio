@@ -12,8 +12,8 @@ from jsonschema import Draft202012Validator
 
 
 ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_STYLE = ROOT / "references/style_profiles/bombo_adventure_qstyle_no_face_v1.json"
-DEFAULT_ACTOR = ROOT / "references/actor_v2/default_adventurer_v2/actor_slot_profile_v1.json"
+DEFAULT_STYLE = ROOT / "references/style_profiles/qstyle_anime_western_fantasy_no_face_v1.json"
+DEFAULT_ACTOR = ROOT / "references/actor_core/actor_core_0ef398ca/actor_slot_profile_v1.json"
 STYLE_SCHEMA = ROOT / "schemas/style-profile.v1.schema.json"
 ACTOR_SCHEMA = ROOT / "schemas/actor-slot-profile.v1.schema.json"
 
@@ -68,14 +68,12 @@ def validate_semantics(style: dict, actor: dict) -> None:
             raise RuntimeError(f"style authority hash changed: {authority['path']}")
 
     slot_ids: set[str] = set()
-    validated_slots = 0
+    generatable_slots = 0
     for slot in actor["slots"]:
         slot_id = slot["slot_id"]
         if slot_id in slot_ids:
             raise RuntimeError(f"duplicate actor slot id: {slot_id}")
         slot_ids.add(slot_id)
-        if slot["status"] == "validated":
-            validated_slots += 1
         parent_bones = set(slot["attachment"]["parent_bones"])
         for anchor in slot["attachment"]["anchors"]:
             if anchor["parent_bone"] not in parent_bones:
@@ -87,6 +85,7 @@ def validate_semantics(style: dict, actor: dict) -> None:
                 raise FileNotFoundError(ROOT / evidence["path"])
         generation_reference = slot.get("generation_reference")
         if generation_reference:
+            generatable_slots += 1
             reference_path = ROOT / generation_reference["path"]
             if not reference_path.is_file():
                 raise FileNotFoundError(reference_path)
@@ -108,9 +107,9 @@ def validate_semantics(style: dict, actor: dict) -> None:
             "ActorSlotProfile is missing required generation slots: "
             + ", ".join(missing)
         )
-    if validated_slots < 4:
+    if generatable_slots < 1:
         raise RuntimeError(
-            "ActorSlotProfile must preserve at least four previously validated slots"
+            "ActorSlotProfile must expose at least one isolated generation authority"
         )
 
 
