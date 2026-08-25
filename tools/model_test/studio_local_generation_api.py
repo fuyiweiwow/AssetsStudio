@@ -9,6 +9,7 @@ import json
 import os
 import shutil
 import subprocess
+import sys
 import threading
 import time
 import urllib.error
@@ -61,6 +62,7 @@ ACCESSORY_ARTIFACT_ROOT = ROOT / "workspace" / "local_generation" / "accessories
 LOCAL_LIBRARY_ROOT = ROOT / "workspace" / "local_asset_library"
 LOCAL_3D_CANDIDATE_ROOT = ROOT / "workspace" / "local_3d_generation" / "base_actors"
 LOCAL_3D_LIBRARY_ROOT = ROOT / "workspace" / "local_3d_asset_library" / "base_actors"
+LOCAL_ANIMATION_LIBRARY_ROOT = ROOT / "workspace" / "local_animation_library"
 WORKSPACE_ROOT = ROOT / "workspace"
 MAX_RIG_UPLOAD_BYTES = 1024 * 1024 * 1024
 PROFILE_REGISTRY_PATH = ROOT / "studio" / "src" / "generated" / "style-slot-profiles.json"
@@ -158,6 +160,7 @@ def normalize_request_path(path: str) -> str:
         "3d-assets",
         "3d-candidates",
         "3d-library",
+        "animation-library",
         *ROUTE_CONFIG.keys(),
     }:
         return "/api" + path
@@ -760,6 +763,241 @@ def create_rig_intake(
     return manifest
 
 
+def animation_asset_directory(animation_asset_id: str) -> Path:
+    return LOCAL_ANIMATION_LIBRARY_ROOT / safe_asset_id(animation_asset_id)
+
+
+def load_animation_asset(animation_asset_id: str) -> dict[str, Any]:
+    directory = animation_asset_directory(animation_asset_id)
+    manifest_path = directory / "asset_manifest.json"
+    if not manifest_path.is_file():
+        raise FileNotFoundError("local animation asset manifest not found")
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    if (
+        manifest.get("schema") != "assetsstudio_local_animation_asset_v1"
+        or manifest.get("asset_id") != animation_asset_id
+        or manifest.get("kind") != "skeletal_animation"
+    ):
+        raise ValueError("local animation asset manifest is incompatible")
+    source = (directory / manifest.get("source_filename", "")).resolve()
+    if directory.resolve() not in source.parents or not source.is_file():
+        raise FileNotFoundError("local animation source FBX is missing")
+    digest = hashlib.sha256(source.read_bytes()).hexdigest()
+    if digest != str(manifest.get("sha256", "")).lower():
+        raise ValueError("local animation source hash mismatch")
+    public = dict(manifest)
+    public["source_available"] = True
+    return public
+
+
+def list_animation_assets() -> list[dict[str, Any]]:
+    if not LOCAL_ANIMATION_LIBRARY_ROOT.is_dir():
+        return []
+    assets = []
+    for manifest_path in LOCAL_ANIMATION_LIBRARY_ROOT.glob("*/asset_manifest.json"):
+        try:
+            assets.append(load_animation_asset(manifest_path.parent.name))
+        except (OSError, ValueError, json.JSONDecodeError):
+            continue
+    return sorted(assets, key=lambda item: item.get("label", item["asset_id"]))
+
+
+def animation_preview_directory(asset_id: str, animation_asset_id: str) -> Path:
+    intake = current_rig_intake(asset_id)
+    if not intake or intake.get("status") != "ready":
+        raise ValueError("current Actor does not have a ready AccuRIG intake")
+    root = rig_intake_directory(asset_id, intake["job_id"]) / "animation_previews"
+    destination = (root / safe_asset_id(animation_asset_id)).resolve()
+    if root.resolve() not in destination.parents:
+        raise ValueError("unsafe animation preview directory")
+    return destination
+
+
+def public_animation_preview(asset_id: str, animation_asset_id: str) -> dict[str, Any]:
+    animation = load_animation_asset(animation_asset_id)
+    directory = animation_preview_directory(asset_id, animation_asset_id)
+    job_path = directory / "job.json"
+    report_path = directory / "retarget.json"
+    job = (
+        json.loads(job_path.read_text(encoding="utf-8"))
+        if job_path.is_file()
+        else {}
+    )
+    report = (
+        json.loads(report_path.read_text(encoding="utf-8"))
+        if report_path.is_file()
+        else None
+    )
+    job_status = job.get("status")
+    ready = bool(
+        report
+        and report.get("status") == "pass"
+        and job_status in {None, "ready"}
+        and (directory / "retargeted.glb").is_file()
+        and all((directory / f"{view}.gif").is_file() for view in ("front", "right", "back", "left"))
+    )
+    route = f"/api/3d-library/{asset_id}/animation-previews/{animation_asset_id}"
+    result = {
+        "schema": "assetsstudio_actor_animation_preview_v1",
+        "actor_asset_id": asset_id,
+        "animation_asset_id": animation_asset_id,
+        "animation_label": animation["label"],
+        "motion": animation["motion"],
+        "status": "ready" if ready else job_status or "not_generated",
+        "updated_at": job.get("updated_at"),
+        "error": job.get("error"),
+        "model_url": f"{route}/model" if ready else None,
+        "report_url": f"{route}/report" if ready else None,
+        "contact_sheet_url": f"{route}/contact-sheet" if ready else None,
+        "preview_urls": {
+            view: f"{route}/preview/{view}"
+            for view in ("front", "right", "back", "left")
+        } if ready else {},
+    }
+    if report:
+        result["validation_summary"] = {
+            "mapped_bones": len(report.get("mapped_bones", {})),
+            "frame_range": report.get("frame_range"),
+            "fps": report.get("fps"),
+            "automatic_gates": report.get("gates", {}),
+        }
+    return result
+
+
+def list_animation_previews(asset_id: str) -> list[dict[str, Any]]:
+    try:
+        return [
+            public_animation_preview(asset_id, animation["asset_id"])
+            for animation in list_animation_assets()
+        ]
+    except (OSError, ValueError, KeyError, json.JSONDecodeError):
+        return []
+
+
+def write_animation_job(directory: Path, job: dict[str, Any]) -> None:
+    directory.mkdir(parents=True, exist_ok=True)
+    (directory / "job.json").write_text(
+        json.dumps(job, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+    )
+
+
+def process_animation_preview(asset_id: str, animation_asset_id: str) -> None:
+    directory = animation_preview_directory(asset_id, animation_asset_id)
+    job_path = directory / "job.json"
+    job = json.loads(job_path.read_text(encoding="utf-8"))
+    job.update(status="processing", updated_at=utc_now(), error=None)
+    write_animation_job(directory, job)
+    try:
+        blender = discover_blender()
+        animation = load_animation_asset(animation_asset_id)
+        intake = current_rig_intake(asset_id)
+        if not intake or intake.get("status") != "ready":
+            raise ValueError("current Actor AccuRIG intake is not ready")
+        intake_dir = rig_intake_directory(asset_id, intake["job_id"])
+        actor_blend = (
+            intake_dir
+            / "processed"
+            / f"{safe_asset_id(intake['rig_asset_id'])}_runtime_4weights.blend"
+        )
+        animation_fbx = animation_asset_directory(animation_asset_id) / animation["source_filename"]
+        command = [
+            str(blender),
+            "--background",
+            "--python-exit-code",
+            "1",
+            "--python",
+            str((ROOT / "tools" / "model_test" / "retarget_mixamo_to_actor_core.py").resolve()),
+            "--",
+            "--actor-blend",
+            str(actor_blend.resolve()),
+            "--animation-fbx",
+            str(animation_fbx.resolve()),
+            "--output-dir",
+            str(directory.resolve()),
+            "--actor-id",
+            asset_id,
+            "--animation-asset-id",
+            animation_asset_id,
+            "--fps",
+            str(animation.get("fps", 30)),
+        ]
+        result = subprocess.run(
+            command,
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+            timeout=1800,
+            check=False,
+        )
+        (directory / "blender.stdout.log").write_text(result.stdout, encoding="utf-8")
+        (directory / "blender.stderr.log").write_text(result.stderr, encoding="utf-8")
+        if result.returncode != 0:
+            raise RuntimeError(f"Blender retarget exited with code {result.returncode}")
+        gif_result = subprocess.run(
+            [
+                sys.executable,
+                str((ROOT / "tools" / "model_test" / "build_animation_preview_gifs.py").resolve()),
+                "--report",
+                str((directory / "retarget.json").resolve()),
+            ],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+            timeout=300,
+            check=False,
+        )
+        (directory / "preview.stdout.log").write_text(gif_result.stdout, encoding="utf-8")
+        (directory / "preview.stderr.log").write_text(gif_result.stderr, encoding="utf-8")
+        if gif_result.returncode != 0:
+            raise RuntimeError(f"preview GIF build exited with code {gif_result.returncode}")
+        report = json.loads((directory / "retarget.json").read_text(encoding="utf-8"))
+        if report.get("status") != "pass":
+            raise RuntimeError("retarget report did not pass automatic gates")
+        job.update(
+            status="ready",
+            updated_at=utc_now(),
+            blender=str(blender),
+            mapped_bones=len(report["mapped_bones"]),
+            frame_range=report["frame_range"],
+            error=None,
+        )
+    except Exception as exc:
+        job.update(status="failed", updated_at=utc_now(), error=str(exc))
+    write_animation_job(directory, job)
+
+
+def create_animation_preview(asset_id: str, animation_asset_id: str) -> dict[str, Any]:
+    load_3d_manifest("library", asset_id)
+    load_animation_asset(animation_asset_id)
+    current = public_animation_preview(asset_id, animation_asset_id)
+    if current["status"] in {"ready", "queued", "processing"}:
+        return current
+    directory = animation_preview_directory(asset_id, animation_asset_id)
+    now = utc_now()
+    job = {
+        "schema": "assetsstudio_actor_animation_preview_job_v1",
+        "actor_asset_id": asset_id,
+        "animation_asset_id": animation_asset_id,
+        "status": "queued",
+        "created_at": now,
+        "updated_at": now,
+        "local_only": True,
+        "error": None,
+    }
+    write_animation_job(directory, job)
+    threading.Thread(
+        target=process_animation_preview,
+        args=(asset_id, animation_asset_id),
+        daemon=True,
+        name=f"animation-{asset_id[:8]}-{animation_asset_id[:16]}",
+    ).start()
+    return public_animation_preview(asset_id, animation_asset_id)
+
+
 def load_3d_manifest(scope: str, asset_id: str) -> dict[str, Any]:
     asset_dir = local_3d_dir(scope, asset_id)
     manifest_path = asset_dir / "candidate_manifest.json"
@@ -788,6 +1026,7 @@ def load_3d_manifest(scope: str, asset_id: str) -> dict[str, Any]:
             public["rig_intake"] = current_rig_intake(asset_id)
         except (OSError, ValueError, KeyError, json.JSONDecodeError):
             public["rig_intake"] = None
+        public["animation_previews"] = list_animation_previews(asset_id)
     return public
 
 
@@ -1223,7 +1462,7 @@ class Handler(BaseHTTPRequestHandler):
                 HTTPStatus.OK,
                 {
                     "status": "ready" if comfy_reachable() and all(models.values()) else "offline",
-                    "api_version": 4,
+                    "api_version": 5,
                     "comfyui": comfy_reachable(),
                     "model_ready": all(models.values()),
                     "models": models,
@@ -1232,6 +1471,8 @@ class Handler(BaseHTTPRequestHandler):
                     "local_library_root": str(LOCAL_LIBRARY_ROOT),
                     "local_3d_candidate_root": str(LOCAL_3D_CANDIDATE_ROOT),
                     "local_3d_library_root": str(LOCAL_3D_LIBRARY_ROOT),
+                    "local_animation_library_root": str(LOCAL_ANIMATION_LIBRARY_ROOT),
+                    "local_animation_assets": len(list_animation_assets()),
                     "profile_registry": str(PROFILE_REGISTRY_PATH),
                     "style_profiles": len(STYLE_PROFILES),
                     "actor_profiles": len(ACTOR_PROFILES),
@@ -1254,7 +1495,41 @@ class Handler(BaseHTTPRequestHandler):
             self.send_json(HTTPStatus.OK, list_3d_assets())
             return
 
+        if path == "/api/animation-library":
+            self.send_json(HTTPStatus.OK, {"assets": list_animation_assets()})
+            return
+
         parts = [part for part in path.split("/") if part]
+        if (
+            len(parts) in {5, 6, 7}
+            and parts[:2] == ["api", "3d-library"]
+            and parts[3] == "animation-previews"
+        ):
+            asset_id, animation_asset_id = parts[2], parts[4]
+            try:
+                preview = public_animation_preview(asset_id, animation_asset_id)
+                directory = animation_preview_directory(asset_id, animation_asset_id)
+                if len(parts) == 5:
+                    self.send_json(HTTPStatus.OK, {"animation_preview": preview})
+                    return
+                if len(parts) == 6 and parts[5] == "model":
+                    self.send_file(directory / "retargeted.glb", "model/gltf-binary")
+                    return
+                if len(parts) == 6 and parts[5] == "report":
+                    self.send_file(directory / "retarget.json", "application/json; charset=utf-8")
+                    return
+                if len(parts) == 6 and parts[5] == "contact-sheet":
+                    self.send_file(directory / "four_direction_contact_sheet.png", "image/png")
+                    return
+                if len(parts) == 7 and parts[5] == "preview":
+                    if parts[6] not in {"front", "right", "back", "left"}:
+                        raise FileNotFoundError("animation preview view is invalid")
+                    self.send_file(directory / f"{parts[6]}.gif", "image/gif")
+                    return
+                raise FileNotFoundError("animation preview artifact not found")
+            except (OSError, ValueError, KeyError, json.JSONDecodeError) as exc:
+                self.send_json(HTTPStatus.NOT_FOUND, {"error": str(exc)})
+                return
         if (
             len(parts) in {4, 5}
             and parts[0] == "api"
@@ -1392,6 +1667,21 @@ class Handler(BaseHTTPRequestHandler):
     def do_POST(self) -> None:
         path = normalize_request_path(urllib.parse.urlparse(self.path).path)
         parts = [part for part in path.split("/") if part]
+        if (
+            len(parts) == 5
+            and parts[:2] == ["api", "3d-library"]
+            and parts[3] == "animation-previews"
+        ):
+            try:
+                preview = create_animation_preview(parts[2], parts[4])
+            except FileNotFoundError as exc:
+                self.send_json(HTTPStatus.NOT_FOUND, {"error": str(exc)})
+                return
+            except (ValueError, OSError, KeyError, json.JSONDecodeError) as exc:
+                self.send_json(HTTPStatus.BAD_REQUEST, {"error": str(exc)})
+                return
+            self.send_json(HTTPStatus.ACCEPTED, {"animation_preview": preview})
+            return
         if (
             len(parts) == 4
             and parts[:2] == ["api", "3d-library"]
@@ -1632,6 +1922,7 @@ def main() -> int:
     BASE_ACTOR_ARTIFACT_ROOT.mkdir(parents=True, exist_ok=True)
     ACCESSORY_ARTIFACT_ROOT.mkdir(parents=True, exist_ok=True)
     LOCAL_LIBRARY_ROOT.mkdir(parents=True, exist_ok=True)
+    LOCAL_ANIMATION_LIBRARY_ROOT.mkdir(parents=True, exist_ok=True)
     imported_seeds = sync_published_style_seeds()
     server = ThreadingHTTPServer((args.host, args.port), Handler)
     print(f"AssetsStudio local generation API: http://{args.host}:{args.port}", flush=True)

@@ -2,12 +2,14 @@ import { useCallback, useEffect, useState } from "react";
 import {
   acceptLocal3DCandidate,
   acceptLocalCandidate,
+  createActorAnimationPreview,
   createBaseActorTurnaround,
   createAccessoryTurnaround,
   createStyleSeed,
   destroyLocal3DCandidate,
   destroyLocalCandidate,
   fetchAccessoryTurnaround,
+  fetchAnimationLibrary,
   fetchLocal3DAssets,
   fetchLocalLibrary,
   fetchLocalGenerationHealth,
@@ -15,6 +17,7 @@ import {
   fetchTurnaround,
   proxiedArtifactUrl,
   uploadActorCoreRig,
+  type LocalAnimationAsset,
   type Local3DAsset,
   type LocalLibraryAsset,
   type LocalGenerationHealth,
@@ -50,6 +53,9 @@ export function TurnaroundGenerator() {
   const [threeDConfirmations, setThreeDConfirmations] = useState<string[]>([]);
   const [threeDError, setThreeDError] = useState("");
   const [rigUploadBusyId, setRigUploadBusyId] = useState("");
+  const [animationAssets, setAnimationAssets] = useState<LocalAnimationAsset[]>([]);
+  const [selectedAnimationId, setSelectedAnimationId] = useState("");
+  const [animationBusyActorId, setAnimationBusyActorId] = useState("");
   const [styleSeedAssetId, setStyleSeedAssetId] = useState("");
   const [baseActorAssetId, setBaseActorAssetId] = useState("");
   const [styleProfileId, setStyleProfileId] = useState(styleSlotRegistry.styles[0].id);
@@ -109,14 +115,30 @@ export function TurnaroundGenerator() {
     }
   }, []);
 
+  const refreshAnimationLibrary = useCallback(async () => {
+    try {
+      const result = await fetchAnimationLibrary();
+      setAnimationAssets(result.assets);
+      setSelectedAnimationId((current) => result.assets.some((asset) => asset.asset_id === current)
+        ? current
+        : result.assets[0]?.asset_id || "");
+    } catch {
+      setAnimationAssets([]);
+      setSelectedAnimationId("");
+    }
+  }, []);
+
   useEffect(() => {
     void refreshHealth();
     void refreshLibrary();
     void refresh3DAssets();
-  }, [refresh3DAssets, refreshHealth, refreshLibrary]);
+    void refreshAnimationLibrary();
+  }, [refresh3DAssets, refreshAnimationLibrary, refreshHealth, refreshLibrary]);
 
   useEffect(() => {
-    if (!threeDAssets.some((asset) => ["uploaded", "processing"].includes(asset.rig_intake?.status ?? ""))) return;
+    if (!threeDAssets.some((asset) =>
+      ["uploaded", "processing"].includes(asset.rig_intake?.status ?? "")
+      || asset.animation_previews?.some((preview) => ["queued", "processing"].includes(preview.status)))) return;
     const timer = window.setInterval(() => void refresh3DAssets(), 2000);
     return () => window.clearInterval(timer);
   }, [refresh3DAssets, threeDAssets]);
@@ -214,6 +236,54 @@ export function TurnaroundGenerator() {
     } finally {
       setRigUploadBusyId("");
     }
+  }
+
+  async function generateAnimationPreview(asset: Local3DAsset) {
+    if (!selectedAnimationId) return;
+    setThreeDError("");
+    setAnimationBusyActorId(asset.candidate_id);
+    try {
+      await createActorAnimationPreview(asset.candidate_id, selectedAnimationId);
+      await refresh3DAssets();
+    } catch (error) {
+      setThreeDError((error as Error).message);
+    } finally {
+      setAnimationBusyActorId("");
+    }
+  }
+
+  function renderAnimationWorkflow(asset: Local3DAsset) {
+    if (asset.rig_intake?.status !== "ready") return null;
+    const preview = asset.animation_previews?.find((item) => item.animation_asset_id === selectedAnimationId);
+    const selectedAnimation = animationAssets.find((item) => item.asset_id === selectedAnimationId);
+    const busy = animationBusyActorId === asset.candidate_id || ["queued", "processing"].includes(preview?.status ?? "");
+    return <div className="animation-workflow">
+      <div className="animation-selector">
+        <div><strong>骨骼动画资产</strong><small>从本地 Mixamo 动画库选择，自动映射到这个 Actor 的 AccuRIG 骨骼。</small></div>
+        <select value={selectedAnimationId} onChange={(event) => setSelectedAnimationId(event.target.value)} disabled={busy || animationAssets.length === 0}>
+          {animationAssets.length === 0 && <option value="">本地动画库为空</option>}
+          {animationAssets.map((animation) => <option key={animation.asset_id} value={animation.asset_id}>{animation.label} · {animation.fps} FPS · {animation.root_motion === "in_place" ? "原地" : "位移"}</option>)}
+        </select>
+        <button type="button" disabled={!selectedAnimationId || busy || preview?.status === "ready"} onClick={() => void generateAnimationPreview(asset)}>{busy ? "正在自动适配…" : preview?.status === "ready" ? "动作预览已就绪" : "自动适配并生成预览"}</button>
+      </div>
+      {preview && <div className={`rig-intake-status status-${preview.status}`}>
+        <strong>{preview.status === "ready" ? "自动骨骼映射已通过，等待四方向形变确认" : preview.status === "failed" ? "动作适配失败" : preview.status === "processing" ? "Blender 正在重定向并渲染四方向" : "动作任务已进入队列"}</strong>
+        <small>{preview.animation_label}{preview.validation_summary ? ` · ${preview.validation_summary.mapped_bones} bones · ${preview.validation_summary.frame_range[0]}–${preview.validation_summary.frame_range[1]} frames` : ""}</small>
+        {preview.error && <p>{preview.error}</p>}
+      </div>}
+      {preview?.status === "ready" && preview.model_url && <div className="animation-preview-block">
+        <GeneratedModelPreview modelUrl={proxiedArtifactUrl(preview.model_url)} animationLabel={selectedAnimation?.label ?? preview.animation_label} />
+        <div className="local-3d-renders animation-renders">
+          {(["front", "right", "back", "left"] as const).map((view) => preview.preview_urls[view] && <figure key={view}><img src={proxiedArtifactUrl(preview.preview_urls[view]!)} alt={`${view} 动画循环预览`} /><figcaption>{view} animated</figcaption></figure>)}
+        </div>
+        <div className="local-3d-actions">
+          {preview.contact_sheet_url && <a href={proxiedArtifactUrl(preview.contact_sheet_url)} target="_blank" rel="noreferrer">打开四方向接触表</a>}
+          {preview.report_url && <a href={proxiedArtifactUrl(preview.report_url)} download>下载映射报告</a>}
+          <a href={proxiedArtifactUrl(preview.model_url)} download>下载动作 GLB</a>
+        </div>
+        <small className="manual-review-note">自动门只检查骨骼覆盖与动作幅度；最终仍需人工确认手腕、肘、肩、髋、膝、脚底和循环接缝。</small>
+      </div>}
+    </div>;
   }
 
   const ready = health?.status === "ready";
@@ -326,6 +396,7 @@ export function TurnaroundGenerator() {
               {(["front", "right", "back", "left"] as const).map((view) => asset.rig_intake?.preview_urls?.[view] && <figure key={view}><img src={proxiedArtifactUrl(asset.rig_intake.preview_urls[view]!)} alt={`${view} 实际 AccuRIG 骨架预览`} /><figcaption>{view} bound</figcaption></figure>)}
             </div></div>}
             {asset.rig_intake?.status === "ready" && <div className="local-3d-actions">{asset.rig_intake.model_url && <a href={proxiedArtifactUrl(asset.rig_intake.model_url)} download>下载蒙皮预览 GLB</a>}{asset.rig_intake.blend_url && <a href={proxiedArtifactUrl(asset.rig_intake.blend_url)} download>下载四权重 Blend</a>}{asset.rig_intake.validation_url && <a href={proxiedArtifactUrl(asset.rig_intake.validation_url)} download>下载骨骼校验报告</a>}</div>}
+            {renderAnimationWorkflow(asset)}
           </article>)}</div>}
           {threeDError && <div className="known-issue"><strong>3D 生命周期请求失败</strong><p>{threeDError}</p></div>}
         </section>}

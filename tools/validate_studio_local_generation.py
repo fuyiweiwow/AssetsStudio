@@ -20,6 +20,7 @@ REQUIRED = [
     "docs/CURRENT_WORKFLOW.md",
     "docs/ENVIRONMENT.md",
     "docs/ACCURIG_HANDOFF.md",
+    "docs/ANIMATION_RETARGET.md",
     "start-local-generation-studio.bat",
     "studio/src/App.tsx",
     "studio/src/components/TurnaroundGenerator.tsx",
@@ -35,6 +36,8 @@ REQUIRED = [
     "tools/model_test/run_hunyuan3d_mv_shape.py",
     "tools/model_test/studio_local_generation_api.py",
     "tools/model_test/process_actor_core_accurig_rig.py",
+    "tools/model_test/retarget_mixamo_to_actor_core.py",
+    "tools/model_test/build_animation_preview_gifs.py",
     "tools/start_studio_local_generation.ps1",
     "tools/cleanup_current_workflow.ps1",
 ]
@@ -49,6 +52,8 @@ PYTHON_SOURCES = [
     "tools/model_test/run_hunyuan3d_mv_shape.py",
     "tools/model_test/studio_local_generation_api.py",
     "tools/model_test/process_actor_core_accurig_rig.py",
+    "tools/model_test/retarget_mixamo_to_actor_core.py",
+    "tools/model_test/build_animation_preview_gifs.py",
 ]
 COMFY_MODELS = [
     Path("models/diffusion_models/flux-2-klein-4b-fp8.safetensors"),
@@ -126,6 +131,7 @@ def validate_published_style_seeds() -> int:
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--check-models", action="store_true")
+    parser.add_argument("--check-local-assets", action="store_true")
     parser.add_argument("--comfy-root")
     args = parser.parse_args()
 
@@ -150,7 +156,9 @@ def main() -> int:
 
     require_marker("studio/src/App.tsx", "CURRENT MODULAR WORKFLOW")
     require_marker("studio/src/components/TurnaroundGenerator.tsx", "选择骨骼 FBX")
+    require_marker("studio/src/components/TurnaroundGenerator.tsx", "自动适配并生成预览")
     require_marker("tools/model_test/studio_local_generation_api.py", '"rig-intakes"')
+    require_marker("tools/model_test/studio_local_generation_api.py", '"animation-previews"')
     require_marker("tools/start_studio_local_generation.ps1", "$env:VIRTUAL_ENV")
     require_marker(
         "tools/cleanup_current_workflow.ps1",
@@ -159,6 +167,23 @@ def main() -> int:
     require_marker("tools/model_test/studio_local_generation_api.py", "sync_published_style_seeds")
 
     published_seeds = validate_published_style_seeds()
+
+    animation_assets = 0
+    if args.check_local_assets:
+        animation_root = ROOT / "workspace" / "local_animation_library"
+        manifests = sorted(animation_root.glob("*/asset_manifest.json"))
+        if not manifests:
+            raise RuntimeError("local animation library is empty")
+        for manifest_path in manifests:
+            payload = json.loads(manifest_path.read_text(encoding="utf-8"))
+            if payload.get("schema") != "assetsstudio_local_animation_asset_v1":
+                raise RuntimeError(f"unsupported local animation manifest: {manifest_path}")
+            source = manifest_path.parent / payload["source_filename"]
+            if not source.is_file():
+                raise RuntimeError(f"local animation source is missing: {source}")
+            if hashlib.sha256(source.read_bytes()).hexdigest() != payload["sha256"]:
+                raise RuntimeError(f"local animation source hash mismatch: {source}")
+            animation_assets += 1
 
     if args.check_models:
         comfy_root = discover_comfy_root(args.comfy_root)
@@ -177,7 +202,7 @@ def main() -> int:
     print(
         "ASSETSSTUDIO_CURRENT_WORKFLOW_PASS "
         f"files={len(REQUIRED)} published_seeds={published_seeds} "
-        f"models_checked={args.check_models}"
+        f"animation_assets={animation_assets} models_checked={args.check_models}"
     )
     return 0
 

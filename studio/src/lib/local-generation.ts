@@ -8,6 +8,43 @@ export interface LocalGenerationHealth {
   models: Record<string, boolean>;
   comfy_url: string;
   artifact_root: string;
+  local_animation_library_root?: string;
+  local_animation_assets?: number;
+}
+
+export interface LocalAnimationAsset {
+  schema: "assetsstudio_local_animation_asset_v1";
+  asset_id: string;
+  kind: "skeletal_animation";
+  label: string;
+  source_rig: "mixamo";
+  motion: string;
+  fps: number;
+  loop: boolean;
+  root_motion: "in_place" | "source";
+  local_only: true;
+  source_available: boolean;
+}
+
+export interface ActorAnimationPreview {
+  schema: "assetsstudio_actor_animation_preview_v1";
+  actor_asset_id: string;
+  animation_asset_id: string;
+  animation_label: string;
+  motion: string;
+  status: "not_generated" | "queued" | "processing" | "ready" | "failed";
+  updated_at?: string | null;
+  error?: string | null;
+  model_url?: string | null;
+  report_url?: string | null;
+  contact_sheet_url?: string | null;
+  preview_urls: Partial<Record<"front" | "right" | "back" | "left", string>>;
+  validation_summary?: {
+    mapped_bones: number;
+    frame_range: [number, number];
+    fps: number;
+    automatic_gates: Record<string, boolean>;
+  };
 }
 
 export interface TurnaroundJob {
@@ -110,6 +147,7 @@ export interface Local3DAsset {
     blend_url?: string;
     validation_url?: string;
   } | null;
+  animation_previews?: ActorAnimationPreview[];
 }
 
 const API_ROOT = "/api/local-generation";
@@ -238,6 +276,20 @@ export async function fetchLocal3DAssets(signal?: AbortSignal) {
   return responseJson<{ candidates: Local3DAsset[]; assets: Local3DAsset[] }>(await fetch(
     `${API_ROOT}/3d-assets`,
     { cache: "no-store", signal },
+  ));
+}
+
+export async function fetchAnimationLibrary(signal?: AbortSignal) {
+  return responseJson<{ assets: LocalAnimationAsset[] }>(await fetch(
+    `${API_ROOT}/animation-library`,
+    { cache: "no-store", signal },
+  ));
+}
+
+export async function createActorAnimationPreview(assetId: string, animationAssetId: string) {
+  return responseJson<{ animation_preview: ActorAnimationPreview }>(await fetch(
+    `${API_ROOT}/3d-library/${encodeURIComponent(assetId)}/animation-previews/${encodeURIComponent(animationAssetId)}`,
+    { method: "POST" },
   ));
 }
 

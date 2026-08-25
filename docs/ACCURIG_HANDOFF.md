@@ -31,4 +31,4 @@ AccuRIG 与 Actor 一对一。不要把其他 Actor 的骨骼 FBX 回传到当�
 - 状态：`ready`；101 bones；无缺失必需骨；0 未权重顶点；尺度漂移约 `0.00012%`
 - 运行时副本：每顶点最多 4 influences；原始 AccuRIG 权重副本同时保留。
 
-验证失败的 intake 会从 Studio 和本地工作区删除；成功结果在用户确认静态预览前不会更新 Slot 锚点状态。
+验证失败的 intake 会从 Studio 和本地工作区删除。当前 intake 的静态四方向 Gate 已由用户确认为通过；下一道 Gate 是从 Studio 选择 Mixamo 动画并检查重定向后的动态形变。详见 [骨骼动画资产与自动适配](ANIMATION_RETARGET.md)。

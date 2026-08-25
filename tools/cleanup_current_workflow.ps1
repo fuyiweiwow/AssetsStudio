@@ -34,7 +34,7 @@ if ($protectedHash -ne "76CDFB3B70A357625DC5CFEEA95F033D49A06871DCF1BE4477255DE0
 }
 Write-Output "PROTECTED_ACCURIG path=$protectedRigged sha256=$protectedHash"
 
-$workspaceKeep = @("actor_core", "local_asset_library", "local_3d_asset_library")
+$workspaceKeep = @("actor_core", "local_asset_library", "local_3d_asset_library", "local_animation_library")
 Get-ChildItem -LiteralPath $workspaceRoot -Force | Where-Object {
     $workspaceKeep -notcontains $_.Name
 } | ForEach-Object {

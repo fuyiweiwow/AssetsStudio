@@ -3,11 +3,13 @@ import {
   acceptLocal3DCandidate,
   acceptLocalCandidate,
   createAccessoryTurnaround,
+  createActorAnimationPreview,
   createBaseActorTurnaround,
   createStyleSeed,
   destroyLocal3DCandidate,
   destroyLocalCandidate,
   fetchLocal3DAssets,
+  fetchAnimationLibrary,
   fetchLocalGenerationHealth,
   proxiedArtifactUrl,
   uploadActorCoreRig,
@@ -139,6 +141,20 @@ describe("local generation client", () => {
     expect(fetchMock.mock.calls[0][0]).toBe("/api/local-generation/3d-library/shape-1/rig-intakes");
     expect(fetchMock.mock.calls[0][1]).toMatchObject({ method: "POST", body: file });
     expect(fetchMock.mock.calls[0][1].headers["X-AssetsStudio-Filename"]).toBe("actor%20bound.fbx");
+    vi.unstubAllGlobals();
+  });
+
+  it("lists local animations and requests automatic retargeting for one Actor", async () => {
+    const fetchMock = vi.fn().mockImplementation(async () => new Response(JSON.stringify({
+      assets: [{ asset_id: "mixamo_standard_walk_v1", label: "Mixamo Standard Walk" }],
+      animation_preview: { status: "queued", animation_asset_id: "mixamo_standard_walk_v1" },
+    }), { status: 202, headers: { "Content-Type": "application/json" } }));
+    vi.stubGlobal("fetch", fetchMock);
+    await fetchAnimationLibrary();
+    await createActorAnimationPreview("shape-1", "mixamo_standard_walk_v1");
+    expect(fetchMock.mock.calls[0][0]).toBe("/api/local-generation/animation-library");
+    expect(fetchMock.mock.calls[1][0]).toBe("/api/local-generation/3d-library/shape-1/animation-previews/mixamo_standard_walk_v1");
+    expect(fetchMock.mock.calls[1][1]).toMatchObject({ method: "POST" });
     vi.unstubAllGlobals();
   });
 });
