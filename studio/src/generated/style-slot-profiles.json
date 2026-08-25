@@ -6,7 +6,7 @@
       "schema": "assetsstudio_style_profile_v1",
       "id": "qstyle_anime_western_fantasy_no_face_v1",
       "label": "无嘴无鼻 Q 版日漫西幻通用风格",
-      "revision": 1,
+      "revision": 2,
       "status": "provisional",
       "consumer_tags": [
         "bombadvanture",
@@ -42,10 +42,10 @@
           2.1,
           2.5
         ],
-        "silhouette": "compact chibi with an oversized round head, very small torso, short sturdy limbs, large readable hands and feet"
+        "silhouette": "compact chibi with an oversized softly flattened anime head, broad shallow facial plane, narrow tapered torso, short clean limbs, and large mitten-like hands and boot-like feet; never a perfect sphere or pear-shaped baby body"
       },
       "shape_language": [
-        "oversized round head and compact facial spacing",
+        "oversized softly flattened anime head with a broad shallow face plane, gently squared cheeks and compact facial spacing; not a perfect sphere",
         "large expressive anime eyes; emotion comes from eyes, eyebrows, ears and pose",
         "no visible mouth, lips, nose, nose bridge or nostrils",
         "large simple rounded masses and low-frequency silhouette before surface detail",
@@ -92,7 +92,7 @@
       "prompt_contract": {
         "positive": [
           "Q-style Japanese-anime western fantasy game asset profile",
-          "compact 2.1 to 2.5 heads-tall body with an oversized round head",
+          "compact 2.1 to 2.5 heads-tall body with an oversized softly flattened anime head, broad shallow face plane and gently squared cheeks",
           "large expressive anime eyes and simple eyebrows on a completely mouthless and noseless face",
           "polished soft 3D game figurine with smooth rounded low-frequency geometry",
           "clean matte semantic color blocks, soft neutral studio light and subtle ambient occlusion",
@@ -100,7 +100,7 @@
         ],
         "negative": [
           "visible mouth, lips, teeth, tongue, smile line, nose, nose bridge, nostrils or muzzle",
-          "realistic adult anatomy, long slender limbs or small head",
+          "realistic adult anatomy, long slender limbs, small head, perfect spherical head, pear-shaped belly or generic baby mannequin",
           "extreme one-and-a-half-head super-deformed proportions",
           "photoreal skin, pores, painterly brushwork or noisy micro-texture",
           "thin fragile straps, excessive ornaments or sharp high-frequency detail",
@@ -109,7 +109,7 @@
         "immutable_traits": [
           "no visible mouth or mouth line",
           "no visible nose, nose bridge or nostrils",
-          "oversized round head and 2.1 to 2.5 heads-tall compact silhouette",
+          "oversized softly flattened anime head and 2.1 to 2.5 heads-tall compact silhouette",
           "large expressive anime eyes with simple eyebrows",
           "soft 3D anime figurine material response",
           "low-frequency readable western-fantasy geometry",
@@ -118,8 +118,8 @@
       },
       "actor_core_contract": {
         "positive": [
-          "compact 2.1 to 2.5 heads-tall body with an oversized round head",
-          "very small torso with short sturdy limbs and large simple hands and feet",
+          "compact 2.1 to 2.5 heads-tall body with an oversized softly flattened anime head, broad shallow face plane and gently squared cheeks",
+          "small narrow torso tapering cleanly to the hips, short clean limbs, integral mitten-like hands without separated fingers, and simple boot-like feet without toes",
           "polished soft 3D game figurine with smooth rounded low-frequency geometry",
           "single clean matte neutral material with soft studio light and subtle ambient occlusion"
         ],
@@ -127,14 +127,14 @@
           "eyes, eyebrows, eyelashes, eye sockets, mouth, lips, nose, ears or any facial feature",
           "hair, scalp cap, clothes, bodysuit, underwear, shoes, boots, gloves, jewelry or accessories",
           "seams, cuffs, collars, waistbands, hems, soles, color blocking or garment-like topology",
-          "realistic adult anatomy, sexual anatomy, long slender limbs, small head or skin pores",
+          "realistic adult anatomy, sexual anatomy, long slender limbs, small head, perfect spherical head, pear-shaped belly, generic baby mannequin, separated fingers, toes or skin pores",
           "perspective distortion, action pose, dramatic lighting, text or labels"
         ],
         "immutable_traits": [
           "fully bald and earless smooth head",
           "completely blank featureless face",
           "single continuous non-sexual neutral mannequin body shell",
-          "oversized round head and 2.1 to 2.5 heads-tall compact silhouette",
+          "oversized softly flattened anime head and 2.1 to 2.5 heads-tall compact silhouette",
           "soft rounded low-frequency volume language"
         ]
       },
@@ -148,7 +148,7 @@
         "checks": [
           "no visible mouth, mouth line, lips, nose, nose bridge or nostrils",
           "target total-head range",
-          "oversized round-head silhouette readability at thumbnail size",
+          "oversized softly flattened anime-head silhouette and narrow torso taper readability at thumbnail size",
           "identity and outfit may vary while shape and render grammar remain stable",
           "hair length, rear mass, side locks, bangs and parting describe one compatible topology across all views",
           "same material response across character and accessory",

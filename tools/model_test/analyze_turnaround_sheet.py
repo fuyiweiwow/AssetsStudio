@@ -60,7 +60,40 @@ def histogram(panel: np.ndarray, mask: np.ndarray) -> np.ndarray:
     return hist
 
 
-def analyze_turnaround(image_path: Path, panel_count: int = 3) -> dict:
+def normalized_front_width_profile(
+    image_path: Path, panel_count: int
+) -> np.ndarray:
+    image = cv2.imread(str(image_path), cv2.IMREAD_COLOR)
+    if image is None:
+        raise RuntimeError(f"Unable to read {image_path}")
+    panel_width = image.shape[1] // panel_count
+    panel = image[:, :panel_width]
+    mask = foreground_mask(panel)
+    points = cv2.findNonZero(mask)
+    if points is None:
+        raise RuntimeError(f"No foreground detected in proportion reference {image_path}")
+    x, y, width, height = cv2.boundingRect(points)
+    normalized = cv2.resize(
+        mask[y : y + height, x : x + width],
+        (256, 256),
+        interpolation=cv2.INTER_NEAREST,
+    )
+    return (normalized > 0).mean(axis=1)
+
+
+def infer_reference_panel_count(image_path: Path) -> int:
+    image = cv2.imread(str(image_path), cv2.IMREAD_COLOR)
+    if image is None:
+        raise RuntimeError(f"Unable to read {image_path}")
+    height, width = image.shape[:2]
+    return 3 if width / height >= 1.5 else 1
+
+
+def analyze_turnaround(
+    image_path: Path,
+    panel_count: int = 3,
+    proportion_reference: Path | None = None,
+) -> dict:
     image = cv2.imread(str(image_path), cv2.IMREAD_COLOR)
     if image is None:
         raise RuntimeError(f"Unable to read {image_path}")
@@ -116,12 +149,31 @@ def analyze_turnaround(image_path: Path, panel_count: int = 3) -> dict:
         ]
         >= 0.55,
     }
+    proportion_comparison = None
+    if proportion_reference is not None:
+        reference_panels = infer_reference_panel_count(proportion_reference)
+        candidate_profile = normalized_front_width_profile(image_path, panel_count)
+        reference_profile = normalized_front_width_profile(
+            proportion_reference, reference_panels
+        )
+        width_profile_mae = round(
+            float(np.abs(candidate_profile - reference_profile).mean()), 4
+        )
+        proportion_comparison = {
+            "reference": str(proportion_reference.resolve()),
+            "reference_panel_count": reference_panels,
+            "front_width_profile_mae": width_profile_mae,
+            "method": "normalized_front_silhouette_row_width_v1",
+        }
+        metrics["front_width_profile_mae"] = width_profile_mae
+        gates["front_width_profile_mae_lte_0_13"] = width_profile_mae <= 0.13
     return {
         "image": str(image_path.resolve()),
         "image_size": [image_width, image_height],
         "panels": panel_reports,
         "pairwise_color_histogram_correlation": pairwise,
         "metrics": metrics,
+        "proportion_comparison": proportion_comparison,
         "automatic_gates": gates,
         "automatic_pass": all(gates.values()),
         "manual_gates_required": [

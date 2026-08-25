@@ -166,6 +166,10 @@ def main() -> int:
         "76CDFB3B70A357625DC5CFEEA95F033D49A06871DCF1BE4477255DE0DF4FE065",
     )
     require_marker("tools/model_test/studio_local_generation_api.py", "sync_published_style_seeds")
+    require_marker(
+        "tools/model_test/studio_local_generation_api.py",
+        "approved_style_seed_contract_and_proportion_gate",
+    )
 
     published_seeds = validate_published_style_seeds()
 

@@ -215,6 +215,11 @@ def compile_profile_turnaround_prompt(
         return (
             f"Design ONE canonical modular Actor body core: {subject.strip()}. "
             "This is not a complete character and must contain no identity or equipment slots. "
+            "The selected style authority is compiled into a proportion-and-shape contract "
+            "and a post-generation silhouette gate. Preserve its relative head height and width, "
+            "shallow anime facial plane, narrow torso taper, limb lengths, hand and foot mass, "
+            "three-view layout and soft low-frequency silhouette. Remove and do not reproduce "
+            "its identity, hair, ears, eyes, eyebrows, clothing, footwear, colors or accessories. "
             "Create one production orthographic turnaround sheet with exactly three separate "
             "full-body views arranged left to right: exact front, exact right profile, exact "
             "back. Keep exactly the same smooth body shell, body proportions, neutral "
@@ -487,7 +492,7 @@ def sync_published_style_seeds() -> int:
     return imported
 
 
-def resolve_library_reference(kind: str, asset_id: str) -> tuple[str, str]:
+def library_reference_path(kind: str, asset_id: str) -> tuple[Path, str]:
     asset_dir = library_asset_dir(kind, asset_id)
     manifest_path = asset_dir / "asset_manifest.json"
     if not manifest_path.is_file():
@@ -496,9 +501,14 @@ def resolve_library_reference(kind: str, asset_id: str) -> tuple[str, str]:
     if manifest.get("review_status", "approved") != "approved":
         raise ValueError(f"local {kind} asset is not approved: {asset_id}")
     artifact = asset_dir / manifest["artifact_filename"]
-    return prepare_reference_file(
-        artifact, f"local_asset_library/{LIBRARY_KIND_DIR[kind]}/{asset_id}"
-    )
+    if not artifact.is_file():
+        raise ValueError(f"local {kind} artifact is missing: {asset_id}")
+    return artifact, f"local_asset_library/{LIBRARY_KIND_DIR[kind]}/{asset_id}"
+
+
+def resolve_library_reference(kind: str, asset_id: str) -> tuple[str, str]:
+    artifact, source_label = library_reference_path(kind, asset_id)
+    return prepare_reference_file(artifact, source_label)
 
 
 def list_library_assets(kind: str | None = None) -> list[dict[str, Any]]:
@@ -1133,6 +1143,8 @@ def run_generation(job_id: str) -> None:
     try:
         update_job(job_id, status="submitting")
         job_kind = job.get("job_kind", "base_actor")
+        proportion_reference: Path | None = None
+        reference_role = "style_edit"
         if job_kind == "accessory":
             reference_image, reference_source = prepare_slot_reference(
                 job["profile_snapshot"]["slot"]
@@ -1151,18 +1163,24 @@ def run_generation(job_id: str) -> None:
             prefix = f"assetsstudio/style_seeds/{job_id}"
         else:
             if job.get("style_seed_asset_id"):
-                _, lineage_source = resolve_library_reference(
+                proportion_reference, reference_source = library_reference_path(
                     "style_seed", job["style_seed_asset_id"]
                 )
-                reference_source = f"lineage-only:{lineage_source}"
+                reference_source = f"compiled-contract-and-gate:{reference_source}"
+                reference_role = "approved_style_seed_contract_and_proportion_gate"
             else:
-                reference_source = (
-                    "actor-core-contract:"
-                    + job["profile_snapshot"]["style"]["id"]
+                style_profile = job["profile_snapshot"]["style"]
+                authority = next(
+                    item
+                    for item in style_profile["authorities"]
+                    if item["role"] == "primary_proportion" and item["required"]
                 )
-            # Complete-character style images carry hair, face and garment identity.
-            # Actor Core consumes their versioned lineage and prompt projection, not
-            # their raw ReferenceLatent pixels.
+                proportion_reference = ROOT / authority["path"]
+                reference_source = f"compiled-contract-and-gate:{authority['path']}"
+                reference_role = "primary_proportion_contract_and_gate"
+            # Complete-character pixels preserve identity too strongly for a blank
+            # canonical body. Actor Core uses the versioned contract plus a measured
+            # post-generation silhouette gate; raw ReferenceLatent remains disabled.
             reference_image = None
             artifact_root = BASE_ACTOR_ARTIFACT_ROOT
             artifact_name = "base_actor_turnaround.png"
@@ -1219,7 +1237,9 @@ def run_generation(job_id: str) -> None:
         automatic_qa = None
         qa_status = "visual_review_required"
         metrics_url = None
-        automatic_qa = analyze_turnaround(artifact, 3)
+        automatic_qa = analyze_turnaround(
+            artifact, 3, proportion_reference=proportion_reference
+        )
         if job_kind == "accessory":
             manual_gates_required = [
                 "front/right-profile/back orientation is correct",
@@ -1245,6 +1265,7 @@ def run_generation(job_id: str) -> None:
                 "face is a smooth blank surface with no eyes, eyebrows, eyelashes, mouth, or nose",
                 "no hair, clothes, bodysuit, underwear, footwear, gloves, accessories, seams, cuffs, or garment-like topology",
                 "single neutral mannequin material does not imply clothing or identity",
+                "front silhouette preserves the approved reference's flattened anime head, narrow torso taper, and compact limb masses rather than a spherical baby or pear-shaped body",
                 "no extra limbs, props, perspective pose or cropped feet",
             ]
         automatic_qa["manual_gates_required"] = manual_gates_required
@@ -1274,6 +1295,7 @@ def run_generation(job_id: str) -> None:
                 "cfg": 1.0,
                 "reference_latent": reference_image is not None,
                 "reference_source": reference_source,
+                "reference_role": reference_role,
             },
         }
         (job_dir / "record.json").write_text(
@@ -1446,7 +1468,9 @@ class Handler(BaseHTTPRequestHandler):
     server_version = "AssetsStudioLocalGeneration/0.3"
 
     def log_message(self, format: str, *args: object) -> None:
-        print(f"[{self.log_date_time_string()}] {format % args}", flush=True)
+        # Hidden/detached Windows launchers may close their inherited console pipe.
+        # Access logging must never be part of request correctness.
+        return
 
     def send_json(self, status: HTTPStatus, payload: dict[str, Any]) -> None:
         data = json.dumps(payload, ensure_ascii=False).encode("utf-8")
