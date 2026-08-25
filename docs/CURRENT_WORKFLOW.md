@@ -24,7 +24,7 @@ Studio 为多个游戏提供可复用美术资产。当前 `ba` 仅保留在 `co
 - 当前 ActorSlotProfile：`actor_core_0ef398ca_slots_v1`，所有锚点在 AccuRIG 人工确认前均为 `measured_provisional`。
 - 当前可安全生成的首个独立 authority：`waist_accessory`。
 - AccuRIG 导出已通过 Studio intake 和用户静态检查：101 bones、61,002 vertices、122,000 faces，运行时最多 4 influences。
-- 当前动画库只有 `mixamo_standard_walk_v1`。自动映射覆盖 22 个核心骨，已通过骨骼覆盖、帧范围和四肢动作幅度门；当前 Gate 是用户检查四方向循环中的手腕、肘、肩、髋、膝、脚底与循环接缝。
+- 当前动画库只有 `mixamo_standard_walk_v1`。自动映射覆盖 22 个核心骨，并检查骨骼覆盖、帧范围、四肢动作幅度、双手左右次序和背后交叉；当前 Gate 是用户检查修正后的四方向循环中的手腕、肘、肩、髋、膝、脚底与循环接缝。
 - 动作变形确认后，开始 `head_hair` 的“在 Actor 上生成→隔离→四视图检查”工作流。
 
 不要直接生成带头发、衣服和配件的完整 3D 角色。这会破坏 Slot 生命周期、独立销毁/入库和跨项目复用。

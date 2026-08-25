@@ -16,7 +16,7 @@ import sys
 from pathlib import Path
 
 import bpy
-from mathutils import Vector
+from mathutils import Quaternion, Vector
 
 
 MIXAMO_TO_ACCURIG = {
@@ -52,6 +52,16 @@ MOTION_GATE_BONES = (
     "CC_Base_L_Calf",
     "CC_Base_R_Calf",
 )
+ARM_CHAIN = {
+    "CC_Base_L_Clavicle",
+    "CC_Base_L_Upperarm",
+    "CC_Base_L_Forearm",
+    "CC_Base_L_Hand",
+    "CC_Base_R_Clavicle",
+    "CC_Base_R_Upperarm",
+    "CC_Base_R_Forearm",
+    "CC_Base_R_Hand",
+}
 
 
 def cli_args() -> argparse.Namespace:
@@ -103,6 +113,15 @@ def animated_action(source: bpy.types.Object, before_actions: set[str]):
 def rotation_angle_degrees(quaternion) -> float:
     value = quaternion.normalized()
     return math.degrees(2.0 * math.acos(min(1.0, abs(value.w))))
+
+
+def signed_local_x_twist(quaternion) -> float:
+    """Return the signed twist around a Mixamo bone's local X axis."""
+    value = quaternion.normalized()
+    length = math.hypot(value.w, value.x)
+    if length < 1.0e-8:
+        return 0.0
+    return 2.0 * math.atan2(value.x / length, value.w / length)
 
 
 def reset_target_pose(target: bpy.types.Object) -> None:
@@ -263,29 +282,78 @@ def main() -> int:
         for target_name in mapping
     }
     target_to_world_inverse = target.matrix_world.inverted()
+    upperarm_names = ("CC_Base_L_Upperarm", "CC_Base_R_Upperarm")
+    arm_swing_radians: dict[str, dict[int, float]] = {
+        name: {} for name in upperarm_names
+    }
+    for frame in range(start, end + 1):
+        scene.frame_set(frame)
+        bpy.context.view_layer.update()
+        for target_name in upperarm_names:
+            source_bone = source.pose.bones[mapping[target_name]]
+            arm_swing_radians[target_name][frame] = signed_local_x_twist(
+                source_bone.matrix_basis.to_quaternion()
+            )
+    for target_name, values in arm_swing_radians.items():
+        center = (min(values.values()) + max(values.values())) * 0.5
+        arm_swing_radians[target_name] = {
+            frame: value - center for frame, value in values.items()
+        }
     action_name = args.animation_asset_id
     target_action = bpy.data.actions.new(action_name)
     target_action.use_fake_user = True
     target.animation_data_create()
     target.animation_data.action = target_action
     rotation_samples: dict[str, list[float]] = {name: [] for name in mapping}
+    hand_lateral_separation: list[float] = []
+    hand_depth_pairs: list[list[float]] = []
 
     for frame in range(start, end + 1):
         scene.frame_set(frame)
         bpy.context.view_layer.update()
         reset_target_pose(target)
         for target_name, source_name in mapping.items():
+            pose_bone = target.pose.bones[target_name]
+            if target_name in ARM_CHAIN:
+                if target_name in upperarm_names:
+                    parent = pose_bone.parent
+                    rest_relative = (
+                        parent.bone.matrix_local.inverted()
+                        @ pose_bone.bone.matrix_local
+                    )
+                    base_object = parent.matrix @ rest_relative
+                    base_world = target.matrix_world @ base_object
+                    world_swing = Quaternion(
+                        (0.0, 0.0, 1.0), arm_swing_radians[target_name][frame]
+                    )
+                    desired_world = (
+                        world_swing @ base_world.to_quaternion()
+                    ).to_matrix().to_4x4()
+                    desired_world.translation = base_world.translation
+                    pose_bone.matrix = target_to_world_inverse @ desired_world
+                    mapped_rotation = pose_bone.matrix_basis.to_quaternion().normalized()
+                    pose_bone.rotation_quaternion = mapped_rotation
+                else:
+                    mapped_rotation = Quaternion((1.0, 0.0, 0.0, 0.0))
+                    pose_bone.rotation_quaternion = mapped_rotation
+                pose_bone.location = (0.0, 0.0, 0.0)
+                pose_bone.scale = (1.0, 1.0, 1.0)
+                pose_bone.keyframe_insert(
+                    "rotation_quaternion", frame=frame, group=target_name
+                )
+                rotation_samples[target_name].append(
+                    rotation_angle_degrees(mapped_rotation)
+                )
+                continue
             source_pose_world = source.matrix_world @ source.pose.bones[source_name].matrix
-            source_delta = (
-                source_pose_world.to_quaternion()
-                @ source_rest_world[target_name].to_quaternion().inverted()
-            )
+            # Re-express the source pose in the target bone's rest basis.
             desired_world_rotation = (
-                source_delta @ target_rest_world[target_name].to_quaternion()
+                target_rest_world[target_name].to_quaternion()
+                @ source_rest_world[target_name].to_quaternion().inverted()
+                @ source_pose_world.to_quaternion()
             )
             desired_world = desired_world_rotation.to_matrix().to_4x4()
             desired_world.translation = target_rest_world[target_name].translation
-            pose_bone = target.pose.bones[target_name]
             pose_bone.matrix = target_to_world_inverse @ desired_world
             mapped_rotation = pose_bone.matrix_basis.to_quaternion().normalized()
             pose_bone.location = (0.0, 0.0, 0.0)
@@ -297,11 +365,39 @@ def main() -> int:
             if target_name == "CC_Base_Hip":
                 pose_bone.keyframe_insert("location", frame=frame, group=target_name)
             rotation_samples[target_name].append(rotation_angle_degrees(mapped_rotation))
+        left_hand = target.matrix_world @ target.pose.bones["CC_Base_L_Hand"].tail
+        right_hand = target.matrix_world @ target.pose.bones["CC_Base_R_Hand"].tail
+        hip = target.matrix_world @ target.pose.bones["CC_Base_Hip"].head
+        hand_lateral_separation.append(left_hand.x - right_hand.x)
+        hand_depth_pairs.append([
+            left_hand.y - hip.y,
+            right_hand.y - hip.y,
+        ])
 
     motion_ranges = {
         name: round(max(values) - min(values), 4)
         for name, values in rotation_samples.items()
     }
+    left_depth = [pair[0] for pair in hand_depth_pairs]
+    right_depth = [pair[1] for pair in hand_depth_pairs]
+    left_mean = sum(left_depth) / len(left_depth)
+    right_mean = sum(right_depth) / len(right_depth)
+    covariance = sum(
+        (left - left_mean) * (right - right_mean)
+        for left, right in hand_depth_pairs
+    )
+    correlation_denominator = math.sqrt(
+        sum((value - left_mean) ** 2 for value in left_depth)
+        * sum((value - right_mean) ** 2 for value in right_depth)
+    )
+    hand_depth_correlation = (
+        covariance / correlation_denominator
+        if correlation_denominator > 1.0e-8
+        else 0.0
+    )
+    both_hands_behind_fraction = sum(
+        left > 0.0 and right > 0.0 for left, right in hand_depth_pairs
+    ) / len(hand_depth_pairs)
     gates = {
         "complete_22_bone_mapping": len(mapping) == 22,
         "usable_frame_range": end - start + 1 >= 20,
@@ -309,6 +405,9 @@ def main() -> int:
         "right_arm_motion": motion_ranges["CC_Base_R_Upperarm"] >= 5.0,
         "left_leg_motion": motion_ranges["CC_Base_L_Thigh"] >= 5.0,
         "right_leg_motion": motion_ranges["CC_Base_R_Thigh"] >= 5.0,
+        "hands_keep_left_right_order": min(hand_lateral_separation) > 0.0,
+        "hands_counter_swing": hand_depth_correlation <= -0.5,
+        "hands_not_together_behind_back": both_hands_behind_fraction <= 0.05,
     }
 
     imported = [obj for obj in bpy.data.objects if obj.name not in before_objects]
@@ -357,6 +456,15 @@ def main() -> int:
         "root_motion": "in_place",
         "mapped_bones": mapping,
         "motion_ranges_degrees": motion_ranges,
+        "hand_trajectory": {
+            "minimum_left_right_separation": round(min(hand_lateral_separation), 6),
+            "maximum_left_right_separation": round(max(hand_lateral_separation), 6),
+            "left_depth_range": [round(min(left_depth), 6), round(max(left_depth), 6)],
+            "right_depth_range": [round(min(right_depth), 6), round(max(right_depth), 6)],
+            "depth_correlation": round(hand_depth_correlation, 6),
+            "both_hands_behind_fraction": round(both_hands_behind_fraction, 6),
+        },
+        "retarget_strategy": "rest_basis_body_with_centered_world_z_chibi_arm_swing",
         "gates": gates,
         "outputs": {"blend": str(blend_path), "glb": str(glb_path)},
         "preview_frames": preview_frames,

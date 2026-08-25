@@ -159,6 +159,7 @@ def main() -> int:
     require_marker("studio/src/components/TurnaroundGenerator.tsx", "自动适配并生成预览")
     require_marker("tools/model_test/studio_local_generation_api.py", '"rig-intakes"')
     require_marker("tools/model_test/studio_local_generation_api.py", '"animation-previews"')
+    require_marker("tools/model_test/retarget_mixamo_to_actor_core.py", "hands_not_together_behind_back")
     require_marker("tools/start_studio_local_generation.ps1", "$env:VIRTUAL_ENV")
     require_marker(
         "tools/cleanup_current_workflow.ps1",

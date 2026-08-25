@@ -286,9 +286,10 @@ export async function fetchAnimationLibrary(signal?: AbortSignal) {
   ));
 }
 
-export async function createActorAnimationPreview(assetId: string, animationAssetId: string) {
+export async function createActorAnimationPreview(assetId: string, animationAssetId: string, force = false) {
+  const query = force ? "?force=true" : "";
   return responseJson<{ animation_preview: ActorAnimationPreview }>(await fetch(
-    `${API_ROOT}/3d-library/${encodeURIComponent(assetId)}/animation-previews/${encodeURIComponent(animationAssetId)}`,
+    `${API_ROOT}/3d-library/${encodeURIComponent(assetId)}/animation-previews/${encodeURIComponent(animationAssetId)}${query}`,
     { method: "POST" },
   ));
 }

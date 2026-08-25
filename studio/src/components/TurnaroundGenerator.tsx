@@ -243,7 +243,8 @@ export function TurnaroundGenerator() {
     setThreeDError("");
     setAnimationBusyActorId(asset.candidate_id);
     try {
-      await createActorAnimationPreview(asset.candidate_id, selectedAnimationId);
+      const current = asset.animation_previews?.find((item) => item.animation_asset_id === selectedAnimationId);
+      await createActorAnimationPreview(asset.candidate_id, selectedAnimationId, current?.status === "ready");
       await refresh3DAssets();
     } catch (error) {
       setThreeDError((error as Error).message);
@@ -264,7 +265,7 @@ export function TurnaroundGenerator() {
           {animationAssets.length === 0 && <option value="">本地动画库为空</option>}
           {animationAssets.map((animation) => <option key={animation.asset_id} value={animation.asset_id}>{animation.label} · {animation.fps} FPS · {animation.root_motion === "in_place" ? "原地" : "位移"}</option>)}
         </select>
-        <button type="button" disabled={!selectedAnimationId || busy || preview?.status === "ready"} onClick={() => void generateAnimationPreview(asset)}>{busy ? "正在自动适配…" : preview?.status === "ready" ? "动作预览已就绪" : "自动适配并生成预览"}</button>
+        <button type="button" disabled={!selectedAnimationId || busy} onClick={() => void generateAnimationPreview(asset)}>{busy ? "正在自动适配…" : preview?.status === "ready" ? "重新生成动作预览" : "自动适配并生成预览"}</button>
       </div>
       {preview && <div className={`rig-intake-status status-${preview.status}`}>
         <strong>{preview.status === "ready" ? "自动骨骼映射已通过，等待四方向形变确认" : preview.status === "failed" ? "动作适配失败" : preview.status === "processing" ? "Blender 正在重定向并渲染四方向" : "动作任务已进入队列"}</strong>

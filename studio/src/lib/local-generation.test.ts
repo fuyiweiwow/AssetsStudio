@@ -152,9 +152,11 @@ describe("local generation client", () => {
     vi.stubGlobal("fetch", fetchMock);
     await fetchAnimationLibrary();
     await createActorAnimationPreview("shape-1", "mixamo_standard_walk_v1");
+    await createActorAnimationPreview("shape-1", "mixamo_standard_walk_v1", true);
     expect(fetchMock.mock.calls[0][0]).toBe("/api/local-generation/animation-library");
     expect(fetchMock.mock.calls[1][0]).toBe("/api/local-generation/3d-library/shape-1/animation-previews/mixamo_standard_walk_v1");
     expect(fetchMock.mock.calls[1][1]).toMatchObject({ method: "POST" });
+    expect(fetchMock.mock.calls[2][0]).toBe("/api/local-generation/3d-library/shape-1/animation-previews/mixamo_standard_walk_v1?force=true");
     vi.unstubAllGlobals();
   });
 });

@@ -836,6 +836,11 @@ def public_animation_preview(asset_id: str, animation_asset_id: str) -> dict[str
         and (directory / "retargeted.glb").is_file()
         and all((directory / f"{view}.gif").is_file() for view in ("front", "right", "back", "left"))
     )
+    visible_status = "ready" if ready else job_status or "not_generated"
+    visible_error = job.get("error")
+    if job_status == "ready" and not ready:
+        visible_status = "failed"
+        visible_error = "animation job outputs are incomplete; regenerate the preview"
     route = f"/api/3d-library/{asset_id}/animation-previews/{animation_asset_id}"
     result = {
         "schema": "assetsstudio_actor_animation_preview_v1",
@@ -843,9 +848,9 @@ def public_animation_preview(asset_id: str, animation_asset_id: str) -> dict[str
         "animation_asset_id": animation_asset_id,
         "animation_label": animation["label"],
         "motion": animation["motion"],
-        "status": "ready" if ready else job_status or "not_generated",
+        "status": visible_status,
         "updated_at": job.get("updated_at"),
-        "error": job.get("error"),
+        "error": visible_error,
         "model_url": f"{route}/model" if ready else None,
         "report_url": f"{route}/report" if ready else None,
         "contact_sheet_url": f"{route}/contact-sheet" if ready else None,
@@ -970,11 +975,17 @@ def process_animation_preview(asset_id: str, animation_asset_id: str) -> None:
     write_animation_job(directory, job)
 
 
-def create_animation_preview(asset_id: str, animation_asset_id: str) -> dict[str, Any]:
+def create_animation_preview(
+    asset_id: str,
+    animation_asset_id: str,
+    force: bool = False,
+) -> dict[str, Any]:
     load_3d_manifest("library", asset_id)
     load_animation_asset(animation_asset_id)
     current = public_animation_preview(asset_id, animation_asset_id)
-    if current["status"] in {"ready", "queued", "processing"}:
+    if current["status"] in {"queued", "processing"} or (
+        current["status"] == "ready" and not force
+    ):
         return current
     directory = animation_preview_directory(asset_id, animation_asset_id)
     now = utc_now()
@@ -1665,7 +1676,8 @@ class Handler(BaseHTTPRequestHandler):
         self.wfile.write(data)
 
     def do_POST(self) -> None:
-        path = normalize_request_path(urllib.parse.urlparse(self.path).path)
+        parsed = urllib.parse.urlparse(self.path)
+        path = normalize_request_path(parsed.path)
         parts = [part for part in path.split("/") if part]
         if (
             len(parts) == 5
@@ -1673,7 +1685,9 @@ class Handler(BaseHTTPRequestHandler):
             and parts[3] == "animation-previews"
         ):
             try:
-                preview = create_animation_preview(parts[2], parts[4])
+                query = urllib.parse.parse_qs(parsed.query)
+                force = query.get("force", ["false"])[0].lower() in {"1", "true", "yes"}
+                preview = create_animation_preview(parts[2], parts[4], force=force)
             except FileNotFoundError as exc:
                 self.send_json(HTTPStatus.NOT_FOUND, {"error": str(exc)})
                 return
