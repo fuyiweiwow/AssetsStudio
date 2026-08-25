@@ -1,0 +1,46 @@
+{
+  "schema": "assetsstudio_published_style_seed_v1",
+  "asset_id": "d70bce2777f44dfcadb07e030c69b30b",
+  "kind": "style_seed",
+  "asset_role": "style_calibration_anchor",
+  "label": "Short-hair topology stress seed",
+  "subject": "neutral young BA mage, short symmetrical bowl bob ending at the middle of the ears, fully exposed neck, no hair below jaw or head, same rounded rear edge, burgundy training clothes, large eyes, absolutely no mouth or nose",
+  "style_profile_id": "qstyle_anime_western_fantasy_no_face_v1",
+  "consumer_tags": ["bombadvanture", "ba"],
+  "review_status": "approved",
+  "accepted_at": "2026-08-24T03:38:45.526349+00:00",
+  "artifact": {
+    "path": "style_seed.png",
+    "sha256": "7e0e81ae15f25427bc3a44adec4c62628b6cde9eaec53b82b9908f10491bdb67",
+    "width": 1536,
+    "height": 768
+  },
+  "metrics": {
+    "path": "turnaround.metrics.json",
+    "sha256": "8eee9aa44af755ced3ca9acbba9a596862963f6f26e17474746dfa7d079c17cc",
+    "automatic_pass": true
+  },
+  "generation": {
+    "engine": "ComfyUI",
+    "diffusion_model": "flux-2-klein-4b-fp8.safetensors",
+    "text_encoder": "qwen_3_4b.safetensors",
+    "vae": "flux2-vae.safetensors",
+    "prompt_compiler": "compile_profile_turnaround_prompt(style_seed=true)",
+    "compiled_prompt_sha256": "8217f75bb7b122454b08657d3d67c94005e100e1590fa29828a5a0bdfdfae7e1",
+    "seed": 2026082503,
+    "steps": 4,
+    "cfg": 1.0,
+    "reference_latent": true,
+    "reference_source": "references/style_profiles/assets/qstyle_ratio_anchor_user_v1.png"
+  },
+  "derived_actor_ids": ["0ef398ca94d445f18226a8bf2a991c79"],
+  "manual_confirmations": [
+    "front/right-profile/back orientation is correct",
+    "same character identity and body proportions in every view",
+    "hair length, rear mass, side locks, bangs and parting form one compatible topology",
+    "no visible mouth, mouth line, lips, nose, nose bridge or nostrils",
+    "same outfit construction and colors in every view",
+    "no extra limbs, props, perspective pose or cropped feet"
+  ],
+  "portable": true
+}

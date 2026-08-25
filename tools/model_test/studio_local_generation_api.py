@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 import shutil
@@ -63,6 +64,7 @@ LOCAL_3D_LIBRARY_ROOT = ROOT / "workspace" / "local_3d_asset_library" / "base_ac
 WORKSPACE_ROOT = ROOT / "workspace"
 MAX_RIG_UPLOAD_BYTES = 1024 * 1024 * 1024
 PROFILE_REGISTRY_PATH = ROOT / "studio" / "src" / "generated" / "style-slot-profiles.json"
+PUBLISHED_STYLE_SEED_ROOT = ROOT / "references" / "style_profiles" / "published_seeds"
 
 MODEL_FILES = {
     "diffusion_model": COMFY_ROOT
@@ -330,8 +332,6 @@ def prepare_reference_file(source: Path, source_label: str) -> tuple[str, str]:
         raise FileNotFoundError(source)
     destination_dir = COMFY_INPUT / "assetsstudio" / "style_refs"
     destination_dir.mkdir(parents=True, exist_ok=True)
-    import hashlib
-
     digest = hashlib.sha256(source.read_bytes()).hexdigest()[:16]
     destination = destination_dir / f"{digest}{source.suffix.lower()}"
     if not destination.is_file() or destination.stat().st_size != source.stat().st_size:
@@ -360,6 +360,128 @@ def library_asset_dir(kind: str, asset_id: str) -> Path:
     ):
         raise ValueError("invalid local library asset id")
     return LOCAL_LIBRARY_ROOT / LIBRARY_KIND_DIR[kind] / asset_id
+
+
+def load_published_style_seed(seed_path: Path) -> dict[str, Any]:
+    payload = json.loads(seed_path.read_text(encoding="utf-8"))
+    if payload.get("schema") != "assetsstudio_published_style_seed_v1":
+        raise RuntimeError(f"unsupported published seed schema: {seed_path}")
+    asset_id = payload.get("asset_id")
+    if seed_path.parent.name != asset_id:
+        raise RuntimeError(f"published seed directory/id mismatch: {seed_path}")
+    if payload.get("kind") != "style_seed" or payload.get("review_status") != "approved":
+        raise RuntimeError(f"published seed is not approved: {asset_id}")
+    style_profile_id = payload.get("style_profile_id")
+    if style_profile_id not in STYLE_PROFILES:
+        raise RuntimeError(f"published seed uses an unknown StyleProfile: {asset_id}")
+    for key in ("artifact", "metrics"):
+        contract = payload.get(key, {})
+        source = (seed_path.parent / contract.get("path", "")).resolve()
+        if seed_path.parent.resolve() not in source.parents or not source.is_file():
+            raise RuntimeError(f"published seed {key} is missing: {asset_id}")
+        digest = hashlib.sha256(source.read_bytes()).hexdigest()
+        if digest != contract.get("sha256"):
+            raise RuntimeError(f"published seed {key} hash mismatch: {asset_id}")
+    return payload
+
+
+def sync_published_style_seeds() -> int:
+    """Bootstrap approved Git seed packages without overwriting local assets."""
+    if not PUBLISHED_STYLE_SEED_ROOT.is_dir():
+        return 0
+    imported = 0
+    for seed_path in sorted(PUBLISHED_STYLE_SEED_ROOT.glob("*/seed.json")):
+        payload = load_published_style_seed(seed_path)
+        asset_id = payload["asset_id"]
+        destination = library_asset_dir("style_seed", asset_id)
+        if destination.exists():
+            if not (destination / "asset_manifest.json").is_file():
+                raise RuntimeError(
+                    f"local seed destination is occupied without a manifest: {asset_id}"
+                )
+            continue
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        temporary = destination.with_name(f".{asset_id}.published-{uuid.uuid4().hex}")
+        temporary.mkdir()
+        try:
+            artifact = payload["artifact"]
+            metrics_contract = payload["metrics"]
+            shutil.copy2(seed_path.parent / artifact["path"], temporary / "style_seed.png")
+            shutil.copy2(
+                seed_path.parent / metrics_contract["path"],
+                temporary / "turnaround.metrics.json",
+            )
+            metrics = json.loads(
+                (temporary / "turnaround.metrics.json").read_text(encoding="utf-8")
+            )
+            style_profile = STYLE_PROFILES[payload["style_profile_id"]]
+            generation = payload["generation"]
+            record = {
+                "id": asset_id,
+                "job_kind": "style_seed",
+                "status": "completed",
+                "created_at": payload["accepted_at"],
+                "updated_at": payload["accepted_at"],
+                "subject": payload["subject"],
+                "compiled_prompt": compile_profile_turnaround_prompt(
+                    payload["subject"], style_profile, style_seed=True
+                ),
+                "style": "soft_3d",
+                "style_profile_id": payload["style_profile_id"],
+                "style_seed_asset_id": None,
+                "seed": generation["seed"],
+                "library_status": "accepted",
+                "profile_snapshot": {"style": style_profile},
+                "artifact": "style_seed.png",
+                "qa_status": "visual_review_required",
+                "automatic_qa": metrics,
+                "manual_gates_required": payload["manual_confirmations"],
+                "manual_confirmations": payload["manual_confirmations"],
+                "generation_contract": {
+                    "views": ["front", "right", "back"],
+                    "width": artifact["width"],
+                    "height": artifact["height"],
+                    "steps": generation["steps"],
+                    "cfg": generation["cfg"],
+                    "reference_latent": generation["reference_latent"],
+                    "reference_source": generation["reference_source"],
+                },
+                "publication_source": seed_path.relative_to(ROOT).as_posix(),
+            }
+            manifest = {
+                "schema": "assetsstudio_local_asset_v1",
+                "asset_id": asset_id,
+                "kind": "style_seed",
+                "asset_role": payload["asset_role"],
+                "subject": payload["subject"],
+                "style_profile_id": payload["style_profile_id"],
+                "consumer_tags": payload.get("consumer_tags", []),
+                "parent_asset_ids": [],
+                "source_job_id": asset_id,
+                "accepted_at": payload["accepted_at"],
+                "artifact_filename": "style_seed.png",
+                "record_filename": "record.json",
+                "local_only": True,
+                "published_seed": True,
+                "review_status": "approved",
+                "reviewed_at": payload["accepted_at"],
+                "manual_confirmations": payload["manual_confirmations"],
+                "route": "style-seeds",
+            }
+            (temporary / "record.json").write_text(
+                json.dumps(record, ensure_ascii=False, indent=2) + "\n",
+                encoding="utf-8",
+            )
+            (temporary / "asset_manifest.json").write_text(
+                json.dumps(manifest, ensure_ascii=False, indent=2) + "\n",
+                encoding="utf-8",
+            )
+            temporary.replace(destination)
+            imported += 1
+        finally:
+            if temporary.is_dir():
+                shutil.rmtree(temporary)
+    return imported
 
 
 def resolve_library_reference(kind: str, asset_id: str) -> tuple[str, str]:
@@ -1510,8 +1632,10 @@ def main() -> int:
     BASE_ACTOR_ARTIFACT_ROOT.mkdir(parents=True, exist_ok=True)
     ACCESSORY_ARTIFACT_ROOT.mkdir(parents=True, exist_ok=True)
     LOCAL_LIBRARY_ROOT.mkdir(parents=True, exist_ok=True)
+    imported_seeds = sync_published_style_seeds()
     server = ThreadingHTTPServer((args.host, args.port), Handler)
     print(f"AssetsStudio local generation API: http://{args.host}:{args.port}", flush=True)
+    print(f"Published style seeds imported: {imported_seeds}", flush=True)
     try:
         server.serve_forever()
     except KeyboardInterrupt:

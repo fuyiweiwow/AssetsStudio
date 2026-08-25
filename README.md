@@ -18,6 +18,8 @@ AssetsStudio 是一个通用、本地优先的美术素材供给实验室。Bomb
 
 入口会搜索 ComfyUI 与 Python，并检查 FLUX.2 Klein 所需模型。Studio 地址是 `http://127.0.0.1:4173/`。
 
+两枚当前已批准风格种子随 Git 位于 `references/style_profiles/published_seeds/`。首次在新机器启动 API 时会自动引入本地种子库；模型权重仍需按环境文档从 ModelScope 获取。
+
 ## 当前文档
 
 - [当前工作流](docs/CURRENT_WORKFLOW.md)
@@ -38,4 +40,4 @@ npm.cmd test
 npm.cmd run build
 ```
 
-`workspace/`、模型权重和第三方运行时均保持本地，不上传 Git。
+除 `references/style_profiles/published_seeds/` 中已批准的可移植种子包外，`workspace/`、模型权重和第三方运行时均保持本地，不上传 Git。

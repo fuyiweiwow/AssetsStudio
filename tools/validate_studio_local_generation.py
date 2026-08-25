@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 import py_compile
@@ -13,6 +14,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 MODEL_TEST = ROOT / "tools" / "model_test"
+PUBLISHED_SEED_ROOT = ROOT / "references" / "style_profiles" / "published_seeds"
 REQUIRED = [
     "README.md",
     "docs/CURRENT_WORKFLOW.md",
@@ -26,6 +28,7 @@ REQUIRED = [
     "studio/src/lib/style-slot-profiles.ts",
     "studio/src/generated/style-slot-profiles.json",
     "references/style_profiles/qstyle_anime_western_fantasy_no_face_v1.json",
+    "references/style_profiles/published_seeds/README.md",
     "references/actor_core/actor_core_0ef398ca/actor_slot_profile_v1.json",
     "references/actor_core/rig_landmark_profiles/chibi_featureless_v1.json",
     "tools/model_test/run_comfy_flux2_klein.py",
@@ -78,6 +81,48 @@ def require_marker(relative: str, marker: str) -> None:
         raise RuntimeError(f"missing marker {marker!r} in {relative}")
 
 
+def validate_published_style_seeds() -> int:
+    expected_ids = {
+        "74e7accb7e54400aada8f8807f111001",
+        "d70bce2777f44dfcadb07e030c69b30b",
+    }
+    found_ids: set[str] = set()
+    for seed_path in PUBLISHED_SEED_ROOT.glob("*/seed.json"):
+        raw = seed_path.read_text(encoding="utf-8")
+        if ":\\" in raw or "workspace/" in raw or "workspace\\" in raw:
+            raise RuntimeError(f"published seed contains a machine-local path: {seed_path}")
+        payload = json.loads(raw)
+        asset_id = payload.get("asset_id")
+        if payload.get("schema") != "assetsstudio_published_style_seed_v1":
+            raise RuntimeError(f"unsupported published seed schema: {seed_path}")
+        if asset_id != seed_path.parent.name or asset_id in found_ids:
+            raise RuntimeError(f"invalid or duplicate published seed id: {seed_path}")
+        if payload.get("style_profile_id") != "qstyle_anime_western_fantasy_no_face_v1":
+            raise RuntimeError(f"published seed uses a non-current StyleProfile: {asset_id}")
+        if payload.get("review_status") != "approved" or not payload.get("portable"):
+            raise RuntimeError(f"published seed is not approved and portable: {asset_id}")
+        for key in ("artifact", "metrics"):
+            contract = payload[key]
+            source = seed_path.parent / contract["path"]
+            if not source.is_file():
+                raise RuntimeError(f"published seed {key} is missing: {asset_id}")
+            digest = hashlib.sha256(source.read_bytes()).hexdigest()
+            if digest != contract["sha256"]:
+                raise RuntimeError(f"published seed {key} hash mismatch: {asset_id}")
+        metrics = json.loads(
+            (seed_path.parent / payload["metrics"]["path"]).read_text(encoding="utf-8")
+        )
+        if metrics.get("image") != "style_seed.png" or not metrics.get("automatic_pass"):
+            raise RuntimeError(f"published seed metrics are not portable/passing: {asset_id}")
+        found_ids.add(asset_id)
+    if found_ids != expected_ids:
+        raise RuntimeError(
+            "published style seed set mismatch: "
+            f"expected={sorted(expected_ids)} actual={sorted(found_ids)}"
+        )
+    return len(found_ids)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--check-models", action="store_true")
@@ -111,6 +156,9 @@ def main() -> int:
         "tools/cleanup_current_workflow.ps1",
         "76CDFB3B70A357625DC5CFEEA95F033D49A06871DCF1BE4477255DE0DF4FE065",
     )
+    require_marker("tools/model_test/studio_local_generation_api.py", "sync_published_style_seeds")
+
+    published_seeds = validate_published_style_seeds()
 
     if args.check_models:
         comfy_root = discover_comfy_root(args.comfy_root)
@@ -128,7 +176,8 @@ def main() -> int:
 
     print(
         "ASSETSSTUDIO_CURRENT_WORKFLOW_PASS "
-        f"files={len(REQUIRED)} models_checked={args.check_models}"
+        f"files={len(REQUIRED)} published_seeds={published_seeds} "
+        f"models_checked={args.check_models}"
     )
     return 0
 

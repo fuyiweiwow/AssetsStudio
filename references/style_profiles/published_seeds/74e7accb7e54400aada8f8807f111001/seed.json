@@ -1,0 +1,45 @@
+{
+  "schema": "assetsstudio_published_style_seed_v1",
+  "asset_id": "74e7accb7e54400aada8f8807f111001",
+  "kind": "style_seed",
+  "asset_role": "style_calibration_anchor",
+  "label": "Long-hair topology stress seed",
+  "subject": "neutral young BA ranger, long auburn hair reaching the upper back in every view, visible long side locks and a broad rear hair curtain ending at the same upper-back line, simple charcoal training clothes, large eyes, absolutely no mouth or nose",
+  "style_profile_id": "qstyle_anime_western_fantasy_no_face_v1",
+  "consumer_tags": ["bombadvanture", "ba"],
+  "review_status": "approved",
+  "accepted_at": "2026-08-24T03:38:45.550103+00:00",
+  "artifact": {
+    "path": "style_seed.png",
+    "sha256": "76a72e981d72c9e4a11160167a30277f9a31c010b38e1cf7454c043a465ff83e",
+    "width": 1536,
+    "height": 768
+  },
+  "metrics": {
+    "path": "turnaround.metrics.json",
+    "sha256": "ab2632453f6921a4f9ff89e486bcd7b5a42045fc45bdb3304f95d57baf018408",
+    "automatic_pass": true
+  },
+  "generation": {
+    "engine": "ComfyUI",
+    "diffusion_model": "flux-2-klein-4b-fp8.safetensors",
+    "text_encoder": "qwen_3_4b.safetensors",
+    "vae": "flux2-vae.safetensors",
+    "prompt_compiler": "compile_profile_turnaround_prompt(style_seed=true)",
+    "compiled_prompt_sha256": "e3d00d06df5d6206b206b550a6dc5740acdaad689fe787c1890ed239191a0110",
+    "seed": 2026082512,
+    "steps": 4,
+    "cfg": 1.0,
+    "reference_latent": true,
+    "reference_source": "references/style_profiles/assets/qstyle_ratio_anchor_user_v1.png"
+  },
+  "manual_confirmations": [
+    "front/right-profile/back orientation is correct",
+    "same character identity and body proportions in every view",
+    "hair length, rear mass, side locks, bangs and parting form one compatible topology",
+    "no visible mouth, mouth line, lips, nose, nose bridge or nostrils",
+    "same outfit construction and colors in every view",
+    "no extra limbs, props, perspective pose or cropped feet"
+  ],
+  "portable": true
+}

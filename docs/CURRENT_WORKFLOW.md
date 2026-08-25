@@ -18,6 +18,7 @@ Studio 为多个游戏提供可复用美术资产。当前 `ba` 仅保留在 `co
 ## 当前检查点与下一步
 
 - 当前 StyleProfile：`qstyle_anime_western_fantasy_no_face_v1`。
+- 两枚已批准风格种子已发布为可移植包；换机克隆后由 Studio 自动引入本地种子库。
 - 当前 Actor：`0ef398ca94d445f18226a8bf2a991c79`。
 - 当前 ActorSlotProfile：`actor_core_0ef398ca_slots_v1`，所有锚点在 AccuRIG 人工确认前均为 `measured_provisional`。
 - 当前可安全生成的首个独立 authority：`waist_accessory`。
