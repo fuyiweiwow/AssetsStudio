@@ -52,6 +52,10 @@ v2 的诊断结论是“训练任务已学会，生产强度与泛化仍待验�
 
 Studio 的“Actor Core 本地推理预览”区只展示三张当前有效候选：两个训练来源的 strength 2.0 结果和一个 BA 保留集的 strength 3.0 结果。失败的 v1、低强度探针与 Base 诊断图全部移入本地 rejected 目录，不出现在有效预览中。
 
+第三组 `teacher_actor_core_bob_cowl_20260827_v1` 已于 2026-08-27 批准：Source 使用同一 StyleProfile 但采用短发、兜帽、披肩、腰带、手套与靴子的不同部件轮廓；Target 继续使用双参考教师方法。Target 初稿因第三面板偏左未通过中心 Gate，没有绕过检查；随后用 `normalize_turnaround_panel_centers.py` 按 Source 前景中心仅做 0/22/42px 整数水平平移，不缩放、不变形。规范化后 `height_cv=0.0013`、`ground_range=0.0023`、`center_max_offset=0.0515`、最低色彩相关性 `0.9922`，并通过六项人工 Gate。该 Source 是本地训练候选，不等于第三枚已发布风格种子。
+
+三 Pair v3 训练曾在当前 Windows GPU 会话中尝试：589,824-pixel/180-step 正式运行与 393,216-pixel/3-step 烟雾运行都出现 SM 100%、约 62W、数分钟无 checkpoint 的异常慢路径；停止两套 Comfy 后仍可复现，排除数据数量、缓存 token 形状和 Comfy 竞争是唯一原因。两次运行均已人工终止，没有产生 v3 权重，不能作为质量结论。下次必须在 GPU/主机重启后的干净会话先完成 3-step 烟雾 Gate，再启动正式训练。
+
 ## 注册与导出
 
 候选注册示例：
@@ -76,6 +80,14 @@ python .\tools\model_test\export_strip_to_actor_core_diffsynth_dataset.py --vali
 python .\tools\model_test\export_strip_to_actor_core_diffsynth_dataset.py
 ```
 
+当教师 Target 仅有面板水平位置偏差时，可按 Source 做确定性对齐；不得用它修补几何或绕过其他 Gate：
+
+```powershell
+python .\tools\model_test\normalize_turnaround_panel_centers.py <target.png> `
+  --reference <source.png> --output <target.normalized.png> `
+  --report <target.normalization.json>
+```
+
 导出器生成 DiffSynth 图像编辑合同：Target 为 `image`，Source 为 `edit_image`。ModelScope 官方 Klein Base LoRA 示例和训练参数位于：<https://github.com/modelscope/DiffSynth-Studio/blob/main/examples/flux2/model_training/lora/FLUX.2-klein-base-4B.sh>。
 
 旧 Musubi/Qwen 导出器只保留为可选实验适配器：
@@ -88,7 +100,7 @@ python .\tools\model_test\export_strip_to_actor_core_dataset.py --validate-only
 
 没有至少一组人工批准 Pair 时，不下载 Base 训练权重、不安装训练环境、不启动 LoRA。模型优先从 ModelScope 下载，只取训练所需文件并支持断点续传；禁止把模型权重提交到 Git。
 
-训练入口先运行 `tools/setup_flux2_actor_core_training.ps1` 搜索环境并只取 ModelScope 必需文件。首轮实测使用 rank 16、batch 1、最大 589,824 pixels、gradient checkpointing 和两阶段缓存；这个训练配置约需 12.7GB，不承诺在 3060 上训练。后续可降低 rank/分辨率做本机实验，但远程训练不是风险，生产推理依赖远程或大显存才是风险。
+训练入口先运行 `tools/setup_flux2_actor_core_training.ps1` 搜索环境并只取 ModelScope 必需文件。首轮实测使用 rank 16、batch 1、最大 589,824 pixels、gradient checkpointing 和两阶段缓存；这个训练配置约需 12.7GB，不承诺在 3060 上训练。后续可降低 rank/分辨率做本机实验，但远程训练不是风险，生产推理依赖远程或大显存才是风险。正式训练前必须先做 1 epoch/每 Pair 1 次的烟雾训练并确认 checkpoint 落盘；若 GPU 长时间低功耗满占用且没有 checkpoint，停止运行、保留缓存并在干净 GPU 会话复测。
 
 每枚 LoRA 必须通过真实 3060 Gate：
 

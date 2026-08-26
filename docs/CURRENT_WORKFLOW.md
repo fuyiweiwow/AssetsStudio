@@ -46,12 +46,14 @@ Studio 为多个游戏提供可复用美术资产。当前 `ba` 仅保留在 `co
 - 两组教师 Pair `teacher_actor_core_d70bce_20260826_v2` 与 `teacher_actor_core_74e7acc_20260826_v2` 已批准并导出为 DiffSynth 图像编辑数据；第二组使用双参考教师方法统一长发种子的布局与首枚 Target 的无耳几何规范。
 - 第二轮 Klein Base rank-16/120-step LoRA 已从头训练并成功回载。Base 诊断证明任务已学会；distilled 4-step 在训练来源需 strength 2.0、未训练 BA 保留集需 strength 3.0 才去除可见耳朵。
 - BA 保留集在 strength 3.0 仍有右侧脚部双轮廓，且真实 3060 尚未验证；因此 v2 只作为 Studio 本地评审候选，不是生产默认，也不能进入 3D 或资产库。
+- 第三组短发/兜帽/披肩来源 Pair 已通过自动与人工 Gate；Source 仍是本地训练候选，不冒充已发布风格种子。Target 的面板偏移使用确定性整数平移工具对齐，没有重画或改变几何。
+- v3 正式训练与 3-step 烟雾训练在当前 GPU 会话触发异常慢路径且没有 checkpoint，均已停止；当前有效权重仍只有 v2，Studio 生成服务已恢复。
 - 当前动作库只有 `mixamo_standard_walk_v1`；自动映射与四方向预览已实现。
 
 ## 下一步
 
 1. 用户在 Studio/Tailscale 评审 v2 的两张训练来源 strength 2.0 结果与一张 BA 保留集 strength 3.0 结果，重点检查脚、手、轮廓和三视图一致性；
-2. 增加至少两组不同外形来源与一个完全未参与训练的固定保留集，仍使用同一无耳 Target 规范，优先修复高 strength 下的脚部双轮廓；
-3. 训练 v3 后执行固定 strength 阶梯 2.0 → 2.5 → 3.0，只允许人工选择通过六项 Gate 的最低强度；在泛化稳定前不做自动强度选择；
+2. 在现有三 Pair 基础上再增加至少一组不同外形来源，并保留 BA 与另一组完全未参与训练的固定保留集，优先修复高 strength 下的脚部双轮廓；
+3. 重启 GPU/主机后先完成 3-step 烟雾 checkpoint Gate，再从头训练 v3；随后执行固定 strength 阶梯 2.0 → 2.5 → 3.0，只允许人工选择通过六项 Gate 的最低强度；
 4. 在真实 RTX 3060 12GB 完成冷启动、4-step 编辑、保存恢复和峰值显存 Gate；若失败则启动 SDXL 回退，不提高硬件要求；
 5. 图像质量与 3060 硬件均通过后，才将 LoRA/强度配置设为 Studio 默认并生成新的 Actor Core 候选，人工批准后进入 3D。
