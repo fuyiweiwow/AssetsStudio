@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import subprocess
 import time
 import urllib.error
 import urllib.request
@@ -21,6 +22,41 @@ def request_json(url: str, payload: dict | None = None) -> dict:
     )
     with urllib.request.urlopen(request, timeout=30) as response:
         return json.load(response)
+
+
+def sample_nvidia_gpu() -> dict[str, int | str] | None:
+    """Return a lightweight whole-GPU sample without adding Python GPU deps."""
+    try:
+        completed = subprocess.run(
+            [
+                "nvidia-smi",
+                "--query-gpu=name,memory.total,memory.used",
+                "--format=csv,noheader,nounits",
+            ],
+            check=True,
+            capture_output=True,
+            text=True,
+            timeout=10,
+        )
+        first_line = completed.stdout.strip().splitlines()[0]
+        name, total_mib, used_mib = [part.strip() for part in first_line.split(",", 2)]
+        return {
+            "name": name,
+            "total_mib": int(total_mib),
+            "used_mib": int(used_mib),
+        }
+    except (FileNotFoundError, IndexError, subprocess.SubprocessError, ValueError):
+        return None
+
+
+def write_metrics(path: str | None, payload: dict) -> None:
+    if not path:
+        return
+    destination = Path(path).expanduser().resolve()
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    destination.write_text(
+        json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+    )
 
 
 def build_prompt(args: argparse.Namespace) -> dict:
@@ -161,12 +197,18 @@ def main() -> int:
     parser.add_argument("--text-encoder", default="qwen_3_4b.safetensors")
     parser.add_argument("--vae", default="flux2-vae.safetensors")
     parser.add_argument("--timeout", type=int, default=1800)
+    parser.add_argument(
+        "--metrics-json",
+        help="Optional path for elapsed time and whole-GPU peak-memory telemetry",
+    )
     args = parser.parse_args()
 
     if args.width % 16 or args.height % 16:
         parser.error("width and height must be multiples of 16")
 
     client_id = str(uuid.uuid4())
+    baseline_gpu = sample_nvidia_gpu()
+    peak_used_mib = baseline_gpu["used_mib"] if baseline_gpu else None
     started = time.perf_counter()
     result = request_json(
         f"{args.server}/prompt",
@@ -177,6 +219,9 @@ def main() -> int:
 
     deadline = time.monotonic() + args.timeout
     while time.monotonic() < deadline:
+        gpu = sample_nvidia_gpu()
+        if gpu and (peak_used_mib is None or gpu["used_mib"] > peak_used_mib):
+            peak_used_mib = gpu["used_mib"]
         history = request_json(f"{args.server}/history/{prompt_id}")
         if prompt_id in history:
             item = history[prompt_id]
@@ -193,6 +238,31 @@ def main() -> int:
                     if filename:
                         outputs.append(str(Path(subfolder) / filename))
             elapsed = time.perf_counter() - started
+            metrics = {
+                "schema": "assetsstudio_local_inference_probe_v1",
+                "backend": "flux2_klein_4b_distilled_fp8",
+                "server": args.server,
+                "prompt_id": prompt_id,
+                "width": args.width,
+                "height": args.height,
+                "steps": args.steps,
+                "cfg": args.cfg,
+                "seed": args.seed,
+                "reference_image": args.reference_image,
+                "elapsed_seconds": round(elapsed, 2),
+                "gpu": None,
+                "outputs": outputs,
+                "qualification": "3060_memory_cap_prescreen_only",
+            }
+            if baseline_gpu and peak_used_mib is not None:
+                metrics["gpu"] = {
+                    "name": baseline_gpu["name"],
+                    "total_mib": baseline_gpu["total_mib"],
+                    "baseline_used_mib": baseline_gpu["used_mib"],
+                    "peak_used_mib": peak_used_mib,
+                    "peak_delta_mib": peak_used_mib - baseline_gpu["used_mib"],
+                }
+            write_metrics(args.metrics_json, metrics)
             print(f"completed seconds={elapsed:.2f}")
             for output in outputs:
                 print(f"output={output}")

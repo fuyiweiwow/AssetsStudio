@@ -2,34 +2,54 @@
 
 ## 目标
 
-Studio 为多个游戏提供可复用美术资产。当前 `ba` 仅保留在 `consumer_tags` 中。生产对象不是完整角色，而是一个稳定 Actor Core 与可独立管理的 Slot 部件集合。
+Studio 为多个游戏提供可复用美术资产。当前 `ba` 仅保留在 `consumer_tags`；生产对象不是完整角色，而是稳定 Actor Core 与可独立销毁/入库的 Slot 部件。
 
-## 唯一顺序
+唯一生产顺序：
+
+`StyleProfile → 风格种子 → 无部件 Actor Core 图像 → Hunyuan3D 形体 → 人工 AccuRIG → 动作库自动适配/变形 QA → 单个 Slot 部件 → Recipe/组合预览`
+
+不得直接生成带头发、衣服和配件的完整 3D 角色。
+
+## 阶段顺序
 
 1. 定义 StyleProfile：比例、形状语言、材质响应、调色板和禁止项。
-2. 生成多枚风格种子并做跨视图压力测试；头发前/侧/后必须描述同一拓扑。
-3. 使用素体专用图像编辑模型，把批准种子转换为无身份 Actor Core。Actor 必须光头、无耳、无五官、无衣物、无鞋、无配件；优先使用配对编辑 LoRA，而不是仅靠通用模型提示词。
-4. 使用同一编辑合同和结构控制生成 front/right/back 候选；通过去部件、方向一致性、头身比和轮廓 Gate 后，才允许进入 image-to-3D。
-5. 使用 Hunyuan3D-2MV 生成单一、封闭、无纹理形体；人工四方向审查后才进入本地 3D 资产库。
-6. 对批准素体生成低风险绑定网格和标定预览，人工在 AccuRIG 中标点并导出 FBX。
-7. 在 Studio 选择该 FBX。系统复制到 Actor 专属 intake、验证一对一来源并生成四方向预览。
-8. 从本地骨骼动画库选择动作，自动映射到当前 Actor 的 AccuRIG 骨骼，并通过四方向循环与关节变形检查。
-9. 按 ActorSlotProfile 一次生成一个部件。候选只能销毁或进入本地资产库。
-10. 通过 Slot 锚点、骨骼和配方组合；最终集成到 Studio 组合/导出界面。
+2. 生成多枚风格种子并做跨视图压力测试；前/侧/后必须是同一拓扑。
+3. 从已批准种子生成模型无关的 `source/target/mask/caption/Gate` Pair。
+4. 人工批准 Pair 后，使用 FLUX.2 Klein 4B Base 训练 `strip_to_actor_core` LoRA；训练可远程进行。
+5. 在 FLUX.2 Klein 4B distilled FP8 上加载 LoRA，并在真实 RTX 3060 12GB 验证本地编辑。
+6. 通过无部件、方向一致、头身比和轮廓 Gate 后，才能进入 Hunyuan3D-2MV。
+7. 人工四方向审查单一封闭无纹理形体；候选只能销毁或加入本地 3D 资产库。
+8. 对批准素体生成低风险绑定网格和落点预览，人工在 AccuRIG 标点并导出 FBX。
+9. Studio 选择该 FBX，复制到 Actor 专属 intake，验证一对一来源并生成预览。
+10. 从本地动作库选择动作，自动映射到当前 AccuRIG 骨骼并做四方向循环/关节变形检查。
+11. 按 ActorSlotProfile 一次生成一个独立部件；候选只能销毁或进入本地资产库。
+12. 通过 Slot 锚点、骨骼和 Recipe 组合，最终集成到 Studio 组合/导出界面。
 
-## 当前检查点与下一步
+## 模型与硬件决策
+
+- 生产后端必须在 RTX 3060 12GB 离线推理；这是采用门槛，不是优化建议。
+- 默认推理：Klein 4B distilled FP8；训练：Klein 4B Base LoRA。
+- 远程教师或 Qwen 只可生成候选 Target，不是 Studio 必需依赖，也不能自动批准数据。
+- 原始 Pair 是模型无关数据；DiffSynth/FLUX、Musubi/Qwen 或 SDXL 都只是导出适配器。
+- 若 Klein LoRA 无法通过真实 3060 Gate，停止采用并回退 SDXL，不围绕更大显卡继续设计生产链。
+
+详见 `docs/ACTOR_CORE_TRAINING.md` 与 `docs/ENVIRONMENT.md`。
+
+## 当前检查点
 
 - 当前 StyleProfile：`qstyle_anime_western_fantasy_no_face_v1`。
-- 两枚已批准风格种子已发布为可移植包；换机克隆后由 Studio 自动引入本地种子库。
-- 旧 Actor `0ef398ca94d445f18226a8bf2a991c79` 仅保留为 AccuRIG、动画映射和 Studio 生命周期的技术验证基线，不再作为风格或形体权威。
-- 当前没有可批准的新标准 Actor。rule-based 参数化候选已判定失效并从 Studio 删除。
-- 当前 ActorSlotProfile：`actor_core_0ef398ca_slots_v1`，所有锚点在 AccuRIG 人工确认前均为 `measured_provisional`。
-- 当前可安全生成的首个独立 authority：`waist_accessory`。
-- AccuRIG 导出已通过 Studio intake 和用户静态检查：101 bones、61,002 vertices、122,000 faces，运行时最多 4 influences。
-- 当前动画库只有 `mixamo_standard_walk_v1`。自动映射覆盖 22 个核心骨，并检查骨骼覆盖、帧范围、四肢动作幅度、双手左右次序和背后交叉；当前 Gate 是用户检查修正后的四方向循环中的手腕、肘、肩、髋、膝、脚底与循环接缝。
-- Qwen-Image-Edit-2511 Q3_K_M 的首轮固定基线已跑通。第一阶段稳定保留 front/right/back 和大头比例，并去掉头发、眼睛、鞋与腕带，但仍残留衣物和耳朵；第二阶段定向清理已得到无头发、无耳、无五官、无衣物的连续素体，但模型自动补出的躯干偏梨形/鼓肚，尚未通过 StyleProfile revision 2 的窄躯干轮廓 Gate，因此没有进入资产库。
-- 第三阶段仅用提示词定向收窄躯干时，模型新增了胸部、肚脐、腹股沟线和臀沟，明确违反非性征连续素体合同；该候选同样不入库。这一失败已终止“继续堆叠提示词”的路线。
-- Q3 masked repair 能锁定未编辑像素，但在背视图新增圆形标记；Q4_K_S 在同条件下仍补成梨形体，并忽略二值窄躯干轮廓。量化不是主要瓶颈，自动 Target 合成已停止。
-- 当前下一步是通过 `docs/ACTOR_CORE_TRAINING.md` 定义的本地配对入口收集人工批准 Target，并训练 `strip_to_actor_core` LoRA。只有通过六项人工 Gate 的 pair 会导出为 Musubi control-image dataset。新素体批准后才创建全新的一对一 AccuRIG，随后再开始 `head_hair` 工作流。
+- 两枚已批准风格种子已作为可移植包发布；换机克隆后由 Studio 自动引入本地种子库。
+- 旧 Actor `0ef398ca94d445f18226a8bf2a991c79` 只保留为 AccuRIG、动作映射和生命周期技术基线，不再是风格/形体权威。
+- rule-based 素体、Klein/Qwen 零样本素体均已判定不能作为训练 Target 或资产。
+- Qwen Q3/Q4 对照表明量化不是梨形躯干问题的主因；继续堆提示词的路线已停止。
+- Klein distilled 限额预筛选可在约 11.7GB 增量显存生成 1536×768 三视图，但零样本仍保留部件，因此必须依靠任务 LoRA。
+- 教师候选 Pair `teacher_actor_core_d70bce_20260826` 已生成并显示在 Studio；状态是 `candidate`，等待人工确认，尚未训练。
+- 当前动作库只有 `mixamo_standard_walk_v1`；自动映射与四方向预览已实现。
 
-不要直接生成带头发、衣服和配件的完整 3D 角色。这会破坏 Slot 生命周期、独立销毁/入库和跨项目复用。
+## 下一步
+
+1. 用户在 Studio/Tailscale 预览中确认或拒绝教师 Target；
+2. 若确认，将其登记为第一组 approved Pair；若拒绝，保留拒绝记录并生成单变量修订；
+3. 有 approved Pair 后才安装 DiffSynth/下载 Klein Base 所需权重，先做 1–4 Pair 最小过拟合；
+4. LoRA 回载到 distilled 4B，先在当前机器限额预筛选，再在真实 3060 自检；
+5. 通过后生成新的 Actor Core 三视图，人工批准后才进入 3D。

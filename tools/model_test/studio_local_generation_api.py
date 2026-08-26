@@ -63,6 +63,9 @@ LOCAL_LIBRARY_ROOT = ROOT / "workspace" / "local_asset_library"
 LOCAL_3D_CANDIDATE_ROOT = ROOT / "workspace" / "local_3d_generation" / "base_actors"
 LOCAL_3D_LIBRARY_ROOT = ROOT / "workspace" / "local_3d_asset_library" / "base_actors"
 LOCAL_ANIMATION_LIBRARY_ROOT = ROOT / "workspace" / "local_animation_library"
+TRAINING_PAIR_ROOT = (
+    ROOT / "workspace" / "training" / "strip_to_actor_core" / "v1" / "pairs"
+)
 WORKSPACE_ROOT = ROOT / "workspace"
 MAX_RIG_UPLOAD_BYTES = 1024 * 1024 * 1024
 PROFILE_REGISTRY_PATH = ROOT / "studio" / "src" / "generated" / "style-slot-profiles.json"
@@ -161,6 +164,7 @@ def normalize_request_path(path: str) -> str:
         "3d-candidates",
         "3d-library",
         "animation-library",
+        "training-pairs",
         *ROUTE_CONFIG.keys(),
     }:
         return "/api" + path
@@ -1464,6 +1468,50 @@ def destroy_candidate(job_id: str) -> None:
     )
 
 
+def training_pair_directory(pair_id: str) -> Path:
+    if not pair_id.replace("_", "").replace("-", "").isalnum():
+        raise ValueError("invalid training pair id")
+    root = TRAINING_PAIR_ROOT.resolve()
+    directory = (root / pair_id).resolve()
+    if root not in directory.parents:
+        raise ValueError("unsafe training pair path")
+    return directory
+
+
+def public_training_pair(pair_dir: Path) -> dict[str, Any]:
+    record = json.loads((pair_dir / "pair.json").read_text(encoding="utf-8"))
+    pair_id = record["pair_id"]
+    return {
+        "pair_id": pair_id,
+        "task": record["task"],
+        "status": record["status"],
+        "style_profile_id": record["style_profile_id"],
+        "caption": record["caption"],
+        "data_contract": record.get("data_contract"),
+        "provenance": record.get("provenance", {}),
+        "automatic_pass": bool(record.get("automatic_qa", {}).get("automatic_pass")),
+        "automatic_gates": record.get("automatic_qa", {}).get("automatic_gates", {}),
+        "manual_gates": record.get("manual_gates", {}),
+        "source_url": f"/api/training-pairs/{pair_id}/source",
+        "target_url": f"/api/training-pairs/{pair_id}/target",
+        "record_url": f"/api/training-pairs/{pair_id}/record",
+        "created_at": record["created_at"],
+        "local_only": True,
+    }
+
+
+def list_training_pairs() -> list[dict[str, Any]]:
+    pairs = []
+    record_paths = list(TRAINING_PAIR_ROOT.glob("*/pair.json"))
+    record_paths.sort(key=lambda path: path.stat().st_mtime, reverse=True)
+    for record_path in record_paths:
+        try:
+            pairs.append(public_training_pair(record_path.parent))
+        except (KeyError, OSError, json.JSONDecodeError):
+            continue
+    return pairs
+
+
 class Handler(BaseHTTPRequestHandler):
     server_version = "AssetsStudioLocalGeneration/0.3"
 
@@ -1501,6 +1549,11 @@ class Handler(BaseHTTPRequestHandler):
                     "comfyui": comfy_reachable(),
                     "model_ready": all(models.values()),
                     "models": models,
+                    "production_backend": "flux2_klein_4b_distilled_fp8",
+                    "training_backend": "flux2_klein_base_4b_lora",
+                    "teacher_backend_required": False,
+                    "hardware_target": "rtx_3060_12gb",
+                    "hardware_validation": "memory_cap_prescreen_passed_real_3060_pending",
                     "comfy_url": COMFY_URL,
                     "artifact_root": str(TURNAROUND_ARTIFACT_ROOT.parent),
                     "local_library_root": str(LOCAL_LIBRARY_ROOT),
@@ -1508,6 +1561,7 @@ class Handler(BaseHTTPRequestHandler):
                     "local_3d_library_root": str(LOCAL_3D_LIBRARY_ROOT),
                     "local_animation_library_root": str(LOCAL_ANIMATION_LIBRARY_ROOT),
                     "local_animation_assets": len(list_animation_assets()),
+                    "training_pairs": len(list_training_pairs()),
                     "profile_registry": str(PROFILE_REGISTRY_PATH),
                     "style_profiles": len(STYLE_PROFILES),
                     "actor_profiles": len(ACTOR_PROFILES),
@@ -1534,7 +1588,31 @@ class Handler(BaseHTTPRequestHandler):
             self.send_json(HTTPStatus.OK, {"assets": list_animation_assets()})
             return
 
+        if path == "/api/training-pairs":
+            self.send_json(HTTPStatus.OK, {"pairs": list_training_pairs()})
+            return
+
         parts = [part for part in path.split("/") if part]
+        if (
+            len(parts) == 4
+            and parts[:2] == ["api", "training-pairs"]
+            and parts[3] in {"source", "target", "record"}
+        ):
+            try:
+                directory = training_pair_directory(parts[2])
+                record = json.loads(
+                    (directory / "pair.json").read_text(encoding="utf-8")
+                )
+                if parts[3] == "record":
+                    self.send_file(
+                        directory / "pair.json", "application/json; charset=utf-8"
+                    )
+                else:
+                    artifact = record[parts[3]]["filename"]
+                    self.send_file(directory / artifact, "image/png")
+            except (KeyError, OSError, ValueError, json.JSONDecodeError) as exc:
+                self.send_json(HTTPStatus.NOT_FOUND, {"error": str(exc)})
+            return
         if (
             len(parts) in {5, 6, 7}
             and parts[:2] == ["api", "3d-library"]
@@ -1961,6 +2039,7 @@ def main() -> int:
     ACCESSORY_ARTIFACT_ROOT.mkdir(parents=True, exist_ok=True)
     LOCAL_LIBRARY_ROOT.mkdir(parents=True, exist_ok=True)
     LOCAL_ANIMATION_LIBRARY_ROOT.mkdir(parents=True, exist_ok=True)
+    TRAINING_PAIR_ROOT.mkdir(parents=True, exist_ok=True)
     imported_seeds = sync_published_style_seeds()
     server = ThreadingHTTPServer((args.host, args.port), Handler)
     print(f"AssetsStudio local generation API: http://{args.host}:{args.port}", flush=True)

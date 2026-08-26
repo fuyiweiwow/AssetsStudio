@@ -10,6 +10,34 @@ export interface LocalGenerationHealth {
   artifact_root: string;
   local_animation_library_root?: string;
   local_animation_assets?: number;
+  training_pairs?: number;
+  production_backend: "flux2_klein_4b_distilled_fp8";
+  training_backend: "flux2_klein_base_4b_lora";
+  teacher_backend_required: false;
+  hardware_target: "rtx_3060_12gb";
+  hardware_validation: "memory_cap_prescreen_passed_real_3060_pending";
+}
+
+export interface TrainingPairCandidate {
+  pair_id: string;
+  task: "strip_to_actor_core";
+  status: "candidate" | "approved" | "rejected";
+  style_profile_id: string;
+  caption: string;
+  data_contract?: "model_agnostic_source_target_edit_v1";
+  provenance: {
+    target_producer?: string;
+    target_generator?: string | null;
+    approval_is_independent?: boolean;
+  };
+  automatic_pass: boolean;
+  automatic_gates: Record<string, boolean>;
+  manual_gates: Record<string, boolean>;
+  source_url: string;
+  target_url: string;
+  record_url: string;
+  created_at: string;
+  local_only: true;
 }
 
 export interface LocalAnimationAsset {
@@ -177,6 +205,13 @@ export async function createTurnaround(subject: string, style: TurnaroundStyle, 
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ subject, style, seed }),
   }));
+}
+
+export async function fetchTrainingPairs(signal?: AbortSignal) {
+  return responseJson<{ pairs: TrainingPairCandidate[] }>(await fetch(
+    `${API_ROOT}/training-pairs`,
+    { cache: "no-store", signal },
+  ));
 }
 
 export async function createStyleSeed(subject: string, styleProfileId: string, seed: number) {

@@ -16,7 +16,7 @@ AssetsStudio 是一个通用、本地优先的美术素材供给实验室。Bomb
 .\start-local-generation-studio.bat --no-open
 ```
 
-入口会搜索 ComfyUI 与 Python，并检查 FLUX.2 Klein 所需模型。Studio 地址是 `http://127.0.0.1:4173/`。
+入口会搜索 ComfyUI 与 Python，并检查 FLUX.2 Klein 所需模型。Studio 地址是 `http://127.0.0.1:4173/`。生产推理硬目标是 RTX 3060 12GB：默认使用 Klein 4B distilled FP8；Klein Base 仅用于 LoRA 训练，Qwen/远程教师均为可选数据来源而非运行依赖。
 
 两枚当前已批准风格种子随 Git 位于 `references/style_profiles/published_seeds/`。首次在新机器启动 API 时会自动引入本地种子库；模型权重仍需按环境文档从 ModelScope 获取。
 

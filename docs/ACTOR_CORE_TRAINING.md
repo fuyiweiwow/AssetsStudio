@@ -1,48 +1,92 @@
 # Actor Core 图像编辑训练
 
-## 当前结论
+## 已确定的技术边界
 
-`strip_to_actor_core` 是通用实验室任务，不绑定 `ba`：输入带身份、头发、服装和配件的风格角色图，输出同姿态、同头身比、无身份无部件的连续 Actor Core。
+`strip_to_actor_core` 是通用实验室任务：输入完整风格角色三视图，输出同布局、同姿态、同头身比的无身份无部件 Actor Core。它不绑定 `ba`，`ba` 只是一枚消费者标签。
 
-Qwen-Image-Edit-2511 Q3_K_M 与 Q4_K_S 均已完成相同种子的两阶段对照。两者都能稳定去掉头发、眼睛、服装和配件并保持 front/right/back，但都会把被服装遮挡的身体补成偏梨形/鼓肚体。Q3 的局部编辑曾新增背面圆形标记；Q4 能保持表面干净，却仍忽略窄躯干轮廓参考。量化不是主要瓶颈，继续堆叠零样本提示词已停止。
+生产链必须能在 RTX 3060 12GB 上离线推理。训练可以临时使用远程或更大显存，但训练产物必须回到 3060 上完成最终编辑；不能做到这一点的模型不得成为 Studio 默认后端。
 
-## 配对数据合同
+当前后端分工：
 
-- Source/control：完整风格角色图；允许带项目标签，但任务标签始终是 `strip_to_actor_core`。
-- Target：同尺寸、同布局、同姿态的无身份 Actor Core。
-- Mask：可选，只记录人工校正范围，不作为 Target 的替代品。
-- 候选、批准和拒绝数据全部位于 `workspace/training/strip_to_actor_core/`，不上传 Git。
-- `candidate` 不进入训练。只有人工确认全部 Gate 并显式注册为 `approved` 的 pair 才能导出。
-- 失败生成图和 `build_actor_core_silhouette_guide.py` 产生的二值轮廓只能帮助人工标注，不得直接冒充批准 Target。仓库不提供规则变形 Target 生成器。
+| 层 | 默认选择 | 是否必需 | 职责 |
+| --- | --- | --- | --- |
+| 生产推理 | FLUX.2 Klein 4B distilled FP8 | 是 | 4 步本地编辑，加载任务 LoRA，目标硬件为 3060 12GB |
+| LoRA 训练 | FLUX.2 Klein 4B Base | 训练时 | 学习 `strip_to_actor_core`；可远程训练 |
+| 教师 Target | 人工绘制或可选远程教师 | 否 | 只提出候选 Target，不能自动批准 |
+| Qwen-Image-Edit | 可选实验教师 | 否 | 不再是 Studio、数据或生产推理依赖 |
+| 回退 | SDXL + LoRA/ControlNet/InstructPix2Pix | 条件回退 | Klein 训练产物无法在 3060 通过硬件 Gate 时启用 |
+
+Black Forest Labs 将 4B Base 定位为有限硬件微调/LoRA版本，将 distilled 4B 定位为快速生产推理版本：<https://github.com/black-forest-labs/flux2/blob/main/README.md>。ModelScope 的 Base 仓库为 `black-forest-labs/FLUX.2-klein-base-4B`：<https://modelscope.cn/models/black-forest-labs/FLUX.2-klein-base-4B>。
+
+## 数据合同与可迁移性
+
+权威数据是模型无关的 `source + target + 可选 mask + caption + Gate + provenance`，schema 为 `schemas/strip_to_actor_core_pair.schema.json`。任何训练器导出都是可重建适配层，不得反过来污染原始 Pair。
+
+- Source：已批准风格角色三视图。
+- Target：同尺寸、同布局、同姿态的标准 Actor Core。
+- Mask：可选人工校正范围，不是 Target 替代品。
+- Provenance：记录 Target 是人工、远程教师还是本地模型生成；来源与人工批准相互独立。
+- Candidate、approved、rejected 全部位于 `workspace/training/strip_to_actor_core/`，不上传 Git。
+- 只有人工逐项确认全部 Gate 并显式批准的 Pair 才能导出训练集。
 
 人工 Gate：
 
-1. 光头、无耳、无五官；
-2. 无头发、服装、鞋和配件；
+1. 光头、无耳、无任何五官；
+2. 无头发、服装、鞋、手套和配件；
 3. 单一连续、无性征、无表面标记的玩具式素体壳；
-4. 窄而轻微收束的躯干，不是梨形婴儿体；
-5. front/right/back 描述同一个体积；
+4. 躯干窄且轻微收束，不是梨形或鼓肚婴儿体；
+5. front/right/back 描述同一体积；
 6. 无缝线、孔洞、圆点、合成接缝或背景污染。
 
-## 本地注册与导出
+## 当前可确认预览
 
-注册候选时不要添加 `--approve`：
+`teacher_actor_core_d70bce_20260826` 已登记为 `candidate`。它由可选远程教师从已批准短发种子生成，随后规范化为 1536×768；它尚未入库、尚未进入训练集，也不会因来源模型自动获得批准。Studio 的“Actor Core 教师候选”区会显示 Target 和 Pair 记录。
+
+Klein distilled 的同分辨率预筛选也已运行：4 steps、FP8、低显存模式、16GB 卡预留 5GB，10.32 秒完成；整卡基线 1,739MiB、峰值 13,427MiB、增量 11,688MiB。它证明推理接近 12GB 范围，但零样本仍保留头发和衣物，因此只算“显存预筛选通过、任务质量失败”。真实 RTX 3060 仍必须复测。
+
+## 注册与导出
+
+候选注册示例：
 
 ```powershell
 python .\tools\model_test\register_strip_to_actor_core_pair.py `
-  --source <完整角色图> `
-  --target <人工校正素体图> `
-  --mask <可选校正掩码> `
+  --source <已批准风格角色图> `
+  --target <人工或教师候选素体图> `
   --style-profile-id qstyle_anime_western_fantasy_no_face_v1 `
+  --target-producer remote_teacher `
+  --target-generator <教师标识> `
   --consumer-tag ba `
-  --caption "convert the character into the canonical blank Actor Core while preserving pose, proportions and views"
+  --caption "convert the supplied character into the canonical blank Actor Core while preserving layout, pose and proportions"
 ```
 
-人工检查完成后才可用 `--approve --confirm-manual-gates` 注册批准版本。导出器只读取批准 pair，并生成 Musubi Tuner 要求的 target `image_directory`、source `control_directory`、同名 caption 和 `dataset.toml`：
+人工确认前不要添加 `--approve`。确认完成后才可使用 `--approve --confirm-manual-gates` 重新登记批准版本。
+
+FLUX.2 / ModelScope DiffSynth 导出：
+
+```powershell
+python .\tools\model_test\export_strip_to_actor_core_diffsynth_dataset.py --validate-only
+python .\tools\model_test\export_strip_to_actor_core_diffsynth_dataset.py
+```
+
+导出器生成 DiffSynth 图像编辑合同：Target 为 `image`，Source 为 `edit_image`。ModelScope 官方 Klein Base LoRA 示例和训练参数位于：<https://github.com/modelscope/DiffSynth-Studio/blob/main/examples/flux2/model_training/lora/FLUX.2-klein-base-4B.sh>。
+
+旧 Musubi/Qwen 导出器只保留为可选实验适配器：
 
 ```powershell
 python .\tools\model_test\export_strip_to_actor_core_dataset.py --validate-only
-python .\tools\model_test\export_strip_to_actor_core_dataset.py
 ```
 
-数据目录遵循 Musubi Tuner 的 [control-image dataset contract](https://github.com/kohya-ss/musubi-tuner/blob/main/docs/dataset_config.md)。训练使用其 [Qwen-Image `edit-2511` 路径](https://github.com/kohya-ss/musubi-tuner/blob/main/docs/qwen_image.md)。12GB 显存首轮保持 768×384、batch 1、FP8 DiT、FP8 VL、gradient checkpointing 和 block swap。没有至少一组批准 pair 时，不下载 BF16 训练权重，也不启动训练。
+## 训练与 3060 验收
+
+没有至少一组人工批准 Pair 时，不下载 Base 训练权重、不安装训练环境、不启动 LoRA。模型优先从 ModelScope 下载，只取训练所需文件并支持断点续传；禁止把模型权重提交到 Git。
+
+首轮 LoRA 使用 rank 4 或 8、batch 1、512/768 桶、gradient checkpointing、FP8 非训练模块；若需 12GB 本机实验，再启用 CPU offload 或 DiffSynth 两阶段缓存。远程训练不是风险，生产推理依赖远程或大显存才是风险。
+
+每枚 LoRA 必须通过真实 3060 Gate：
+
+1. 峰值显存不超过约 11.5GB，不 OOM；
+2. 本机离线完成参考图编辑；
+3. 正常冷启动、保存和恢复；
+4. 输出通过六项 Actor Core 人工 Gate；
+5. Studio 不需要 Qwen 或远程教师即可调用；
+6. 若失败，停止 Klein 生产采用并进入 SDXL 回退实验。

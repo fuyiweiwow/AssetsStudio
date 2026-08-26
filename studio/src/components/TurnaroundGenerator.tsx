@@ -14,6 +14,7 @@ import {
   fetchLocalLibrary,
   fetchLocalGenerationHealth,
   fetchStyleSeed,
+  fetchTrainingPairs,
   fetchTurnaround,
   proxiedArtifactUrl,
   uploadActorCoreRig,
@@ -21,6 +22,7 @@ import {
   type Local3DAsset,
   type LocalLibraryAsset,
   type LocalGenerationHealth,
+  type TrainingPairCandidate,
   type TurnaroundJob,
 } from "../lib/local-generation";
 import { styleSlotRegistry } from "../lib/style-slot-profiles";
@@ -56,6 +58,7 @@ export function TurnaroundGenerator() {
   const [animationAssets, setAnimationAssets] = useState<LocalAnimationAsset[]>([]);
   const [selectedAnimationId, setSelectedAnimationId] = useState("");
   const [animationBusyActorId, setAnimationBusyActorId] = useState("");
+  const [trainingPairs, setTrainingPairs] = useState<TrainingPairCandidate[]>([]);
   const [styleSeedAssetId, setStyleSeedAssetId] = useState("");
   const [baseActorAssetId, setBaseActorAssetId] = useState("");
   const [styleProfileId, setStyleProfileId] = useState(styleSlotRegistry.styles[0].id);
@@ -128,12 +131,22 @@ export function TurnaroundGenerator() {
     }
   }, []);
 
+  const refreshTrainingPairs = useCallback(async () => {
+    try {
+      const result = await fetchTrainingPairs();
+      setTrainingPairs(result.pairs);
+    } catch {
+      setTrainingPairs([]);
+    }
+  }, []);
+
   useEffect(() => {
     void refreshHealth();
     void refreshLibrary();
     void refresh3DAssets();
     void refreshAnimationLibrary();
-  }, [refresh3DAssets, refreshAnimationLibrary, refreshHealth, refreshLibrary]);
+    void refreshTrainingPairs();
+  }, [refresh3DAssets, refreshAnimationLibrary, refreshHealth, refreshLibrary, refreshTrainingPairs]);
 
   useEffect(() => {
     if (!threeDAssets.some((asset) =>
@@ -325,7 +338,7 @@ export function TurnaroundGenerator() {
       <section className="generation-main">
         <div className="generation-heading">
           <div><p className="eyebrow">LOCAL MODULAR ASSET PIPELINE</p><h2>{modeTitle}</h2><p>{assetMode === "style_seed" ? "ReferenceLatent 只校准所选 StyleProfile；通过压力测试后再决定是否训练 LoRA。" : assetMode === "base_actor" ? "风格种子只约束比例与造型语法；Actor 必须无头发、五官、服装和配件。" : "一次只生成一个隔离 Slot 部件，并绑定 Actor 槽位合同。"}</p></div>
-          <span className="generation-model-chip">FLUX.2 Klein 4B · FP8</span>
+          <span className="generation-model-chip">Klein 4B · 3060 推理目标</span>
         </div>
 
         <div className="turnaround-stage">
@@ -356,6 +369,15 @@ export function TurnaroundGenerator() {
           <article><strong>晋级规则</strong><span>人工视角检查后才进入 RGBA/3D</span></article>
           <article><strong>本地生命周期</strong><span>候选 → 人工确认 → 本地入库 / 销毁</span></article>
         </div>
+        {trainingPairs.length > 0 && <section className="training-pair-review">
+          <div className="local-3d-heading"><div><p className="eyebrow">MODEL-AGNOSTIC TRAINING PAIRS</p><h3>Actor Core 教师候选</h3><p>远程教师只负责提出 Target；数据必须人工批准，生产推理仍以本地 Klein 4B 为目标。</p></div><button type="button" onClick={() => void refreshTrainingPairs()}>刷新候选</button></div>
+          <div className="training-pair-grid">
+            {trainingPairs.map((pair) => <article key={pair.pair_id} className={`training-pair-${pair.status}`}>
+              <img src={proxiedArtifactUrl(pair.target_url)} alt={`${pair.pair_id} Actor Core Target 候选`} />
+              <div><strong>{pair.status === "approved" ? "已批准训练 Pair" : pair.status === "rejected" ? "已拒绝" : "待人工确认"}</strong><span>{pair.caption}</span><small>{pair.pair_id} · {pair.provenance.target_producer ?? "unknown"} / {pair.provenance.target_generator ?? "manual"} · {pair.automatic_pass ? "自动 Gate 通过" : "自动 Gate 未全过"} · 仅本地</small><a href={proxiedArtifactUrl(pair.record_url)} download>下载 Pair 记录</a></div>
+            </article>)}
+          </div>
+        </section>}
         {libraryAssets.length > 0 && <section className="local-library-gallery">
           <div><p className="eyebrow">LOCAL-ONLY ASSET LIBRARY</p><h3>已确认样例</h3></div>
           <div className="local-library-grid">

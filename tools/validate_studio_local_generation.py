@@ -35,18 +35,17 @@ REQUIRED = [
     "references/actor_core/rig_landmark_profiles/chibi_featureless_v1.json",
     "schemas/strip_to_actor_core_pair.schema.json",
     "tools/model_test/run_comfy_flux2_klein.py",
-    "tools/model_test/run_comfy_qwen_image_edit.py",
     "tools/model_test/build_actor_core_repair_mask.py",
     "tools/model_test/build_actor_core_silhouette_guide.py",
     "tools/model_test/register_strip_to_actor_core_pair.py",
     "tools/model_test/export_strip_to_actor_core_dataset.py",
+    "tools/model_test/export_strip_to_actor_core_diffsynth_dataset.py",
     "tools/model_test/run_hunyuan3d_mv_shape.py",
     "tools/model_test/studio_local_generation_api.py",
     "tools/model_test/process_actor_core_accurig_rig.py",
     "tools/model_test/retarget_mixamo_to_actor_core.py",
     "tools/model_test/build_animation_preview_gifs.py",
     "tools/start_studio_local_generation.ps1",
-    "tools/setup_qwen_actor_core_environment.ps1",
     "tools/cleanup_current_workflow.ps1",
 ]
 PYTHON_SOURCES = [
@@ -57,11 +56,11 @@ PYTHON_SOURCES = [
     "tools/model_test/blender_environment.py",
     "tools/model_test/hunyuan_environment.py",
     "tools/model_test/run_comfy_flux2_klein.py",
-    "tools/model_test/run_comfy_qwen_image_edit.py",
     "tools/model_test/build_actor_core_repair_mask.py",
     "tools/model_test/build_actor_core_silhouette_guide.py",
     "tools/model_test/register_strip_to_actor_core_pair.py",
     "tools/model_test/export_strip_to_actor_core_dataset.py",
+    "tools/model_test/export_strip_to_actor_core_diffsynth_dataset.py",
     "tools/model_test/run_hunyuan3d_mv_shape.py",
     "tools/model_test/studio_local_generation_api.py",
     "tools/model_test/process_actor_core_accurig_rig.py",
@@ -72,9 +71,6 @@ COMFY_MODELS = [
     Path("models/diffusion_models/flux-2-klein-4b-fp8.safetensors"),
     Path("models/text_encoders/qwen_3_4b.safetensors"),
     Path("models/vae/flux2-vae.safetensors"),
-    Path("models/diffusion_models/qwen-image-edit-2511-Q3_K_M.gguf"),
-    Path("models/text_encoders/qwen_2.5_vl_7b_fp8_scaled.safetensors"),
-    Path("models/vae/qwen_image_vae.safetensors"),
 ]
 
 
@@ -175,6 +171,11 @@ def main() -> int:
     require_marker("studio/src/components/TurnaroundGenerator.tsx", "自动适配并生成预览")
     require_marker("tools/model_test/studio_local_generation_api.py", '"rig-intakes"')
     require_marker("tools/model_test/studio_local_generation_api.py", '"animation-previews"')
+    require_marker("tools/model_test/studio_local_generation_api.py", '"training-pairs"')
+    require_marker(
+        "tools/model_test/studio_local_generation_api.py",
+        '"teacher_backend_required": False',
+    )
     require_marker("tools/model_test/retarget_mixamo_to_actor_core.py", "hands_not_together_behind_back")
     require_marker("tools/start_studio_local_generation.ps1", "$env:VIRTUAL_ENV")
     require_marker(
@@ -193,6 +194,10 @@ def main() -> int:
     require_marker(
         "tools/model_test/export_strip_to_actor_core_dataset.py",
         'control_directory =',
+    )
+    require_marker(
+        "tools/model_test/export_strip_to_actor_core_diffsynth_dataset.py",
+        '"edit_image": [source_name]',
     )
 
     published_seeds = validate_published_style_seeds()

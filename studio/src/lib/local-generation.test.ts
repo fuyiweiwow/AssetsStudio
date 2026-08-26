@@ -11,6 +11,7 @@ import {
   fetchLocal3DAssets,
   fetchAnimationLibrary,
   fetchLocalGenerationHealth,
+  fetchTrainingPairs,
   proxiedArtifactUrl,
   uploadActorCoreRig,
 } from "./local-generation";
@@ -56,6 +57,24 @@ describe("local generation client", () => {
       slot_id: "waist_accessory",
       base_actor_asset_id: "base-1",
     });
+    vi.unstubAllGlobals();
+  });
+
+  it("lists model-agnostic Actor Core training candidates", async () => {
+    const fetchMock = vi.fn().mockResolvedValue(new Response(JSON.stringify({
+      pairs: [{
+        pair_id: "teacher_actor_core_d70bce_20260826",
+        task: "strip_to_actor_core",
+        status: "candidate",
+        data_contract: "model_agnostic_source_target_edit_v1",
+        target_url: "/api/training-pairs/teacher_actor_core_d70bce_20260826/target",
+      }],
+    }), { status: 200, headers: { "Content-Type": "application/json" } }));
+    vi.stubGlobal("fetch", fetchMock);
+    await expect(fetchTrainingPairs()).resolves.toMatchObject({
+      pairs: [{ status: "candidate", data_contract: "model_agnostic_source_target_edit_v1" }],
+    });
+    expect(fetchMock.mock.calls[0][0]).toBe("/api/local-generation/training-pairs");
     vi.unstubAllGlobals();
   });
 

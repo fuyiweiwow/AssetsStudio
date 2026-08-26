@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Register a local-only, gated Qwen-Image-Edit training pair."""
+"""Register a local-only, model-agnostic strip-to-Actor-Core edit pair."""
 
 from __future__ import annotations
 
@@ -59,6 +59,15 @@ def main() -> int:
     parser.add_argument("--style-profile-id", required=True)
     parser.add_argument("--caption", required=True)
     parser.add_argument("--consumer-tag", action="append", default=[])
+    parser.add_argument(
+        "--target-producer",
+        default="manual_author",
+        help="Who or what created the target; this is provenance, not approval",
+    )
+    parser.add_argument(
+        "--target-generator",
+        help="Optional teacher/model identifier used to create the candidate target",
+    )
     parser.add_argument("--pair-id")
     parser.add_argument("--dataset-root", type=Path, default=DEFAULT_DATASET_ROOT)
     parser.add_argument("--approve", action="store_true")
@@ -95,6 +104,11 @@ def main() -> int:
 
     source_info = image_info(pair_dir / filenames["source"], filenames["source"])
     target_info = image_info(pair_dir / filenames["target"], filenames["target"])
+    if (source_info["width"], source_info["height"]) != (
+        target_info["width"],
+        target_info["height"],
+    ):
+        raise RuntimeError("Source and target dimensions must match")
     mask_info = None
     if mask:
         mask_info = image_info(pair_dir / filenames["mask"], filenames["mask"])
@@ -112,10 +126,18 @@ def main() -> int:
         "schema": "assetsstudio_strip_to_actor_core_pair_v1",
         "pair_id": pair_id,
         "task": "strip_to_actor_core",
+        "data_contract": "model_agnostic_source_target_edit_v1",
         "status": "approved" if args.approve else "candidate",
         "style_profile_id": args.style_profile_id,
         "consumer_tags": sorted(set(args.consumer_tag)),
         "caption": args.caption.strip(),
+        "provenance": {
+            "target_producer": args.target_producer.strip(),
+            "target_generator": (
+                args.target_generator.strip() if args.target_generator else None
+            ),
+            "approval_is_independent": True,
+        },
         "source": source_info,
         "target": target_info,
         "automatic_qa": automatic_qa,

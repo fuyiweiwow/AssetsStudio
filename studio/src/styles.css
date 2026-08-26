@@ -313,6 +313,18 @@ dl { margin: 0; } dl div { padding: 8px 0; border-top: 1px solid #282f3f; } dt {
 .local-library-grid strong { color: #d9e4f4; font-size: .62rem; }
 .local-library-grid span { overflow: hidden; color: #8d99ac; font-size: .53rem; text-overflow: ellipsis; white-space: nowrap; }
 .local-library-grid small { color: #657187; font-size: .49rem; }
+
+.training-pair-review { margin-top: 14px; padding-top: 13px; border-top: 1px solid #2d3749; }
+.training-pair-grid { display: grid; gap: 9px; margin-top: 9px; }
+.training-pair-grid article { display: grid; grid-template-columns: minmax(260px, .95fr) minmax(260px, 1.05fr); overflow: hidden; border: 1px solid #6b563f; border-radius: 10px; background: #151b26; }
+.training-pair-grid article.training-pair-approved { border-color: #3d665b; }
+.training-pair-grid article.training-pair-rejected { border-color: #68443f; opacity: .6; }
+.training-pair-grid img { display: block; width: 100%; height: 100%; min-height: 190px; object-fit: cover; background: #d7d9dc; }
+.training-pair-grid article > div { display: grid; align-content: center; gap: 7px; padding: 12px; }
+.training-pair-grid strong { color: #efd3a9; font-size: .7rem; }
+.training-pair-grid span { color: #9aa6b9; font-size: .57rem; line-height: 1.5; }
+.training-pair-grid small { color: #6e7a8f; font-size: .5rem; line-height: 1.45; }
+.training-pair-grid a { justify-self: start; padding: 6px 8px; border: 1px solid #46536a; border-radius: 7px; color: #b7c7df; font-size: .52rem; text-decoration: none; }
 .local-3d-workbench { display: grid; gap: 12px; margin-top: 16px; padding-top: 14px; border-top: 1px solid #2d3749; }
 .local-3d-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .local-3d-heading h3 { margin: 2px 0 3px; font-size: .86rem; }
@@ -381,7 +393,7 @@ dl { margin: 0; } dl div { padding: 8px 0; border-top: 1px solid #282f3f; } dt {
 @media (max-width: 760px) {
   .generation-workspace { display: flex; flex-direction: column; }
   .generation-rail { border-right: 0; border-bottom: 1px solid var(--line); }
-  .generation-main { padding: 14px 10px; }.generation-heading { flex-direction: column; }.turnaround-stage { min-height: 330px; }.local-3d-candidate { grid-template-columns: 1fr; }.local-3d-review { border-top: 1px solid #303c50; border-left: 0; }.animation-selector { grid-template-columns: 1fr; }
+  .generation-main { padding: 14px 10px; }.generation-heading { flex-direction: column; }.turnaround-stage { min-height: 330px; }.local-3d-candidate, .training-pair-grid article { grid-template-columns: 1fr; }.local-3d-review { border-top: 1px solid #303c50; border-left: 0; }.animation-selector { grid-template-columns: 1fr; }
   .generation-contract-grid, .generation-console { display: grid; grid-template-columns: 1fr; }
 }
 .preview-column.preview-expanded {

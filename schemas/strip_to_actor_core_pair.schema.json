@@ -19,10 +19,21 @@
     "schema": { "const": "assetsstudio_strip_to_actor_core_pair_v1" },
     "pair_id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9_-]{7,63}$" },
     "task": { "const": "strip_to_actor_core" },
+    "data_contract": { "const": "model_agnostic_source_target_edit_v1" },
     "status": { "enum": ["candidate", "approved", "rejected"] },
     "style_profile_id": { "type": "string", "minLength": 1 },
     "consumer_tags": { "type": "array", "items": { "type": "string" } },
     "caption": { "type": "string", "minLength": 16 },
+    "provenance": {
+      "type": "object",
+      "required": ["target_producer", "approval_is_independent"],
+      "properties": {
+        "target_producer": { "type": "string", "minLength": 1 },
+        "target_generator": { "type": ["string", "null"] },
+        "approval_is_independent": { "const": true }
+      },
+      "additionalProperties": false
+    },
     "source": { "$ref": "#/$defs/imageArtifact" },
     "target": { "$ref": "#/$defs/imageArtifact" },
     "mask": { "$ref": "#/$defs/imageArtifact" },
