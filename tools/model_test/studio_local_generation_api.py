@@ -66,6 +66,7 @@ LOCAL_ANIMATION_LIBRARY_ROOT = ROOT / "workspace" / "local_animation_library"
 TRAINING_PAIR_ROOT = (
     ROOT / "workspace" / "training" / "strip_to_actor_core" / "v1" / "pairs"
 )
+TRAINING_PREVIEW_ROOT = ROOT / "workspace" / "previews" / "strip_to_actor_core"
 WORKSPACE_ROOT = ROOT / "workspace"
 MAX_RIG_UPLOAD_BYTES = 1024 * 1024 * 1024
 PROFILE_REGISTRY_PATH = ROOT / "studio" / "src" / "generated" / "style-slot-profiles.json"
@@ -165,6 +166,7 @@ def normalize_request_path(path: str) -> str:
         "3d-library",
         "animation-library",
         "training-pairs",
+        "training-previews",
         *ROUTE_CONFIG.keys(),
     }:
         return "/api" + path
@@ -1512,6 +1514,71 @@ def list_training_pairs() -> list[dict[str, Any]]:
     return pairs
 
 
+def training_preview_files(preview_id: str) -> tuple[Path, Path, Path]:
+    if not preview_id.replace("_", "").replace("-", "").isalnum():
+        raise ValueError("invalid training preview id")
+    root = TRAINING_PREVIEW_ROOT.resolve()
+    image = (root / f"{preview_id}.png").resolve()
+    metrics = (root / f"{preview_id}.metrics.json").resolve()
+    review = (root / f"{preview_id}.review.json").resolve()
+    if any(root != path.parent for path in (image, metrics, review)):
+        raise ValueError("unsafe training preview path")
+    return image, metrics, review
+
+
+def public_training_preview(metrics_path: Path) -> dict[str, Any]:
+    suffix = ".metrics.json"
+    if not metrics_path.name.endswith(suffix):
+        raise ValueError("invalid training preview metrics file")
+    preview_id = metrics_path.name[: -len(suffix)]
+    image, _, review_path = training_preview_files(preview_id)
+    if not image.is_file():
+        raise FileNotFoundError(image)
+    metrics = json.loads(metrics_path.read_text(encoding="utf-8"))
+    review = (
+        json.loads(review_path.read_text(encoding="utf-8"))
+        if review_path.is_file()
+        else {"review_status": "visual_review_required", "known_issues": []}
+    )
+    return {
+        "preview_id": preview_id,
+        "task": "strip_to_actor_core",
+        "backend": metrics.get("backend"),
+        "lora": metrics.get("lora"),
+        "lora_strength": metrics.get("lora_strength"),
+        "seed": metrics.get("seed"),
+        "width": metrics.get("width"),
+        "height": metrics.get("height"),
+        "steps": metrics.get("steps"),
+        "elapsed_seconds": metrics.get("elapsed_seconds"),
+        "gpu": metrics.get("gpu"),
+        "qualification": metrics.get("qualification"),
+        "review_status": review.get("review_status", "visual_review_required"),
+        "known_issues": review.get("known_issues", []),
+        "image_url": f"/api/training-previews/{preview_id}/image",
+        "metrics_url": f"/api/training-previews/{preview_id}/metrics",
+        "review_url": f"/api/training-previews/{preview_id}/review" if review_path.is_file() else None,
+        "local_only": True,
+    }
+
+
+def list_training_previews() -> list[dict[str, Any]]:
+    if not TRAINING_PREVIEW_ROOT.is_dir():
+        return []
+    metrics_paths = sorted(
+        TRAINING_PREVIEW_ROOT.glob("*.metrics.json"),
+        key=lambda path: path.stat().st_mtime,
+        reverse=True,
+    )
+    previews = []
+    for metrics_path in metrics_paths:
+        try:
+            previews.append(public_training_preview(metrics_path))
+        except (OSError, ValueError, json.JSONDecodeError):
+            continue
+    return previews
+
+
 class Handler(BaseHTTPRequestHandler):
     server_version = "AssetsStudioLocalGeneration/0.3"
 
@@ -1562,6 +1629,7 @@ class Handler(BaseHTTPRequestHandler):
                     "local_animation_library_root": str(LOCAL_ANIMATION_LIBRARY_ROOT),
                     "local_animation_assets": len(list_animation_assets()),
                     "training_pairs": len(list_training_pairs()),
+                    "training_previews": len(list_training_previews()),
                     "profile_registry": str(PROFILE_REGISTRY_PATH),
                     "style_profiles": len(STYLE_PROFILES),
                     "actor_profiles": len(ACTOR_PROFILES),
@@ -1592,6 +1660,10 @@ class Handler(BaseHTTPRequestHandler):
             self.send_json(HTTPStatus.OK, {"pairs": list_training_pairs()})
             return
 
+        if path == "/api/training-previews":
+            self.send_json(HTTPStatus.OK, {"previews": list_training_previews()})
+            return
+
         parts = [part for part in path.split("/") if part]
         if (
             len(parts) == 4
@@ -1611,6 +1683,22 @@ class Handler(BaseHTTPRequestHandler):
                     artifact = record[parts[3]]["filename"]
                     self.send_file(directory / artifact, "image/png")
             except (KeyError, OSError, ValueError, json.JSONDecodeError) as exc:
+                self.send_json(HTTPStatus.NOT_FOUND, {"error": str(exc)})
+            return
+        if (
+            len(parts) == 4
+            and parts[:2] == ["api", "training-previews"]
+            and parts[3] in {"image", "metrics", "review"}
+        ):
+            try:
+                image, metrics, review = training_preview_files(parts[2])
+                artifact, content_type = {
+                    "image": (image, "image/png"),
+                    "metrics": (metrics, "application/json; charset=utf-8"),
+                    "review": (review, "application/json; charset=utf-8"),
+                }[parts[3]]
+                self.send_file(artifact, content_type)
+            except (OSError, ValueError) as exc:
                 self.send_json(HTTPStatus.NOT_FOUND, {"error": str(exc)})
             return
         if (

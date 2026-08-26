@@ -40,6 +40,33 @@ export interface TrainingPairCandidate {
   local_only: true;
 }
 
+export interface TrainingPreview {
+  preview_id: string;
+  task: "strip_to_actor_core";
+  backend: "flux2_klein_4b_distilled_fp8";
+  lora: string;
+  lora_strength: number;
+  seed: number;
+  width: number;
+  height: number;
+  steps: number;
+  elapsed_seconds: number;
+  gpu?: {
+    name: string;
+    total_mib: number;
+    baseline_used_mib: number;
+    peak_used_mib: number;
+    peak_delta_mib: number;
+  };
+  qualification: string;
+  review_status: "visual_review_required" | "approved" | "rejected";
+  known_issues: string[];
+  image_url: string;
+  metrics_url: string;
+  review_url?: string | null;
+  local_only: true;
+}
+
 export interface LocalAnimationAsset {
   schema: "assetsstudio_local_animation_asset_v1";
   asset_id: string;
@@ -210,6 +237,13 @@ export async function createTurnaround(subject: string, style: TurnaroundStyle, 
 export async function fetchTrainingPairs(signal?: AbortSignal) {
   return responseJson<{ pairs: TrainingPairCandidate[] }>(await fetch(
     `${API_ROOT}/training-pairs`,
+    { cache: "no-store", signal },
+  ));
+}
+
+export async function fetchTrainingPreviews(signal?: AbortSignal) {
+  return responseJson<{ previews: TrainingPreview[] }>(await fetch(
+    `${API_ROOT}/training-previews`,
     { cache: "no-store", signal },
   ));
 }

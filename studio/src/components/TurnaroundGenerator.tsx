@@ -15,6 +15,7 @@ import {
   fetchLocalGenerationHealth,
   fetchStyleSeed,
   fetchTrainingPairs,
+  fetchTrainingPreviews,
   fetchTurnaround,
   proxiedArtifactUrl,
   uploadActorCoreRig,
@@ -23,6 +24,7 @@ import {
   type LocalLibraryAsset,
   type LocalGenerationHealth,
   type TrainingPairCandidate,
+  type TrainingPreview,
   type TurnaroundJob,
 } from "../lib/local-generation";
 import { styleSlotRegistry } from "../lib/style-slot-profiles";
@@ -59,6 +61,7 @@ export function TurnaroundGenerator() {
   const [selectedAnimationId, setSelectedAnimationId] = useState("");
   const [animationBusyActorId, setAnimationBusyActorId] = useState("");
   const [trainingPairs, setTrainingPairs] = useState<TrainingPairCandidate[]>([]);
+  const [trainingPreviews, setTrainingPreviews] = useState<TrainingPreview[]>([]);
   const [styleSeedAssetId, setStyleSeedAssetId] = useState("");
   const [baseActorAssetId, setBaseActorAssetId] = useState("");
   const [styleProfileId, setStyleProfileId] = useState(styleSlotRegistry.styles[0].id);
@@ -140,13 +143,23 @@ export function TurnaroundGenerator() {
     }
   }, []);
 
+  const refreshTrainingPreviews = useCallback(async () => {
+    try {
+      const result = await fetchTrainingPreviews();
+      setTrainingPreviews(result.previews);
+    } catch {
+      setTrainingPreviews([]);
+    }
+  }, []);
+
   useEffect(() => {
     void refreshHealth();
     void refreshLibrary();
     void refresh3DAssets();
     void refreshAnimationLibrary();
     void refreshTrainingPairs();
-  }, [refresh3DAssets, refreshAnimationLibrary, refreshHealth, refreshLibrary, refreshTrainingPairs]);
+    void refreshTrainingPreviews();
+  }, [refresh3DAssets, refreshAnimationLibrary, refreshHealth, refreshLibrary, refreshTrainingPairs, refreshTrainingPreviews]);
 
   useEffect(() => {
     if (!threeDAssets.some((asset) =>
@@ -375,6 +388,15 @@ export function TurnaroundGenerator() {
             {trainingPairs.map((pair) => <article key={pair.pair_id} className={`training-pair-${pair.status}`}>
               <img src={proxiedArtifactUrl(pair.target_url)} alt={`${pair.pair_id} Actor Core Target 候选`} />
               <div><strong>{pair.status === "approved" ? "已批准训练 Pair" : pair.status === "rejected" ? "已拒绝" : "待人工确认"}</strong><span>{pair.caption}</span><small>{pair.pair_id} · {pair.provenance.target_producer ?? "unknown"} / {pair.provenance.target_generator ?? "manual"} · {pair.automatic_pass ? "自动 Gate 通过" : "自动 Gate 未全过"} · 仅本地</small><a href={proxiedArtifactUrl(pair.record_url)} download>下载 Pair 记录</a></div>
+            </article>)}
+          </div>
+        </section>}
+        {trainingPreviews.length > 0 && <section className="training-pair-review">
+          <div className="local-3d-heading"><div><p className="eyebrow">TRAINED LORA PREVIEWS</p><h3>Actor Core 本地推理预览</h3><p>这里展示 Base 训练出的 LoRA 在 Klein 4B 蒸馏 FP8 上的实际结果；预览未批准前不会进入资产库。</p></div><button type="button" onClick={() => void refreshTrainingPreviews()}>刷新预览</button></div>
+          <div className="training-pair-grid">
+            {trainingPreviews.map((preview) => <article key={preview.preview_id} className={`training-pair-${preview.review_status === "approved" ? "approved" : "candidate"}`}>
+              <img src={proxiedArtifactUrl(preview.image_url)} alt={`${preview.preview_id} LoRA Actor Core 预览`} />
+              <div><strong>{preview.review_status === "approved" ? "已批准预览" : "等待人工确认"}</strong><span>{preview.known_issues.length ? preview.known_issues.join(" · ") : "尚未记录已知问题"}</span><small>{preview.preview_id} · {preview.steps} steps / {preview.elapsed_seconds.toFixed(2)}s · LoRA {preview.lora_strength.toFixed(2)} · 仅本地</small><a href={proxiedArtifactUrl(preview.metrics_url)} download>下载推理指标</a></div>
             </article>)}
           </div>
         </section>}

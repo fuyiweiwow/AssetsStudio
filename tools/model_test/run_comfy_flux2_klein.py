@@ -60,6 +60,7 @@ def write_metrics(path: str | None, payload: dict) -> None:
 
 
 def build_prompt(args: argparse.Namespace) -> dict:
+    model_output = ["18", 0] if args.lora else ["1", 0]
     prompt = {
         "1": {
             "class_type": "UNETLoader",
@@ -114,7 +115,7 @@ def build_prompt(args: argparse.Namespace) -> dict:
         "10": {
             "class_type": "CFGGuider",
             "inputs": {
-                "model": ["1", 0],
+                "model": model_output,
                 "positive": ["16", 0] if args.reference_image else ["4", 0],
                 "negative": ["17", 0] if args.reference_image else ["5", 0],
                 "cfg": args.cfg,
@@ -142,6 +143,16 @@ def build_prompt(args: argparse.Namespace) -> dict:
             },
         },
     }
+
+    if args.lora:
+        prompt["18"] = {
+            "class_type": "LoraLoaderModelOnly",
+            "inputs": {
+                "model": ["1", 0],
+                "lora_name": args.lora,
+                "strength_model": args.lora_strength,
+            },
+        }
 
     if args.reference_image:
         # Match ComfyUI's official FLUX.2 Klein distilled edit workflow: encode
@@ -196,6 +207,11 @@ def main() -> int:
     )
     parser.add_argument("--text-encoder", default="qwen_3_4b.safetensors")
     parser.add_argument("--vae", default="flux2-vae.safetensors")
+    parser.add_argument(
+        "--lora",
+        help="Optional filename relative to ComfyUI's models/loras directory",
+    )
+    parser.add_argument("--lora-strength", type=float, default=1.0)
     parser.add_argument("--timeout", type=int, default=1800)
     parser.add_argument(
         "--metrics-json",
@@ -249,6 +265,8 @@ def main() -> int:
                 "cfg": args.cfg,
                 "seed": args.seed,
                 "reference_image": args.reference_image,
+                "lora": args.lora,
+                "lora_strength": args.lora_strength if args.lora else None,
                 "elapsed_seconds": round(elapsed, 2),
                 "gpu": None,
                 "outputs": outputs,

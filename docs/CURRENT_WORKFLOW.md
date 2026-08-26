@@ -43,13 +43,14 @@ Studio 为多个游戏提供可复用美术资产。当前 `ba` 仅保留在 `co
 - rule-based 素体、Klein/Qwen 零样本素体均已判定不能作为训练 Target 或资产。
 - Qwen Q3/Q4 对照表明量化不是梨形躯干问题的主因；继续堆提示词的路线已停止。
 - Klein distilled 限额预筛选可在约 11.7GB 增量显存生成 1536×768 三视图，但零样本仍保留部件，因此必须依靠任务 LoRA。
-- 教师候选 Pair `teacher_actor_core_d70bce_20260826` 已生成并显示在 Studio；状态是 `candidate`，等待人工确认，尚未训练。
+- 教师 Pair `teacher_actor_core_d70bce_20260826_v2` 已批准并导出为 DiffSynth 图像编辑数据。
+- 首轮 Klein Base rank-16/100-step LoRA 已训练完成，并成功回载到 distilled FP8；它已去除大部分部件，但仍生成耳朵，因此只作为 Studio 本地预览候选。
 - 当前动作库只有 `mixamo_standard_walk_v1`；自动映射与四方向预览已实现。
 
 ## 下一步
 
-1. 用户在 Studio/Tailscale 预览中确认或拒绝教师 Target；
-2. 若确认，将其登记为第一组 approved Pair；若拒绝，保留拒绝记录并生成单变量修订；
-3. 有 approved Pair 后才安装 DiffSynth/下载 Klein Base 所需权重，先做 1–4 Pair 最小过拟合；
-4. LoRA 回载到 distilled 4B，先在当前机器限额预筛选，再在真实 3060 自检；
-5. 通过后生成新的 Actor Core 三视图，人工批准后才进入 3D。
+1. 用户在 Studio/Tailscale 对比 strength 1.0 与 1.3 的首轮 LoRA 预览；
+2. 保留当前 Pair，新增少量不同角色来源但同一无耳 Target 规范的数据，专门压制耳朵与肤色面区；
+3. 训练第二版 LoRA 并在未参与训练的风格种子上验证泛化，而不是继续记忆单图；
+4. 在真实 RTX 3060 12GB 完成冷启动、4-step 编辑与峰值显存 Gate；
+5. 质量和硬件均通过后，生成新的 Actor Core 候选，人工批准后才进入 3D。

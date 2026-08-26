@@ -40,9 +40,11 @@ Black Forest Labs 将 4B Base 定位为有限硬件微调/LoRA版本，将 disti
 
 ## 当前可确认预览
 
-`teacher_actor_core_d70bce_20260826` 已登记为 `candidate`。它由可选远程教师从已批准短发种子生成，随后规范化为 1536×768；它尚未入库、尚未进入训练集，也不会因来源模型自动获得批准。Studio 的“Actor Core 教师候选”区会显示 Target 和 Pair 记录。
+`teacher_actor_core_d70bce_20260826_v2` 已通过自动 Gate 与六项人工 Gate，并登记为首组 approved Pair。Target 由可选远程教师提出，随后只做 1px 面板居中规范化；来源模型没有参与批准决定。旧未居中版本和 Qwen 失败版本位于本地 rejected 目录，不参与导出。
 
 Klein distilled 的同分辨率预筛选也已运行：4 steps、FP8、低显存模式、16GB 卡预留 5GB，10.32 秒完成；整卡基线 1,739MiB、峰值 13,427MiB、增量 11,688MiB。它证明推理接近 12GB 范围，但零样本仍保留头发和衣物，因此只算“显存预筛选通过、任务质量失败”。真实 RTX 3060 仍必须复测。
+
+首轮最小过拟合已于 2026-08-26 完成：DiffSynth 两阶段缓存、Klein Base 4B、1 Pair、rank 16、100 steps、约 7 分 11 秒；训练期间 5070 Ti 峰值约 12,671MiB。LoRA 回载到 Klein distilled FP8 后，1536×768/4-step 约 10.3 秒。它已能去除头发、服装、鞋和配件并保持三视图，但仍生成耳朵；strength 1.3 可消除肤色面区并统一灰色外壳，仍未通过“无耳”Gate。Studio 的“Actor Core 本地推理预览”区展示这两张本地结果和已知问题，均不得入库。
 
 ## 注册与导出
 
@@ -80,7 +82,7 @@ python .\tools\model_test\export_strip_to_actor_core_dataset.py --validate-only
 
 没有至少一组人工批准 Pair 时，不下载 Base 训练权重、不安装训练环境、不启动 LoRA。模型优先从 ModelScope 下载，只取训练所需文件并支持断点续传；禁止把模型权重提交到 Git。
 
-首轮 LoRA 使用 rank 4 或 8、batch 1、512/768 桶、gradient checkpointing、FP8 非训练模块；若需 12GB 本机实验，再启用 CPU offload 或 DiffSynth 两阶段缓存。远程训练不是风险，生产推理依赖远程或大显存才是风险。
+训练入口先运行 `tools/setup_flux2_actor_core_training.ps1` 搜索环境并只取 ModelScope 必需文件。首轮实测使用 rank 16、batch 1、最大 589,824 pixels、gradient checkpointing 和两阶段缓存；这个训练配置约需 12.7GB，不承诺在 3060 上训练。后续可降低 rank/分辨率做本机实验，但远程训练不是风险，生产推理依赖远程或大显存才是风险。
 
 每枚 LoRA 必须通过真实 3060 Gate：
 

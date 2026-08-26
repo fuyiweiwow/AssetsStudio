@@ -20,6 +20,8 @@ AssetsStudio 是一个通用、本地优先的美术素材供给实验室。Bomb
 
 两枚当前已批准风格种子随 Git 位于 `references/style_profiles/published_seeds/`。首次在新机器启动 API 时会自动引入本地种子库；模型权重仍需按环境文档从 ModelScope 获取。
 
+可选 Actor Core LoRA 训练环境由 `tools/setup_flux2_actor_core_training.ps1` 搜索并补齐；它复用已有 ComfyUI 文本编码器/VAE，只从 ModelScope 下载 Base Transformer 与 tokenizer。训练权重、Pair、缓存和预览继续位于忽略的 `workspace/`。
+
 ## 当前文档
 
 - [当前工作流](docs/CURRENT_WORKFLOW.md)

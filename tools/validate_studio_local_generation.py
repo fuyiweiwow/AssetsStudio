@@ -46,6 +46,7 @@ REQUIRED = [
     "tools/model_test/retarget_mixamo_to_actor_core.py",
     "tools/model_test/build_animation_preview_gifs.py",
     "tools/start_studio_local_generation.ps1",
+    "tools/setup_flux2_actor_core_training.ps1",
     "tools/cleanup_current_workflow.ps1",
 ]
 PYTHON_SOURCES = [
@@ -172,6 +173,9 @@ def main() -> int:
     require_marker("tools/model_test/studio_local_generation_api.py", '"rig-intakes"')
     require_marker("tools/model_test/studio_local_generation_api.py", '"animation-previews"')
     require_marker("tools/model_test/studio_local_generation_api.py", '"training-pairs"')
+    require_marker("tools/model_test/studio_local_generation_api.py", '"training-previews"')
+    require_marker("tools/model_test/run_comfy_flux2_klein.py", '"LoraLoaderModelOnly"')
+    require_marker("tools/setup_flux2_actor_core_training.ps1", "modelscope.cli.cli download")
     require_marker(
         "tools/model_test/studio_local_generation_api.py",
         '"teacher_backend_required": False',

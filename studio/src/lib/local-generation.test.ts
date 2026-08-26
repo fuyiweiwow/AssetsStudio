@@ -12,6 +12,7 @@ import {
   fetchAnimationLibrary,
   fetchLocalGenerationHealth,
   fetchTrainingPairs,
+  fetchTrainingPreviews,
   proxiedArtifactUrl,
   uploadActorCoreRig,
 } from "./local-generation";
@@ -75,6 +76,25 @@ describe("local generation client", () => {
       pairs: [{ status: "candidate", data_contract: "model_agnostic_source_target_edit_v1" }],
     });
     expect(fetchMock.mock.calls[0][0]).toBe("/api/local-generation/training-pairs");
+    vi.unstubAllGlobals();
+  });
+
+  it("lists local trained LoRA previews without promoting them to assets", async () => {
+    const fetchMock = vi.fn().mockResolvedValue(new Response(JSON.stringify({
+      previews: [{
+        preview_id: "teacher_v1_e100_seed20260826",
+        task: "strip_to_actor_core",
+        review_status: "visual_review_required",
+        image_url: "/api/training-previews/teacher_v1_e100_seed20260826/image",
+        known_issues: ["ears remain"],
+        local_only: true,
+      }],
+    }), { status: 200, headers: { "Content-Type": "application/json" } }));
+    vi.stubGlobal("fetch", fetchMock);
+    await expect(fetchTrainingPreviews()).resolves.toMatchObject({
+      previews: [{ review_status: "visual_review_required", local_only: true }],
+    });
+    expect(fetchMock.mock.calls[0][0]).toBe("/api/local-generation/training-previews");
     vi.unstubAllGlobals();
   });
 
