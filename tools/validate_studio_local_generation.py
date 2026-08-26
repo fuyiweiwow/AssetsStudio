@@ -19,6 +19,7 @@ REQUIRED = [
     "README.md",
     "docs/CURRENT_WORKFLOW.md",
     "docs/ENVIRONMENT.md",
+    "docs/ACTOR_CORE_TRAINING.md",
     "docs/ACCURIG_HANDOFF.md",
     "docs/ANIMATION_RETARGET.md",
     "start-local-generation-studio.bat",
@@ -32,13 +33,20 @@ REQUIRED = [
     "references/style_profiles/published_seeds/README.md",
     "references/actor_core/actor_core_0ef398ca/actor_slot_profile_v1.json",
     "references/actor_core/rig_landmark_profiles/chibi_featureless_v1.json",
+    "schemas/strip_to_actor_core_pair.schema.json",
     "tools/model_test/run_comfy_flux2_klein.py",
+    "tools/model_test/run_comfy_qwen_image_edit.py",
+    "tools/model_test/build_actor_core_repair_mask.py",
+    "tools/model_test/build_actor_core_silhouette_guide.py",
+    "tools/model_test/register_strip_to_actor_core_pair.py",
+    "tools/model_test/export_strip_to_actor_core_dataset.py",
     "tools/model_test/run_hunyuan3d_mv_shape.py",
     "tools/model_test/studio_local_generation_api.py",
     "tools/model_test/process_actor_core_accurig_rig.py",
     "tools/model_test/retarget_mixamo_to_actor_core.py",
     "tools/model_test/build_animation_preview_gifs.py",
     "tools/start_studio_local_generation.ps1",
+    "tools/setup_qwen_actor_core_environment.ps1",
     "tools/cleanup_current_workflow.ps1",
 ]
 PYTHON_SOURCES = [
@@ -49,6 +57,11 @@ PYTHON_SOURCES = [
     "tools/model_test/blender_environment.py",
     "tools/model_test/hunyuan_environment.py",
     "tools/model_test/run_comfy_flux2_klein.py",
+    "tools/model_test/run_comfy_qwen_image_edit.py",
+    "tools/model_test/build_actor_core_repair_mask.py",
+    "tools/model_test/build_actor_core_silhouette_guide.py",
+    "tools/model_test/register_strip_to_actor_core_pair.py",
+    "tools/model_test/export_strip_to_actor_core_dataset.py",
     "tools/model_test/run_hunyuan3d_mv_shape.py",
     "tools/model_test/studio_local_generation_api.py",
     "tools/model_test/process_actor_core_accurig_rig.py",
@@ -59,6 +72,9 @@ COMFY_MODELS = [
     Path("models/diffusion_models/flux-2-klein-4b-fp8.safetensors"),
     Path("models/text_encoders/qwen_3_4b.safetensors"),
     Path("models/vae/flux2-vae.safetensors"),
+    Path("models/diffusion_models/qwen-image-edit-2511-Q3_K_M.gguf"),
+    Path("models/text_encoders/qwen_2.5_vl_7b_fp8_scaled.safetensors"),
+    Path("models/vae/qwen_image_vae.safetensors"),
 ]
 
 
@@ -169,6 +185,14 @@ def main() -> int:
     require_marker(
         "tools/model_test/studio_local_generation_api.py",
         "approved_style_seed_contract_and_proportion_gate",
+    )
+    require_marker(
+        "schemas/strip_to_actor_core_pair.schema.json",
+        "assetsstudio_strip_to_actor_core_pair_v1",
+    )
+    require_marker(
+        "tools/model_test/export_strip_to_actor_core_dataset.py",
+        'control_directory =',
     )
 
     published_seeds = validate_published_style_seeds()

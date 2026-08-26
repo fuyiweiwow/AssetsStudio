@@ -24,7 +24,7 @@ def request_json(url: str, payload: dict | None = None) -> dict:
 
 
 def build_prompt(args: argparse.Namespace) -> dict:
-    return {
+    prompt = {
         "1": {
             "class_type": "LoadImage",
             "inputs": {"image": args.reference_image},
@@ -99,7 +99,7 @@ def build_prompt(args: argparse.Namespace) -> dict:
                 "model": ["5", 0],
                 "positive": ["10", 0],
                 "negative": ["11", 0],
-                "latent_image": ["12", 0],
+                "latent_image": ["20", 0] if args.mask_image else ["12", 0],
                 "seed": args.seed,
                 "steps": args.steps,
                 "cfg": args.cfg,
@@ -115,17 +115,88 @@ def build_prompt(args: argparse.Namespace) -> dict:
         "15": {
             "class_type": "SaveImage",
             "inputs": {
-                "images": ["14", 0],
+                "images": ["22", 0] if args.mask_image else ["14", 0],
                 "filename_prefix": args.prefix,
             },
         },
     }
+
+    if args.reference_image_2:
+        prompt.update(
+            {
+                "16": {
+                    "class_type": "LoadImage",
+                    "inputs": {"image": args.reference_image_2},
+                },
+                "17": {
+                    "class_type": "FluxKontextImageScale",
+                    "inputs": {"image": ["16", 0]},
+                },
+            }
+        )
+        prompt["8"]["inputs"]["image2"] = ["17", 0]
+        prompt["9"]["inputs"]["image2"] = ["17", 0]
+
+    if args.mask_image:
+        prompt.update(
+            {
+                "18": {
+                    "class_type": "LoadImageMask",
+                    "inputs": {"image": args.mask_image, "channel": "red"},
+                },
+                "19": {
+                    "class_type": "GrowMask",
+                    "inputs": {
+                        "mask": ["18", 0],
+                        "expand": args.mask_expand,
+                        "tapered_corners": True,
+                    },
+                },
+                "20": {
+                    "class_type": "SetLatentNoiseMask",
+                    "inputs": {"samples": ["12", 0], "mask": ["19", 0]},
+                },
+                "21": {
+                    "class_type": "FeatherMask",
+                    "inputs": {
+                        "mask": ["19", 0],
+                        "left": args.mask_feather,
+                        "top": args.mask_feather,
+                        "right": args.mask_feather,
+                        "bottom": args.mask_feather,
+                    },
+                },
+                "22": {
+                    "class_type": "ImageCompositeMasked",
+                    "inputs": {
+                        "destination": ["2", 0],
+                        "source": ["14", 0],
+                        "x": 0,
+                        "y": 0,
+                        "resize_source": False,
+                        "mask": ["21", 0],
+                    },
+                },
+            }
+        )
+
+    return prompt
 
 
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--server", default="http://127.0.0.1:8190")
     parser.add_argument("--reference-image", required=True)
+    parser.add_argument(
+        "--reference-image-2",
+        help="Optional second image used only as a proportion/style authority",
+    )
+    parser.add_argument(
+        "--mask-image",
+        help="Optional red-channel mask relative to ComfyUI's input directory",
+    )
+    parser.add_argument("--mask-expand", type=int, default=4)
+    parser.add_argument("--mask-feather", type=int, default=12)
     parser.add_argument("--prompt", required=True)
     parser.add_argument("--steps", type=int, default=20)
     parser.add_argument("--cfg", type=float, default=4.0)

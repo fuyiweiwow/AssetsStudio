@@ -24,6 +24,7 @@ AssetsStudio 是一个通用、本地优先的美术素材供给实验室。Bomb
 
 - [当前工作流](docs/CURRENT_WORKFLOW.md)
 - [环境发现与模型](docs/ENVIRONMENT.md)
+- [Actor Core 图像编辑训练](docs/ACTOR_CORE_TRAINING.md)
 - [AccuRIG 手工交接](docs/ACCURIG_HANDOFF.md)
 - [骨骼动画资产与自动适配](docs/ANIMATION_RETARGET.md)
 - [本地资产生命周期](docs/ASSET_LIFECYCLE.md)

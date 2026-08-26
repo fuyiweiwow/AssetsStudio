@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://assetsstudio.local/schemas/strip_to_actor_core_pair.schema.json",
+  "title": "AssetsStudio strip_to_actor_core training pair",
+  "type": "object",
+  "required": [
+    "schema",
+    "pair_id",
+    "task",
+    "status",
+    "style_profile_id",
+    "caption",
+    "source",
+    "target",
+    "manual_gates",
+    "created_at"
+  ],
+  "properties": {
+    "schema": { "const": "assetsstudio_strip_to_actor_core_pair_v1" },
+    "pair_id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9_-]{7,63}$" },
+    "task": { "const": "strip_to_actor_core" },
+    "status": { "enum": ["candidate", "approved", "rejected"] },
+    "style_profile_id": { "type": "string", "minLength": 1 },
+    "consumer_tags": { "type": "array", "items": { "type": "string" } },
+    "caption": { "type": "string", "minLength": 16 },
+    "source": { "$ref": "#/$defs/imageArtifact" },
+    "target": { "$ref": "#/$defs/imageArtifact" },
+    "mask": { "$ref": "#/$defs/imageArtifact" },
+    "automatic_qa": { "type": "object" },
+    "manual_gates": {
+      "type": "object",
+      "additionalProperties": { "type": "boolean" }
+    },
+    "created_at": { "type": "string", "format": "date-time" },
+    "reviewed_at": { "type": ["string", "null"], "format": "date-time" }
+  },
+  "$defs": {
+    "imageArtifact": {
+      "type": "object",
+      "required": ["filename", "sha256", "width", "height"],
+      "properties": {
+        "filename": { "type": "string", "minLength": 1 },
+        "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "width": { "type": "integer", "minimum": 1 },
+        "height": { "type": "integer", "minimum": 1 }
+      }
+    }
+  }
+}
