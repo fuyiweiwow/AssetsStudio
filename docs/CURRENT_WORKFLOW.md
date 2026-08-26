@@ -43,14 +43,15 @@ Studio 为多个游戏提供可复用美术资产。当前 `ba` 仅保留在 `co
 - rule-based 素体、Klein/Qwen 零样本素体均已判定不能作为训练 Target 或资产。
 - Qwen Q3/Q4 对照表明量化不是梨形躯干问题的主因；继续堆提示词的路线已停止。
 - Klein distilled 限额预筛选可在约 11.7GB 增量显存生成 1536×768 三视图，但零样本仍保留部件，因此必须依靠任务 LoRA。
-- 教师 Pair `teacher_actor_core_d70bce_20260826_v2` 已批准并导出为 DiffSynth 图像编辑数据。
-- 首轮 Klein Base rank-16/100-step LoRA 已训练完成，并成功回载到 distilled FP8；它已去除大部分部件，但仍生成耳朵，因此只作为 Studio 本地预览候选。
+- 两组教师 Pair `teacher_actor_core_d70bce_20260826_v2` 与 `teacher_actor_core_74e7acc_20260826_v2` 已批准并导出为 DiffSynth 图像编辑数据；第二组使用双参考教师方法统一长发种子的布局与首枚 Target 的无耳几何规范。
+- 第二轮 Klein Base rank-16/120-step LoRA 已从头训练并成功回载。Base 诊断证明任务已学会；distilled 4-step 在训练来源需 strength 2.0、未训练 BA 保留集需 strength 3.0 才去除可见耳朵。
+- BA 保留集在 strength 3.0 仍有右侧脚部双轮廓，且真实 3060 尚未验证；因此 v2 只作为 Studio 本地评审候选，不是生产默认，也不能进入 3D 或资产库。
 - 当前动作库只有 `mixamo_standard_walk_v1`；自动映射与四方向预览已实现。
 
 ## 下一步
 
-1. 用户在 Studio/Tailscale 对比 strength 1.0 与 1.3 的首轮 LoRA 预览；
-2. 保留当前 Pair，新增少量不同角色来源但同一无耳 Target 规范的数据，专门压制耳朵与肤色面区；
-3. 训练第二版 LoRA 并在未参与训练的风格种子上验证泛化，而不是继续记忆单图；
-4. 在真实 RTX 3060 12GB 完成冷启动、4-step 编辑与峰值显存 Gate；
-5. 质量和硬件均通过后，生成新的 Actor Core 候选，人工批准后才进入 3D。
+1. 用户在 Studio/Tailscale 评审 v2 的两张训练来源 strength 2.0 结果与一张 BA 保留集 strength 3.0 结果，重点检查脚、手、轮廓和三视图一致性；
+2. 增加至少两组不同外形来源与一个完全未参与训练的固定保留集，仍使用同一无耳 Target 规范，优先修复高 strength 下的脚部双轮廓；
+3. 训练 v3 后执行固定 strength 阶梯 2.0 → 2.5 → 3.0，只允许人工选择通过六项 Gate 的最低强度；在泛化稳定前不做自动强度选择；
+4. 在真实 RTX 3060 12GB 完成冷启动、4-step 编辑、保存恢复和峰值显存 Gate；若失败则启动 SDXL 回退，不提高硬件要求；
+5. 图像质量与 3060 硬件均通过后，才将 LoRA/强度配置设为 Studio 默认并生成新的 Actor Core 候选，人工批准后进入 3D。

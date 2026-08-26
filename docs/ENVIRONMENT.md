@@ -45,7 +45,7 @@ LoRA 训练主候选是 ModelScope `black-forest-labs/FLUX.2-klein-base-4B`。�
 .\tools\setup_flux2_actor_core_training.ps1
 ```
 
-脚本只下载 `transformer/*`、`tokenizer/*` 和 `model_index.json`。2026-08-26 的已验证环境为 DiffSynth 2.1.2（源码提交 `6343deda`）、Python 3.10.20、PyTorch 2.11.0+cu128；这些是运行记录，不是硬编码路径或强制精确版本。
+脚本只下载 `transformer/*`、`tokenizer/*` 和 `model_index.json`。2026-08-26 的已验证环境为 DiffSynth 2.1.2（源码提交 `6343deda`）、Python 3.10.20、PyTorch 2.11.0+cu128；这些是运行记录，不是硬编码路径或强制精确版本。2026-08-27 的两 Pair/rank-16/120-step 实测约 8 分 36 秒、训练峰值约 12.66GB，仍不构成 3060 训练承诺。
 
 Base 常规推理约需 13GB 显存，常规 LoRA 示例按约 24GB 设计，因此 RTX 3060 不承担“必须舒适训练”的承诺。训练可远程完成；LoRA + distilled 推理必须回到真实 3060 验收。
 
@@ -56,7 +56,7 @@ Qwen-Image-Edit 已从必需环境和默认验证中移除。历史 Q3 零样本
 ## RTX 3060 12GB 硬门槛
 
 - 生产编辑必须离线运行；目标峰值显存约 11.5GB 以下；
-- 当前 5070 Ti 限额测试只能预筛选，不能替代真实 3060；
+- 当前 5070 Ti 限额测试只能预筛选，不能替代真实 3060；v2 distilled 结果还需要 strength 2.0–3.0，强度变化本身不会显著增加权重显存，但输出质量必须逐张过 Gate；
 - 零样本 Klein distilled 1536×768/4-step 预筛选增量峰值为 11,688MiB；加载 rank-16 LoRA 的 5070 Ti 运行会根据 16GB 总量多驻留权重，记录到 13,819MiB 增量，不能据此推断 3060 必然 OOM；
 - 若训练后 LoRA 不能在 3060 稳定加载和编辑，则 Klein 不进入生产，改做 SDXL 回退验证；
 - 系统内存与页面文件只用于可接受的权重换入，不能把极慢 CPU 换页包装成“可用”。

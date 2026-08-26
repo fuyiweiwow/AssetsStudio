@@ -40,11 +40,17 @@ Black Forest Labs 将 4B Base 定位为有限硬件微调/LoRA版本，将 disti
 
 ## 当前可确认预览
 
-`teacher_actor_core_d70bce_20260826_v2` 已通过自动 Gate 与六项人工 Gate，并登记为首组 approved Pair。Target 由可选远程教师提出，随后只做 1px 面板居中规范化；来源模型没有参与批准决定。旧未居中版本和 Qwen 失败版本位于本地 rejected 目录，不参与导出。
+`teacher_actor_core_d70bce_20260826_v2` 与 `teacher_actor_core_74e7acc_20260826_v2` 均已通过自动 Gate 与六项人工 Gate。第二枚 Target 使用已批准长发风格种子约束布局和比例、首枚已批准 Target 约束无耳素体几何，由可选图像教师提出；来源模型没有参与批准决定。两个较弱候选已拒绝，旧未居中版本和 Qwen 失败版本均位于本地 rejected 目录，不参与导出。
 
 Klein distilled 的同分辨率预筛选也已运行：4 steps、FP8、低显存模式、16GB 卡预留 5GB，10.32 秒完成；整卡基线 1,739MiB、峰值 13,427MiB、增量 11,688MiB。它证明推理接近 12GB 范围，但零样本仍保留头发和衣物，因此只算“显存预筛选通过、任务质量失败”。真实 RTX 3060 仍必须复测。
 
-首轮最小过拟合已于 2026-08-26 完成：DiffSynth 两阶段缓存、Klein Base 4B、1 Pair、rank 16、100 steps、约 7 分 11 秒；训练期间 5070 Ti 峰值约 12,671MiB。LoRA 回载到 Klein distilled FP8 后，1536×768/4-step 约 10.3 秒。它已能去除头发、服装、鞋和配件并保持三视图，但仍生成耳朵；strength 1.3 可消除肤色面区并统一灰色外壳，仍未通过“无耳”Gate。Studio 的“Actor Core 本地推理预览”区展示这两张本地结果和已知问题，均不得入库。
+首轮最小过拟合已于 2026-08-26 完成：DiffSynth 两阶段缓存、Klein Base 4B、1 Pair、rank 16、100 steps、约 7 分 11 秒；它证明了数据合同可训练，但 distilled strength 1.3 仍生成耳朵，现已被 v2 取代并移出 Studio 有效预览。
+
+第二轮于 2026-08-27 从头训练：2 approved Pairs、rank 16、120 steps、最大 589,824 pixels、约 8 分 36 秒；5070 Ti 训练峰值约 12.66GB。产物 `teacher_v2_2pair_rank16_120step` 的 epoch-4 checkpoint 已回载到 Klein distilled FP8，SHA256 为 `B8D82DF6848BC23237FFB0BCA14C261535AB85F5AE0386EC1B062F2AC9C4AB4C`。权重仍只保存在本地模型目录，不提交 Git。
+
+v2 的诊断结论是“训练任务已学会，生产强度与泛化仍待验收”：Base BF16 计算/CPU offload 在训练来源上可稳定输出无耳、统一灰色 Actor Core，768×384/20-step 约 45.9 秒，Torch 峰值分配约 5.1GB；因此不是 LoRA 键未加载。distilled 4-step 在两个训练来源上需 strength 2.0 才去除可见耳朵，在未参与训练的 BA 三视图保留集上需 strength 3.0。保留集结果已无可见耳朵，但右侧视图脚部存在双轮廓伪影，所以仅为人工评审候选，不得入库，也不得成为 Studio 默认后端。
+
+Studio 的“Actor Core 本地推理预览”区只展示三张当前有效候选：两个训练来源的 strength 2.0 结果和一个 BA 保留集的 strength 3.0 结果。失败的 v1、低强度探针与 Base 诊断图全部移入本地 rejected 目录，不出现在有效预览中。
 
 ## 注册与导出
 
