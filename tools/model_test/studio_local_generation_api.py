@@ -1411,6 +1411,39 @@ def public_job(job: dict[str, Any]) -> dict[str, Any]:
     return {key: value for key, value in job.items() if key in allowed}
 
 
+def restore_persisted_jobs() -> int:
+    """Restore completed/failed local candidates after a Bridge restart.
+
+    Lifecycle actions must keep working after reboot; otherwise failed records
+    remain visible on disk but cannot be destroyed through the Studio API.
+    """
+    restored = 0
+    visited_roots: set[Path] = set()
+    for route in ("style-seeds", "base-actors", "accessories"):
+        config = ROUTE_CONFIG[route]
+        root = config["root"].resolve()
+        if root in visited_roots or not root.is_dir():
+            continue
+        visited_roots.add(root)
+        for record_path in root.glob("*/record.json"):
+            try:
+                record = json.loads(record_path.read_text(encoding="utf-8"))
+                job_id = str(record["id"])
+                if record_path.parent.name != job_id:
+                    continue
+                if record.get("job_kind") != config["kind"]:
+                    continue
+                if record.get("status") not in {"completed", "failed"}:
+                    continue
+                if record.get("library_status") == "destroyed":
+                    continue
+            except (OSError, KeyError, TypeError, ValueError, json.JSONDecodeError):
+                continue
+            JOBS[job_id] = record
+            restored += 1
+    return restored
+
+
 def config_for_job(job: dict[str, Any]) -> tuple[str, dict[str, Any]]:
     kind = job.get("job_kind", "base_actor")
     route = {
@@ -1678,7 +1711,7 @@ class Handler(BaseHTTPRequestHandler):
                     "model_ready": all(models.values()),
                     "models": models,
                     "production_backend": "flux2_klein_4b_distilled_fp8",
-                    "training_backend": "flux2_klein_base_4b_lora",
+                    "training_backend": "flux2_klein_4b_distilled_native_lora",
                     "teacher_backend_required": False,
                     "hardware_target": "rtx_3060_12gb",
                     "hardware_validation": "memory_cap_prescreen_passed_real_3060_pending",
@@ -2204,9 +2237,11 @@ def main() -> int:
     LOCAL_ANIMATION_LIBRARY_ROOT.mkdir(parents=True, exist_ok=True)
     TRAINING_PAIR_ROOT.mkdir(parents=True, exist_ok=True)
     imported_seeds = sync_published_style_seeds()
+    restored_jobs = restore_persisted_jobs()
     server = ThreadingHTTPServer((args.host, args.port), Handler)
     print(f"AssetsStudio local generation API: http://{args.host}:{args.port}", flush=True)
     print(f"Published style seeds imported: {imported_seeds}", flush=True)
+    print(f"Persisted candidate jobs restored: {restored_jobs}", flush=True)
     try:
         server.serve_forever()
     except KeyboardInterrupt:

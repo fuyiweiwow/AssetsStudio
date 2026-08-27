@@ -13,7 +13,7 @@ export interface LocalGenerationHealth {
   training_pairs?: number;
   actor_core_lora?: string | null;
   production_backend: "flux2_klein_4b_distilled_fp8";
-  training_backend: "flux2_klein_base_4b_lora";
+  training_backend: "flux2_klein_4b_distilled_native_lora";
   teacher_backend_required: false;
   hardware_target: "rtx_3060_12gb";
   hardware_validation: "memory_cap_prescreen_passed_real_3060_pending";

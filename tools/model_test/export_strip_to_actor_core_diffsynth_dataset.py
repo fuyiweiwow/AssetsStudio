@@ -30,6 +30,11 @@ def approved_pairs(pairs_root: Path) -> list[tuple[Path, dict]]:
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--dataset-root", type=Path, default=DEFAULT_DATASET_ROOT)
+    parser.add_argument(
+        "--output-dir",
+        type=Path,
+        help="Versioned export directory; defaults to <dataset-root>/diffsynth_flux2_export",
+    )
     parser.add_argument("--validate-only", action="store_true")
     args = parser.parse_args()
 
@@ -41,7 +46,13 @@ def main() -> int:
     if args.validate_only:
         return 0
 
-    export_root = dataset_root / "diffsynth_flux2_export"
+    export_root = (
+        args.output_dir.expanduser().resolve()
+        if args.output_dir
+        else dataset_root / "diffsynth_flux2_export"
+    )
+    if export_root.exists() and any(export_root.iterdir()):
+        raise RuntimeError(f"Export directory is not empty: {export_root}")
     images_root = export_root / "images"
     edits_root = export_root / "edit"
     images_root.mkdir(parents=True, exist_ok=True)

@@ -30,6 +30,12 @@
       "properties": {
         "target_producer": { "type": "string", "minLength": 1 },
         "target_generator": { "type": ["string", "null"] },
+        "target_geometry_authority_id": { "type": ["string", "null"] },
+        "target_geometry_authority_sha256": {
+          "type": ["string", "null"],
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "target_geometry_operation": { "type": ["string", "null"] },
         "approval_is_independent": { "const": true }
       },
       "additionalProperties": false

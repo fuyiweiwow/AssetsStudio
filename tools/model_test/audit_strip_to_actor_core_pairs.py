@@ -31,24 +31,51 @@ def main() -> int:
     rejected_root = dataset_root / "rejected"
     reports: list[dict] = []
     failed = 0
-    for pair_dir in sorted(path for path in pairs_root.iterdir() if path.is_dir()):
+    pair_directories = sorted(path for path in pairs_root.iterdir() if path.is_dir())
+    records = {
+        pair_dir: json.loads((pair_dir / "pair.json").read_text(encoding="utf-8"))
+        for pair_dir in pair_directories
+    }
+    canonical_authorities = {
+        (
+            record.get("provenance", {}).get("target_geometry_authority_id"),
+            record.get("provenance", {}).get("target_geometry_authority_sha256"),
+        )
+        for record in records.values()
+    }
+    canonical_authority_consistent = (
+        len(canonical_authorities) == 1
+        and None not in next(iter(canonical_authorities), (None, None))
+    )
+    for pair_dir in pair_directories:
         record_path = pair_dir / "pair.json"
-        record = json.loads(record_path.read_text(encoding="utf-8"))
+        record = records[pair_dir]
         target_path = pair_dir / record["target"]["filename"]
         shape_qa = analyze_actor_core_shape(target_path)
-        passed = shape_qa["automatic_pass"]
+        provenance = record.get("provenance", {})
+        canonical_geometry_qa = {
+            "authority_declared": bool(
+                provenance.get("target_geometry_authority_id")
+                and provenance.get("target_geometry_authority_sha256")
+                and provenance.get("target_geometry_operation")
+            ),
+            "authority_consistent_across_approved_pairs": canonical_authority_consistent,
+        }
+        passed = shape_qa["automatic_pass"] and all(canonical_geometry_qa.values())
         reports.append(
             {
                 "pair_id": record["pair_id"],
                 "status_before": record["status"],
                 "shape_qa": shape_qa,
+                "canonical_geometry_qa": canonical_geometry_qa,
                 "result": "pass" if passed else "fail",
             }
         )
         print(
             f"{record['pair_id']} result={'pass' if passed else 'fail'} "
             f"torso={shape_qa['metrics']['front_lower_torso_width_ratio']} "
-            f"foot={shape_qa['metrics']['side_foot_projection_ratio']}"
+            f"foot={shape_qa['metrics']['side_foot_projection_ratio']} "
+            f"canonical={all(canonical_geometry_qa.values())}"
         )
         if passed:
             continue
@@ -60,8 +87,13 @@ def main() -> int:
             raise RuntimeError(f"Rejected destination already exists: {destination}")
         record["status"] = "rejected"
         record["automatic_qa_reaudit"] = shape_qa
+        rejection_reason = (
+            "actor_core_shape_qa_v1_failed"
+            if not shape_qa["automatic_pass"]
+            else "canonical_geometry_authority_mismatch"
+        )
         record["rejection"] = {
-            "reason": "actor_core_shape_qa_v1_failed",
+            "reason": rejection_reason,
             "rejected_at": datetime.now(timezone.utc).isoformat(),
         }
         record_path.write_text(
@@ -77,6 +109,11 @@ def main() -> int:
         "applied": args.apply,
         "pair_count": len(reports),
         "failed_count": failed,
+        "canonical_authorities": [
+            {"id": authority[0], "sha256": authority[1]}
+            for authority in sorted(canonical_authorities, key=lambda item: str(item))
+        ],
+        "canonical_authority_consistent": canonical_authority_consistent,
         "pairs": reports,
     }
     report_path = dataset_root / "actor_core_shape_audit_v1.json"

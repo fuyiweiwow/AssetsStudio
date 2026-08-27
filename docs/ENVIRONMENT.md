@@ -32,9 +32,9 @@ Studio 默认只要求以下 ComfyUI 文件：
 python .\tools\validate_studio_local_generation.py --check-models
 ```
 
-## 可选训练环境：Klein Base + DiffSynth
+## 可选训练环境：Klein Base/Distilled-native + DiffSynth
 
-LoRA 训练主候选是 ModelScope `black-forest-labs/FLUX.2-klein-base-4B`。完整仓库约 23.74GB，其中 Base Transformer 单文件约 7.75GB；不要在没有批准 Pair 时下载整仓，也不要重复下载已经存在的文本编码器/VAE。
+ModelScope `black-forest-labs/FLUX.2-klein-base-4B` 用于 Pair 可学习性诊断；生产 LoRA 必须针对 Studio 使用的 Klein 4B distilled 权重族原生训练。Base 完整仓库约 23.74GB，其中 Transformer 单文件约 7.75GB；不要在没有批准 Pair 时下载整仓，也不要重复下载已经存在的文本编码器/VAE。
 
 训练工具使用 ModelScope 团队维护的 DiffSynth-Studio。模型权重只从 ModelScope 下载；源码在 GitHub 不稳定时可使用 Gitee 镜像。它支持 FLUX.2 图像编辑、LoRA、FP8、gradient checkpointing、CPU offload 和两阶段缓存。训练环境不是 Studio 启动依赖；只有满足以下条件才安装：
 
@@ -59,11 +59,27 @@ python .\tools\model_test\train_flux2_actor_core_lora.py `
 
 该入口搜索 `ASSETSSTUDIO_COMFY_ROOT`、`ASSETSSTUDIO_DIFFSYNTH_ROOT`、`ASSETSSTUDIO_FLUX2_BASE_ROOT` 及仓库相邻/工作区位置，并验证实际 marker 文件后再启动训练。系统 Python 缺少 PyTorch 时会自动切换到 ComfyUI Python；子进程固定 `DIFFSYNTH_SKIP_DOWNLOAD=True`。它还会读取每个 `.pth`，若数据处理阶段没有把 `use_gradient_checkpointing=True` 写入 cache，则在加载 4B 模型前停止并要求重建缓存。
 
-脚本只下载 `transformer/*`、`tokenizer/*` 和 `model_index.json`。2026-08-26 的已验证环境为 DiffSynth 2.1.2（源码提交 `6343deda`）、Python 3.10.20、PyTorch 2.11.0+cu128；这些是运行记录，不是硬编码路径或强制精确版本。2026-08-27 的 v4 两 Pair/rank-16/120-step 实测约 8 分 35 秒；训练仍不构成 3060 承诺。
+脚本只下载 `transformer/*`、`tokenizer/*` 和 `model_index.json`。2026-08-26 的已验证环境为 DiffSynth 2.1.2（源码提交 `6343deda`）、Python 3.10.20、PyTorch 2.11.0+cu128；这些是运行记录，不是硬编码路径或强制精确版本。2026-08-27 的 v5 四 Pair/rank-16/120-step Base 与 distilled-native 训练分别约 8 分半；训练仍不构成 3060 承诺。
 
 模型已齐全的训练会话由入口设置 `DIFFSYNTH_SKIP_DOWNLOAD=True`，确保运行期只加载已发现的本地权重。数据处理与训练两个阶段都必须启用 gradient checkpointing；该标志会固化进 cache，不能只在训练阶段补传。正式训练前先停止或卸载其他 GPU 模型并运行每 Pair 一次的 1-epoch 烟雾训练；只有 checkpoint 正常落盘后才扩大 steps。若出现 GPU 长时间低功耗满占用且无 checkpoint，先比较 cache 的 `use_gradient_checkpointing`，再判断 GPU/驱动会话，不通过降低验收标准掩盖。
 
-Base 常规推理约需 13GB 显存，常规 LoRA 示例按约 24GB 设计，因此 RTX 3060 不承担“必须舒适训练”的承诺。训练可远程完成；LoRA + distilled 推理必须回到真实 3060 验收。
+Base 常规推理约需 13GB 显存，常规 LoRA 示例按约 24GB 设计，因此 RTX 3060 不承担“必须舒适训练”的承诺。训练可远程完成；distilled-native LoRA + distilled FP8 推理必须回到真实 3060 验收。
+
+若相邻 ComfyUI 已有 scaled-FP8 distilled Transformer，先使用发现到的路径运行本地转换器；它读取 checkpoint 自带 `weight_scale`，用 Comfy 的 FLUX 映射拆分融合层，并以已发现的官方 DiffSynth 4B Transformer 只做键/shape 校验。转换报告必须为 169/169 tensor、`downloaded=false`，否则不得训练：
+
+```powershell
+python .\tools\model_test\convert_comfy_flux2_fp8_to_diffsynth_bf16.py `
+  --input <搜索到的 Comfy distilled scaled-FP8 Transformer> `
+  --output <本地转换目录>/diffusion_pytorch_model.safetensors `
+  --key-template <搜索到的官方 DiffSynth FLUX.2 4B Transformer>
+
+python .\tools\model_test\train_flux2_actor_core_lora.py `
+  --cache-dir <缓存目录> --output-dir <输出目录> `
+  --transformer-path <转换后的 distilled BF16 Transformer> `
+  --dataset-repeat 1 --epochs 1 --max-pixels 589824
+```
+
+该转换不会复制 Base 数值，也不会联网；2026-08-27 已验证 80 个 scaled-FP8 融合源、169 个输出 tensor，并完成 4-step 反向 smoke。若本机没有这种可验证来源，模型权重仍只允许从 ModelScope 下载，不能用缺层、复制层或随机层凑齐。
 
 训练缓存和 Base 诊断也使用发现式入口，不应复制本机盘符：
 
@@ -85,7 +101,7 @@ Qwen-Image-Edit 已从必需环境和默认验证中移除。历史 Q3 零样本
 ## RTX 3060 12GB 硬门槛
 
 - 生产编辑必须离线运行；目标峰值显存约 11.5GB 以下；
-- 当前 5070 Ti 限额测试只能预筛选，不能替代真实 3060；v2 distilled 结果还需要 strength 2.0–3.0，强度变化本身不会显著增加权重显存，但输出质量必须逐张过 Gate；
+- 当前 5070 Ti 限额测试只能预筛选，不能替代真实 3060；v5 distilled-native 的视觉最佳为 96-step/strength 2.5，但脚部 Gate 仍失败，强度变化本身不会显著增加权重显存，输出质量仍必须逐张过 Gate；
 - 零样本 Klein distilled 1536×768/4-step 预筛选增量峰值为 11,688MiB；加载 rank-16 LoRA 的 5070 Ti 运行会根据 16GB 总量多驻留权重，记录到 13,819MiB 增量，不能据此推断 3060 必然 OOM；
 - 若训练后 LoRA 不能在 3060 稳定加载和编辑，则 Klein 不进入生产，改做 SDXL 回退验证；
 - 系统内存与页面文件只用于可接受的权重换入，不能把极慢 CPU 换页包装成“可用”。

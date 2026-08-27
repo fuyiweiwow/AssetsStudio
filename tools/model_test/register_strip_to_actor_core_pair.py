@@ -69,6 +69,18 @@ def main() -> int:
         "--target-generator",
         help="Optional teacher/model identifier used to create the candidate target",
     )
+    parser.add_argument(
+        "--target-geometry-authority-id",
+        help="Canonical Actor Core geometry id when target geometry is reused",
+    )
+    parser.add_argument(
+        "--target-geometry-authority-sha256",
+        help="SHA256 of the unnormalized canonical Actor Core target",
+    )
+    parser.add_argument(
+        "--target-geometry-operation",
+        help="Deterministic operation used to align the canonical target to the source",
+    )
     parser.add_argument("--pair-id")
     parser.add_argument("--dataset-root", type=Path, default=DEFAULT_DATASET_ROOT)
     parser.add_argument("--approve", action="store_true")
@@ -87,6 +99,23 @@ def main() -> int:
             parser.error(f"file not found: {path}")
     if args.approve and not args.confirm_manual_gates:
         parser.error("--approve requires --confirm-manual-gates")
+    geometry_fields = (
+        args.target_geometry_authority_id,
+        args.target_geometry_authority_sha256,
+        args.target_geometry_operation,
+    )
+    if any(geometry_fields) and not all(geometry_fields):
+        parser.error(
+            "canonical geometry provenance requires authority id, sha256 and operation"
+        )
+    if args.target_geometry_authority_sha256 and (
+        len(args.target_geometry_authority_sha256) != 64
+        or any(
+            character not in "0123456789abcdef"
+            for character in args.target_geometry_authority_sha256.lower()
+        )
+    ):
+        parser.error("target geometry authority SHA256 must be 64 lowercase hex characters")
 
     pair_id = args.pair_id or uuid.uuid4().hex
     if not pair_id.replace("_", "").replace("-", "").isalnum():
@@ -149,6 +178,21 @@ def main() -> int:
             "target_producer": args.target_producer.strip(),
             "target_generator": (
                 args.target_generator.strip() if args.target_generator else None
+            ),
+            "target_geometry_authority_id": (
+                args.target_geometry_authority_id.strip()
+                if args.target_geometry_authority_id
+                else None
+            ),
+            "target_geometry_authority_sha256": (
+                args.target_geometry_authority_sha256.lower()
+                if args.target_geometry_authority_sha256
+                else None
+            ),
+            "target_geometry_operation": (
+                args.target_geometry_operation.strip()
+                if args.target_geometry_operation
+                else None
             ),
             "approval_is_independent": True,
         },

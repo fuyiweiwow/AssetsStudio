@@ -47,6 +47,7 @@ REQUIRED = [
     "tools/model_test/export_strip_to_actor_core_diffsynth_dataset.py",
     "tools/model_test/prepare_flux2_actor_core_cache.py",
     "tools/model_test/train_flux2_actor_core_lora.py",
+    "tools/model_test/convert_comfy_flux2_fp8_to_diffsynth_bf16.py",
     "tools/model_test/run_flux2_base_actor_core_diagnostic.py",
     "tools/model_test/run_hunyuan3d_mv_shape.py",
     "tools/model_test/studio_local_generation_api.py",
@@ -77,6 +78,7 @@ PYTHON_SOURCES = [
     "tools/model_test/export_strip_to_actor_core_diffsynth_dataset.py",
     "tools/model_test/prepare_flux2_actor_core_cache.py",
     "tools/model_test/train_flux2_actor_core_lora.py",
+    "tools/model_test/convert_comfy_flux2_fp8_to_diffsynth_bf16.py",
     "tools/model_test/run_flux2_base_actor_core_diagnostic.py",
     "tools/model_test/run_hunyuan3d_mv_shape.py",
     "tools/model_test/studio_local_generation_api.py",
@@ -206,6 +208,14 @@ def main() -> int:
         "validate_cache_flags",
     )
     require_marker(
+        "tools/model_test/convert_comfy_flux2_fp8_to_diffsynth_bf16.py",
+        "native_flux2_aliases",
+    )
+    require_marker(
+        "tools/model_test/convert_comfy_flux2_fp8_to_diffsynth_bf16.py",
+        '"downloaded": False',
+    )
+    require_marker(
         "tools/model_test/prepare_flux2_actor_core_cache.py",
         '"sft:data_process"',
     )
@@ -216,6 +226,10 @@ def main() -> int:
     require_marker(
         "tools/model_test/register_strip_to_actor_core_pair.py",
         "analyze_actor_core_shape",
+    )
+    require_marker(
+        "tools/model_test/register_strip_to_actor_core_pair.py",
+        "target_geometry_authority_sha256",
     )
     require_marker(
         "tools/model_test/studio_local_generation_api.py",
@@ -240,6 +254,10 @@ def main() -> int:
     require_marker(
         "tools/model_test/studio_local_generation_api.py",
         '"teacher_backend_required": False',
+    )
+    require_marker(
+        "tools/model_test/studio_local_generation_api.py",
+        "restore_persisted_jobs",
     )
     require_marker("tools/model_test/retarget_mixamo_to_actor_core.py", "hands_not_together_behind_back")
     require_marker("tools/start_studio_local_generation.ps1", "$env:VIRTUAL_ENV")

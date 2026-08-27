@@ -78,6 +78,11 @@ def main() -> int:
     parser.add_argument("--epochs", type=int, default=1)
     parser.add_argument("--max-pixels", type=int, default=393216)
     parser.add_argument("--lora-rank", type=int, default=16)
+    parser.add_argument(
+        "--transformer-path",
+        type=Path,
+        help="Optional discovered/local FLUX.2 transformer override for family-native training",
+    )
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args()
 
@@ -108,18 +113,25 @@ def main() -> int:
         [ROOT / "workspace" / "runtime" / "DiffSynth-Studio"],
         Path("examples/flux2/model_training/train.py"),
     )
-    model_root = discover_directory(
-        "ASSETSSTUDIO_FLUX2_BASE_ROOT",
-        [
-            ROOT
-            / "workspace"
-            / "models"
-            / "modelscope"
-            / "black-forest-labs"
-            / "FLUX.2-klein-base-4B"
-        ],
-        Path("transformer/diffusion_pytorch_model.safetensors"),
-    )
+    if args.transformer_path:
+        model_path = args.transformer_path.expanduser().resolve()
+        if not model_path.is_file():
+            raise FileNotFoundError(model_path)
+        model_root = model_path.parent
+    else:
+        model_root = discover_directory(
+            "ASSETSSTUDIO_FLUX2_BASE_ROOT",
+            [
+                ROOT
+                / "workspace"
+                / "models"
+                / "modelscope"
+                / "black-forest-labs"
+                / "FLUX.2-klein-base-4B"
+            ],
+            Path("transformer/diffusion_pytorch_model.safetensors"),
+        )
+        model_path = model_root / "transformer/diffusion_pytorch_model.safetensors"
     cache_dir = args.cache_dir.expanduser().resolve()
     if not cache_dir.is_dir() or not list(cache_dir.rglob("*.pth")):
         raise FileNotFoundError(f"No cached training samples found in {cache_dir}")
@@ -128,10 +140,21 @@ def main() -> int:
     output_dir.parent.mkdir(parents=True, exist_ok=True)
 
     train_script = diffsynth_root / "examples/flux2/model_training/train.py"
-    model_path = model_root / "transformer/diffusion_pytorch_model.safetensors"
     tokenizer_path = model_root / "tokenizer"
     if not tokenizer_path.is_dir():
-        raise FileNotFoundError(tokenizer_path)
+        base_root = discover_directory(
+            "ASSETSSTUDIO_FLUX2_BASE_ROOT",
+            [
+                ROOT
+                / "workspace"
+                / "models"
+                / "modelscope"
+                / "black-forest-labs"
+                / "FLUX.2-klein-base-4B"
+            ],
+            Path("tokenizer/tokenizer.json"),
+        )
+        tokenizer_path = base_root / "tokenizer"
 
     command = [
         sys.executable,
@@ -169,6 +192,7 @@ def main() -> int:
     print(f"ComfyRoot={comfy_root}", flush=True)
     print(f"DiffSynthRoot={diffsynth_root}", flush=True)
     print(f"ModelRoot={model_root}", flush=True)
+    print(f"Transformer={model_path}", flush=True)
     print(f"CacheDir={cache_dir}", flush=True)
     print(f"CacheSamples={cache_samples}", flush=True)
     print(f"OutputDir={output_dir}", flush=True)

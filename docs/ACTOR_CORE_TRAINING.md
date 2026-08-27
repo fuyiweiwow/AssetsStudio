@@ -11,7 +11,8 @@
 | 层 | 默认选择 | 是否必需 | 职责 |
 | --- | --- | --- | --- |
 | 生产推理 | FLUX.2 Klein 4B distilled FP8 | 是 | 4 步本地编辑，加载任务 LoRA，目标硬件为 3060 12GB |
-| LoRA 训练 | FLUX.2 Klein 4B Base | 训练时 | 学习 `strip_to_actor_core`；可远程训练 |
+| 可学习性诊断 | FLUX.2 Klein 4B Base LoRA | 训练时 | 验证 Pair/Target 是否能学会；不得直接迁移成生产 LoRA |
+| 生产 LoRA 训练 | FLUX.2 Klein 4B distilled-native | 训练时 | 对生产权重族原生学习 `strip_to_actor_core`；可远程训练 |
 | 教师 Target | 人工绘制或可选远程教师 | 否 | 只提出候选 Target，不能自动批准 |
 | Qwen-Image-Edit | 可选实验教师 | 否 | 不再是 Studio、数据或生产推理依赖 |
 | 回退 | SDXL + LoRA/ControlNet/InstructPix2Pix | 条件回退 | Klein 训练产物无法在 3060 通过硬件 Gate 时启用 |
@@ -25,7 +26,7 @@ Black Forest Labs 将 4B Base 定位为有限硬件微调/LoRA版本，将 disti
 - Source：已批准风格角色三视图。
 - Target：同尺寸、同布局、同姿态的标准 Actor Core。
 - Mask：可选人工校正范围，不是 Target 替代品。
-- Provenance：记录 Target 是人工、远程教师还是本地模型生成；来源与人工批准相互独立。
+- Provenance：记录 Target 是人工、远程教师还是本地模型生成；同时记录唯一几何权威 ID/SHA256 与确定性对齐操作；来源与人工批准相互独立。
 - Candidate、approved、rejected 全部位于 `workspace/training/strip_to_actor_core/`，不上传 Git。
 - 只有人工逐项确认全部 Gate 并显式批准的 Pair 才能导出训练集。
 
@@ -48,27 +49,34 @@ Black Forest Labs 将 4B Base 定位为有限硬件微调/LoRA版本，将 disti
 
 三个旧 approved Target 全部失败并移入本地 rejected：`teacher_actor_core_d70bce_20260826_v2` 与 `teacher_actor_core_74e7acc_20260826_v2` 躯干过宽，旧 `bob_cowl` Target 的脚部投影过大。人工布尔值不得覆盖这些失败。Studio 的整幅 reference MAE 只保留为诊断，不再进入批准 Gate，因为 Source 必然包含需要移除的头发、衣服和配件。
 
-当前只有两 Pair 通过新自动 Gate 与人工 Gate：
+当前训练集只有一个几何权威：`actor_core_male_canonical_v1`，原始 Target SHA256 为 `6c68f26074a1ecdda00b00e372901cf3538b1448349de6f72ed556177b57d5e5`。外部图像教师只提出过候选；最终数据不再为不同 Source 生成不同 Target。所有 Target 都必须从这张权威图出发，只做逐面板等比缩放与整数平移以对齐 Source 的高度、中心和地面线；工具禁止非均匀缩放、局部变形和形体重绘。
 
-- `teacher_actor_core_male_80b51207_20260827_v1`：下躯干 `0.5372`，侧脚投影 `1.0964`；
-- `teacher_actor_core_bob_cowl_20260827_v2`：下躯干 `0.5251`，侧脚投影 `1.1250`。
+四个 approved Pair 均通过自动/人工 Gate，并声明相同 authority ID/SHA256：
 
-两张 Target 均由外部图像教师提出候选；教师不是生产依赖，也没有批准权限。候选随后只做逐面板等比缩放与整数平移，使人物高度、中心和地面线与 Source 对齐；工具禁止非均匀缩放和形体重绘。Pair 保留通用 StyleProfile，并仅以 `consumer_tags=["ba"]` 记录近期消费者。
+- `canonical_actor_core_male_20260827_v1`：下躯干 `0.5372`，侧脚 `1.0964`；
+- `canonical_actor_core_bob_cowl_20260827_v1`：下躯干 `0.5395`，侧脚 `1.1099`；
+- `canonical_actor_core_scout_cape_20260827_v1`：下躯干 `0.5374`，侧脚 `1.0976`；
+- `canonical_actor_core_longhair_d70b_20260827_v1`：下躯干 `0.5392`，侧脚 `1.1098`。
 
-两 Pair v4 使用 `prepare_flux2_actor_core_cache.py` 生成 589,824-pixel、内嵌 `use_gradient_checkpointing=True` 的缓存。2-step 烟雾训练约 8 秒通过后，正式 rank-16、12 repeats、5 epochs 共 120 steps，2026-08-27 用时约 8 分 35 秒。五个 checkpoint 均落盘；epoch-4 SHA256 为 `15BB0CBC7BE0A0163D080E936FD8789CA96FFC81339A017F9C531D6EE715AE6E`，复制到 ComfyUI 后哈希一致。模型权重和 Pair 仍只存本地，不提交 Git。
+`audit_strip_to_actor_core_pairs.py` 现在同时审计每张 Target 的形体 Gate 和跨 Pair 几何权威一致性；缺少 authority 字段、ID/SHA256 不一致或对齐操作未声明都会失败。Pair 保留通用 StyleProfile，并仅以 `consumer_tags=["ba"]` 记录近期消费者。
 
-v4 的 distilled 4-step 阶梯没有任何可批准结果：
+v5 Base 使用版本化导出、四 Pair、589,824-pixel gradient-checkpointing cache、rank 16、6 repeats、5 epochs，共 120 steps。五个 checkpoint 均落盘；epoch-4 SHA256 为 `1672F079545A3BCFAB26F5D4A19B05918DDE0BD028D0D82314E91F8620CB1624`。在未参与训练的长发 `74e7...` Source 上，768×384、20-step、seed 20260841 的 Base 原生对照同时通过：躯干 `0.5369`、侧脚 `1.1932`。因此四 Pair/canonical Target 已经能让 Base 学会任务。
 
-- 旧长发保留集 strength 2.0：躯干通过 `0.5379`，脚部失败 `1.2169`；
-- strength 2.5：脚部通过 `1.1611`，躯干失败 `0.5621`；
-- strength 3.0：脚部通过 `1.1158`，躯干有效行不足；
-- 男性训练来源 strength 2.0/2.5：躯干与脚部均失败；strength 3.0 脚部通过但躯干有效行不足。
+同一 v5 Base LoRA 直接迁移到 distilled FP8 的 held-out 阶梯仍全部失败：
 
-六个任务均已从 Studio 活跃候选移入本地 rejected，不能进入 Gallery、随机池、资产库或 3D。只读评审目录保留最接近通过的 distilled 2.0 图，不改变该失败结论。
+- strength 2.0：躯干 `0.5479`，侧脚 `1.2674`；
+- strength 2.5：躯干 `0.5510`，侧脚 `1.2174`；
+- strength 3.0：躯干 `0.5542`，侧脚 `1.2000`。
 
-为区分 LoRA 欠拟合与 Base→distilled 迁移，使用 `run_flux2_base_actor_core_diagnostic.py` 在男性训练来源执行 Base 原生对照。脚本只搜索本地 ModelScope/ComfyUI 权重，设置 `DIFFSYNTH_SKIP_DOWNLOAD=True`，使用 DiffSynth 官方磁盘映射 + FP8 暂存、BF16 计算；768×384、20 steps、seed 20260831 用时 44.86 秒。结果脚部通过 `0.8816`，但下躯干 `0.5577` 失败，且肉眼仍有手指、胸腹和裆部解剖结构。
+这组对照把问题明确归类为 Base→distilled 权重族迁移失败，不再继续提高跨族 LoRA 强度。
 
-因此 v4 的主要结论不是“只需提高 distilled strength”，也不是“只有跨模型迁移失败”，而是两 Pair/120 steps 尚未把连续无解剖细节 Actor Core 学稳。下一轮应先扩充 4–6 个形体一致、Source 遮挡多样的批准 Pair，并要求 Base 原生固定集通过后再验证 distilled。Base 对照仅为训练诊断，不得写入 RTX 3060 生产依赖。
+为复用本机已有生产权重且避免重复下载，`convert_comfy_flux2_fp8_to_diffsynth_bf16.py` 使用 Comfy 自身 FLUX 键映射与 checkpoint 内记录的 `weight_scale`，把 scaled-FP8 融合张量确定性反量化为 DiffSynth BF16 训练键。转换结果 169/169 tensor 与本地官方 Base 的键/shape 模板一致，80 个 FP8 融合源均使用自己的 scale；Base 文件只提供键名/shape，不提供任何数值。报告固定 `downloaded=false`。DiffSynth 识别结果为 Klein 4B distilled（5 double blocks、20 single blocks、`guidance_embeds=false`），4-step smoke 完成反向训练。
+
+distilled-native 正式训练沿用相同四 Pair/cache，rank 16、6 repeats、5 epochs，共 120 steps，2026-08-27 用时约 8 分 33 秒。epoch-4 SHA256 为 `EC414439CECC5E23BA8B9D4A5FCF65DCCDE0634B4AF1555B4FA89DCDD16FEEFD`；96-step checkpoint SHA256 为 `9F9BAB1DB19C4F409E8B92784111365B23BCC9E3EFE2B742719902796B4208DB`。
+
+held-out 结果中，96-step/strength 2.5 是当前视觉最佳：头发、服装、五官、耳朵和身份内容已清除，严格 front/right/back 成立，躯干通过 `0.5395`，但侧脚仍为 `1.3415`，未达到 `<=1.20`。72-step 尚未稳定检测躯干；120-step/strength 3.0 开始把中间侧视拉向正面。继续堆训练步数或强度会换来视角坍缩，已停止。
+
+所有自动失败候选均已通过 Studio 生命周期从活跃目录删除。只读评审目录保留 Source、唯一 canonical Target、Base 通过图与 distilled-native 视觉最佳图；它们不进入 Gallery、随机池、资产库或 3D。当前下一步是保持同一几何权威，对小腿到脚区域增加训练权重或确定性裁片，而不是放宽 Gate 或新增另一套素体。
 
 ## 注册与导出
 
@@ -81,6 +89,9 @@ python .\tools\model_test\register_strip_to_actor_core_pair.py `
   --style-profile-id qstyle_anime_western_fantasy_no_face_v1 `
   --target-producer remote_teacher `
   --target-generator <教师标识> `
+  --target-geometry-authority-id <唯一 Actor Core 几何 ID> `
+  --target-geometry-authority-sha256 <原始 canonical Target SHA256> `
+  --target-geometry-operation <逐面板等比缩放和平移说明> `
   --consumer-tag ba `
   --caption "convert the supplied character into the canonical blank Actor Core while preserving layout, pose and proportions"
 ```
@@ -91,7 +102,8 @@ FLUX.2 / ModelScope DiffSynth 导出：
 
 ```powershell
 python .\tools\model_test\export_strip_to_actor_core_diffsynth_dataset.py --validate-only
-python .\tools\model_test\export_strip_to_actor_core_diffsynth_dataset.py
+python .\tools\model_test\export_strip_to_actor_core_diffsynth_dataset.py `
+  --output-dir <新的版本化导出目录>
 ```
 
 批准前与历史审计：
@@ -120,7 +132,25 @@ python .\tools\model_test\train_flux2_actor_core_lora.py `
   --dataset-repeat 1 --epochs 1 --max-pixels 393216
 ```
 
-入口依次搜索专用环境变量、仓库工作区和相邻 ComfyUI；它把 `model_paths` 作为真实 JSON 参数数组传给 DiffSynth。若系统 Python 没有 PyTorch，会自动切换到发现的 ComfyUI Python；运行期强制 `DIFFSYNTH_SKIP_DOWNLOAD=True`。每个 cache 必须内嵌 `use_gradient_checkpointing=True`，否则在模型加载前直接拒绝。正式训练仅在三步命令生成 `epoch-0.safetensors` 后扩大数据重复和 epoch。
+入口依次搜索专用环境变量、仓库工作区和相邻 ComfyUI；它把 `model_paths` 作为真实 JSON 参数数组传给 DiffSynth。若系统 Python 没有 PyTorch，会自动切换到发现的 ComfyUI Python；运行期强制 `DIFFSYNTH_SKIP_DOWNLOAD=True`。每个 cache 必须内嵌 `use_gradient_checkpointing=True`，否则在模型加载前直接拒绝。正式训练仅在每 Pair 一次的 1-epoch smoke 生成 `epoch-0.safetensors` 后扩大数据重复和 epoch。
+
+生产 LoRA 必须针对 distilled 权重族原生训练。本机已存在 Comfy scaled-FP8 Transformer 时，可先做不下载、可审计的 BF16 训练转换；路径均为搜索/发现后的占位符，不得复制当前机器盘符：
+
+```powershell
+python .\tools\model_test\convert_comfy_flux2_fp8_to_diffsynth_bf16.py `
+  --input <发现到的 Comfy distilled scaled-FP8 Transformer> `
+  --output <本地转换目录>/diffusion_pytorch_model.safetensors `
+  --key-template <发现到的官方 DiffSynth FLUX.2 4B Transformer> `
+  --report <本地转换报告.json>
+
+python .\tools\model_test\train_flux2_actor_core_lora.py `
+  --cache-dir <DiffSynth 两阶段缓存目录> `
+  --output-dir <本地 distilled-native LoRA 输出目录> `
+  --transformer-path <转换后的本地 distilled BF16 Transformer> `
+  --dataset-repeat 1 --epochs 1 --max-pixels 589824
+```
+
+转换器只接受 checkpoint 自带 scale 的 FP8 权重，并强制与官方 4B 键/shape 模板 169/169 对齐；模板只用于结构校验，绝不补写 Base 权重。没有可验证 scaled-FP8 时，不得近似转换，应通过 ModelScope 获取官方 distilled 训练权重或停止该实验。
 
 当教师 Target 仅有面板水平位置偏差时，可按 Source 做确定性对齐；不得用它修补几何或绕过其他 Gate：
 
