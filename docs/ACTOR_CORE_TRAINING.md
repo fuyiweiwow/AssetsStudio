@@ -50,11 +50,15 @@ Klein distilled 的同分辨率预筛选也已运行：4 steps、FP8、低显存
 
 v2 的诊断结论是“训练任务已学会，生产强度与泛化仍待验收”：Base BF16 计算/CPU offload 在训练来源上可稳定输出无耳、统一灰色 Actor Core，768×384/20-step 约 45.9 秒，Torch 峰值分配约 5.1GB；因此不是 LoRA 键未加载。distilled 4-step 在两个训练来源上需 strength 2.0 才去除可见耳朵，在未参与训练的 BA 三视图保留集上需 strength 3.0。保留集结果已无可见耳朵，但右侧视图脚部存在双轮廓伪影，所以仅为人工评审候选，不得入库，也不得成为 Studio 默认后端。
 
+2026-08-27 新增的本地短发男性 StyleSeed 是第二个未参与 v2 训练的固定保留集。Studio 已用其真实像素、相同 seed 20260831 和相同提示合同依次测试 strength 2.0/2.5/3.0：2.0 有耳；2.5/3.0 无耳，但躯干均漂移为梨形，脚踝均出现靴口式形体。对应整幅前轮廓 MAE 为 0.4482/0.4387/0.4385，均高于 0.13 门槛。由于 Source 必然含头发和衣服，整幅 MAE 本身也需要改为身体分区指标；不过肉眼可见梨形和靴口已经足以判定三张失败。它们不进入 Studio、资产库或 3D。
+
 Studio 的“Actor Core 本地推理预览”区只展示三张当前有效候选：两个训练来源的 strength 2.0 结果和一个 BA 保留集的 strength 3.0 结果。失败的 v1、低强度探针与 Base 诊断图全部移入本地 rejected 目录，不出现在有效预览中。
 
 第三组 `teacher_actor_core_bob_cowl_20260827_v1` 已于 2026-08-27 批准：Source 使用同一 StyleProfile 但采用短发、兜帽、披肩、腰带、手套与靴子的不同部件轮廓；Target 继续使用双参考教师方法。Target 初稿因第三面板偏左未通过中心 Gate，没有绕过检查；随后用 `normalize_turnaround_panel_centers.py` 按 Source 前景中心仅做 0/22/42px 整数水平平移，不缩放、不变形。规范化后 `height_cv=0.0013`、`ground_range=0.0023`、`center_max_offset=0.0515`、最低色彩相关性 `0.9922`，并通过六项人工 Gate。该 Source 是本地训练候选，不等于第三枚已发布风格种子。
 
 三 Pair v3 训练曾在当前 Windows GPU 会话中尝试：589,824-pixel/180-step 正式运行与 393,216-pixel/3-step 烟雾运行都出现 SM 100%、约 62W、数分钟无 checkpoint 的异常慢路径；停止两套 Comfy 后仍可复现，排除数据数量、缓存 token 形状和 Comfy 竞争是唯一原因。两次运行均已人工终止，没有产生 v3 权重，不能作为质量结论。下次必须在 GPU/主机重启后的干净会话先完成 3-step 烟雾 Gate，再启动正式训练。
+
+2026-08-27 使用新的可移植训练入口再次复测：三份 393,216-pixel 缓存被正确发现，Base 模型正确加载，进度进入 `0/3`；随后显存约 15.9GB、SM 100%、功耗约 62W，135 秒仍为 `0/3` 且只有 `training_args.json`。该进程已停止，未产出 checkpoint。这个结果确认问题不再是 Windows JSON 引号、路径硬编码或 Comfy 占卡；重启主机/驱动会话是再次训练前的必要条件。
 
 ## 注册与导出
 
@@ -79,6 +83,17 @@ FLUX.2 / ModelScope DiffSynth 导出：
 python .\tools\model_test\export_strip_to_actor_core_diffsynth_dataset.py --validate-only
 python .\tools\model_test\export_strip_to_actor_core_diffsynth_dataset.py
 ```
+
+缓存完成后的训练统一使用发现式入口，不复制某台机器的绝对路径：
+
+```powershell
+python .\tools\model_test\train_flux2_actor_core_lora.py `
+  --cache-dir <DiffSynth 两阶段缓存目录> `
+  --output-dir <本地 LoRA 输出目录> `
+  --dataset-repeat 1 --epochs 1 --max-pixels 393216
+```
+
+入口依次搜索专用环境变量、仓库工作区和相邻 ComfyUI；它把 `model_paths` 作为真实 JSON 参数数组传给 DiffSynth。正式 v3 仅在上述三步命令生成 `epoch-0.safetensors` 后，把数据重复和 epoch 调整到批准的训练方案。
 
 当教师 Target 仅有面板水平位置偏差时，可按 Source 做确定性对齐；不得用它修补几何或绕过其他 Gate：
 

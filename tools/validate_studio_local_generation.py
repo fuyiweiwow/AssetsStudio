@@ -41,6 +41,7 @@ REQUIRED = [
     "tools/model_test/register_strip_to_actor_core_pair.py",
     "tools/model_test/export_strip_to_actor_core_dataset.py",
     "tools/model_test/export_strip_to_actor_core_diffsynth_dataset.py",
+    "tools/model_test/train_flux2_actor_core_lora.py",
     "tools/model_test/run_hunyuan3d_mv_shape.py",
     "tools/model_test/studio_local_generation_api.py",
     "tools/model_test/process_actor_core_accurig_rig.py",
@@ -64,6 +65,7 @@ PYTHON_SOURCES = [
     "tools/model_test/register_strip_to_actor_core_pair.py",
     "tools/model_test/export_strip_to_actor_core_dataset.py",
     "tools/model_test/export_strip_to_actor_core_diffsynth_dataset.py",
+    "tools/model_test/train_flux2_actor_core_lora.py",
     "tools/model_test/run_hunyuan3d_mv_shape.py",
     "tools/model_test/studio_local_generation_api.py",
     "tools/model_test/process_actor_core_accurig_rig.py",
@@ -179,6 +181,10 @@ def main() -> int:
     require_marker("tools/model_test/run_comfy_flux2_klein.py", '"LoraLoaderModelOnly"')
     require_marker("tools/setup_flux2_actor_core_training.ps1", "modelscope.cli.cli download")
     require_marker(
+        "tools/model_test/train_flux2_actor_core_lora.py",
+        "ASSETSSTUDIO_FLUX2_BASE_ROOT",
+    )
+    require_marker(
         "tools/model_test/studio_local_generation_api.py",
         '"teacher_backend_required": False',
     )
@@ -191,7 +197,11 @@ def main() -> int:
     require_marker("tools/model_test/studio_local_generation_api.py", "sync_published_style_seeds")
     require_marker(
         "tools/model_test/studio_local_generation_api.py",
-        "approved_style_seed_contract_and_proportion_gate",
+        "approved_style_seed_pixels_with_actor_core_lora",
+    )
+    require_marker(
+        "tools/model_test/studio_local_generation_api.py",
+        "ACTOR_CORE_LORA_STRENGTHS",
     )
     require_marker(
         "schemas/strip_to_actor_core_pair.schema.json",

@@ -84,6 +84,34 @@ MODEL_FILES = {
     "vae": COMFY_ROOT / "models" / "vae" / "flux2-vae.safetensors",
 }
 
+
+def discover_actor_core_lora() -> str | None:
+    lora_root = (COMFY_ROOT / "models" / "loras").resolve()
+    configured_value = os.environ.get("ASSETSSTUDIO_ACTOR_CORE_LORA")
+    candidates: list[Path] = []
+    if configured_value:
+        candidates.append(Path(configured_value))
+    discovered_root = lora_root / "assetsstudio"
+    if discovered_root.is_dir():
+        candidates.extend(
+            sorted(
+                discovered_root.glob("strip_to_actor_core*.safetensors"),
+                key=lambda path: (path.stat().st_mtime_ns, path.name),
+                reverse=True,
+            )
+        )
+    for configured in candidates:
+        candidate = configured if configured.is_absolute() else lora_root / configured
+        candidate = candidate.expanduser().resolve()
+        if candidate.is_file() and lora_root in candidate.parents:
+            # ComfyUI validates this value against its platform-native model list.
+            return str(candidate.relative_to(lora_root))
+    return None
+
+
+ACTOR_CORE_LORA = discover_actor_core_lora()
+ACTOR_CORE_LORA_STRENGTHS = {2.0, 2.5, 3.0}
+
 STYLE_PROMPTS = {
     "soft_3d": (
         "polished soft 3D Japanese-anime game figurine, smooth rounded low-frequency "
@@ -180,15 +208,19 @@ def request_json(url: str, payload: dict[str, Any] | None = None, timeout: int =
         data=data,
         headers={"Content-Type": "application/json"},
     )
-    with urllib.request.urlopen(request, timeout=timeout) as response:
-        return json.load(response)
+    try:
+        with urllib.request.urlopen(request, timeout=timeout) as response:
+            return json.load(response)
+    except urllib.error.HTTPError as exc:
+        detail = exc.read().decode("utf-8", errors="replace")
+        raise RuntimeError(f"HTTP {exc.code} from {url}: {detail}") from exc
 
 
 def comfy_reachable() -> bool:
     try:
         request_json(f"{COMFY_URL}/system_stats", timeout=3)
         return True
-    except (OSError, urllib.error.URLError, TimeoutError):
+    except (OSError, urllib.error.URLError, RuntimeError, TimeoutError):
         return False
 
 
@@ -1151,6 +1183,8 @@ def run_generation(job_id: str) -> None:
         job_kind = job.get("job_kind", "base_actor")
         proportion_reference: Path | None = None
         reference_role = "style_edit"
+        lora = None
+        lora_strength = 1.0
         if job_kind == "accessory":
             reference_image, reference_source = prepare_slot_reference(
                 job["profile_snapshot"]["slot"]
@@ -1172,22 +1206,20 @@ def run_generation(job_id: str) -> None:
                 proportion_reference, reference_source = library_reference_path(
                     "style_seed", job["style_seed_asset_id"]
                 )
-                reference_source = f"compiled-contract-and-gate:{reference_source}"
-                reference_role = "approved_style_seed_contract_and_proportion_gate"
-            else:
-                style_profile = job["profile_snapshot"]["style"]
-                authority = next(
-                    item
-                    for item in style_profile["authorities"]
-                    if item["role"] == "primary_proportion" and item["required"]
+                reference_image, reference_source = prepare_reference_file(
+                    proportion_reference, reference_source
                 )
-                proportion_reference = ROOT / authority["path"]
-                reference_source = f"compiled-contract-and-gate:{authority['path']}"
-                reference_role = "primary_proportion_contract_and_gate"
-            # Complete-character pixels preserve identity too strongly for a blank
-            # canonical body. Actor Core uses the versioned contract plus a measured
-            # post-generation silhouette gate; raw ReferenceLatent remains disabled.
-            reference_image = None
+                reference_source = f"actor-core-lora-edit:{reference_source}"
+                reference_role = "approved_style_seed_pixels_with_actor_core_lora"
+                if ACTOR_CORE_LORA is None:
+                    raise FileNotFoundError("strip_to_actor_core LoRA was not found")
+                lora = ACTOR_CORE_LORA
+                lora_strength = float(job["lora_strength"])
+            else:
+                raise ValueError(
+                    "base_actor generation requires an approved StyleSeed and the "
+                    "strip_to_actor_core edit workflow"
+                )
             artifact_root = BASE_ACTOR_ARTIFACT_ROOT
             artifact_name = "base_actor_turnaround.png"
             route = "base-actors"
@@ -1204,6 +1236,8 @@ def run_generation(job_id: str) -> None:
             cfg=1.0,
             seed=job["seed"],
             prefix=prefix,
+            lora=lora,
+            lora_strength=lora_strength,
         )
         response = request_json(
             f"{COMFY_URL}/prompt",
@@ -1302,6 +1336,8 @@ def run_generation(job_id: str) -> None:
                 "reference_latent": reference_image is not None,
                 "reference_source": reference_source,
                 "reference_role": reference_role,
+                "lora": lora,
+                "lora_strength": lora_strength if lora else None,
             },
         }
         (job_dir / "record.json").write_text(
@@ -1335,6 +1371,7 @@ def public_job(job: dict[str, Any]) -> dict[str, Any]:
         "actor_profile_id",
         "slot_id",
         "style_seed_asset_id",
+        "lora_strength",
         "base_actor_asset_id",
         "seed",
         "image_url",
@@ -1630,6 +1667,7 @@ class Handler(BaseHTTPRequestHandler):
                     "local_animation_assets": len(list_animation_assets()),
                     "training_pairs": len(list_training_pairs()),
                     "training_previews": len(list_training_previews()),
+                    "actor_core_lora": ACTOR_CORE_LORA,
                     "profile_registry": str(PROFILE_REGISTRY_PATH),
                     "style_profiles": len(STYLE_PROFILES),
                     "actor_profiles": len(ACTOR_PROFILES),
@@ -2044,8 +2082,20 @@ class Handler(BaseHTTPRequestHandler):
                 if style_profile is None:
                     raise ValueError("unknown style_profile_id")
                 style_seed_asset_id = str(payload.get("style_seed_asset_id", "")).strip()
-                if path == "/api/base-actors" and style_seed_asset_id:
+                lora_strength = None
+                if path == "/api/base-actors":
+                    if not style_seed_asset_id:
+                        raise ValueError(
+                            "base_actor requires an approved style_seed_asset_id"
+                        )
                     resolve_library_reference("style_seed", style_seed_asset_id)
+                    if ACTOR_CORE_LORA is None:
+                        raise ValueError("strip_to_actor_core LoRA was not found")
+                    lora_strength = float(payload.get("lora_strength", 2.0))
+                    if lora_strength not in ACTOR_CORE_LORA_STRENGTHS:
+                        raise ValueError(
+                            "lora_strength must use the review ladder: 2.0, 2.5 or 3.0"
+                        )
             except ValueError as exc:
                 self.send_json(HTTPStatus.BAD_REQUEST, {"error": str(exc)})
                 return
@@ -2063,6 +2113,7 @@ class Handler(BaseHTTPRequestHandler):
                 "style": "soft_3d",
                 "style_profile_id": style_profile_id,
                 "style_seed_asset_id": style_seed_asset_id or None,
+                "lora_strength": lora_strength,
                 "seed": seed,
                 "library_status": "candidate",
                 "profile_snapshot": {"style": style_profile},

@@ -11,6 +11,7 @@ export interface LocalGenerationHealth {
   local_animation_library_root?: string;
   local_animation_assets?: number;
   training_pairs?: number;
+  actor_core_lora?: string | null;
   production_backend: "flux2_klein_4b_distilled_fp8";
   training_backend: "flux2_klein_base_4b_lora";
   teacher_backend_required: false;
@@ -121,6 +122,7 @@ export interface TurnaroundJob {
   actor_profile_id?: string;
   slot_id?: string;
   style_seed_asset_id?: string;
+  lora_strength?: number;
   base_actor_asset_id?: string;
   library_status?: "candidate" | "accepted" | "destroyed";
   library_asset_id?: string;
@@ -261,6 +263,7 @@ export async function createBaseActorTurnaround(
   styleProfileId: string,
   styleSeedAssetId: string | undefined,
   seed: number,
+  loraStrength = 2.0,
 ) {
   return responseJson<TurnaroundJob>(await fetch(`${API_ROOT}/base-actors`, {
     method: "POST",
@@ -269,6 +272,7 @@ export async function createBaseActorTurnaround(
       subject,
       style_profile_id: styleProfileId,
       style_seed_asset_id: styleSeedAssetId,
+      lora_strength: loraStrength,
       seed,
     }),
   }));

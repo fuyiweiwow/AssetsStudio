@@ -63,6 +63,7 @@ export function TurnaroundGenerator() {
   const [trainingPairs, setTrainingPairs] = useState<TrainingPairCandidate[]>([]);
   const [trainingPreviews, setTrainingPreviews] = useState<TrainingPreview[]>([]);
   const [styleSeedAssetId, setStyleSeedAssetId] = useState("");
+  const [actorCoreLoraStrength, setActorCoreLoraStrength] = useState(2.0);
   const [baseActorAssetId, setBaseActorAssetId] = useState("");
   const [styleProfileId, setStyleProfileId] = useState(styleSlotRegistry.styles[0].id);
   const actorProfiles = styleSlotRegistry.actors.filter((profile) => profile.style_profile_id === styleProfileId);
@@ -196,7 +197,7 @@ export function TurnaroundGenerator() {
       setJob(assetMode === "style_seed"
         ? await createStyleSeed(subject, selectedStyleProfile.id, seed)
         : assetMode === "base_actor"
-          ? await createBaseActorTurnaround(subject, selectedStyleProfile.id, styleSeedAssetId || undefined, seed)
+          ? await createBaseActorTurnaround(subject, selectedStyleProfile.id, styleSeedAssetId || undefined, seed, actorCoreLoraStrength)
           : await createAccessoryTurnaround(subject, selectedStyleProfile.id, selectedActorProfile.id, selectedSlot.slot_id, baseActorAssetId || undefined, seed));
       setManualConfirmations([]);
     } catch (error) {
@@ -467,8 +468,15 @@ export function TurnaroundGenerator() {
           </label>}
           {assetMode === "base_actor" && <label className="field-label">控制风格种子
             <select value={styleSeedAssetId} onChange={(event) => setStyleSeedAssetId(event.target.value)}>
-              <option value="">Profile 原始比例锚点</option>
+              <option value="" disabled>请选择已批准风格种子</option>
               {acceptedStyleSeeds.map((asset) => <option key={asset.asset_id} value={asset.asset_id}>{asset.subject.slice(0, 24)} · {asset.asset_id.slice(0, 8)}</option>)}
+            </select>
+          </label>}
+          {assetMode === "base_actor" && <label className="field-label">Actor Core LoRA 强度
+            <select value={actorCoreLoraStrength} onChange={(event) => setActorCoreLoraStrength(Number(event.target.value))}>
+              <option value={2}>2.0 · 最低强度优先</option>
+              <option value={2.5}>2.5 · 中间复核</option>
+              <option value={3}>3.0 · 强剥离</option>
             </select>
           </label>}
           {assetMode === "accessory" && <label className="field-label">装配基准 Actor
@@ -501,7 +509,7 @@ export function TurnaroundGenerator() {
           <label className="field-label">Seed
             <input type="number" min="0" step="1" value={seed} onChange={(event) => setSeed(Math.max(0, Number(event.target.value) || 0))} />
           </label>
-          <button type="button" className="console-primary generation-submit" disabled={!ready || busy || subject.trim().length < 8} onClick={() => void submit()}>{busy ? "本地生成中…" : `生成${modeTitle}`}</button>
+          <button type="button" className="console-primary generation-submit" disabled={!ready || busy || subject.trim().length < 8 || (assetMode === "base_actor" && !styleSeedAssetId)} onClick={() => void submit()}>{busy ? "本地生成中…" : `生成${modeTitle}`}</button>
           {!ready && <div className="known-issue"><strong>生成按钮已锁定</strong><p>请先启动 8190 端口的安全模式 ComfyUI 和 8765 端口的 Studio 本地桥接。</p></div>}
           {submitError && <div className="known-issue"><strong>请求失败</strong><p>{submitError}</p></div>}
         </section>

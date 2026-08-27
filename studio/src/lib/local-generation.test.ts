@@ -111,11 +111,12 @@ describe("local generation client", () => {
       }), { status: 202, headers: { "Content-Type": "application/json" } }));
     vi.stubGlobal("fetch", fetchMock);
     await createStyleSeed("无嘴鼻中性素体", "qstyle-generic", 9);
-    await createBaseActorTurnaround("无嘴鼻战士素体", "qstyle-generic", "seed-1", 10);
+    await createBaseActorTurnaround("无嘴鼻战士素体", "qstyle-generic", "seed-1", 10, 2.5);
     expect(fetchMock.mock.calls[0][0]).toBe("/api/local-generation/style-seeds");
     expect(JSON.parse(fetchMock.mock.calls[1][1].body)).toMatchObject({
       style_profile_id: "qstyle-generic",
       style_seed_asset_id: "seed-1",
+      lora_strength: 2.5,
     });
     vi.unstubAllGlobals();
   });

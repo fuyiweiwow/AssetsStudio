@@ -9,6 +9,8 @@
 - `ASSETSSTUDIO_COMFY_ROOT`：可选 ComfyUI 根目录；
 - `ASSETSSTUDIO_PYTHON`：可选 Python 可执行文件或命令；
 - `ASSETSSTUDIO_DIFFSYNTH_ROOT`：可选 DiffSynth-Studio 源码根目录；
+- `ASSETSSTUDIO_FLUX2_BASE_ROOT`：可选 ModelScope FLUX.2 Klein Base 模型根目录；
+- `ASSETSSTUDIO_ACTOR_CORE_LORA`：可选 Actor Core LoRA 文件；相对路径按 ComfyUI `models/loras` 解析，绝对路径也必须位于该目录内。未设置时搜索 `models/loras/assetsstudio/strip_to_actor_core*.safetensors` 并选取最近更新的本地权重；
 - `HUNYUAN3D_SOURCE`：可选 Hunyuan3D 官方源码根目录；
 - `HUNYUAN3D_MODEL_ROOT`：可选 Hunyuan3D-2mv 模型根目录。
 
@@ -44,6 +46,16 @@ LoRA 训练主候选是 ModelScope `black-forest-labs/FLUX.2-klein-base-4B`。�
 ```powershell
 .\tools\setup_flux2_actor_core_training.ps1
 ```
+
+已存在缓存后的训练也不得手写模型绝对路径或嵌套 JSON：
+
+```powershell
+python .\tools\model_test\train_flux2_actor_core_lora.py `
+  --cache-dir <缓存目录> --output-dir <输出目录> `
+  --dataset-repeat 1 --epochs 1 --max-pixels 393216
+```
+
+该入口搜索 `ASSETSSTUDIO_COMFY_ROOT`、`ASSETSSTUDIO_DIFFSYNTH_ROOT`、`ASSETSSTUDIO_FLUX2_BASE_ROOT` 及仓库相邻/工作区位置，并验证实际 marker 文件后再启动训练。
 
 脚本只下载 `transformer/*`、`tokenizer/*` 和 `model_index.json`。2026-08-26 的已验证环境为 DiffSynth 2.1.2（源码提交 `6343deda`）、Python 3.10.20、PyTorch 2.11.0+cu128；这些是运行记录，不是硬编码路径或强制精确版本。2026-08-27 的两 Pair/rank-16/120-step 实测约 8 分 36 秒、训练峰值约 12.66GB，仍不构成 3060 训练承诺。
 
