@@ -44,7 +44,7 @@ def main() -> int:
 
     payload = {
         "schema": "assetsstudio_style_slot_registry_v1",
-        "updated": "2026-08-25",
+        "updated": "2026-08-27",
         "styles": styles,
         "actors": actors,
         "sources": {

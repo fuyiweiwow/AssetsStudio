@@ -10,6 +10,8 @@
 - `ASSETSSTUDIO_PYTHON`：可选 Python 可执行文件或命令；
 - `ASSETSSTUDIO_DIFFSYNTH_ROOT`：可选 DiffSynth-Studio 源码根目录；
 - `ASSETSSTUDIO_FLUX2_BASE_ROOT`：可选 ModelScope FLUX.2 Klein Base 模型根目录；
+- `ASSETSSTUDIO_FLUX2_TEXT_ENCODER`：可选 FLUX.2/Qwen3 文本编码器文件；未设置时搜索相邻 ComfyUI；
+- `ASSETSSTUDIO_FLUX2_VAE`：可选 FLUX.2 VAE 文件；未设置时搜索相邻 ComfyUI；
 - `ASSETSSTUDIO_ACTOR_CORE_LORA`：可选 Actor Core LoRA 文件；相对路径按 ComfyUI `models/loras` 解析，绝对路径也必须位于该目录内。未设置时搜索 `models/loras/assetsstudio/strip_to_actor_core*.safetensors` 并选取最近更新的本地权重；
 - `HUNYUAN3D_SOURCE`：可选 Hunyuan3D 官方源码根目录；
 - `HUNYUAN3D_MODEL_ROOT`：可选 Hunyuan3D-2mv 模型根目录。
@@ -57,11 +59,24 @@ python .\tools\model_test\train_flux2_actor_core_lora.py `
 
 该入口搜索 `ASSETSSTUDIO_COMFY_ROOT`、`ASSETSSTUDIO_DIFFSYNTH_ROOT`、`ASSETSSTUDIO_FLUX2_BASE_ROOT` 及仓库相邻/工作区位置，并验证实际 marker 文件后再启动训练。系统 Python 缺少 PyTorch 时会自动切换到 ComfyUI Python；子进程固定 `DIFFSYNTH_SKIP_DOWNLOAD=True`。它还会读取每个 `.pth`，若数据处理阶段没有把 `use_gradient_checkpointing=True` 写入 cache，则在加载 4B 模型前停止并要求重建缓存。
 
-脚本只下载 `transformer/*`、`tokenizer/*` 和 `model_index.json`。2026-08-26 的已验证环境为 DiffSynth 2.1.2（源码提交 `6343deda`）、Python 3.10.20、PyTorch 2.11.0+cu128；这些是运行记录，不是硬编码路径或强制精确版本。2026-08-27 的两 Pair/rank-16/120-step 实测约 8 分 36 秒、训练峰值约 12.66GB，仍不构成 3060 训练承诺。
+脚本只下载 `transformer/*`、`tokenizer/*` 和 `model_index.json`。2026-08-26 的已验证环境为 DiffSynth 2.1.2（源码提交 `6343deda`）、Python 3.10.20、PyTorch 2.11.0+cu128；这些是运行记录，不是硬编码路径或强制精确版本。2026-08-27 的 v4 两 Pair/rank-16/120-step 实测约 8 分 35 秒；训练仍不构成 3060 承诺。
 
 模型已齐全的训练会话由入口设置 `DIFFSYNTH_SKIP_DOWNLOAD=True`，确保运行期只加载已发现的本地权重。数据处理与训练两个阶段都必须启用 gradient checkpointing；该标志会固化进 cache，不能只在训练阶段补传。正式训练前先停止或卸载其他 GPU 模型并运行每 Pair 一次的 1-epoch 烟雾训练；只有 checkpoint 正常落盘后才扩大 steps。若出现 GPU 长时间低功耗满占用且无 checkpoint，先比较 cache 的 `use_gradient_checkpointing`，再判断 GPU/驱动会话，不通过降低验收标准掩盖。
 
 Base 常规推理约需 13GB 显存，常规 LoRA 示例按约 24GB 设计，因此 RTX 3060 不承担“必须舒适训练”的承诺。训练可远程完成；LoRA + distilled 推理必须回到真实 3060 验收。
+
+训练缓存和 Base 诊断也使用发现式入口，不应复制本机盘符：
+
+```powershell
+python .\tools\model_test\prepare_flux2_actor_core_cache.py `
+  --dataset-dir <DiffSynth 导出目录> --cache-dir <缓存目录>
+
+python .\tools\model_test\run_flux2_base_actor_core_diagnostic.py `
+  --source <source.png> --lora <epoch-N.safetensors> `
+  --prompt-file <caption.txt> --output <diagnostic.png>
+```
+
+两个入口均先检查专用环境变量，再检查仓库工作区和相邻 ComfyUI，并强制 `DIFFSYNTH_SKIP_DOWNLOAD=True`。Base 诊断采用 DiffSynth 官方磁盘映射、FP8 暂存和 BF16 计算，以免 7.75GB Transformer 与 8.04GB 文本编码器同时展开挤满 32GB 主存；它只用于判断训练问题，不属于 Studio 或 RTX 3060 生产依赖。2026-08-27 本地对照为 768×384、20 steps、44.86 秒，日志确认只加载已存在文件。
 
 ## Qwen-Image-Edit 的状态
 

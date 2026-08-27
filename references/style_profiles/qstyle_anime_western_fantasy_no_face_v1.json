@@ -2,7 +2,7 @@
   "schema": "assetsstudio_style_profile_v1",
   "id": "qstyle_anime_western_fantasy_no_face_v1",
   "label": "无嘴无鼻 Q 版日漫西幻通用风格",
-  "revision": 2,
+  "revision": 3,
   "status": "provisional",
   "consumer_tags": ["bombadvanture", "ba"],
   "scope": ["character", "wearable", "prop", "environment"],
@@ -27,7 +27,7 @@
     "measured_head_height_m": 0.931863,
     "measured_total_heads": 2.136102,
     "target_total_heads_range": [2.1, 2.5],
-    "silhouette": "compact chibi with an oversized softly flattened anime head, broad shallow facial plane, narrow tapered torso, short clean limbs, and large mitten-like hands and boot-like feet; never a perfect sphere or pear-shaped baby body"
+    "silhouette": "compact chibi with an oversized softly flattened anime head, broad shallow facial plane, narrow tapered torso, short clean limbs, large mitten-like hands and small compact rounded feet; never a perfect sphere, pear-shaped baby body or shoe-like foot volume"
   },
   "shape_language": [
     "oversized softly flattened anime head with a broad shallow face plane, gently squared cheeks and compact facial spacing; not a perfect sphere",
@@ -83,14 +83,14 @@
   "actor_core_contract": {
     "positive": [
       "compact 2.1 to 2.5 heads-tall body with an oversized softly flattened anime head, broad shallow face plane and gently squared cheeks",
-      "small narrow torso tapering cleanly to the hips, short clean limbs, integral mitten-like hands without separated fingers, and simple boot-like feet without toes",
+      "small narrow torso tapering cleanly to the hips, short clean limbs, integral mitten-like hands without separated fingers, and small compact rounded feet flowing continuously from tapered lower legs",
       "polished soft 3D game figurine with smooth rounded low-frequency geometry",
       "single clean matte neutral material with soft studio light and subtle ambient occlusion"
     ],
     "negative": [
       "eyes, eyebrows, eyelashes, eye sockets, mouth, lips, nose, ears or any facial feature",
       "hair, scalp cap, clothes, bodysuit, underwear, shoes, boots, gloves, jewelry or accessories",
-      "seams, cuffs, collars, waistbands, hems, soles, color blocking or garment-like topology",
+      "seams, cuffs, collars, waistbands, hems, ankle bands, boot-like feet, soles, heel blocks, toe blocks, color blocking or garment-like topology",
       "realistic adult anatomy, sexual anatomy, long slender limbs, small head, perfect spherical head, pear-shaped belly, generic baby mannequin, separated fingers, toes or skin pores",
       "perspective distortion, action pose, dramatic lighting, text or labels"
     ],

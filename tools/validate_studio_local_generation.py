@@ -38,10 +38,16 @@ REQUIRED = [
     "tools/model_test/build_actor_core_repair_mask.py",
     "tools/model_test/build_actor_core_silhouette_guide.py",
     "tools/model_test/normalize_turnaround_panel_centers.py",
+    "tools/model_test/analyze_actor_core_shape.py",
+    "tools/model_test/audit_strip_to_actor_core_pairs.py",
+    "tools/model_test/build_actor_core_shape_cleanup_mask.py",
+    "tools/model_test/normalize_turnaround_panel_geometry.py",
     "tools/model_test/register_strip_to_actor_core_pair.py",
     "tools/model_test/export_strip_to_actor_core_dataset.py",
     "tools/model_test/export_strip_to_actor_core_diffsynth_dataset.py",
+    "tools/model_test/prepare_flux2_actor_core_cache.py",
     "tools/model_test/train_flux2_actor_core_lora.py",
+    "tools/model_test/run_flux2_base_actor_core_diagnostic.py",
     "tools/model_test/run_hunyuan3d_mv_shape.py",
     "tools/model_test/studio_local_generation_api.py",
     "tools/model_test/process_actor_core_accurig_rig.py",
@@ -62,10 +68,16 @@ PYTHON_SOURCES = [
     "tools/model_test/build_actor_core_repair_mask.py",
     "tools/model_test/build_actor_core_silhouette_guide.py",
     "tools/model_test/normalize_turnaround_panel_centers.py",
+    "tools/model_test/analyze_actor_core_shape.py",
+    "tools/model_test/audit_strip_to_actor_core_pairs.py",
+    "tools/model_test/build_actor_core_shape_cleanup_mask.py",
+    "tools/model_test/normalize_turnaround_panel_geometry.py",
     "tools/model_test/register_strip_to_actor_core_pair.py",
     "tools/model_test/export_strip_to_actor_core_dataset.py",
     "tools/model_test/export_strip_to_actor_core_diffsynth_dataset.py",
+    "tools/model_test/prepare_flux2_actor_core_cache.py",
     "tools/model_test/train_flux2_actor_core_lora.py",
+    "tools/model_test/run_flux2_base_actor_core_diagnostic.py",
     "tools/model_test/run_hunyuan3d_mv_shape.py",
     "tools/model_test/studio_local_generation_api.py",
     "tools/model_test/process_actor_core_accurig_rig.py",
@@ -170,6 +182,11 @@ def main() -> int:
         "actor_core_0ef398ca_slots_v1"
     ]:
         raise RuntimeError("Studio registry contains a non-current ActorSlotProfile")
+    actor_core_positive = " ".join(
+        registry["styles"][0]["actor_core_contract"]["positive"]
+    )
+    if "boot-like feet" in actor_core_positive or "small compact rounded feet" not in actor_core_positive:
+        raise RuntimeError("Actor Core foot contract is stale")
 
     require_marker("studio/src/App.tsx", "CURRENT MODULAR WORKFLOW")
     require_marker("studio/src/components/TurnaroundGenerator.tsx", "选择骨骼 FBX")
@@ -187,6 +204,38 @@ def main() -> int:
     require_marker(
         "tools/model_test/train_flux2_actor_core_lora.py",
         "validate_cache_flags",
+    )
+    require_marker(
+        "tools/model_test/prepare_flux2_actor_core_cache.py",
+        '"sft:data_process"',
+    )
+    require_marker(
+        "tools/model_test/analyze_actor_core_shape.py",
+        "front_lower_torso_width_ratio_lte_0_54",
+    )
+    require_marker(
+        "tools/model_test/register_strip_to_actor_core_pair.py",
+        "analyze_actor_core_shape",
+    )
+    require_marker(
+        "tools/model_test/studio_local_generation_api.py",
+        'automatic_qa["actor_core_shape"]',
+    )
+    require_marker(
+        "tools/model_test/audit_strip_to_actor_core_pairs.py",
+        "actor_core_shape_qa_v1_failed",
+    )
+    require_marker(
+        "tools/model_test/build_actor_core_shape_cleanup_mask.py",
+        "box_height * 0.77",
+    )
+    require_marker(
+        "tools/model_test/normalize_turnaround_panel_geometry.py",
+        "uniform scale plus x/y translation only",
+    )
+    require_marker(
+        "tools/model_test/run_flux2_base_actor_core_diagnostic.py",
+        '"download_policy": "local-only"',
     )
     require_marker(
         "tools/model_test/studio_local_generation_api.py",

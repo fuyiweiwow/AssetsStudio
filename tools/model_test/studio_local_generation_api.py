@@ -23,6 +23,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from typing import Any
 
+from analyze_actor_core_shape import analyze_actor_core_shape
 from analyze_turnaround_sheet import analyze_turnaround
 from run_comfy_flux2_klein import build_prompt
 from blender_environment import discover_blender
@@ -1277,9 +1278,31 @@ def run_generation(job_id: str) -> None:
         automatic_qa = None
         qa_status = "visual_review_required"
         metrics_url = None
-        automatic_qa = analyze_turnaround(
-            artifact, 3, proportion_reference=proportion_reference
-        )
+        if job_kind == "base_actor":
+            automatic_qa = analyze_turnaround(artifact, 3)
+            if proportion_reference is not None:
+                reference_report = analyze_turnaround(
+                    artifact, 3, proportion_reference=proportion_reference
+                )
+                automatic_qa["reference_profile_diagnostic"] = reference_report[
+                    "proportion_comparison"
+                ]
+            actor_core_shape = analyze_actor_core_shape(artifact, 3)
+            automatic_qa["actor_core_shape"] = actor_core_shape
+            automatic_qa["automatic_gates"].update(
+                {
+                    f"actor_core_shape.{key}": value
+                    for key, value in actor_core_shape["automatic_gates"].items()
+                }
+            )
+            automatic_qa["automatic_pass"] = (
+                automatic_qa["automatic_pass"]
+                and actor_core_shape["automatic_pass"]
+            )
+        else:
+            automatic_qa = analyze_turnaround(
+                artifact, 3, proportion_reference=proportion_reference
+            )
         if job_kind == "accessory":
             manual_gates_required = [
                 "front/right-profile/back orientation is correct",
@@ -1306,6 +1329,7 @@ def run_generation(job_id: str) -> None:
                 "no hair, clothes, bodysuit, underwear, footwear, gloves, accessories, seams, cuffs, or garment-like topology",
                 "single neutral mannequin material does not imply clothing or identity",
                 "front silhouette preserves the approved reference's flattened anime head, narrow torso taper, and compact limb masses rather than a spherical baby or pear-shaped body",
+                "lower legs flow continuously into small compact rounded feet with no ankle band, boot volume, sole, heel block or toe block",
                 "no extra limbs, props, perspective pose or cropped feet",
             ]
         automatic_qa["manual_gates_required"] = manual_gates_required

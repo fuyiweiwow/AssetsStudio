@@ -14,6 +14,7 @@ from pathlib import Path
 import cv2
 
 from analyze_turnaround_sheet import analyze_turnaround
+from analyze_actor_core_shape import analyze_actor_core_shape
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -119,6 +120,19 @@ def main() -> int:
             raise RuntimeError("Mask and target dimensions must match")
 
     automatic_qa = analyze_turnaround(pair_dir / filenames["target"], 3)
+    actor_core_shape = analyze_actor_core_shape(
+        pair_dir / filenames["target"], 3
+    )
+    automatic_qa["actor_core_shape"] = actor_core_shape
+    automatic_qa["automatic_gates"].update(
+        {
+            f"actor_core_shape.{key}": value
+            for key, value in actor_core_shape["automatic_gates"].items()
+        }
+    )
+    automatic_qa["automatic_pass"] = (
+        automatic_qa["automatic_pass"] and actor_core_shape["automatic_pass"]
+    )
     if args.approve and not automatic_qa["automatic_pass"]:
         raise RuntimeError("Target failed automatic turnaround gates")
     now = datetime.now(timezone.utc).isoformat()

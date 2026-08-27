@@ -40,27 +40,35 @@ Black Forest Labs 将 4B Base 定位为有限硬件微调/LoRA版本，将 disti
 
 ## 当前可确认预览
 
-`teacher_actor_core_d70bce_20260826_v2` 与 `teacher_actor_core_74e7acc_20260826_v2` 均已通过自动 Gate 与六项人工 Gate。第二枚 Target 使用已批准长发风格种子约束布局和比例、首枚已批准 Target 约束无耳素体几何，由可选图像教师提出；来源模型没有参与批准决定。两个较弱候选已拒绝，旧未居中版本和 Qwen 失败版本均位于本地 rejected 目录，不参与导出。
+旧批准数据已用 `assetsstudio_actor_core_shape_qa_v1` 重新审计。该 Gate 使用逐行自适应 LAB 分割，直接测量前视下躯干与侧视脚部：
 
-Klein distilled 的同分辨率预筛选也已运行：4 steps、FP8、低显存模式、16GB 卡预留 5GB，10.32 秒完成；整卡基线 1,739MiB、峰值 13,427MiB、增量 11,688MiB。它证明推理接近 12GB 范围，但零样本仍保留头发和衣物，因此只算“显存预筛选通过、任务质量失败”。真实 RTX 3060 仍必须复测。
+- `front_lower_torso_width_ratio <= 0.54`；
+- `side_foot_detection_ratio >= 0.80`；
+- `side_foot_projection_ratio <= 1.20`。
 
-首轮最小过拟合已于 2026-08-26 完成：DiffSynth 两阶段缓存、Klein Base 4B、1 Pair、rank 16、100 steps、约 7 分 11 秒；它证明了数据合同可训练，但 distilled strength 1.3 仍生成耳朵，现已被 v2 取代并移出 Studio 有效预览。
+三个旧 approved Target 全部失败并移入本地 rejected：`teacher_actor_core_d70bce_20260826_v2` 与 `teacher_actor_core_74e7acc_20260826_v2` 躯干过宽，旧 `bob_cowl` Target 的脚部投影过大。人工布尔值不得覆盖这些失败。Studio 的整幅 reference MAE 只保留为诊断，不再进入批准 Gate，因为 Source 必然包含需要移除的头发、衣服和配件。
 
-第二轮于 2026-08-27 从头训练：2 approved Pairs、rank 16、120 steps、最大 589,824 pixels、约 8 分 36 秒；5070 Ti 训练峰值约 12.66GB。产物 `teacher_v2_2pair_rank16_120step` 的 epoch-4 checkpoint 已回载到 Klein distilled FP8，SHA256 为 `B8D82DF6848BC23237FFB0BCA14C261535AB85F5AE0386EC1B062F2AC9C4AB4C`。权重仍只保存在本地模型目录，不提交 Git。
+当前只有两 Pair 通过新自动 Gate 与人工 Gate：
 
-v2 的诊断结论是“训练任务已学会，生产强度与泛化仍待验收”：Base BF16 计算/CPU offload 在训练来源上可稳定输出无耳、统一灰色 Actor Core，768×384/20-step 约 45.9 秒，Torch 峰值分配约 5.1GB；因此不是 LoRA 键未加载。distilled 4-step 在两个训练来源上需 strength 2.0 才去除可见耳朵，在未参与训练的 BA 三视图保留集上需 strength 3.0。保留集结果已无可见耳朵，但右侧视图脚部存在双轮廓伪影，所以仅为人工评审候选，不得入库，也不得成为 Studio 默认后端。
+- `teacher_actor_core_male_80b51207_20260827_v1`：下躯干 `0.5372`，侧脚投影 `1.0964`；
+- `teacher_actor_core_bob_cowl_20260827_v2`：下躯干 `0.5251`，侧脚投影 `1.1250`。
 
-2026-08-27 新增的本地短发男性 StyleSeed 是第二个未参与 v2 训练的固定保留集。Studio 已用其真实像素、相同 seed 20260831 和相同提示合同依次测试 strength 2.0/2.5/3.0：2.0 有耳；2.5/3.0 无耳，但躯干均漂移为梨形，脚踝均出现靴口式形体。对应整幅前轮廓 MAE 为 0.4482/0.4387/0.4385，均高于 0.13 门槛。由于 Source 必然含头发和衣服，整幅 MAE 本身也需要改为身体分区指标；不过肉眼可见梨形和靴口已经足以判定三张失败。它们不进入 Studio、资产库或 3D。
+两张 Target 均由外部图像教师提出候选；教师不是生产依赖，也没有批准权限。候选随后只做逐面板等比缩放与整数平移，使人物高度、中心和地面线与 Source 对齐；工具禁止非均匀缩放和形体重绘。Pair 保留通用 StyleProfile，并仅以 `consumer_tags=["ba"]` 记录近期消费者。
 
-Studio 的“Actor Core 本地推理预览”区只展示三张当前有效候选：两个训练来源的 strength 2.0 结果和一个 BA 保留集的 strength 3.0 结果。失败的 v1、低强度探针与 Base 诊断图全部移入本地 rejected 目录，不出现在有效预览中。
+两 Pair v4 使用 `prepare_flux2_actor_core_cache.py` 生成 589,824-pixel、内嵌 `use_gradient_checkpointing=True` 的缓存。2-step 烟雾训练约 8 秒通过后，正式 rank-16、12 repeats、5 epochs 共 120 steps，2026-08-27 用时约 8 分 35 秒。五个 checkpoint 均落盘；epoch-4 SHA256 为 `15BB0CBC7BE0A0163D080E936FD8789CA96FFC81339A017F9C531D6EE715AE6E`，复制到 ComfyUI 后哈希一致。模型权重和 Pair 仍只存本地，不提交 Git。
 
-第三组 `teacher_actor_core_bob_cowl_20260827_v1` 已于 2026-08-27 批准：Source 使用同一 StyleProfile 但采用短发、兜帽、披肩、腰带、手套与靴子的不同部件轮廓；Target 继续使用双参考教师方法。Target 初稿因第三面板偏左未通过中心 Gate，没有绕过检查；随后用 `normalize_turnaround_panel_centers.py` 按 Source 前景中心仅做 0/22/42px 整数水平平移，不缩放、不变形。规范化后 `height_cv=0.0013`、`ground_range=0.0023`、`center_max_offset=0.0515`、最低色彩相关性 `0.9922`，并通过六项人工 Gate。该 Source 是本地训练候选，不等于第三枚已发布风格种子。
+v4 的 distilled 4-step 阶梯没有任何可批准结果：
 
-三 Pair v3 的历史慢路径已于重启后定位：v3 的 393,216 与 589,824 cache 都内嵌 `use_gradient_checkpointing=False`，而 v2 成功 cache 为 `True`。训练阶段直接加载 cache tuple，命令行 `--use_gradient_checkpointing` 不会覆盖这个缓存字段；因此 v3 实际关闭检查点，显存约 15.9GB、SM 100%、功耗约 62W 并进入极慢换页。用 v2 cache 做同环境对照时两步只需 8 秒，排除了驱动、模型和训练器整体损坏。
+- 旧长发保留集 strength 2.0：躯干通过 `0.5379`，脚部失败 `1.2169`；
+- strength 2.5：脚部通过 `1.1611`，躯干失败 `0.5621`；
+- strength 3.0：脚部通过 `1.1158`，躯干有效行不足；
+- 男性训练来源 strength 2.0/2.5：躯干与脚部均失败；strength 3.0 脚部通过但躯干有效行不足。
 
-只校正该布尔运行标志、不改变任何 tensor/条件后，三步 Gate 约 12 秒完成。正式三 Pair v3 使用 589,824 pixels、rank 16、12 repeats、5 epochs，共 180 steps；2026-08-27 用时约 12 分 45 秒，5 个 checkpoint 均落盘，epoch-4 SHA256 为 `A72C3B58163B046752A3A0E4F037C168F4244B51BDAACCCC75D56E97957BCC5C`。训练峰值约 11.1GB，正常功耗约 226–232W。训练入口会逐个读取 cache 并拒绝任何未启用 gradient checkpointing 的样本，同时强制只加载已发现的本地模型。
+六个任务均已从 Studio 活跃候选移入本地 rejected，不能进入 Gallery、随机池、资产库或 3D。只读评审目录保留最接近通过的 distilled 2.0 图，不改变该失败结论。
 
-v3 回载 distilled 后在新男性保留集执行固定阶梯：2.0 有耳位凹痕；2.5/3.0 已无耳、无五官，但躯干仍圆、脚部仍呈块状，前轮廓 MAE 分别为 0.4169/0.4175/0.4314。三张均失败并移出 Studio。复核 approved Target 后发现其中两张本身就呈圆腹/块状脚部，说明模型忠实学习了错误的形体权威；此前 `narrow_tapered_torso_not_pear_shaped=true` 的人工批准需要重新审计。v3 是有效训练产物，但不是合格生产 Actor Core 权重。
+为区分 LoRA 欠拟合与 Base→distilled 迁移，使用 `run_flux2_base_actor_core_diagnostic.py` 在男性训练来源执行 Base 原生对照。脚本只搜索本地 ModelScope/ComfyUI 权重，设置 `DIFFSYNTH_SKIP_DOWNLOAD=True`，使用 DiffSynth 官方磁盘映射 + FP8 暂存、BF16 计算；768×384、20 steps、seed 20260831 用时 44.86 秒。结果脚部通过 `0.8816`，但下躯干 `0.5577` 失败，且肉眼仍有手指、胸腹和裆部解剖结构。
+
+因此 v4 的主要结论不是“只需提高 distilled strength”，也不是“只有跨模型迁移失败”，而是两 Pair/120 steps 尚未把连续无解剖细节 Actor Core 学稳。下一轮应先扩充 4–6 个形体一致、Source 遮挡多样的批准 Pair，并要求 Base 原生固定集通过后再验证 distilled。Base 对照仅为训练诊断，不得写入 RTX 3060 生产依赖。
 
 ## 注册与导出
 
@@ -86,6 +94,23 @@ python .\tools\model_test\export_strip_to_actor_core_diffsynth_dataset.py --vali
 python .\tools\model_test\export_strip_to_actor_core_diffsynth_dataset.py
 ```
 
+批准前与历史审计：
+
+```powershell
+python .\tools\model_test\analyze_actor_core_shape.py <target.png>
+python .\tools\model_test\audit_strip_to_actor_core_pairs.py
+# 人工确认审计报告后，才可添加 --apply 将失败 Pair 移入 rejected
+python .\tools\model_test\audit_strip_to_actor_core_pairs.py --apply
+```
+
+缓存入口会搜索已有 DiffSynth、ModelScope Base、ComfyUI 文本编码器/VAE，不要求某台机器的绝对路径：
+
+```powershell
+python .\tools\model_test\prepare_flux2_actor_core_cache.py `
+  --dataset-dir <DiffSynth 导出目录> --cache-dir <缓存目录> `
+  --max-pixels 589824
+```
+
 缓存完成后的训练统一使用发现式入口，不复制某台机器的绝对路径：
 
 ```powershell
@@ -100,9 +125,17 @@ python .\tools\model_test\train_flux2_actor_core_lora.py `
 当教师 Target 仅有面板水平位置偏差时，可按 Source 做确定性对齐；不得用它修补几何或绕过其他 Gate：
 
 ```powershell
-python .\tools\model_test\normalize_turnaround_panel_centers.py <target.png> `
+python .\tools\model_test\normalize_turnaround_panel_geometry.py <target.png> `
   --reference <source.png> --output <target.normalized.png> `
   --report <target.normalization.json>
+```
+
+Base 原生诊断也必须通过发现式、禁止下载的入口；该命令不属于 3060 生产工作流：
+
+```powershell
+python .\tools\model_test\run_flux2_base_actor_core_diagnostic.py `
+  --source <source.png> --lora <epoch-N.safetensors> `
+  --prompt-file <caption.txt> --output <diagnostic.png>
 ```
 
 导出器生成 DiffSynth 图像编辑合同：Target 为 `image`，Source 为 `edit_image`。ModelScope 官方 Klein Base LoRA 示例和训练参数位于：<https://github.com/modelscope/DiffSynth-Studio/blob/main/examples/flux2/model_training/lora/FLUX.2-klein-base-4B.sh>。

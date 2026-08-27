@@ -38,28 +38,28 @@ Studio 为多个游戏提供可复用美术资产。当前 `ba` 仅保留在 `co
 ## 当前检查点
 
 - 当前 StyleProfile：`qstyle_anime_western_fantasy_no_face_v1`。
+- StyleProfile revision 3 已去掉与 Actor Core 冲突的 `boot-like feet`，明确要求小而圆、从小腿连续过渡的脚；靴口、鞋底、鞋跟块和脚尖块均为禁止项。
 - 两枚已批准风格种子已作为可移植包发布；换机克隆后由 Studio 自动引入本地种子库。
 - 一枚短发男性技术种子 `80b51207eb24482f8c96fbb93f1e9de0` 已由本机 FLUX.2 Klein distilled FP8（1536×768、4 steps、CFG 1、seed 20260830）生成并通过自动/人工三视图检查；它只在本地资产库，带 `ba` 消费标签，不是项目级硬约束，也没有调用托管生图。
 - 旧 Actor `0ef398ca94d445f18226a8bf2a991c79` 只保留为 AccuRIG、动作映射和生命周期技术基线，不再是风格/形体权威。
 - rule-based 素体、Klein/Qwen 零样本素体均已判定不能作为训练 Target 或资产。
 - Qwen Q3/Q4 对照表明量化不是梨形躯干问题的主因；继续堆提示词的路线已停止。
 - Klein distilled 限额预筛选可在约 11.7GB 增量显存生成 1536×768 三视图，但零样本仍保留部件，因此必须依靠任务 LoRA。
-- 两组教师 Pair `teacher_actor_core_d70bce_20260826_v2` 与 `teacher_actor_core_74e7acc_20260826_v2` 已批准并导出为 DiffSynth 图像编辑数据；第二组使用双参考教师方法统一长发种子的布局与首枚 Target 的无耳几何规范。
-- 第二轮 Klein Base rank-16/120-step LoRA 已从头训练并成功回载。Base 诊断证明任务已学会；distilled 4-step 在训练来源需 strength 2.0、未训练 BA 保留集需 strength 3.0 才去除可见耳朵。
-- BA 保留集在 strength 3.0 仍有右侧脚部双轮廓，且真实 3060 尚未验证；因此 v2 只作为 Studio 本地评审候选，不是生产默认，也不能进入 3D 或资产库。
-- 第三组短发/兜帽/披肩来源 Pair 已通过自动与人工 Gate；Source 仍是本地训练候选，不冒充已发布风格种子。Target 的面板偏移使用确定性整数平移工具对齐，没有重画或改变几何。
 - Studio 的 Actor Core 路由现强制选择已批准 StyleSeed，将种子真实像素作为 reference latent，并加载搜索到的 `strip_to_actor_core` LoRA；零样本 Actor Core 入口已移除。界面只允许按 2.0/2.5/3.0 阶梯选择强度，并记录到任务合同。
-- 新男性种子作为未参与训练保留集时，v2 在 2.0、2.5、3.0 均失败：2.0 残留耳朵，2.5/3.0 虽去耳但仍生成梨形躯干和靴口式脚踝；三张均已从 Studio 删除，仅留在本地 rejected 诊断目录。这说明当前两 Pair 泛化不足，不能进入 3D。
-- 重启后确认异常根因不是 GPU/驱动：v3 数据缓存错误地内嵌了 `use_gradient_checkpointing=False`，训练命令无法覆盖，导致约 15.9GB 满占与极慢换页；历史 v2 cache 的同字段为 `True`，两步对照仅 8 秒。校正副本未改变任何 tensor、Source、Target 或文本条件，三步 Gate 约 12 秒完成。训练入口现会拒绝错误 cache。
-- 三 Pair v3 已用校正后的 589,824-pixel cache、rank 16、180 steps 完成，约 12 分 45 秒；最终 SHA256 为 `A72C3B58163B046752A3A0E4F037C168F4244B51BDAACCCC75D56E97957BCC5C`。但新男性保留集的 2.0/2.5/3.0 仍未通过：2.0 有耳位凹痕，2.5/3.0 虽无耳但仍为圆腹和块状脚部，三张均已从 Studio 删除。
-- 复核三张批准 Target 后确认 v3 正在忠实学习数据：其中两张 Target 本身就有圆腹/块状脚部，却被人工 Gate 错误标记为“窄收束、非梨形”。因此当前阻塞是 Target 与 Gate，不是继续增加 epoch 能解决的问题；v3 保留为诊断权重，不进入 3D。
+- Actor Core 自动 Gate 现直接测量前视下躯干宽度与侧视脚/小腿投影：躯干比值必须 `<=0.54`，脚部检测比值必须 `>=0.80`，脚部投影比值必须 `<=1.20`。整幅 reference MAE 仅保留为诊断值，不再参与批准。
+- 重新审计后三个旧 approved Target 全部失败，已移入本地 rejected，不再参加训练：两张躯干过宽，一张脚部投影过大。
+- 两张新的教师 Target 已经确定性缩放/平移到 Source 的人物高度、中心和地面线，不做非均匀变形，并通过新自动 Gate 与人工 Gate：`teacher_actor_core_male_80b51207_20260827_v1`、`teacher_actor_core_bob_cowl_20260827_v2`。外部图像教师只提出 Target 候选，批准、训练和生产推理仍由本地流程决定。
+- 两 Pair v4 使用正确的 gradient-checkpointing cache、589,824 pixels、rank 16、12 repeats、5 epochs，共 120 steps；2026-08-27 用时约 8 分 35 秒。epoch-4 SHA256 为 `15BB0CBC7BE0A0163D080E936FD8789CA96FFC81339A017F9C531D6EE715AE6E`，并已按相同哈希回载到 ComfyUI。
+- v4 在旧长发保留集的 2.0/2.5/3.0 阶梯均未同时通过躯干与脚部 Gate；在男性训练来源上的同一阶梯也均失败。六个失败任务均已从 Studio 活跃候选删除并移入本地 rejected，不进入 3D 或资产库。
+- Klein Base + v4 LoRA 的本地只读对照使用磁盘映射、FP8 暂存、BF16 计算，768×384/20 steps 用时 44.86 秒且没有下载。脚部 Gate 通过（0.8816），但躯干仍过宽（0.5577），并残留手指、胸腹和裆部解剖结构。因此当前主要阻塞是两 Pair/120 steps 尚未学会“连续无解剖细节壳”，不只是 Base→distilled 迁移或 LoRA strength。
+- Base 仅为训练诊断，不是 RTX 3060 生产依赖；生产硬门槛仍是 distilled FP8 在真实 3060 12GB 离线通过。
 - 当前动作库只有 `mixamo_standard_walk_v1`；自动映射与四方向预览已实现。
 
 ## 下一步
 
-1. 用户先评审 v3 strength 2.5 的只读诊断图，确认我们对“圆腹和块状脚部仍不合格”的判断；它不在 Studio、不入库；
-2. 把 Target Gate 改成可测量的躯干分区宽度/收束与脚踝连续性检查，并重新审计现有三 Pair；不合格 Pair 移入本地 rejected，不再参与 v4；
-3. 以当前男性 StyleSeed 建立一组真正窄收束、无靴口的批准 Target；必要时教师只负责提出候选，仍由本地 Gate 和人工批准决定；
-4. 用通过新 Gate 的 Pair 训练 v4，并在旧 BA 与男性种子两个固定保留集执行 2.0 → 2.5 → 3.0 阶梯；
-5. 在真实 RTX 3060 12GB 完成冷启动、4-step 编辑、保存恢复和峰值显存 Gate；若失败则启动 SDXL 回退，不提高硬件要求；
+1. 用户先审阅 v4 distilled 最接近通过的保留集图与 Base 原生对照图；两张均为只读诊断，不在 Studio、不入库。
+2. 补充至少 4–6 个通过新 Gate 的多样化 Pair，覆盖男女、长短发、披肩/盔甲/长靴等强遮挡 Source；Target 必须保持同一套窄收束、无解剖细节、连续圆脚权威。
+3. 以固定训练源与固定保留集做 v5 小规模过拟合 Gate；先确认 Base 原生结果同时通过自动与人工 Gate，再做 distilled 2.0 → 2.5 → 3.0 阶梯。
+4. 若 Base 在扩充数据后仍残留解剖细节，调整训练目标/步数而不是继续堆强度；若 Base 通过但 distilled 失败，才把问题归类为跨模型迁移并评估蒸馏原生训练或 SDXL 回退。
+5. 图像 Gate 通过后，在真实 RTX 3060 12GB 完成冷启动、4-step 编辑、保存恢复和峰值显存 Gate。
 6. 图像质量与 3060 硬件均通过后，才批准 Actor Core 并进入 Hunyuan3D。
