@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import importlib.util
 import json
 import os
 import subprocess
@@ -47,6 +48,28 @@ def discover_directory(
     )
 
 
+def validate_cache_flags(cache_dir: Path) -> int:
+    import torch
+
+    cache_files = sorted(cache_dir.rglob("*.pth"))
+    invalid: list[str] = []
+    for cache_file in cache_files:
+        payload = torch.load(cache_file, map_location="cpu", weights_only=False)
+        try:
+            enabled = payload[0]["use_gradient_checkpointing"] is True
+        except (IndexError, KeyError, TypeError):
+            enabled = False
+        if not enabled:
+            invalid.append(str(cache_file.relative_to(cache_dir)))
+    if invalid:
+        raise RuntimeError(
+            "Cached samples disable gradient checkpointing: "
+            + ", ".join(invalid)
+            + ". Rebuild the data-process cache with --use_gradient_checkpointing."
+        )
+    return len(cache_files)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--cache-dir", type=Path, required=True)
@@ -63,6 +86,23 @@ def main() -> int:
         [ROOT.parent / "ComfyUI", Path.home() / "ComfyUI"],
         Path("main.py"),
     )
+    if importlib.util.find_spec("torch") is None:
+        python_candidates = [
+            comfy_root / ".venv" / "Scripts" / "python.exe",
+            comfy_root / "venv" / "Scripts" / "python.exe",
+        ]
+        training_python = next(
+            (candidate for candidate in python_candidates if candidate.is_file()), None
+        )
+        if training_python is None:
+            raise FileNotFoundError(
+                "PyTorch is unavailable and no ComfyUI Python environment was found"
+            )
+        return subprocess.run(
+            [str(training_python), str(Path(__file__).resolve()), *sys.argv[1:]],
+            cwd=ROOT,
+            check=False,
+        ).returncode
     diffsynth_root = discover_directory(
         "ASSETSSTUDIO_DIFFSYNTH_ROOT",
         [ROOT / "workspace" / "runtime" / "DiffSynth-Studio"],
@@ -83,6 +123,7 @@ def main() -> int:
     cache_dir = args.cache_dir.expanduser().resolve()
     if not cache_dir.is_dir() or not list(cache_dir.rglob("*.pth")):
         raise FileNotFoundError(f"No cached training samples found in {cache_dir}")
+    cache_samples = validate_cache_flags(cache_dir)
     output_dir = args.output_dir.expanduser().resolve()
     output_dir.parent.mkdir(parents=True, exist_ok=True)
 
@@ -129,10 +170,18 @@ def main() -> int:
     print(f"DiffSynthRoot={diffsynth_root}", flush=True)
     print(f"ModelRoot={model_root}", flush=True)
     print(f"CacheDir={cache_dir}", flush=True)
+    print(f"CacheSamples={cache_samples}", flush=True)
     print(f"OutputDir={output_dir}", flush=True)
     if args.dry_run:
         return 0
-    return subprocess.run(command, cwd=diffsynth_root, check=False).returncode
+    child_environment = os.environ.copy()
+    child_environment["DIFFSYNTH_SKIP_DOWNLOAD"] = "True"
+    return subprocess.run(
+        command,
+        cwd=diffsynth_root,
+        env=child_environment,
+        check=False,
+    ).returncode
 
 
 if __name__ == "__main__":

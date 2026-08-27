@@ -1,5 +1,7 @@
 # Actor Core 的 AccuRIG 手工交接
 
+> 本机只保留独立 AccuRIG 与其可能依赖的 `RLHostService`/本地 CMS 共享组件。Reallusion Hub 的 Startup 链接、`RLHub_SkipUac` 计划任务、公共 `LiveUpdate` 程序和安装包目录已于 2026-08-27 删除；它不再随系统启动或弹出提示，也不是 Studio 工作流依赖。
+
 AccuRIG 与 Actor 一对一。不要把其他 Actor 的骨骼 FBX 回传到当前条目。
 
 ## 当前待标定文件

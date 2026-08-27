@@ -56,9 +56,11 @@ Studio 的“Actor Core 本地推理预览”区只展示三张当前有效候�
 
 第三组 `teacher_actor_core_bob_cowl_20260827_v1` 已于 2026-08-27 批准：Source 使用同一 StyleProfile 但采用短发、兜帽、披肩、腰带、手套与靴子的不同部件轮廓；Target 继续使用双参考教师方法。Target 初稿因第三面板偏左未通过中心 Gate，没有绕过检查；随后用 `normalize_turnaround_panel_centers.py` 按 Source 前景中心仅做 0/22/42px 整数水平平移，不缩放、不变形。规范化后 `height_cv=0.0013`、`ground_range=0.0023`、`center_max_offset=0.0515`、最低色彩相关性 `0.9922`，并通过六项人工 Gate。该 Source 是本地训练候选，不等于第三枚已发布风格种子。
 
-三 Pair v3 训练曾在当前 Windows GPU 会话中尝试：589,824-pixel/180-step 正式运行与 393,216-pixel/3-step 烟雾运行都出现 SM 100%、约 62W、数分钟无 checkpoint 的异常慢路径；停止两套 Comfy 后仍可复现，排除数据数量、缓存 token 形状和 Comfy 竞争是唯一原因。两次运行均已人工终止，没有产生 v3 权重，不能作为质量结论。下次必须在 GPU/主机重启后的干净会话先完成 3-step 烟雾 Gate，再启动正式训练。
+三 Pair v3 的历史慢路径已于重启后定位：v3 的 393,216 与 589,824 cache 都内嵌 `use_gradient_checkpointing=False`，而 v2 成功 cache 为 `True`。训练阶段直接加载 cache tuple，命令行 `--use_gradient_checkpointing` 不会覆盖这个缓存字段；因此 v3 实际关闭检查点，显存约 15.9GB、SM 100%、功耗约 62W 并进入极慢换页。用 v2 cache 做同环境对照时两步只需 8 秒，排除了驱动、模型和训练器整体损坏。
 
-2026-08-27 使用新的可移植训练入口再次复测：三份 393,216-pixel 缓存被正确发现，Base 模型正确加载，进度进入 `0/3`；随后显存约 15.9GB、SM 100%、功耗约 62W，135 秒仍为 `0/3` 且只有 `training_args.json`。该进程已停止，未产出 checkpoint。这个结果确认问题不再是 Windows JSON 引号、路径硬编码或 Comfy 占卡；重启主机/驱动会话是再次训练前的必要条件。
+只校正该布尔运行标志、不改变任何 tensor/条件后，三步 Gate 约 12 秒完成。正式三 Pair v3 使用 589,824 pixels、rank 16、12 repeats、5 epochs，共 180 steps；2026-08-27 用时约 12 分 45 秒，5 个 checkpoint 均落盘，epoch-4 SHA256 为 `A72C3B58163B046752A3A0E4F037C168F4244B51BDAACCCC75D56E97957BCC5C`。训练峰值约 11.1GB，正常功耗约 226–232W。训练入口会逐个读取 cache 并拒绝任何未启用 gradient checkpointing 的样本，同时强制只加载已发现的本地模型。
+
+v3 回载 distilled 后在新男性保留集执行固定阶梯：2.0 有耳位凹痕；2.5/3.0 已无耳、无五官，但躯干仍圆、脚部仍呈块状，前轮廓 MAE 分别为 0.4169/0.4175/0.4314。三张均失败并移出 Studio。复核 approved Target 后发现其中两张本身就呈圆腹/块状脚部，说明模型忠实学习了错误的形体权威；此前 `narrow_tapered_torso_not_pear_shaped=true` 的人工批准需要重新审计。v3 是有效训练产物，但不是合格生产 Actor Core 权重。
 
 ## 注册与导出
 
@@ -93,7 +95,7 @@ python .\tools\model_test\train_flux2_actor_core_lora.py `
   --dataset-repeat 1 --epochs 1 --max-pixels 393216
 ```
 
-入口依次搜索专用环境变量、仓库工作区和相邻 ComfyUI；它把 `model_paths` 作为真实 JSON 参数数组传给 DiffSynth。正式 v3 仅在上述三步命令生成 `epoch-0.safetensors` 后，把数据重复和 epoch 调整到批准的训练方案。
+入口依次搜索专用环境变量、仓库工作区和相邻 ComfyUI；它把 `model_paths` 作为真实 JSON 参数数组传给 DiffSynth。若系统 Python 没有 PyTorch，会自动切换到发现的 ComfyUI Python；运行期强制 `DIFFSYNTH_SKIP_DOWNLOAD=True`。每个 cache 必须内嵌 `use_gradient_checkpointing=True`，否则在模型加载前直接拒绝。正式训练仅在三步命令生成 `epoch-0.safetensors` 后扩大数据重复和 epoch。
 
 当教师 Target 仅有面板水平位置偏差时，可按 Source 做确定性对齐；不得用它修补几何或绕过其他 Gate：
 

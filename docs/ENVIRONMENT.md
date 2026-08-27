@@ -55,11 +55,11 @@ python .\tools\model_test\train_flux2_actor_core_lora.py `
   --dataset-repeat 1 --epochs 1 --max-pixels 393216
 ```
 
-该入口搜索 `ASSETSSTUDIO_COMFY_ROOT`、`ASSETSSTUDIO_DIFFSYNTH_ROOT`、`ASSETSSTUDIO_FLUX2_BASE_ROOT` 及仓库相邻/工作区位置，并验证实际 marker 文件后再启动训练。
+该入口搜索 `ASSETSSTUDIO_COMFY_ROOT`、`ASSETSSTUDIO_DIFFSYNTH_ROOT`、`ASSETSSTUDIO_FLUX2_BASE_ROOT` 及仓库相邻/工作区位置，并验证实际 marker 文件后再启动训练。系统 Python 缺少 PyTorch 时会自动切换到 ComfyUI Python；子进程固定 `DIFFSYNTH_SKIP_DOWNLOAD=True`。它还会读取每个 `.pth`，若数据处理阶段没有把 `use_gradient_checkpointing=True` 写入 cache，则在加载 4B 模型前停止并要求重建缓存。
 
 脚本只下载 `transformer/*`、`tokenizer/*` 和 `model_index.json`。2026-08-26 的已验证环境为 DiffSynth 2.1.2（源码提交 `6343deda`）、Python 3.10.20、PyTorch 2.11.0+cu128；这些是运行记录，不是硬编码路径或强制精确版本。2026-08-27 的两 Pair/rank-16/120-step 实测约 8 分 36 秒、训练峰值约 12.66GB，仍不构成 3060 训练承诺。
 
-模型已齐全的训练会话应设置 `DIFFSYNTH_SKIP_DOWNLOAD=True`，确保运行期只加载已发现的本地权重。正式训练前先停止或卸载其他 GPU 模型并运行每 Pair 一次的 1-epoch 烟雾训练；只有 checkpoint 正常落盘后才扩大 steps。若出现 GPU 长时间低功耗满占用且无 checkpoint，视为 GPU/驱动会话异常，停止并在重启后的干净会话复测，不通过降低验收标准掩盖。
+模型已齐全的训练会话由入口设置 `DIFFSYNTH_SKIP_DOWNLOAD=True`，确保运行期只加载已发现的本地权重。数据处理与训练两个阶段都必须启用 gradient checkpointing；该标志会固化进 cache，不能只在训练阶段补传。正式训练前先停止或卸载其他 GPU 模型并运行每 Pair 一次的 1-epoch 烟雾训练；只有 checkpoint 正常落盘后才扩大 steps。若出现 GPU 长时间低功耗满占用且无 checkpoint，先比较 cache 的 `use_gradient_checkpointing`，再判断 GPU/驱动会话，不通过降低验收标准掩盖。
 
 Base 常规推理约需 13GB 显存，常规 LoRA 示例按约 24GB 设计，因此 RTX 3060 不承担“必须舒适训练”的承诺。训练可远程完成；LoRA + distilled 推理必须回到真实 3060 验收。
 

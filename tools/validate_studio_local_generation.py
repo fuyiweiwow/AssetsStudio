@@ -185,6 +185,10 @@ def main() -> int:
         "ASSETSSTUDIO_FLUX2_BASE_ROOT",
     )
     require_marker(
+        "tools/model_test/train_flux2_actor_core_lora.py",
+        "validate_cache_flags",
+    )
+    require_marker(
         "tools/model_test/studio_local_generation_api.py",
         '"teacher_backend_required": False',
     )
