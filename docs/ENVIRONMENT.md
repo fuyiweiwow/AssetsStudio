@@ -115,3 +115,5 @@ Qwen-Image-Edit 已从必需环境和默认验证中移除。历史 Q3 零样本
 优先从 ModelScope 获取官方 `Tencent-Hunyuan/Hunyuan3D-2mv`。只保留形状模型 `config.yaml` 与拆分后的 `model.pt`、`vae.pt`、`conditioner.pt`；拆分成功后完整 checkpoint 是可删除的重复运行资产。
 
 Hunyuan 阶段只生成单一封闭无纹理形体。3060 的纹理方案是低分辨率语义色块、共享材质、2K 或更小图集、烘焙 AO/法线和按需局部重绘；不要把高分辨率多视图纹理扩散塞进形体生成阶段。
+
+2026-08-28 的 5070 Ti 教师运行使用自动发现的 Hunyuan 专用 Python、源码和上述拆分模型；20-step、octree 256 的峰值 CUDA 分配为约 5.43 GiB。三枚同输入种子中一枚出现头身断开，说明形状阶段必须自动检查 `connected_components == 1`、watertight、winding 与 Euler，再进入四向人工审查。`compare_hunyuan_source_silhouettes.py` 会在保持宽高比的前提下归一化二维源/三维渲染并输出 IoU、宽高比漂移与红青叠图；在积累足够已接受/已拒绝网格前，它只提供诊断排序，不设伪校准批准阈值。

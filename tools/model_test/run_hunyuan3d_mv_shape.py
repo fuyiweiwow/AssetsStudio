@@ -163,6 +163,22 @@ def main() -> int:
         mesh = pipeline(**generation_args)[0]
     mesh.export(args.output)
     peak_memory_bytes = int(torch.cuda.max_memory_allocated())
+    connected_components = len(mesh.split(only_watertight=False))
+    topology = {
+        "geometry_count": 1,
+        "connected_components": connected_components,
+        "watertight": bool(mesh.is_watertight),
+        "winding_consistent": bool(mesh.is_winding_consistent),
+        "euler_number": int(mesh.euler_number),
+    }
+    automatic_gates = {
+        "single_geometry": topology["geometry_count"] == 1,
+        "single_connected_component": connected_components == 1,
+        "watertight": topology["watertight"],
+        "winding_consistent": topology["winding_consistent"],
+        "genus_zero_euler_two": topology["euler_number"] == 2,
+    }
+    automatic_pass = all(automatic_gates.values())
     report = {
         "schema": "assetsstudio_hunyuan3d_2mv_shape_v1",
         "model": str(args.model.resolve()),
@@ -182,7 +198,9 @@ def main() -> int:
         "vertices": len(mesh.vertices),
         "faces": len(mesh.faces),
         "peak_cuda_memory_bytes": peak_memory_bytes,
-        "status": "pass",
+        "mesh_audit": topology,
+        "automatic_gates": automatic_gates,
+        "status": "pass" if automatic_pass else "fail",
     }
     if args.manifest is not None:
         args.manifest.parent.mkdir(parents=True, exist_ok=True)
@@ -190,12 +208,14 @@ def main() -> int:
             json.dumps(report, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
         )
     print(
-        f"HUNYUAN_MV_PASS output={args.output.resolve()} "
+        f"HUNYUAN_MV_{'PASS' if automatic_pass else 'FAIL'} output={args.output.resolve()} "
         f"vertices={len(mesh.vertices)} faces={len(mesh.faces)} "
+        f"connected_components={connected_components} "
+        f"watertight={topology['watertight']} euler_number={topology['euler_number']} "
         f"peak_cuda_memory_bytes={peak_memory_bytes}",
         flush=True,
     )
-    return 0
+    return 0 if automatic_pass else 2
 
 
 if __name__ == "__main__":

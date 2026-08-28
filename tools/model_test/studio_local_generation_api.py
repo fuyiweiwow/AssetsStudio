@@ -1138,6 +1138,8 @@ def list_3d_assets() -> dict[str, list[dict[str, Any]]]:
                 manifest = load_3d_manifest(scope, manifest_path.parent.name)
             except (OSError, ValueError, json.JSONDecodeError):
                 continue
+            if manifest.get("studio_visibility", "active") != "active":
+                continue
             if scope == "candidate" and manifest.get("library_status") != "candidate":
                 continue
             result[key].append(manifest)

@@ -53,6 +53,7 @@ REQUIRED = [
     "tools/model_test/run_actor_core_hardware_gate.py",
     "tools/model_test/package_actor_core_3060_bundle.py",
     "tools/model_test/run_hunyuan3d_mv_shape.py",
+    "tools/model_test/compare_hunyuan_source_silhouettes.py",
     "tools/model_test/studio_local_generation_api.py",
     "tools/model_test/process_actor_core_accurig_rig.py",
     "tools/model_test/retarget_mixamo_to_actor_core.py",
@@ -88,6 +89,7 @@ PYTHON_SOURCES = [
     "tools/model_test/run_actor_core_hardware_gate.py",
     "tools/model_test/package_actor_core_3060_bundle.py",
     "tools/model_test/run_hunyuan3d_mv_shape.py",
+    "tools/model_test/compare_hunyuan_source_silhouettes.py",
     "tools/model_test/studio_local_generation_api.py",
     "tools/model_test/process_actor_core_accurig_rig.py",
     "tools/model_test/retarget_mixamo_to_actor_core.py",
@@ -292,6 +294,18 @@ def main() -> int:
     require_marker(
         "tools/model_test/studio_local_generation_api.py",
         "ACTOR_CORE_LORA_STRENGTHS",
+    )
+    require_marker(
+        "tools/model_test/studio_local_generation_api.py",
+        'manifest.get("studio_visibility", "active")',
+    )
+    require_marker(
+        "tools/model_test/compare_hunyuan_source_silhouettes.py",
+        "diagnostic_only",
+    )
+    require_marker(
+        "tools/model_test/run_hunyuan3d_mv_shape.py",
+        "single_connected_component",
     )
     require_marker(
         "schemas/strip_to_actor_core_pair.schema.json",
