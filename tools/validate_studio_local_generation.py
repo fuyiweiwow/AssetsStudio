@@ -20,6 +20,7 @@ REQUIRED = [
     "docs/CURRENT_WORKFLOW.md",
     "docs/ENVIRONMENT.md",
     "docs/ACTOR_CORE_TRAINING.md",
+    "docs/RTX3060_PRODUCTION.md",
     "docs/ACCURIG_HANDOFF.md",
     "docs/ANIMATION_RETARGET.md",
     "start-local-generation-studio.bat",
@@ -49,6 +50,8 @@ REQUIRED = [
     "tools/model_test/train_flux2_actor_core_lora.py",
     "tools/model_test/convert_comfy_flux2_fp8_to_diffsynth_bf16.py",
     "tools/model_test/run_flux2_base_actor_core_diagnostic.py",
+    "tools/model_test/run_actor_core_hardware_gate.py",
+    "tools/model_test/package_actor_core_3060_bundle.py",
     "tools/model_test/run_hunyuan3d_mv_shape.py",
     "tools/model_test/studio_local_generation_api.py",
     "tools/model_test/process_actor_core_accurig_rig.py",
@@ -56,6 +59,8 @@ REQUIRED = [
     "tools/model_test/build_animation_preview_gifs.py",
     "tools/start_studio_local_generation.ps1",
     "tools/setup_flux2_actor_core_training.ps1",
+    "tools/setup_actor_core_production.ps1",
+    "tools/run_actor_core_3060_validation.ps1",
     "tools/cleanup_current_workflow.ps1",
 ]
 PYTHON_SOURCES = [
@@ -80,6 +85,8 @@ PYTHON_SOURCES = [
     "tools/model_test/train_flux2_actor_core_lora.py",
     "tools/model_test/convert_comfy_flux2_fp8_to_diffsynth_bf16.py",
     "tools/model_test/run_flux2_base_actor_core_diagnostic.py",
+    "tools/model_test/run_actor_core_hardware_gate.py",
+    "tools/model_test/package_actor_core_3060_bundle.py",
     "tools/model_test/run_hunyuan3d_mv_shape.py",
     "tools/model_test/studio_local_generation_api.py",
     "tools/model_test/process_actor_core_accurig_rig.py",
@@ -199,6 +206,18 @@ def main() -> int:
     require_marker("tools/model_test/studio_local_generation_api.py", '"training-previews"')
     require_marker("tools/model_test/run_comfy_flux2_klein.py", '"LoraLoaderModelOnly"')
     require_marker("tools/setup_flux2_actor_core_training.ps1", "modelscope.cli.cli download")
+    require_marker(
+        "tools/setup_actor_core_production.ps1",
+        "black-forest-labs/FLUX.2-klein-4b-fp8",
+    )
+    require_marker(
+        "tools/run_actor_core_3060_validation.ps1",
+        "--cold-start-observed",
+    )
+    require_marker(
+        "tools/model_test/run_actor_core_hardware_gate.py",
+        "assetsstudio_rtx3060_actor_core_qualification_v1",
+    )
     require_marker(
         "tools/model_test/train_flux2_actor_core_lora.py",
         "ASSETSSTUDIO_FLUX2_BASE_ROOT",

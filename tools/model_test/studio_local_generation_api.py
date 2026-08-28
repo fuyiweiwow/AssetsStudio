@@ -68,6 +68,13 @@ TRAINING_PAIR_ROOT = (
     ROOT / "workspace" / "training" / "strip_to_actor_core" / "v1" / "pairs"
 )
 TRAINING_PREVIEW_ROOT = ROOT / "workspace" / "previews" / "strip_to_actor_core"
+HARDWARE_QUALIFICATION_PATH = (
+    ROOT
+    / "workspace"
+    / "hardware_validation"
+    / "actor_core"
+    / "rtx3060_qualification.json"
+)
 WORKSPACE_ROOT = ROOT / "workspace"
 MAX_RIG_UPLOAD_BYTES = 1024 * 1024 * 1024
 PROFILE_REGISTRY_PATH = ROOT / "studio" / "src" / "generated" / "style-slot-profiles.json"
@@ -112,6 +119,9 @@ def discover_actor_core_lora() -> str | None:
 
 ACTOR_CORE_LORA = discover_actor_core_lora()
 ACTOR_CORE_LORA_STRENGTHS = {2.0, 2.5, 3.0}
+PRODUCTION_ACTOR_CORE_LORA_SHA256 = (
+    "f0656f068ca5a76092af289a3129451e3faace67467f552c85ab27a97131da4c"
+)
 
 STYLE_PROMPTS = {
     "soft_3d": (
@@ -181,6 +191,31 @@ STYLE_PROFILES, ACTOR_PROFILES = load_profile_registry()
 
 def utc_now() -> str:
     return datetime.now(timezone.utc).isoformat()
+
+
+def hardware_validation_status() -> str:
+    if not HARDWARE_QUALIFICATION_PATH.is_file():
+        return "memory_cap_prescreen_passed_real_3060_pending"
+    try:
+        payload = json.loads(HARDWARE_QUALIFICATION_PATH.read_text(encoding="utf-8"))
+        contract = payload["generation_contract"]
+        persistence = payload["persistence_check"]
+        gpu = payload["hardware"]
+        if (
+            payload.get("schema")
+            == "assetsstudio_rtx3060_actor_core_qualification_v1"
+            and payload.get("status") == "passed"
+            and payload.get("automatic_pass") is True
+            and payload.get("cold_start_observed") is True
+            and persistence.get("passed") is True
+            and contract.get("lora_sha256") == PRODUCTION_ACTOR_CORE_LORA_SHA256
+            and "RTX 3060" in str(gpu.get("name", "")).upper()
+            and int(gpu.get("total_mib", 0)) >= 11000
+        ):
+            return "rtx_3060_12gb_cold_start_inference_persistence_passed"
+    except (KeyError, TypeError, ValueError, json.JSONDecodeError, OSError):
+        pass
+    return "memory_cap_prescreen_passed_real_3060_pending"
 
 
 def normalize_request_path(path: str) -> str:
@@ -1714,7 +1749,7 @@ class Handler(BaseHTTPRequestHandler):
                     "training_backend": "flux2_klein_4b_distilled_native_lora",
                     "teacher_backend_required": False,
                     "hardware_target": "rtx_3060_12gb",
-                    "hardware_validation": "memory_cap_prescreen_passed_real_3060_pending",
+                    "hardware_validation": hardware_validation_status(),
                     "comfy_url": COMFY_URL,
                     "artifact_root": str(TURNAROUND_ARTIFACT_ROOT.parent),
                     "local_library_root": str(LOCAL_LIBRARY_ROOT),

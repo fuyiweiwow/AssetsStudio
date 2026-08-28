@@ -202,3 +202,11 @@ canonical 对齐仍只允许逐面板等比缩放与平移。`normalize_turnarou
 六 Pair v7 的 96-step / strength 2.5 虽在上述单一 held-out 上得到躯干 `0.4851`、侧脚 `1.1277`，但视觉出现过度剥离，并在第二张未训练 Source 上得到躯干 `0.5741` 而失败。因此 v7 不成为 Studio 默认权重；不得以单图自动指标覆盖跨 Source 视觉稳定性。
 
 Studio 当前只保留 v6/e75 作为生成候选的默认 LoRA，默认强度为 3.0。它不是已批准资产：任一输出仍必须逐张通过自动 Gate 与人工六项 Gate；失败候选直接销毁并重试，不进入 Gallery、随机池、资产库或 Hunyuan3D。真实 RTX 3060 12GB 冷启动、4-step 编辑、保存恢复和峰值显存 Gate 仍待用户机器验证；5070 Ti 的 1536×768 运行记录不能替代该硬件验收。
+
+## 2026-08-28 跨 seed 与增量训练复核
+
+使用当前 Studio 默认提示词、同一未训练短发男性强靴 Source、v6/e75/strength 3.0 复测五个 seed，仅 `20260865` 同时通过自动 Gate，躯干为 `0.5324`、侧脚为 `0.9809`，通过率 `1/5`。其余输出普遍保留可见的鞋状前投影；这不是检测器误伤。此前单张最佳图只能证明链路具备能力，不能证明权重已风格稳定。
+
+以 v6/e75 为 checkpoint，在六 Pair canonical 缓存上分别继续 6/12/18/24 step。12 step 以后迅速破坏躯干或脚部；只有 `+6 step / strength 2.0` 在 seed 61 和 65 上通过，但扩到十 seed 后仅 `2/10`，且两个幸运 seed 在侧面双靴歧义压力 Source 上均失败。因此该 v8 实验权重全部退出 Comfy/Studio 搜索路径，只保留在本地 rejected/训练证据目录，不替换 v6。
+
+5070 Ti 的后续职责是继续增加真实多样 Source 与唯一 canonical Target 的教师 Pair，并提高跨 Source/跨 seed 通过率。3060 生产链不得依赖训练环境；其完整环境、冷启动、推理、Gate、保存恢复和回退合同见 `docs/RTX3060_PRODUCTION.md`。

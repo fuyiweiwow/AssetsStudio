@@ -16,7 +16,7 @@ export interface LocalGenerationHealth {
   training_backend: "flux2_klein_4b_distilled_native_lora";
   teacher_backend_required: false;
   hardware_target: "rtx_3060_12gb";
-  hardware_validation: "memory_cap_prescreen_passed_real_3060_pending";
+  hardware_validation: string;
 }
 
 export interface TrainingPairCandidate {

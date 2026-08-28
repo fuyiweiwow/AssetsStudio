@@ -83,6 +83,11 @@ def main() -> int:
         type=Path,
         help="Optional discovered/local FLUX.2 transformer override for family-native training",
     )
+    parser.add_argument(
+        "--lora-checkpoint",
+        type=Path,
+        help="Optional same-rank LoRA checkpoint used to continue a bounded experiment",
+    )
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args()
 
@@ -189,6 +194,11 @@ def main() -> int:
         "--task",
         "sft:train",
     ]
+    if args.lora_checkpoint:
+        lora_checkpoint = args.lora_checkpoint.expanduser().resolve()
+        if not lora_checkpoint.is_file():
+            raise FileNotFoundError(lora_checkpoint)
+        command.extend(["--lora_checkpoint", str(lora_checkpoint)])
     print(f"ComfyRoot={comfy_root}", flush=True)
     print(f"DiffSynthRoot={diffsynth_root}", flush=True)
     print(f"ModelRoot={model_root}", flush=True)
@@ -196,6 +206,8 @@ def main() -> int:
     print(f"CacheDir={cache_dir}", flush=True)
     print(f"CacheSamples={cache_samples}", flush=True)
     print(f"OutputDir={output_dir}", flush=True)
+    if args.lora_checkpoint:
+        print(f"LoRACheckpoint={args.lora_checkpoint.expanduser().resolve()}", flush=True)
     if args.dry_run:
         return 0
     child_environment = os.environ.copy()

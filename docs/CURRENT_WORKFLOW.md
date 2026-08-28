@@ -72,3 +72,11 @@ Studio 为多个游戏提供可复用美术资产。当前 `ba` 仅保留在 `co
 - 固定未训练短发男性强靴 Source 上，v6 同时通过躯干 `0.5118` 与侧脚 `1.0972`；旧 v5 的侧脚为 `1.2628`。这是一张可供人工评审的通过候选，不等于资产批准。
 - 第二张带侧面双靴歧义的压力源仍会产生失败候选；Studio 必须自动阻止入库并允许销毁/重试。六 Pair v7 因过度剥离和第二 held-out 躯干 `0.5741` 被拒绝为默认权重。
 - 下一步不是直接生成 3D：先由用户查看 Tailscale 评审页，并在真实 RTX 3060 12GB 上完成冷启动、4-step、本地保存恢复与峰值显存 Gate。图像和硬件同时通过后，才把某一张 Actor Core 候选加入本地资产库并交给 Hunyuan3D。
+
+## 5070 Ti 教师端与 3060 生产端
+
+- 5070 Ti 只训练、筛选和打包教师级 LoRA/Source/Target/预期样例；不能因为本机生成成功而改变 3060 生产硬门槛。
+- v6 使用当前 Studio 提示词的固定五 seed 通过率为 `1/5`。生产生命周期当前必须允许自动 Gate 失败后销毁并换 seed；它仍是实验产线，不是一次生成必成的稳定服务。
+- v8 的 v6/e75 `+6 step` 最佳点在十 seed 中为 `2/10`，压力 Source 仍失败；12/18/24 step 更差，全部拒绝进入 Studio 搜索路径。
+- 3060 bundle 只携带无法从公共仓库恢复的 48MB LoRA、固定 held-out Source、预期样例与 manifest。上游大模型由 `setup_actor_core_production.ps1` 搜索现有环境并仅从 ModelScope 补齐。
+- `run_actor_core_3060_validation.ps1 -ColdStart` 是生产资格入口；它验证真实 3060 12GB、1536×768/4-step、自动 Gate 和本地保存恢复。详细合同见 `docs/RTX3060_PRODUCTION.md`。

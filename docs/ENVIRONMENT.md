@@ -108,6 +108,8 @@ Qwen-Image-Edit 已从必需环境和默认验证中移除。历史 Q3 零样本
 
 2026-08-28 当前 Studio 候选权重通过搜索动作选择 v6 distilled-native e75（rank 16，SHA256 `f0656f068ca5a76092af289a3129451e3faace67467f552c85ab27a97131da4c`），默认强度 3.0。该设置只代表 5070 Ti 上的视觉/Gate 候选；真实 3060 12GB 验收仍未完成。1536×768/4-step 在 5070 Ti 上记录到约 13,952 MiB 增量峰值，Comfy 会按实际显存自动调整 offload，但该记录不能证明 12GB 必然成功，也不能据此改写硬件 Gate。
 
+3060 生产环境使用 `tools/setup_actor_core_production.ps1`：先发现 ComfyUI 与已有文件，再只从 ModelScope 补齐缺失的 `black-forest-labs/FLUX.2-klein-4b-fp8` Transformer，以及 `Comfy-Org/flux2-klein-4B` 的 Qwen3-4B 文本编码器和 VAE。训练 LoRA 由本地 bundle 安装并核对 SHA256；脚本不下载 Qwen-Image-Edit，不安装训练环境，不复制公共 Base 权重。完整冷启动通过 `tools/run_actor_core_3060_validation.ps1 -ColdStart` 记录，详见 `docs/RTX3060_PRODUCTION.md`。
+
 ## Hunyuan3D 与纹理
 
 优先从 ModelScope 获取官方 `Tencent-Hunyuan/Hunyuan3D-2mv`。只保留形状模型 `config.yaml` 与拆分后的 `model.pt`、`vae.pt`、`conditioner.pt`；拆分成功后完整 checkpoint 是可删除的重复运行资产。
