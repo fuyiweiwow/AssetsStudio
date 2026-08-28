@@ -8,14 +8,15 @@ AccuRIG 与 Actor 一对一。不要把其他 Actor 的骨骼 FBX 回传到当�
 
 仓库相对路径：
 
-`workspace/actor_core/0ef398ca94d445f18226a8bf2a991c79/accurig_handoff/actor_core_0ef398ca_v1_accurig_input.fbx`
+`workspace/actor_core/actor_core_v6_seed20260867_hy3d_v1/accurig_handoff/actor_core_v6_seed20260867_v1_accurig_input.fbx`
 
 当前校验值：
 
-- 大小：3,518,076 bytes
-- SHA-256：`D83468F0B98A2BFA31C1293D7F92168E8D843313EB9DE6C399E92347D302BA8B`
+- 大小：3,404,620 bytes
+- SHA-256：`58EEE78C366671CE9714BD8206AE4824B65E5BA52DC34BDFC74F471F302AA4EF`
 - 网格：61,002 vertices / 122,000 faces
 - 姿态：Relaxed A；biped；无手指要求；不强制左右对称
+- 用途：实验绑定与模块配件链验证；头顶轻微低频起伏是已记录问题，不代表最终生产 canonical 已批准
 
 ## 操作
 
@@ -25,7 +26,11 @@ AccuRIG 与 Actor 一对一。不要把其他 Actor 的骨骼 FBX 回传到当�
 4. 启动 Studio，在当前 Actor 的 3D 条目中点击“选择骨骼 FBX”。
 5. Studio 将文件复制到 `workspace/actor_core/<asset-id>/manual_accurig/intakes/<intake-id>/`，执行结构验证并生成四方向预览。
 
-## 当前回传结果
+## 当前新 Actor 回传结果
+
+尚未回传。请勿选择旧 Actor 的已绑定 FBX；AccuRIG 与网格是一对一关系。
+
+## 旧技术基线回传结果
 
 - 原始导出：`actor_core_0ef398ca_v1_accurig_input_rigged.fbx`
 - SHA-256：`76CDFB3B70A357625DC5CFEEA95F033D49A06871DCF1BE4477255DE0DF4FE065`
@@ -33,4 +38,4 @@ AccuRIG 与 Actor 一对一。不要把其他 Actor 的骨骼 FBX 回传到当�
 - 状态：`ready`；101 bones；无缺失必需骨；0 未权重顶点；尺度漂移约 `0.00012%`
 - 运行时副本：每顶点最多 4 influences；原始 AccuRIG 权重副本同时保留。
 
-验证失败的 intake 会从 Studio 和本地工作区删除。当前 intake 的静态四方向 Gate 已由用户确认为通过；下一道 Gate 是从 Studio 选择 Mixamo 动画并检查重定向后的动态形变。详见 [骨骼动画资产与自动适配](ANIMATION_RETARGET.md)。
+该旧结果只证明 intake、预览和动作适配代码可工作，不是新 Actor 的绑定文件。新 Actor 的验证失败 intake 会从 Studio 和本地工作区删除；新 FBX 静态四方向 Gate 通过后，下一道 Gate 才是选择 Mixamo 动画并检查重定向后的动态形变。详见 [骨骼动画资产与自动适配](ANIMATION_RETARGET.md)。

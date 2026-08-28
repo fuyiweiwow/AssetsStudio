@@ -428,7 +428,8 @@ export function TurnaroundGenerator() {
           </article>)}
           {threeDAssets.length > 0 && <div className="local-3d-library"><strong>已批准 3D 来源</strong>{threeDAssets.map((asset) => <article key={asset.candidate_id} className="local-3d-library-asset">
             <div><strong>{asset.subject}</strong><small>{asset.candidate_id.slice(0, 8)} · 高模 shape source · 仅本地</small></div>
-            {asset.rig_preparation && <div className="local-3d-metrics"><span>✓ {asset.rig_preparation.status === "accurig_handoff_ready" ? "AccuRIG 交接就绪" : asset.rig_preparation.status}</span><span>{asset.rig_intake?.status === "ready" ? "已导入人工骨骼" : "等待人工绑定"}</span><span>Actor 与骨骼一对一</span></div>}
+            {asset.production_canonical_status && asset.production_canonical_status !== "approved" && <div className="known-issue"><strong>实验资产 · 不是最终 production canonical</strong><p>{asset.known_issues?.length ? asset.known_issues.join(" · ") : asset.production_canonical_status}</p></div>}
+            {asset.rig_preparation && <div className="local-3d-metrics"><span>✓ {asset.rig_preparation.status.startsWith("accurig_handoff_ready") ? "AccuRIG 交接就绪" : asset.rig_preparation.status}</span><span>{asset.rig_intake?.status === "ready" ? "已导入人工骨骼" : "等待人工绑定"}</span><span>Actor 与骨骼一对一</span></div>}
             {asset.rig_preview_urls && <div className="rig-preview-block"><small>AccuRIG 落点参考（尚未绑定）</small><div className="local-3d-renders">
               {(["front", "right", "back", "left"] as const).map((view) => asset.rig_preview_urls?.[view] && <figure key={view}><img src={proxiedArtifactUrl(asset.rig_preview_urls[view]!)} alt={`${view} 骨点标定图`} /><figcaption>{view} reference</figcaption></figure>)}
             </div></div>}

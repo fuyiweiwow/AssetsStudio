@@ -20,7 +20,7 @@ AssetsStudio 是一个通用、本地优先的美术素材供给实验室。Bomb
 
 两枚当前已批准风格种子随 Git 位于 `references/style_profiles/published_seeds/`。首次在新机器启动 API 时会自动引入本地种子库；模型权重仍需按环境文档从 ModelScope 获取。
 
-当前本机 Studio 只显示一枚待人工确认的 3D Actor Core 候选 `actor_core_v6_seed20260867_hy3d_v1`。它已通过单连通、封闭和四向轮廓诊断，但尚未入库、尚未绑定；旧 Actor 仅保留为隐藏的 AccuRIG/动作技术基线。
+当前本机 Studio 只显示一枚实验 Actor Core `actor_core_v6_seed20260867_hy3d_v1`。它已通过单连通、封闭、四向轮廓和绑定减面 Gate；头顶轻微起伏作为已知问题保留，因此只用于继续验证绑定与模块配件链，尚不是最终生产 canonical。它的专属 AccuRIG FBX 已生成并等待人工标定；旧 Actor 仅保留为隐藏的 AccuRIG/动作技术基线。
 
 可选 Actor Core LoRA 训练环境由 `tools/setup_flux2_actor_core_training.ps1` 搜索并补齐；它复用已有 ComfyUI 文本编码器/VAE，只从 ModelScope 下载缺失的 Base 诊断 Transformer 与 tokenizer。生产 LoRA 针对 distilled 权重族原生训练：优先用 `convert_comfy_flux2_fp8_to_diffsynth_bf16.py` 复用已发现的本地 scaled-FP8 权重；本地来源不满足完整性校验时才从 ModelScope 补齐。训练权重、Pair、缓存和预览继续位于忽略的 `workspace/`。
 

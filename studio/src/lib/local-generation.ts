@@ -158,6 +158,9 @@ export interface Local3DAsset {
   created_at: string;
   accepted_at?: string;
   library_status: "candidate" | "accepted";
+  usage_scope?: string;
+  production_canonical_status?: string;
+  known_issues?: string[];
   local_only: true;
   model_url: string;
   preview_urls: Partial<Record<"front" | "right" | "back" | "left", string>>;
@@ -169,11 +172,11 @@ export interface Local3DAsset {
     winding_consistent: boolean;
     peak_cuda_memory_bytes: number;
   };
-  qa_status: "visual_review_required" | "shape_source_accepted";
+  qa_status: string;
   manual_gates_required: string[];
   manual_confirmations?: string[];
   rig_preparation?: {
-    status: "accurig_handoff_ready";
+    status: string;
     asset_id: string;
     binding_performed: boolean;
     manual_accurig_landmark_confirmation_required: boolean;
