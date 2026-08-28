@@ -163,7 +163,8 @@ def analyze_actor_core_shape(image_path: Path, panel_count: int = 3) -> dict:
             and foot_detection_ratio >= FOOT_DETECTION_MINIMUM
         ),
         "side_foot_projection_ratio_lte_1_20": (
-            foot_ratio is not None and foot_ratio <= FOOT_PROJECTION_LIMIT
+            foot_ratio is not None
+            and foot_ratio <= FOOT_PROJECTION_LIMIT + 1e-9
         ),
     }
     return {

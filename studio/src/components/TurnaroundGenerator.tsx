@@ -63,7 +63,7 @@ export function TurnaroundGenerator() {
   const [trainingPairs, setTrainingPairs] = useState<TrainingPairCandidate[]>([]);
   const [trainingPreviews, setTrainingPreviews] = useState<TrainingPreview[]>([]);
   const [styleSeedAssetId, setStyleSeedAssetId] = useState("");
-  const [actorCoreLoraStrength, setActorCoreLoraStrength] = useState(2.0);
+  const [actorCoreLoraStrength, setActorCoreLoraStrength] = useState(3.0);
   const [baseActorAssetId, setBaseActorAssetId] = useState("");
   const [styleProfileId, setStyleProfileId] = useState(styleSlotRegistry.styles[0].id);
   const actorProfiles = styleSlotRegistry.actors.filter((profile) => profile.style_profile_id === styleProfileId);

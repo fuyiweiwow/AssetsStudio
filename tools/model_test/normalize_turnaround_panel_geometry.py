@@ -14,6 +14,15 @@ from analyze_turnaround_sheet import foreground_mask
 from normalize_turnaround_panel_centers import background_color
 
 
+INTERPOLATIONS = {
+    "nearest": cv2.INTER_NEAREST,
+    "linear": cv2.INTER_LINEAR,
+    "area": cv2.INTER_AREA,
+    "cubic": cv2.INTER_CUBIC,
+    "lanczos4": cv2.INTER_LANCZOS4,
+}
+
+
 def foreground_box(panel: np.ndarray) -> tuple[int, int, int, int]:
     points = cv2.findNonZero(foreground_mask(panel))
     if points is None:
@@ -26,6 +35,7 @@ def normalize_geometry(
     reference_path: Path,
     output_path: Path,
     panel_count: int,
+    interpolation: str = "cubic",
 ) -> dict:
     image = cv2.imread(str(image_path), cv2.IMREAD_COLOR)
     reference = cv2.imread(str(reference_path), cv2.IMREAD_COLOR)
@@ -33,6 +43,8 @@ def normalize_geometry(
         raise FileNotFoundError(image_path)
     if reference is None:
         raise FileNotFoundError(reference_path)
+    if interpolation not in INTERPOLATIONS:
+        raise ValueError(f"Unsupported interpolation: {interpolation}")
 
     output_height, output_width = reference.shape[:2]
     source_edges = np.linspace(0, image.shape[1], panel_count + 1, dtype=int)
@@ -66,7 +78,7 @@ def normalize_geometry(
             panel,
             transform,
             (target_right - target_left, output_height),
-            flags=cv2.INTER_LANCZOS4,
+            flags=INTERPOLATIONS[interpolation],
             borderMode=cv2.BORDER_CONSTANT,
             borderValue=background_color(panel),
         )
@@ -92,6 +104,7 @@ def normalize_geometry(
         "output_size": [output_width, output_height],
         "panel_count": panel_count,
         "operation": "per-panel uniform scale plus x/y translation only; no deformation",
+        "interpolation": interpolation,
         "panels": panels,
     }
 
@@ -103,8 +116,19 @@ def main() -> int:
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--report", type=Path)
     parser.add_argument("--panels", type=int, default=3)
+    parser.add_argument(
+        "--interpolation",
+        choices=sorted(INTERPOLATIONS),
+        default="cubic",
+    )
     args = parser.parse_args()
-    report = normalize_geometry(args.image, args.reference, args.output, args.panels)
+    report = normalize_geometry(
+        args.image,
+        args.reference,
+        args.output,
+        args.panels,
+        args.interpolation,
+    )
     encoded = json.dumps(report, ensure_ascii=False, indent=2)
     if args.report:
         args.report.parent.mkdir(parents=True, exist_ok=True)

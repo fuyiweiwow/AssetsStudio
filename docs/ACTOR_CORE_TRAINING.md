@@ -190,3 +190,15 @@ python .\tools\model_test\export_strip_to_actor_core_dataset.py --validate-only
 4. 输出通过六项 Actor Core 人工 Gate；
 5. Studio 不需要 Qwen 或远程教师即可调用；
 6. 若失败，停止 Klein 生产采用并进入 SDXL 回退实验。
+
+## 2026-08-28 数据覆盖与 distilled-native 复核
+
+局部 latent 脚部加权已用固定 held-out 条件证伪：相对 v5/e96 基线，它没有改善脚部且破坏了全局躯干映射。该实验的脚本、活跃候选和 Comfy LoRA 均未进入仓库或 Studio 默认路径；不得继续沿用局部损失加权。
+
+canonical 对齐仍只允许逐面板等比缩放与平移。`normalize_turnaround_panel_geometry.py` 现在显式记录插值方式，并默认使用 bicubic；长发 `74e7...` 的同一 canonical Target 在 Lanczos4 下因轮廓振铃得到躯干 `0.5408`，bicubic 下为 `0.5374`，在不放宽 `0.54` Gate 的情况下通过。当前六个 approved Pair 均声明同一 authority ID/SHA256；新增的两类强脚部 Source 为长发靴装 `74e7...` 和严格侧面短发学徒 `a098...`。
+
+五 Pair v6 distilled-native 训练使用 589,824 pixels、rank 16、5 repeats、5 epochs，共 125 steps。视觉与 Gate 的当前折中点为 75-step / strength 3.0，LoRA SHA256 为 `f0656f068ca5a76092af289a3129451e3faace67467f552c85ab27a97131da4c`。在未参与训练的短发男性强靴 Source、seed `20260861` 上，旧 v5/e96/2.5 为躯干 `0.5102`、侧脚 `1.2628`；v6/e75/3.0 为躯干 `0.5118`、侧脚 `1.0972`，两项同时通过。
+
+六 Pair v7 的 96-step / strength 2.5 虽在上述单一 held-out 上得到躯干 `0.4851`、侧脚 `1.1277`，但视觉出现过度剥离，并在第二张未训练 Source 上得到躯干 `0.5741` 而失败。因此 v7 不成为 Studio 默认权重；不得以单图自动指标覆盖跨 Source 视觉稳定性。
+
+Studio 当前只保留 v6/e75 作为生成候选的默认 LoRA，默认强度为 3.0。它不是已批准资产：任一输出仍必须逐张通过自动 Gate 与人工六项 Gate；失败候选直接销毁并重试，不进入 Gallery、随机池、资产库或 Hunyuan3D。真实 RTX 3060 12GB 冷启动、4-step 编辑、保存恢复和峰值显存 Gate 仍待用户机器验证；5070 Ti 的 1536×768 运行记录不能替代该硬件验收。

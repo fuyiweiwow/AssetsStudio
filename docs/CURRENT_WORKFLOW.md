@@ -64,3 +64,11 @@ Studio 为多个游戏提供可复用美术资产。当前 `ba` 仅保留在 `co
 3. 固定 held-out Source/seed，对新权重只跑 96-step 邻域和最小强度阶梯；同时检查严格右侧视，避免以脚部指标换取视角坍缩。
 4. 图像自动与人工 Gate 同时通过后，在真实 RTX 3060 12GB 完成冷启动、4-step 编辑、保存恢复和峰值显存 Gate。
 5. 图像质量与 3060 硬件均通过后，才批准 Actor Core 并进入 Hunyuan3D；否则执行既定 SDXL 回退实验。
+
+## 2026-08-28 当前停点
+
+- 训练数据已扩为六个 approved Pair，全部复用唯一 `actor_core_male_canonical_v1` 几何；不存在项目级 Actor 形状分叉，`ba` 仍只是一枚消费者标签。
+- Studio 默认候选权重为 v6 distilled-native 75-step，SHA256 `f0656f068ca5a76092af289a3129451e3faace67467f552c85ab27a97131da4c`，默认 LoRA 强度为 3.0。未显式指定路径时仍通过环境发现动作选择最近的 `strip_to_actor_core*.safetensors`，文档不绑定机器绝对路径。
+- 固定未训练短发男性强靴 Source 上，v6 同时通过躯干 `0.5118` 与侧脚 `1.0972`；旧 v5 的侧脚为 `1.2628`。这是一张可供人工评审的通过候选，不等于资产批准。
+- 第二张带侧面双靴歧义的压力源仍会产生失败候选；Studio 必须自动阻止入库并允许销毁/重试。六 Pair v7 因过度剥离和第二 held-out 躯干 `0.5741` 被拒绝为默认权重。
+- 下一步不是直接生成 3D：先由用户查看 Tailscale 评审页，并在真实 RTX 3060 12GB 上完成冷启动、4-step、本地保存恢复与峰值显存 Gate。图像和硬件同时通过后，才把某一张 Actor Core 候选加入本地资产库并交给 Hunyuan3D。

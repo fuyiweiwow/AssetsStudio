@@ -12,23 +12,9 @@ import cv2
 import numpy as np
 
 
-def foreground_mask(panel: np.ndarray) -> np.ndarray:
-    height, width = panel.shape[:2]
+def central_component(mask: np.ndarray) -> np.ndarray:
+    height, width = mask.shape
     border = max(4, min(height, width) // 64)
-    samples = np.concatenate(
-        [
-            panel[:border].reshape(-1, 3),
-            panel[:, :border].reshape(-1, 3),
-            panel[:, -border:].reshape(-1, 3),
-        ]
-    )
-    background = np.median(samples, axis=0).astype(np.uint8)
-    lab = cv2.cvtColor(panel, cv2.COLOR_BGR2LAB).astype(np.float32)
-    bg_lab = cv2.cvtColor(background.reshape(1, 1, 3), cv2.COLOR_BGR2LAB).astype(
-        np.float32
-    )[0, 0]
-    distance = np.linalg.norm(lab - bg_lab, axis=2)
-    mask = (distance > 18).astype(np.uint8) * 255
     mask[:border] = 0
     mask[:, :border] = 0
     mask[:, -border:] = 0
@@ -51,6 +37,49 @@ def foreground_mask(panel: np.ndarray) -> np.ndarray:
         return mask
     selected = max(candidates)[1]
     return (labels == selected).astype(np.uint8) * 255
+
+
+def foreground_mask(panel: np.ndarray) -> np.ndarray:
+    height, width = panel.shape[:2]
+    border = max(4, min(height, width) // 64)
+    samples = np.concatenate(
+        [
+            panel[:border].reshape(-1, 3),
+            panel[:, :border].reshape(-1, 3),
+            panel[:, -border:].reshape(-1, 3),
+        ]
+    )
+    background = np.median(samples, axis=0).astype(np.uint8)
+    lab = cv2.cvtColor(panel, cv2.COLOR_BGR2LAB).astype(np.float32)
+    bg_lab = cv2.cvtColor(background.reshape(1, 1, 3), cv2.COLOR_BGR2LAB).astype(
+        np.float32
+    )[0, 0]
+    distance = np.linalg.norm(lab - bg_lab, axis=2)
+    high_confidence = central_component(
+        (distance > 18).astype(np.uint8) * 255
+    )
+    high_points = cv2.findNonZero(high_confidence)
+    if high_points is not None:
+        _, _, _, high_height = cv2.boundingRect(high_points)
+        if high_height / height >= 0.78:
+            return high_confidence
+
+    side_width = max(border, width // 12)
+    row_background = np.median(
+        np.concatenate([lab[:, :side_width], lab[:, -side_width:]], axis=1),
+        axis=1,
+    )
+    row_distance = np.linalg.norm(lab - row_background[:, None, :], axis=2)
+    low_confidence = central_component(
+        (row_distance > 4).astype(np.uint8) * 255
+    )
+    low_points = cv2.findNonZero(low_confidence)
+    if low_points is None:
+        return high_confidence
+    _, _, _, low_height = cv2.boundingRect(low_points)
+    if high_points is None or low_height >= high_height * 1.1:
+        return low_confidence
+    return high_confidence
 
 
 def histogram(panel: np.ndarray, mask: np.ndarray) -> np.ndarray:

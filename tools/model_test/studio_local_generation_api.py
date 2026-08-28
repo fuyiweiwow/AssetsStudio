@@ -2148,7 +2148,7 @@ class Handler(BaseHTTPRequestHandler):
                     resolve_library_reference("style_seed", style_seed_asset_id)
                     if ACTOR_CORE_LORA is None:
                         raise ValueError("strip_to_actor_core LoRA was not found")
-                    lora_strength = float(payload.get("lora_strength", 2.0))
+                    lora_strength = float(payload.get("lora_strength", 3.0))
                     if lora_strength not in ACTOR_CORE_LORA_STRENGTHS:
                         raise ValueError(
                             "lora_strength must use the review ladder: 2.0, 2.5 or 3.0"

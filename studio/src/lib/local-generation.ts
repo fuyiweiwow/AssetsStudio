@@ -263,7 +263,7 @@ export async function createBaseActorTurnaround(
   styleProfileId: string,
   styleSeedAssetId: string | undefined,
   seed: number,
-  loraStrength = 2.0,
+  loraStrength = 3.0,
 ) {
   return responseJson<TurnaroundJob>(await fetch(`${API_ROOT}/base-actors`, {
     method: "POST",

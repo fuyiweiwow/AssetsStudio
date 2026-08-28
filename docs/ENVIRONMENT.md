@@ -106,6 +106,8 @@ Qwen-Image-Edit 已从必需环境和默认验证中移除。历史 Q3 零样本
 - 若训练后 LoRA 不能在 3060 稳定加载和编辑，则 Klein 不进入生产，改做 SDXL 回退验证；
 - 系统内存与页面文件只用于可接受的权重换入，不能把极慢 CPU 换页包装成“可用”。
 
+2026-08-28 当前 Studio 候选权重通过搜索动作选择 v6 distilled-native e75（rank 16，SHA256 `f0656f068ca5a76092af289a3129451e3faace67467f552c85ab27a97131da4c`），默认强度 3.0。该设置只代表 5070 Ti 上的视觉/Gate 候选；真实 3060 12GB 验收仍未完成。1536×768/4-step 在 5070 Ti 上记录到约 13,952 MiB 增量峰值，Comfy 会按实际显存自动调整 offload，但该记录不能证明 12GB 必然成功，也不能据此改写硬件 Gate。
+
 ## Hunyuan3D 与纹理
 
 优先从 ModelScope 获取官方 `Tencent-Hunyuan/Hunyuan3D-2mv`。只保留形状模型 `config.yaml` 与拆分后的 `model.pt`、`vae.pt`、`conditioner.pt`；拆分成功后完整 checkpoint 是可删除的重复运行资产。

@@ -121,6 +121,25 @@ describe("local generation client", () => {
     vi.unstubAllGlobals();
   });
 
+  it("uses the validated Actor Core LoRA strength when none is specified", async () => {
+    const fetchMock = vi.fn().mockResolvedValue(new Response(JSON.stringify({
+      id: "job-a",
+      job_kind: "base_actor",
+      status: "queued",
+      created_at: "2026-08-28T00:00:00Z",
+      updated_at: "2026-08-28T00:00:00Z",
+      subject: "blank Actor Core",
+      compiled_prompt: "compiled",
+      seed: 11,
+    }), { status: 202, headers: { "Content-Type": "application/json" } }));
+    vi.stubGlobal("fetch", fetchMock);
+    await createBaseActorTurnaround("blank Actor Core", "qstyle-generic", "seed-1", 11);
+    expect(JSON.parse(fetchMock.mock.calls[0][1].body)).toMatchObject({
+      lora_strength: 3.0,
+    });
+    vi.unstubAllGlobals();
+  });
+
   it("accepts or destroys a candidate through its kind-specific route", async () => {
     const job = {
       id: "job-s",
