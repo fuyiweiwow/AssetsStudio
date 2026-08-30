@@ -1,0 +1,8 @@
+{
+  "schema": "assetsstudio_human_review_approval_v1",
+  "asset_id": "actor_core_chibi3_standard_v1",
+  "status": "paused_no_approved_3d",
+  "candidate": null,
+  "approved_for_rig_preparation": false,
+  "notes": "The v11c canonical source passes every automatic source gate, but no Hunyuan-generated candidate preserves both its curved head and compact mitten hands. Do not prepare or use an AccuRIG FBX. Wait for explicit user confirmation before switching to a source-driven procedural Blender reconstruction."
+}

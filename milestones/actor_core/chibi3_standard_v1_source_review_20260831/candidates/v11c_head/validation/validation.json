@@ -1,0 +1,53 @@
+{
+  "schema": "assetsstudio_local_hunyuan_mv_blender_validation_v2",
+  "asset_id": "actor_core_chibi3_source_v11c_seed20260830",
+  "input": "E:\\WorkProject\\AssetsStudio\\workspace\\model_test\\actor_core_prototype_regen_3060\\chibi3_standard_v1\\shape_source_v11c_seed20260830\\actor_core_chibi3_source_v11c_seed20260830.glb",
+  "registration": "E:\\WorkProject\\AssetsStudio\\workspace\\model_test\\actor_core_prototype_regen_3060\\chibi3_standard_v1\\source_panels_v11c_curved_crown_canonical\\orthographic_registration.json",
+  "validated_blend": "E:\\WorkProject\\AssetsStudio\\workspace\\model_test\\actor_core_prototype_regen_3060\\chibi3_standard_v1\\shape_source_v11c_seed20260830\\validation\\actor_core_chibi3_source_v11c_seed20260830_validated.blend",
+  "validated_glb": "E:\\WorkProject\\AssetsStudio\\workspace\\model_test\\actor_core_prototype_regen_3060\\chibi3_standard_v1\\shape_source_v11c_seed20260830\\validation\\actor_core_chibi3_source_v11c_seed20260830_validated.glb",
+  "mesh_objects": 1,
+  "vertices": 79974,
+  "faces": 159944,
+  "source_bbox_min_blender": [
+    -0.8804131150245667,
+    -0.32210761308670044,
+    -0.9981096982955933
+  ],
+  "source_bbox_max_blender": [
+    0.8723241090774536,
+    0.3300599455833435,
+    0.9898253679275513
+  ],
+  "ground_offset_z": 0.9981096982955933,
+  "bbox_min": [
+    -0.8804131150245667,
+    -0.32210761308670044,
+    0.0
+  ],
+  "bbox_max": [
+    0.8723241090774536,
+    0.3300599455833435,
+    1.9879350662231445
+  ],
+  "height": 1.9879350662231445,
+  "target_height_ratio": 0.6220703125,
+  "resolution": 1024,
+  "renders": {
+    "front": {
+      "beauty": "E:\\WorkProject\\AssetsStudio\\workspace\\model_test\\actor_core_prototype_regen_3060\\chibi3_standard_v1\\shape_source_v11c_seed20260830\\validation\\beauty\\front.png",
+      "silhouette": "E:\\WorkProject\\AssetsStudio\\workspace\\model_test\\actor_core_prototype_regen_3060\\chibi3_standard_v1\\shape_source_v11c_seed20260830\\validation\\silhouette\\front.png"
+    },
+    "right": {
+      "beauty": "E:\\WorkProject\\AssetsStudio\\workspace\\model_test\\actor_core_prototype_regen_3060\\chibi3_standard_v1\\shape_source_v11c_seed20260830\\validation\\beauty\\right.png",
+      "silhouette": "E:\\WorkProject\\AssetsStudio\\workspace\\model_test\\actor_core_prototype_regen_3060\\chibi3_standard_v1\\shape_source_v11c_seed20260830\\validation\\silhouette\\right.png"
+    },
+    "back": {
+      "beauty": "E:\\WorkProject\\AssetsStudio\\workspace\\model_test\\actor_core_prototype_regen_3060\\chibi3_standard_v1\\shape_source_v11c_seed20260830\\validation\\beauty\\back.png",
+      "silhouette": "E:\\WorkProject\\AssetsStudio\\workspace\\model_test\\actor_core_prototype_regen_3060\\chibi3_standard_v1\\shape_source_v11c_seed20260830\\validation\\silhouette\\back.png"
+    },
+    "left": {
+      "beauty": "E:\\WorkProject\\AssetsStudio\\workspace\\model_test\\actor_core_prototype_regen_3060\\chibi3_standard_v1\\shape_source_v11c_seed20260830\\validation\\beauty\\left.png",
+      "silhouette": "E:\\WorkProject\\AssetsStudio\\workspace\\model_test\\actor_core_prototype_regen_3060\\chibi3_standard_v1\\shape_source_v11c_seed20260830\\validation\\silhouette\\left.png"
+    }
+  }
+}

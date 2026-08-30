@@ -1,0 +1,47 @@
+{
+  "schema": "assetsstudio_actor_core_head_roundness_v1",
+  "input": "E:\\WorkProject\\AssetsStudio\\workspace\\model_test\\actor_core_prototype_regen_3060\\chibi3_standard_v1\\shape_source_v11c_seed20260830\\validation\\silhouette\\front.png",
+  "metrics": {
+    "foreground_bbox": [
+      231,
+      193,
+      562,
+      638
+    ],
+    "neck_y": 405,
+    "head_bbox": [
+      414,
+      193,
+      197,
+      211
+    ],
+    "head_aspect_width_over_height": 0.933649289099526,
+    "head_height_over_full_height": 0.33072100313479624,
+    "head_width_over_full_height": 0.30877742946708464,
+    "top_plateau_fraction": 0.2893401015228426,
+    "upper_width_over_max_width": 0.7715736040609137,
+    "jaw_width_over_max_width": 0.817258883248731,
+    "side_straight_run_fraction": 0.36018957345971564,
+    "profile_width_coefficient_of_variation": 0.20034627722515508,
+    "sample_rows": {
+      "upper_y": 225,
+      "upper_width": 152,
+      "jaw_y": 371,
+      "jaw_width": 161,
+      "max_width": 197
+    }
+  },
+  "thresholds": {
+    "top_plateau_fraction_max": 0.33,
+    "upper_width_over_max_width_max": 0.9,
+    "jaw_width_over_max_width_max": 0.9,
+    "side_straight_run_fraction_max": 0.45
+  },
+  "checks": {
+    "top_is_curved": true,
+    "upper_head_tapers": true,
+    "jaw_tapers": true,
+    "sides_are_not_long_verticals": true
+  },
+  "automatic_pass": true
+}

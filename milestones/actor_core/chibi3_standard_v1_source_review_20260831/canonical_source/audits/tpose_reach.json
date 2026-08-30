@@ -1,0 +1,44 @@
+{
+  "schema": "assetsstudio_chibi_tpose_reach_audit_v1",
+  "method": "front_silhouette_arm_band_and_first_clean_underarm_row_projection_v1",
+  "input": "E:\\WorkProject\\AssetsStudio\\workspace\\model_test\\actor_core_prototype_regen_3060\\chibi3_standard_v1\\source_panels_v11c_curved_crown_canonical\\registered\\front.png",
+  "contract": "E:\\WorkProject\\AssetsStudio\\workspace\\model_test\\actor_core_prototype_regen_3060\\chibi3_standard_v1\\proportion_contract.json",
+  "foreground_bbox": [
+    230,
+    178,
+    565,
+    637
+  ],
+  "landmarks_px_in_foreground": {
+    "arm_center_y": 260,
+    "underarm_y": 273,
+    "left_tip_x": 0,
+    "left_shoulder_x": 191,
+    "right_shoulder_x": 373,
+    "right_tip_x": 564
+  },
+  "metrics": {
+    "t_pose_span_over_height": 0.8869701726844584,
+    "shoulder_z_over_height": 0.5911949685534591,
+    "left_shoulder_to_tip_over_height": 0.29984301412872844,
+    "right_shoulder_to_tip_over_height": 0.29984301412872844,
+    "left_projected_fingertip_z_over_height": 0.29135195442473066,
+    "right_projected_fingertip_z_over_height": 0.29135195442473066,
+    "left_fingertip_thigh_phase": 0.25188827335237124,
+    "right_fingertip_thigh_phase": 0.25188827335237124,
+    "left_fingertip_clearance_above_knee_over_height": 0.12468528772473067,
+    "right_fingertip_clearance_above_knee_over_height": 0.12468528772473067
+  },
+  "checks": {
+    "t_pose_span_in_range": true,
+    "left_arm_drop_in_range": true,
+    "right_arm_drop_in_range": true,
+    "left_fingertip_mid_thigh": true,
+    "right_fingertip_mid_thigh": true,
+    "left_fingertip_above_knee": true,
+    "right_fingertip_above_knee": true,
+    "clean_underarm_row_found": true
+  },
+  "automatic_pass": true,
+  "interpretation": "The horizontal T-pose arm chains project to mid-thigh and remain above the knees."
+}

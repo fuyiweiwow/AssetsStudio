@@ -1,0 +1,49 @@
+{
+  "schema": "assetsstudio_chibi_hand_transition_audit_v1",
+  "method": "distal_bulb_peak_to_first_stable_wrist_valley_v1",
+  "input": "E:\\WorkProject\\AssetsStudio\\workspace\\model_test\\actor_core_prototype_regen_3060\\chibi3_standard_v1\\shape_source_v9b_seed20260830\\validation\\silhouette\\front.png",
+  "reach_report": "E:\\WorkProject\\AssetsStudio\\workspace\\model_test\\actor_core_prototype_regen_3060\\chibi3_standard_v1\\shape_source_v9b_seed20260830\\validation\\tpose_reach.json",
+  "contract": "E:\\WorkProject\\AssetsStudio\\workspace\\model_test\\actor_core_prototype_regen_3060\\chibi3_standard_v1\\proportion_contract.json",
+  "foreground_bbox": [
+    233,
+    193,
+    558,
+    638
+  ],
+  "required_hand_length_over_height": [
+    0.044,
+    0.052
+  ],
+  "left": {
+    "arm_length_px": 199,
+    "hand_bulb_peak_from_tip_px": 13,
+    "hand_bulb_peak_thickness_px": 24.0,
+    "detected_wrist_from_tip_px": 31,
+    "detected_wrist_thickness_px": 22.0,
+    "proximal_rise_probe_px": 119,
+    "proximal_rise_thickness_px": 35.0,
+    "detected_hand_length_over_height": 0.048589341692789965,
+    "detected_hand_fraction_of_shoulder_to_tip": 0.15577889447236182,
+    "credible_bulb_to_wrist_transition": true
+  },
+  "right": {
+    "arm_length_px": 198,
+    "hand_bulb_peak_from_tip_px": 9,
+    "hand_bulb_peak_thickness_px": 23.0,
+    "detected_wrist_from_tip_px": 30,
+    "detected_wrist_thickness_px": 22.0,
+    "proximal_rise_probe_px": 119,
+    "proximal_rise_thickness_px": 35.0,
+    "detected_hand_length_over_height": 0.047021943573667714,
+    "detected_hand_fraction_of_shoulder_to_tip": 0.15151515151515152,
+    "credible_bulb_to_wrist_transition": true
+  },
+  "checks": {
+    "left_transition_is_detectable": true,
+    "right_transition_is_detectable": true,
+    "left_hand_length_in_range": true,
+    "right_hand_length_in_range": true
+  },
+  "automatic_pass": true,
+  "interpretation": "The detected physical wrist transitions keep both hand ends within the required range."
+}

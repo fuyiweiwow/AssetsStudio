@@ -1,0 +1,49 @@
+{
+  "schema": "assetsstudio_chibi_hand_transition_audit_v1",
+  "method": "distal_bulb_peak_to_first_stable_wrist_valley_v1",
+  "input": "E:\\WorkProject\\AssetsStudio\\workspace\\model_test\\actor_core_prototype_regen_3060\\chibi3_standard_v1\\shape_source_v11c_seed20260830\\validation\\silhouette\\front.png",
+  "reach_report": "E:\\WorkProject\\AssetsStudio\\workspace\\model_test\\actor_core_prototype_regen_3060\\chibi3_standard_v1\\shape_source_v11c_seed20260830\\validation\\tpose_reach.json",
+  "contract": "E:\\WorkProject\\AssetsStudio\\workspace\\model_test\\actor_core_prototype_regen_3060\\chibi3_standard_v1\\proportion_contract.json",
+  "foreground_bbox": [
+    231,
+    193,
+    562,
+    637
+  ],
+  "required_hand_length_over_height": [
+    0.044,
+    0.052
+  ],
+  "left": {
+    "arm_length_px": 198,
+    "hand_bulb_peak_from_tip_px": 38,
+    "hand_bulb_peak_thickness_px": 28.0,
+    "detected_wrist_from_tip_px": 61,
+    "detected_wrist_thickness_px": 27.0,
+    "proximal_rise_probe_px": 119,
+    "proximal_rise_thickness_px": 37.0,
+    "detected_hand_length_over_height": 0.09576138147566719,
+    "detected_hand_fraction_of_shoulder_to_tip": 0.30808080808080807,
+    "credible_bulb_to_wrist_transition": false
+  },
+  "right": {
+    "arm_length_px": 199,
+    "hand_bulb_peak_from_tip_px": 39,
+    "hand_bulb_peak_thickness_px": 29.0,
+    "detected_wrist_from_tip_px": 57,
+    "detected_wrist_thickness_px": 28.0,
+    "proximal_rise_probe_px": 119,
+    "proximal_rise_thickness_px": 37.0,
+    "detected_hand_length_over_height": 0.08948194662480377,
+    "detected_hand_fraction_of_shoulder_to_tip": 0.2864321608040201,
+    "credible_bulb_to_wrist_transition": false
+  },
+  "checks": {
+    "left_transition_is_detectable": false,
+    "right_transition_is_detectable": false,
+    "left_hand_length_in_range": false,
+    "right_hand_length_in_range": false
+  },
+  "automatic_pass": false,
+  "interpretation": "At least one detected physical hand end is outside the required range; projected wrist-band support is not sufficient evidence."
+}

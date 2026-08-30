@@ -1,0 +1,121 @@
+{
+  "schema": "assetsstudio_hunyuan_source_silhouette_comparison_v1",
+  "status": "pass",
+  "normalization": {
+    "canvas_size": 1024,
+    "target_height": 900,
+    "preserves_aspect_ratio": true,
+    "removes_canvas_placement": true
+  },
+  "thresholds": {
+    "min_iou": 0.8,
+    "max_relative_aspect_drift": 0.08
+  },
+  "source_dir": "E:\\WorkProject\\AssetsStudio\\workspace\\model_test\\actor_core_prototype_regen_3060\\chibi3_standard_v1\\source_panels_v9b_canonical\\registered",
+  "candidate_dir": "E:\\WorkProject\\AssetsStudio\\workspace\\model_test\\actor_core_prototype_regen_3060\\chibi3_standard_v1\\shape_source_v9b_seed20260830\\validation\\silhouette",
+  "views": {
+    "front": {
+      "iou": 0.9092879489425604,
+      "relative_aspect_drift": 0.013937359558354399,
+      "source": {
+        "source_bbox": [
+          230,
+          178,
+          795,
+          815
+        ],
+        "source_width_height_ratio": 0.8869701726844584,
+        "normalized_width": 798
+      },
+      "candidate": {
+        "source_bbox": [
+          233,
+          193,
+          791,
+          831
+        ],
+        "source_width_height_ratio": 0.8746081504702194,
+        "normalized_width": 787
+      },
+      "pass": true
+    },
+    "right": {
+      "iou": 0.8147567716385353,
+      "relative_aspect_drift": 0.07065217391304346,
+      "source": {
+        "source_bbox": [
+          420,
+          178,
+          604,
+          816
+        ],
+        "source_width_height_ratio": 0.2884012539184953,
+        "normalized_width": 260
+      },
+      "candidate": {
+        "source_bbox": [
+          413,
+          193,
+          610,
+          831
+        ],
+        "source_width_height_ratio": 0.30877742946708464,
+        "normalized_width": 278
+      },
+      "pass": true
+    },
+    "back": {
+      "iou": 0.9081436631900791,
+      "relative_aspect_drift": 0.010841401503592512,
+      "source": {
+        "source_bbox": [
+          229,
+          177,
+          794,
+          816
+        ],
+        "source_width_height_ratio": 0.8841940532081377,
+        "normalized_width": 796
+      },
+      "candidate": {
+        "source_bbox": [
+          233,
+          177,
+          791,
+          815
+        ],
+        "source_width_height_ratio": 0.8746081504702194,
+        "normalized_width": 787
+      },
+      "pass": true
+    },
+    "left": {
+      "iou": 0.8215508302438885,
+      "relative_aspect_drift": 0.07065217391304346,
+      "source": {
+        "source_bbox": [
+          420,
+          178,
+          604,
+          816
+        ],
+        "source_width_height_ratio": 0.2884012539184953,
+        "normalized_width": 260
+      },
+      "candidate": {
+        "source_bbox": [
+          413,
+          193,
+          610,
+          831
+        ],
+        "source_width_height_ratio": 0.30877742946708464,
+        "normalized_width": 278
+      },
+      "pass": true
+    }
+  },
+  "minimum_iou": 0.8147567716385353,
+  "mean_iou": 0.8634348035037659,
+  "maximum_relative_aspect_drift": 0.07065217391304346
+}

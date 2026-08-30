@@ -1,0 +1,39 @@
+{
+  "schema": "assetsstudio_chibi3_standard_final_review_v2",
+  "asset_id": "actor_core_chibi3_standard_v1",
+  "status": "paused_source_valid_hunyuan_cannot_preserve_head_and_hands_together",
+  "selected_source": "source_panels_v11c_curved_crown_canonical/registered",
+  "selected_candidate": null,
+  "review_glb": null,
+  "approved_for_accurig": false,
+  "source_result": {
+    "automatic_pass": true,
+    "total_head_count": 3.0571428571428574,
+    "head_aspect_width_over_height": 0.9571428571428572,
+    "head_top_plateau_fraction": 0.2736318407960199,
+    "t_pose_span_over_height": 0.8869701726844584,
+    "shoulder_to_tip_over_height": 0.29984301412872844,
+    "hand_length_over_height": 0.04552590266875981,
+    "mitten_peak_to_wrist_ratio": 1.0952380952380953,
+    "mitten_length_to_peak_ratio": 1.2608695652173914
+  },
+  "regeneration_result": {
+    "backend": "Hunyuan3D-2mv Turbo",
+    "device": "RTX 3060 12GB",
+    "status": "experiment_exhausted_without_approved_candidate",
+    "best_balanced_candidate": "shape_source_v9b_seed20260830/validation/actor_core_chibi3_source_v9b_seed20260830_validated.glb",
+    "best_balanced_sha256": "74f8787c7b044b9aca86bc9f80f28e1f34c809bb39907b9e26675832e9505e45",
+    "best_balanced_failure": "arms and compact mitten hands pass, but head aspect 0.9143 and top plateau 0.3385 miss the head gates",
+    "best_head_candidate": "shape_source_v11c_seed20260830/validation/actor_core_chibi3_source_v11c_seed20260830_validated.glb",
+    "best_head_sha256": "f72747fe84dc4b2a3d925a6fcaa96178c22d220a398509e48ba97f799f47005d",
+    "best_head_failure": "head passes, but side-view fit drifts and the generated distal arms read as long gradual hand sections",
+    "conclusion": "the canonical prototype is valid; this generator does not stably preserve the curved head and short mitten hands at the same time"
+  },
+  "withdrawn_or_frozen": [
+    "total_arm_repair_v3/accurig_handoff/ActorCore_Chibi3_CompactArms_TPose_AccuRIG_v3.fbx",
+    "deliverables_review_v4/ActorCore_Chibi3_FlatShortMittens_TPose_Review_v4.glb",
+    "all shape_source_v8g/v9b/v10comp/v11c/v12 generated candidates"
+  ],
+  "recommended_next_method": "build a clean riggable low-poly body procedurally in Blender from the approved canonical source dimensions; do not patch a generated mesh",
+  "next_gate": "explicit user confirmation to switch reconstruction method, then visual approval of a new GLB before any AccuRIG handoff"
+}

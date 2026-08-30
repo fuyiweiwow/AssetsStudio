@@ -1,0 +1,38 @@
+{
+  "schema": "assetsstudio_chibi_proportion_contract_v1",
+  "authority_id": "documented_three_head_animation_chibi_v1",
+  "style_intent": "three-head chibi for weapons, modular equipment, and humanoid animation",
+  "normalized_segments": {
+    "head_height": 0.3333333333,
+    "torso_height": 0.3333333333,
+    "leg_height": 0.3333333334
+  },
+  "front_head": {
+    "width_over_height_target": 0.94,
+    "width_over_height_range": [0.92, 0.96],
+    "curved_crown_required": true,
+    "jaw_taper_required": true
+  },
+  "landmarks_z_over_height": {
+    "shoulder": 0.60,
+    "hip_or_crotch": 0.3333333333,
+    "knee": 0.1666666667,
+    "wrist_arm_down": 0.355,
+    "fingertip_arm_down": 0.295
+  },
+  "lengths_over_height": {
+    "shoulder_to_fingertip_drop": 0.305,
+    "hand_end": 0.05,
+    "t_pose_total_span": 0.865
+  },
+  "hard_gates": {
+    "total_head_count_range": [2.9, 3.1],
+    "fingertip_thigh_phase_range": [0.15, 0.45],
+    "fingertip_clearance_above_knee_min": 0.1,
+    "shoulder_to_fingertip_drop_range": [0.295, 0.315],
+    "hand_end_length_range": [0.044, 0.052],
+    "mitten_peak_to_wrist_thickness_ratio_range": [1.02, 1.18],
+    "mitten_length_to_peak_thickness_ratio_min": 1.1,
+    "t_pose_total_span_range": [0.84, 0.89]
+  }
+}

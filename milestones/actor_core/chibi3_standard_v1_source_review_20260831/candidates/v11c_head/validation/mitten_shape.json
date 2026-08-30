@@ -1,0 +1,38 @@
+{
+  "schema": "assetsstudio_chibi_mitten_shape_audit_v1",
+  "method": "distal_peak_to_wrist_ratio_and_length_to_peak_aspect_v1",
+  "input": "E:\\WorkProject\\AssetsStudio\\workspace\\model_test\\actor_core_prototype_regen_3060\\chibi3_standard_v1\\shape_source_v11c_seed20260830\\validation\\silhouette\\front.png",
+  "hand_report": "E:\\WorkProject\\AssetsStudio\\workspace\\model_test\\actor_core_prototype_regen_3060\\chibi3_standard_v1\\shape_source_v11c_seed20260830\\validation\\hand_transition.json",
+  "contract": "E:\\WorkProject\\AssetsStudio\\workspace\\model_test\\actor_core_prototype_regen_3060\\chibi3_standard_v1\\proportion_contract.json",
+  "thresholds": {
+    "peak_to_wrist_thickness_ratio_range": [
+      1.02,
+      1.18
+    ],
+    "hand_length_to_peak_thickness_ratio_min": 1.1
+  },
+  "left": {
+    "peak_thickness_px": 28.0,
+    "wrist_thickness_px": 27.0,
+    "hand_length_px": 61.0,
+    "peak_to_wrist_thickness_ratio": 1.037037037037037,
+    "hand_length_to_peak_thickness_ratio": 2.1785714285714284,
+    "wrist_to_proximal_forearm_thickness_ratio": 0.7297297297297297
+  },
+  "right": {
+    "peak_thickness_px": 29.0,
+    "wrist_thickness_px": 28.0,
+    "hand_length_px": 57.0,
+    "peak_to_wrist_thickness_ratio": 1.0357142857142858,
+    "hand_length_to_peak_thickness_ratio": 1.9655172413793103,
+    "wrist_to_proximal_forearm_thickness_ratio": 0.7567567567567568
+  },
+  "checks": {
+    "left_peak_to_wrist_ratio_in_range": true,
+    "right_peak_to_wrist_ratio_in_range": true,
+    "left_hand_is_longer_than_peak_is_thick": true,
+    "right_hand_is_longer_than_peak_is_thick": true
+  },
+  "automatic_pass": true,
+  "interpretation": "Both distal mitten silhouettes are elongated and transition gradually enough to avoid a hammer-head bulb."
+}

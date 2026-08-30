@@ -1,0 +1,49 @@
+{
+  "schema": "assetsstudio_chibi_hand_transition_audit_v1",
+  "method": "distal_bulb_peak_to_first_stable_wrist_valley_v1",
+  "input": "E:\\WorkProject\\AssetsStudio\\workspace\\model_test\\actor_core_prototype_regen_3060\\chibi3_standard_v1\\source_panels_v11c_curved_crown_canonical\\registered\\front.png",
+  "reach_report": "E:\\WorkProject\\AssetsStudio\\workspace\\model_test\\actor_core_prototype_regen_3060\\chibi3_standard_v1\\source_analysis_v11c\\tpose_reach.json",
+  "contract": "E:\\WorkProject\\AssetsStudio\\workspace\\model_test\\actor_core_prototype_regen_3060\\chibi3_standard_v1\\proportion_contract.json",
+  "foreground_bbox": [
+    230,
+    178,
+    565,
+    637
+  ],
+  "required_hand_length_over_height": [
+    0.044,
+    0.052
+  ],
+  "left": {
+    "arm_length_px": 192,
+    "hand_bulb_peak_from_tip_px": 9,
+    "hand_bulb_peak_thickness_px": 23.0,
+    "detected_wrist_from_tip_px": 29,
+    "detected_wrist_thickness_px": 21.0,
+    "proximal_rise_probe_px": 115,
+    "proximal_rise_thickness_px": 27.0,
+    "detected_hand_length_over_height": 0.04552590266875981,
+    "detected_hand_fraction_of_shoulder_to_tip": 0.15104166666666666,
+    "credible_bulb_to_wrist_transition": true
+  },
+  "right": {
+    "arm_length_px": 192,
+    "hand_bulb_peak_from_tip_px": 9,
+    "hand_bulb_peak_thickness_px": 23.0,
+    "detected_wrist_from_tip_px": 29,
+    "detected_wrist_thickness_px": 21.0,
+    "proximal_rise_probe_px": 115,
+    "proximal_rise_thickness_px": 28.0,
+    "detected_hand_length_over_height": 0.04552590266875981,
+    "detected_hand_fraction_of_shoulder_to_tip": 0.15104166666666666,
+    "credible_bulb_to_wrist_transition": true
+  },
+  "checks": {
+    "left_transition_is_detectable": true,
+    "right_transition_is_detectable": true,
+    "left_hand_length_in_range": true,
+    "right_hand_length_in_range": true
+  },
+  "automatic_pass": true,
+  "interpretation": "The detected physical wrist transitions keep both hand ends within the required range."
+}

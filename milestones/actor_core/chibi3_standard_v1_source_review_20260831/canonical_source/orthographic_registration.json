@@ -1,0 +1,116 @@
+{
+  "schema": "orthographic_registration.v1",
+  "views": [
+    {
+      "path": "E:\\WorkProject\\AssetsStudio\\workspace\\model_test\\actor_core_prototype_regen_3060\\chibi3_standard_v1\\source_panels_v11c_curved_crown_canonical\\registered\\front.png",
+      "role": "front",
+      "image_size": [
+        1024,
+        1024
+      ],
+      "bbox": [
+        230,
+        176,
+        565,
+        642
+      ],
+      "center": [
+        512.2085756713278,
+        461.8242997978798
+      ],
+      "bbox_center": [
+        512.5,
+        497.0
+      ],
+      "bbox_ratio": [
+        0.5517578125,
+        0.626953125
+      ]
+    },
+    {
+      "path": "E:\\WorkProject\\AssetsStudio\\workspace\\model_test\\actor_core_prototype_regen_3060\\chibi3_standard_v1\\source_panels_v11c_curved_crown_canonical\\registered\\right.png",
+      "role": "unknown",
+      "image_size": [
+        1024,
+        1024
+      ],
+      "bbox": [
+        417,
+        176,
+        188,
+        642
+      ],
+      "center": [
+        502.37472014925373,
+        438.98266480099505
+      ],
+      "bbox_center": [
+        511.0,
+        497.0
+      ],
+      "bbox_ratio": [
+        0.18359375,
+        0.626953125
+      ]
+    },
+    {
+      "path": "E:\\WorkProject\\AssetsStudio\\workspace\\model_test\\actor_core_prototype_regen_3060\\chibi3_standard_v1\\source_panels_v11c_curved_crown_canonical\\registered\\back.png",
+      "role": "back",
+      "image_size": [
+        1024,
+        1024
+      ],
+      "bbox": [
+        229,
+        176,
+        565,
+        642
+      ],
+      "center": [
+        509.20522472721274,
+        462.3708256842887
+      ],
+      "bbox_center": [
+        511.5,
+        497.0
+      ],
+      "bbox_ratio": [
+        0.5517578125,
+        0.626953125
+      ]
+    },
+    {
+      "path": "E:\\WorkProject\\AssetsStudio\\workspace\\model_test\\actor_core_prototype_regen_3060\\chibi3_standard_v1\\source_panels_v11c_curved_crown_canonical\\registered\\left.png",
+      "role": "unknown",
+      "image_size": [
+        1024,
+        1024
+      ],
+      "bbox": [
+        419,
+        176,
+        188,
+        642
+      ],
+      "center": [
+        520.5577100070198,
+        437.75483971609077
+      ],
+      "bbox_center": [
+        513.0,
+        497.0
+      ],
+      "bbox_ratio": [
+        0.18359375,
+        0.626953125
+      ]
+    }
+  ],
+  "coordinate_contract": {
+    "front": "X/Z",
+    "side": "Y/Z",
+    "top": "X/Y",
+    "back": "rear X/Z"
+  },
+  "notes": []
+}
