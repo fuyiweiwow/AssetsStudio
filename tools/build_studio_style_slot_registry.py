@@ -8,6 +8,7 @@ from pathlib import Path
 
 from validate_style_slot_profiles import (
     ACTOR_SCHEMA,
+    ACTOR_SCHEMA_V2,
     STYLE_SCHEMA,
     load_json,
     validate_schema,
@@ -19,9 +20,11 @@ ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / "studio/src/generated/style-slot-profiles.json"
 STYLE_PATHS = [
     ROOT / "references/style_profiles/qstyle_anime_western_fantasy_no_face_v1.json",
+    ROOT / "references/style_profiles/qstyle_anime_western_fantasy_chibi3_no_face_v1.json",
 ]
 ACTOR_PATHS = [
     ROOT / "references/actor_core/actor_core_0ef398ca/actor_slot_profile_v1.json",
+    ROOT / "references/actor_core/actor_core_chibi3_v9b/actor_slot_profile_v2.json",
 ]
 
 
@@ -34,7 +37,8 @@ def main() -> int:
     if len(styles_by_id) != len(styles):
         raise RuntimeError("duplicate StyleProfile id")
     for actor in actors:
-        validate_schema(actor, ACTOR_SCHEMA)
+        actor_schema = ACTOR_SCHEMA_V2 if actor.get("schema") == "assetsstudio_actor_slot_profile_v2" else ACTOR_SCHEMA
+        validate_schema(actor, actor_schema)
         style = styles_by_id.get(actor["style_profile_id"])
         if style is None:
             raise RuntimeError(
@@ -44,7 +48,7 @@ def main() -> int:
 
     payload = {
         "schema": "assetsstudio_style_slot_registry_v1",
-        "updated": "2026-08-27",
+        "updated": "2026-08-31",
         "styles": styles,
         "actors": actors,
         "sources": {

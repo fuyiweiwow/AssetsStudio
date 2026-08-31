@@ -411,11 +411,11 @@ export function TurnaroundGenerator() {
           </div>
         </section>}
         {(threeDCandidates.length > 0 || threeDAssets.length > 0 || threeDError) && <section className="local-3d-workbench">
-          <div className="local-3d-heading"><div><p className="eyebrow">CANONICAL ACTOR CORE INTAKE</p><h3>3D Actor Core 候选</h3><p>这里只接收无任何可替换部件的身体高模来源；批准不代表已经完成 UV、纹理、骨骼或游戏拓扑。</p></div><button type="button" onClick={() => void refresh3DAssets()}>刷新 3D</button></div>
+          <div className="local-3d-heading"><div><p className="eyebrow">LOCAL 3D ASSET LIFECYCLE</p><h3>3D 素体与独立配件候选</h3><p>素体和配件使用各自的拓扑 Gate；T-Pose 配件只批准静态适配，不能冒充已经通过骨骼与动画验证。</p></div><button type="button" onClick={() => void refresh3DAssets()}>刷新 3D</button></div>
           {threeDCandidates.map((candidate) => <article className="local-3d-candidate" key={candidate.candidate_id}>
-            <GeneratedModelPreview modelUrl={proxiedArtifactUrl(candidate.model_url)} />
+            <GeneratedModelPreview modelUrl={proxiedArtifactUrl(candidate.combined_model_url ?? candidate.model_url)} />
             <div className="local-3d-review">
-              <div><strong>{candidate.subject}</strong><small>{candidate.candidate_id.slice(0, 8)} · {candidate.mesh_audit.vertices.toLocaleString()} vertices · {candidate.mesh_audit.faces.toLocaleString()} faces</small></div>
+              <div><strong>{candidate.subject}</strong><small>{candidate.asset_kind === "accessory_3d" ? `独立配件 · ${candidate.slot_id}` : "Actor Core"} · {candidate.candidate_id.slice(0, 8)} · {candidate.mesh_audit.vertices.toLocaleString()} vertices · {candidate.mesh_audit.faces.toLocaleString()} faces</small></div>
               <div className="local-3d-metrics"><span>{candidate.mesh_audit.watertight ? "✓ 封闭网格" : "! 非封闭"}</span><span>{candidate.mesh_audit.connected_components} 个连通体</span><span>峰值 {(candidate.mesh_audit.peak_cuda_memory_bytes / 1024 ** 3).toFixed(2)} GiB</span></div>
               <div className="local-3d-renders">
                 {(["front", "right", "back", "left"] as const).map((view) => candidate.preview_urls[view] && <figure key={view}><img src={proxiedArtifactUrl(candidate.preview_urls[view]!)} alt={`${view} 3D 审查图`} /><figcaption>{view}</figcaption></figure>)}
@@ -423,27 +423,27 @@ export function TurnaroundGenerator() {
               <div className="local-3d-gates">
                 {candidate.manual_gates_required.map((gate) => <label key={gate}><input type="checkbox" checked={threeDConfirmations.includes(gate)} onChange={(event) => setThreeDConfirmations((current) => event.target.checked ? [...current, gate] : current.filter((item) => item !== gate))} /><span>{gate}</span></label>)}
               </div>
-              <div className="local-3d-actions"><a href={proxiedArtifactUrl(candidate.model_url)} download>下载 GLB</a><button type="button" disabled={candidate.manual_gates_required.length !== threeDConfirmations.length} onClick={() => void accept3DCandidate(candidate)}>加入本地 3D 库</button><button type="button" className="danger" onClick={() => void destroy3DCandidate(candidate)}>销毁候选</button></div>
+              <div className="local-3d-actions"><a href={proxiedArtifactUrl(candidate.model_url)} download>下载独立 GLB</a>{candidate.combined_model_url && <a href={proxiedArtifactUrl(candidate.combined_model_url)} download>下载组合评审 GLB</a>}<button type="button" disabled={candidate.manual_gates_required.length !== threeDConfirmations.length} onClick={() => void accept3DCandidate(candidate)}>加入本地 3D 库</button><button type="button" className="danger" onClick={() => void destroy3DCandidate(candidate)}>销毁候选</button></div>
             </div>
           </article>)}
           {threeDAssets.length > 0 && <div className="local-3d-library"><strong>已批准 3D 来源</strong>{threeDAssets.map((asset) => <article key={asset.candidate_id} className="local-3d-library-asset">
-            <div><strong>{asset.subject}</strong><small>{asset.candidate_id.slice(0, 8)} · 高模 shape source · 仅本地</small></div>
+            <div><strong>{asset.subject}</strong><small>{asset.candidate_id.slice(0, 8)} · {asset.asset_kind === "accessory_3d" ? `独立配件 ${asset.slot_id}` : "高模 shape source"} · 仅本地</small></div>
             {asset.production_canonical_status && asset.production_canonical_status !== "approved" && <div className="known-issue"><strong>实验资产 · 不是最终 production canonical</strong><p>{asset.known_issues?.length ? asset.known_issues.join(" · ") : asset.production_canonical_status}</p></div>}
             {asset.rig_preparation && <div className="local-3d-metrics"><span>✓ {asset.rig_preparation.status.startsWith("accurig_handoff_ready") ? "AccuRIG 交接就绪" : asset.rig_preparation.status}</span><span>{asset.rig_intake?.status === "ready" ? "已导入人工骨骼" : "等待人工绑定"}</span><span>Actor 与骨骼一对一</span></div>}
             {asset.rig_preview_urls && <div className="rig-preview-block"><small>AccuRIG 落点参考（尚未绑定）</small><div className="local-3d-renders">
               {(["front", "right", "back", "left"] as const).map((view) => asset.rig_preview_urls?.[view] && <figure key={view}><img src={proxiedArtifactUrl(asset.rig_preview_urls[view]!)} alt={`${view} 骨点标定图`} /><figcaption>{view} reference</figcaption></figure>)}
             </div></div>}
-            <div className="local-3d-actions"><a href={proxiedArtifactUrl(asset.model_url)} download>下载高模 GLB</a>{asset.rig_mesh_url && <a href={proxiedArtifactUrl(asset.rig_mesh_url)} download>下载绑定 GLB</a>}{asset.accurig_fbx_url && <a href={proxiedArtifactUrl(asset.accurig_fbx_url)} download>下载 AccuRIG FBX</a>}</div>
-            <div className="rig-intake-control">
+            <div className="local-3d-actions"><a href={proxiedArtifactUrl(asset.model_url)} download>{asset.asset_kind === "accessory_3d" ? "下载独立配件 GLB" : "下载高模 GLB"}</a>{asset.combined_model_url && <a href={proxiedArtifactUrl(asset.combined_model_url)} download>下载组合评审 GLB</a>}{asset.rig_mesh_url && <a href={proxiedArtifactUrl(asset.rig_mesh_url)} download>下载绑定 GLB</a>}{asset.accurig_fbx_url && <a href={proxiedArtifactUrl(asset.accurig_fbx_url)} download>下载 AccuRIG FBX</a>}</div>
+            {asset.asset_kind === "base_actor_3d" && <div className="rig-intake-control">
               <div><strong>导入人工 AccuRIG 结果</strong><small>选择这个 Actor 对应的 AccuRIG FBX；Studio 会复制到本地 Actor 工作区，核对拓扑、尺寸、骨名和权重，再生成预览。</small></div>
               <label className={rigUploadBusyId === asset.candidate_id ? "disabled" : ""}>选择骨骼 FBX<input type="file" accept=".fbx,application/octet-stream" disabled={rigUploadBusyId === asset.candidate_id} onChange={(event) => { const file = event.target.files?.[0]; if (file) void uploadRig(asset, file); event.target.value = ""; }} /></label>
-            </div>
+            </div>}
             {asset.rig_intake && <div className={`rig-intake-status status-${asset.rig_intake.status}`}><strong>{asset.rig_intake.status === "ready" ? "实际骨骼预览已生成" : asset.rig_intake.status === "failed" ? "骨骼文件未通过校验" : asset.rig_intake.status === "processing" ? "Blender 正在校验并生成预览" : "骨骼文件已复制，等待处理"}</strong><small>{asset.rig_intake.original_filename} · {(asset.rig_intake.bytes / 1024 ** 2).toFixed(2)} MiB · {asset.rig_intake.job_id.slice(0, 8)}</small>{asset.rig_intake.error && <p>{asset.rig_intake.error}</p>}</div>}
             {asset.rig_intake?.status === "ready" && asset.rig_intake.preview_urls && <div className="rig-preview-block actual"><small>实际 AccuRIG 骨架与蒙皮 · REST</small><div className="local-3d-renders">
               {(["front", "right", "back", "left"] as const).map((view) => asset.rig_intake?.preview_urls?.[view] && <figure key={view}><img src={proxiedArtifactUrl(asset.rig_intake.preview_urls[view]!)} alt={`${view} 实际 AccuRIG 骨架预览`} /><figcaption>{view} bound</figcaption></figure>)}
             </div></div>}
             {asset.rig_intake?.status === "ready" && <div className="local-3d-actions">{asset.rig_intake.model_url && <a href={proxiedArtifactUrl(asset.rig_intake.model_url)} download>下载蒙皮预览 GLB</a>}{asset.rig_intake.blend_url && <a href={proxiedArtifactUrl(asset.rig_intake.blend_url)} download>下载四权重 Blend</a>}{asset.rig_intake.validation_url && <a href={proxiedArtifactUrl(asset.rig_intake.validation_url)} download>下载骨骼校验报告</a>}</div>}
-            {renderAnimationWorkflow(asset)}
+            {asset.asset_kind === "base_actor_3d" && renderAnimationWorkflow(asset)}
           </article>)}</div>}
           {threeDError && <div className="known-issue"><strong>3D 生命周期请求失败</strong><p>{threeDError}</p></div>}
         </section>}
@@ -464,7 +464,7 @@ export function TurnaroundGenerator() {
           </label>
           {assetMode !== "style_seed" && <label className="field-label">Actor 槽位资产
             <select value={selectedActorProfile.id} onChange={(event) => setActorProfileId(event.target.value)}>
-              {actorProfiles.map((profile) => <option key={profile.id} value={profile.id}>{profile.label}</option>)}
+              {actorProfiles.map((profile) => <option key={profile.id} value={profile.id}>{profile.label}{profile.coordinate_contract?.rig_state === "unbound_tpose" ? " · T-Pose未绑定" : ""}</option>)}
             </select>
           </label>}
           {assetMode === "base_actor" && <label className="field-label">控制风格种子
@@ -499,7 +499,7 @@ export function TurnaroundGenerator() {
           <div className="profile-palette" aria-label="风格语义色板">
             {selectedStyleProfile.palette.map((color) => <i key={color.role} title={color.role} style={{ backgroundColor: color.color_srgb }} />)}
           </div>
-          <p className="profile-note">{assetMode === "style_seed" ? `不可变规则 ${selectedStyleProfile.prompt_contract.immutable_traits.length} 条 · 不作为最终角色或素体` : assetMode === "base_actor" ? `${styleSeedAssetId ? "已绑定入库风格种子" : "使用原始比例锚点"} · 必须通过无部件 Gate` : `${selectedSlot.generation_policy.preferred_mode} · 一次只生成 ${selectedSlot.slot_id} · ${selectedSlot.validation.required_views} 视角 / ${selectedSlot.validation.required_frames} 帧装配验收`}</p>
+          <p className="profile-note">{assetMode === "style_seed" ? `不可变规则 ${selectedStyleProfile.prompt_contract.immutable_traits.length} 条 · 不作为最终角色或素体` : assetMode === "base_actor" ? `${styleSeedAssetId ? "已绑定入库风格种子" : "使用原始比例锚点"} · 必须通过无部件 Gate` : `${selectedSlot.generation_policy.preferred_mode} · 一次只生成 ${selectedSlot.slot_id} · ${selectedSlot.validation.required_views} 视角 / ${selectedSlot.validation.required_frames} 帧装配验收${selectedActorProfile.coordinate_contract?.rig_state === "unbound_tpose" ? " · 当前仅验证静态T-Pose，动画门延后" : ""}`}</p>
         </section>
         <section className="inspector-section">
           <p className="eyebrow">GENERATION BRIEF</p><h2>{modeBrief}</h2>

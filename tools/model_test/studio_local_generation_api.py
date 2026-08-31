@@ -63,6 +63,8 @@ ACCESSORY_ARTIFACT_ROOT = ROOT / "workspace" / "local_generation" / "accessories
 LOCAL_LIBRARY_ROOT = ROOT / "workspace" / "local_asset_library"
 LOCAL_3D_CANDIDATE_ROOT = ROOT / "workspace" / "local_3d_generation" / "base_actors"
 LOCAL_3D_LIBRARY_ROOT = ROOT / "workspace" / "local_3d_asset_library" / "base_actors"
+LOCAL_3D_ACCESSORY_CANDIDATE_ROOT = ROOT / "workspace" / "local_3d_generation" / "accessories"
+LOCAL_3D_ACCESSORY_LIBRARY_ROOT = ROOT / "workspace" / "local_3d_asset_library" / "accessories"
 LOCAL_ANIMATION_LIBRARY_ROOT = ROOT / "workspace" / "local_animation_library"
 TRAINING_PAIR_ROOT = (
     ROOT / "workspace" / "training" / "strip_to_actor_core" / "v1" / "pairs"
@@ -366,19 +368,35 @@ def compile_accessory_prompt(
     envelope = slot.get("fit_envelope")
     fit_text = ""
     if envelope:
-        low = envelope["bounds_m"]["min"]
-        high = envelope["bounds_m"]["max"]
-        size = [round(high[index] - low[index], 4) for index in range(3)]
+        if "bounds_m" in envelope:
+            low = envelope["bounds_m"]["min"]
+            high = envelope["bounds_m"]["max"]
+            size = [round(high[index] - low[index], 4) for index in range(3)]
+        else:
+            low = envelope["bounds_h"]["min"]
+            high = envelope["bounds_h"]["max"]
+            actor_height = float(actor_profile["measurements"]["actor_height_m"])
+            size = [
+                round((high[index] - low[index]) * actor_height, 4)
+                for index in range(3)
+            ]
         fit_text = (
             f" Target Actor rest-space fit envelope is approximately {size[0]}m wide, "
             f"{size[1]}m deep, and {size[2]}m high."
+        )
+    rig_text = ""
+    if actor_profile.get("coordinate_contract", {}).get("rig_state") == "unbound_tpose":
+        rig_text = (
+            " This is an unbound static T-Pose fitting proxy: preserve the normalized "
+            "rest-space pivot and envelope; do not invent bones, skin weights, a wearer, "
+            "or animation clearance claims."
         )
     return (
         f"Design ONE standalone game accessory: {subject.strip()}. It belongs to Actor "
         f"slot {slot['slot_id']} ({slot['label']}) on {actor_profile['label']}. "
         f"Its accepted base-actor lineage is {base_actor_asset_id or actor_profile['actor_asset_id']}; "
         "use that lineage for scale and fit, not as an image to reproduce. "
-        f"Allowed asset kinds: {', '.join(policy['allowed_asset_kinds'])}.{fit_text} "
+        f"Allowed asset kinds: {', '.join(policy['allowed_asset_kinds'])}.{fit_text}{rig_text} "
         "Use the supplied reference image only as visual style, proportion, material, and "
         "palette authority; do not reproduce the person. Create one production orthographic "
         "turnaround sheet with exactly three separate views arranged left to right: exact "
@@ -616,14 +634,26 @@ def safe_asset_id(asset_id: str) -> str:
     return asset_id
 
 
-def local_3d_dir(scope: str, asset_id: str) -> Path:
-    root = {
-        "candidate": LOCAL_3D_CANDIDATE_ROOT,
-        "library": LOCAL_3D_LIBRARY_ROOT,
+def local_3d_roots(scope: str) -> tuple[Path, ...]:
+    roots = {
+        "candidate": (LOCAL_3D_CANDIDATE_ROOT, LOCAL_3D_ACCESSORY_CANDIDATE_ROOT),
+        "library": (LOCAL_3D_LIBRARY_ROOT, LOCAL_3D_ACCESSORY_LIBRARY_ROOT),
     }.get(scope)
-    if root is None:
+    if roots is None:
         raise ValueError("invalid local 3D asset scope")
-    return root / safe_asset_id(asset_id)
+    return roots
+
+
+def local_3d_dir(scope: str, asset_id: str, asset_kind: str | None = None) -> Path:
+    safe_id = safe_asset_id(asset_id)
+    roots = local_3d_roots(scope)
+    for root in roots:
+        candidate = root / safe_id
+        if candidate.exists():
+            return candidate
+    if asset_kind == "accessory_3d":
+        return roots[1] / safe_id
+    return roots[0] / safe_id
 
 
 def safe_3d_artifact(asset_dir: Path, relative_path: str) -> Path:
@@ -1104,6 +1134,8 @@ def load_3d_manifest(scope: str, asset_id: str) -> dict[str, Any]:
     route = "3d-candidates" if scope == "candidate" else "3d-library"
     public = dict(manifest)
     public["model_url"] = f"/api/{route}/{asset_id}/model"
+    if manifest.get("combined_model_filename"):
+        public["combined_model_url"] = f"/api/{route}/{asset_id}/combined-model"
     public["preview_urls"] = {
         view: f"/api/{route}/{asset_id}/preview/{view}"
         for view in manifest.get("preview_filenames", {})
@@ -1127,22 +1159,20 @@ def load_3d_manifest(scope: str, asset_id: str) -> dict[str, Any]:
 
 def list_3d_assets() -> dict[str, list[dict[str, Any]]]:
     result: dict[str, list[dict[str, Any]]] = {"candidates": [], "assets": []}
-    for scope, root, key in (
-        ("candidate", LOCAL_3D_CANDIDATE_ROOT, "candidates"),
-        ("library", LOCAL_3D_LIBRARY_ROOT, "assets"),
-    ):
-        if not root.is_dir():
-            continue
-        for manifest_path in root.glob("*/candidate_manifest.json"):
-            try:
-                manifest = load_3d_manifest(scope, manifest_path.parent.name)
-            except (OSError, ValueError, json.JSONDecodeError):
+    for scope, key in (("candidate", "candidates"), ("library", "assets")):
+        for root in local_3d_roots(scope):
+            if not root.is_dir():
                 continue
-            if manifest.get("studio_visibility", "active") != "active":
-                continue
-            if scope == "candidate" and manifest.get("library_status") != "candidate":
-                continue
-            result[key].append(manifest)
+            for manifest_path in root.glob("*/candidate_manifest.json"):
+                try:
+                    manifest = load_3d_manifest(scope, manifest_path.parent.name)
+                except (OSError, ValueError, json.JSONDecodeError):
+                    continue
+                if manifest.get("studio_visibility", "active") != "active":
+                    continue
+                if scope == "candidate" and manifest.get("library_status") != "candidate":
+                    continue
+                result[key].append(manifest)
         result[key].sort(key=lambda item: item.get("created_at", ""), reverse=True)
     return result
 
@@ -1165,7 +1195,7 @@ def accept_3d_candidate(asset_id: str, confirmations: list[str]) -> dict[str, An
             "manual 3D review is incomplete: "
             + "; ".join(missing or ["no gates recorded"])
         )
-    destination = local_3d_dir("library", asset_id)
+    destination = local_3d_dir("library", asset_id, manifest.get("asset_kind"))
     if destination.exists():
         raise FileExistsError("local 3D library destination already exists")
     destination.parent.mkdir(parents=True, exist_ok=True)
@@ -1190,8 +1220,8 @@ def accept_3d_candidate(asset_id: str, confirmations: list[str]) -> dict[str, An
 
 def destroy_3d_candidate(asset_id: str) -> None:
     candidate_dir = local_3d_dir("candidate", asset_id).resolve()
-    expected_root = LOCAL_3D_CANDIDATE_ROOT.resolve()
-    if expected_root not in candidate_dir.parents:
+    expected_roots = [root.resolve() for root in local_3d_roots("candidate")]
+    if not any(root in candidate_dir.parents for root in expected_roots):
         raise ValueError("unsafe local 3D candidate path")
     manifest = load_3d_manifest("candidate", asset_id)
     if manifest.get("library_status") != "candidate":
@@ -1875,6 +1905,13 @@ class Handler(BaseHTTPRequestHandler):
                 asset_dir = local_3d_dir(scope, asset_id)
                 if len(parts) == 4 and parts[3] == "model":
                     artifact = safe_3d_artifact(asset_dir, manifest["model_filename"])
+                    self.send_file(artifact, "model/gltf-binary")
+                    return
+                if len(parts) == 4 and parts[3] == "combined-model":
+                    relative = manifest.get("combined_model_filename")
+                    if not relative:
+                        raise FileNotFoundError("combined 3D review model not found")
+                    artifact = safe_3d_artifact(asset_dir, relative)
                     self.send_file(artifact, "model/gltf-binary")
                     return
                 if len(parts) == 5 and parts[3] == "preview":

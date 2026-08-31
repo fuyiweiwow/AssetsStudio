@@ -22,7 +22,7 @@ Studio 为多个游戏提供可复用美术资产。当前 `ba` 仅保留在 `co
 8. 对批准素体生成低风险绑定网格和落点预览，人工在 AccuRIG 标点并导出 FBX。
 9. Studio 选择该 FBX，复制到 Actor 专属 intake，验证一对一来源并生成预览。
 10. 从本地动作库选择动作，自动映射到当前 AccuRIG 骨骼并做四方向循环/关节变形检查。
-11. 按 ActorSlotProfile 一次生成一个独立部件；候选只能销毁或进入本地资产库。
+11. 按 ActorSlotProfile 一次生成一个独立部件；候选只能销毁或进入本地资产库。若人工 Rig 暂时不可用，可使用 ActorSlotProfile v2 先做未绑定 T-Pose 静态适配，但只能获得 `pass_static_tpose`，不能跳过后续动态 Gate。
 12. 通过 Slot 锚点、骨骼和 Recipe 组合，最终集成到 Studio 组合/导出界面。
 
 ## 模型与硬件决策
@@ -64,6 +64,15 @@ Studio 为多个游戏提供可复用美术资产。当前 `ba` 仅保留在 `co
 3. 检查绑定后的头颈、肩肘腕、髋膝踝和手脚变形；失败 intake 直接销毁，不进入动作阶段。
 4. 绑定通过后选择 `mixamo_standard_walk_v1` 做自动适配和变形 QA；通过后才进入单 Slot 配件生成。
 5. 在真实 RTX 3060 12GB 上补做二维 4-step 冷启动 Gate，并复测 Hunyuan3D 形状阶段；任何 5070 Ti 结果都不替代生产资格。
+
+## 2026-08-31 未绑定 T-Pose 配件检查点
+
+- 新增独立三头身 StyleProfile `qstyle_anime_western_fantasy_chibi3_no_face_v1`，目标 `2.9–3.1H`；没有扩大旧 `2.1–2.5H` Profile 的比例范围。
+- `v9b_balanced` 以 `experimental_proxy` 身份生成 ActorSlotProfile v2：11 个 Slot 使用高度归一化 Rest Anchor，当前 Rig 状态为 `unbound_tpose`。
+- 首个腰带腰包候选已复用现有独立权威图，经本地 Hunyuan3D-2MV 和静态装配 Gate：128,258 顶点、256,496 面、10 个有效封闭组件、最大轴缩放比 `1.0306`、表面相交数 0。
+- 候选 `waist_belt_pouch_chibi3_v9b_seed20260831` 已进入 Studio 本地候选列表，等待人工四方向确认；没有自动加入资产库。
+- 配件与素体使用不同拓扑 Gate；素体的单连通/Euler=2 标准保持不变。
+- 完整方法与复现实验入口见 `docs/TPOSE_ACCESSORY_WORKFLOW.md`。
 
 ## 2026-08-28 当前停点
 

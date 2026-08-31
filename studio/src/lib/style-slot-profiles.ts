@@ -1,7 +1,7 @@
 import rawRegistry from "../generated/style-slot-profiles.json";
 
-export type ProfileStatus = "approved" | "provisional" | "validated" | "measured_provisional" | "retired";
-export type SlotStatus = "validated" | "measured_provisional" | "source_contract" | "blocked";
+export type ProfileStatus = "approved" | "provisional" | "validated" | "measured_provisional" | "experimental_proxy" | "retired";
+export type SlotStatus = "validated" | "measured_provisional" | "source_contract" | "static_tpose_only" | "blocked";
 export type SlotGenerationMode = "standalone" | "on_actor_then_isolate" | "parametric" | "reuse_only";
 
 export interface StyleProfile {
@@ -50,13 +50,21 @@ export interface ActorSlot {
 }
 
 export interface ActorSlotProfile {
-  schema: "assetsstudio_actor_slot_profile_v1";
+  schema: "assetsstudio_actor_slot_profile_v1" | "assetsstudio_actor_slot_profile_v2";
   id: string;
   label: string;
   revision: number;
-  status: "validated" | "measured_provisional" | "retired";
+  status: "validated" | "measured_provisional" | "experimental_proxy" | "retired";
   actor_asset_id: string;
   style_profile_id: string;
+  actor_model?: {
+    path: string;
+    sha256: string;
+    role: "tpose_fitting_proxy";
+  };
+  coordinate_contract?: {
+    rig_state?: "unbound_tpose";
+  };
   measurements: {
     actor_height_m: number;
     total_heads: number;
@@ -92,7 +100,7 @@ export function parseStyleSlotRegistry(value: unknown): StyleSlotRegistry {
   }
   const actorIds = new Set<string>();
   for (const [index, candidate] of value.actors.entries()) {
-    if (!isRecord(candidate) || candidate.schema !== "assetsstudio_actor_slot_profile_v1" || typeof candidate.id !== "string" || typeof candidate.label !== "string" || typeof candidate.style_profile_id !== "string" || !Array.isArray(candidate.slots)) {
+    if (!isRecord(candidate) || !["assetsstudio_actor_slot_profile_v1", "assetsstudio_actor_slot_profile_v2"].includes(String(candidate.schema)) || typeof candidate.id !== "string" || typeof candidate.label !== "string" || typeof candidate.style_profile_id !== "string" || !Array.isArray(candidate.slots)) {
       throw new Error(`Actor Slot Profile ${index} 无效`);
     }
     if (actorIds.has(candidate.id)) throw new Error(`Actor Slot Profile ID 重复：${candidate.id}`);

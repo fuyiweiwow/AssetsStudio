@@ -23,6 +23,7 @@ REQUIRED = [
     "docs/RTX3060_PRODUCTION.md",
     "docs/ACCURIG_HANDOFF.md",
     "docs/ANIMATION_RETARGET.md",
+    "docs/TPOSE_ACCESSORY_WORKFLOW.md",
     "start-local-generation-studio.bat",
     "studio/src/App.tsx",
     "studio/src/components/TurnaroundGenerator.tsx",
@@ -31,10 +32,13 @@ REQUIRED = [
     "studio/src/lib/style-slot-profiles.ts",
     "studio/src/generated/style-slot-profiles.json",
     "references/style_profiles/qstyle_anime_western_fantasy_no_face_v1.json",
+    "references/style_profiles/qstyle_anime_western_fantasy_chibi3_no_face_v1.json",
     "references/style_profiles/published_seeds/README.md",
     "references/actor_core/actor_core_0ef398ca/actor_slot_profile_v1.json",
+    "references/actor_core/actor_core_chibi3_v9b/actor_slot_profile_v2.json",
     "references/actor_core/rig_landmark_profiles/chibi_featureless_v1.json",
     "schemas/strip_to_actor_core_pair.schema.json",
+    "schemas/actor-slot-profile.v2.schema.json",
     "tools/model_test/run_comfy_flux2_klein.py",
     "tools/model_test/build_actor_core_repair_mask.py",
     "tools/model_test/build_actor_core_silhouette_guide.py",
@@ -53,6 +57,10 @@ REQUIRED = [
     "tools/model_test/run_actor_core_hardware_gate.py",
     "tools/model_test/package_actor_core_3060_bundle.py",
     "tools/model_test/run_hunyuan3d_mv_shape.py",
+    "tools/model_test/build_tpose_slot_profile.py",
+    "tools/model_test/prepare_accessory_multiview.py",
+    "tools/model_test/fit_tpose_accessory_blender.py",
+    "tools/model_test/register_tpose_accessory_candidate.py",
     "tools/model_test/compare_hunyuan_source_silhouettes.py",
     "tools/model_test/studio_local_generation_api.py",
     "tools/model_test/process_actor_core_accurig_rig.py",
@@ -62,6 +70,7 @@ REQUIRED = [
     "tools/setup_flux2_actor_core_training.ps1",
     "tools/setup_actor_core_production.ps1",
     "tools/run_actor_core_3060_validation.ps1",
+    "tools/run_tpose_accessory_experiment.ps1",
     "tools/cleanup_current_workflow.ps1",
 ]
 PYTHON_SOURCES = [
@@ -89,6 +98,10 @@ PYTHON_SOURCES = [
     "tools/model_test/run_actor_core_hardware_gate.py",
     "tools/model_test/package_actor_core_3060_bundle.py",
     "tools/model_test/run_hunyuan3d_mv_shape.py",
+    "tools/model_test/build_tpose_slot_profile.py",
+    "tools/model_test/prepare_accessory_multiview.py",
+    "tools/model_test/fit_tpose_accessory_blender.py",
+    "tools/model_test/register_tpose_accessory_candidate.py",
     "tools/model_test/compare_hunyuan_source_silhouettes.py",
     "tools/model_test/studio_local_generation_api.py",
     "tools/model_test/process_actor_core_accurig_rig.py",
@@ -185,16 +198,25 @@ def main() -> int:
     registry = json.loads(
         (ROOT / "studio/src/generated/style-slot-profiles.json").read_text(encoding="utf-8")
     )
-    if [item["id"] for item in registry["styles"]] != [
-        "qstyle_anime_western_fantasy_no_face_v1"
-    ]:
-        raise RuntimeError("Studio registry contains a non-current StyleProfile")
-    if [item["id"] for item in registry["actors"]] != [
-        "actor_core_0ef398ca_slots_v1"
-    ]:
-        raise RuntimeError("Studio registry contains a non-current ActorSlotProfile")
+    expected_styles = {
+        "qstyle_anime_western_fantasy_no_face_v1",
+        "qstyle_anime_western_fantasy_chibi3_no_face_v1",
+    }
+    expected_actors = {
+        "actor_core_0ef398ca_slots_v1",
+        "actor_core_chibi3_v9b_tpose_slots_v1",
+    }
+    if {item["id"] for item in registry["styles"]} != expected_styles:
+        raise RuntimeError("Studio registry StyleProfile set is stale")
+    if {item["id"] for item in registry["actors"]} != expected_actors:
+        raise RuntimeError("Studio registry ActorSlotProfile set is stale")
+    legacy_style = next(
+        item
+        for item in registry["styles"]
+        if item["id"] == "qstyle_anime_western_fantasy_no_face_v1"
+    )
     actor_core_positive = " ".join(
-        registry["styles"][0]["actor_core_contract"]["positive"]
+        legacy_style["actor_core_contract"]["positive"]
     )
     if "boot-like feet" in actor_core_positive or "small compact rounded feet" not in actor_core_positive:
         raise RuntimeError("Actor Core foot contract is stale")

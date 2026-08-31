@@ -16,6 +16,7 @@ DEFAULT_STYLE = ROOT / "references/style_profiles/qstyle_anime_western_fantasy_n
 DEFAULT_ACTOR = ROOT / "references/actor_core/actor_core_0ef398ca/actor_slot_profile_v1.json"
 STYLE_SCHEMA = ROOT / "schemas/style-profile.v1.schema.json"
 ACTOR_SCHEMA = ROOT / "schemas/actor-slot-profile.v1.schema.json"
+ACTOR_SCHEMA_V2 = ROOT / "schemas/actor-slot-profile.v2.schema.json"
 
 
 def load_json(path: Path) -> dict:
@@ -67,6 +68,14 @@ def validate_semantics(style: dict, actor: dict) -> None:
         if path.is_file() and sha256(path).lower() != authority["sha256"].lower():
             raise RuntimeError(f"style authority hash changed: {authority['path']}")
 
+    actor_model = actor.get("actor_model")
+    if actor_model:
+        model_path = ROOT / actor_model["path"]
+        if not model_path.is_file():
+            raise FileNotFoundError(model_path)
+        if sha256(model_path).lower() != actor_model["sha256"].lower():
+            raise RuntimeError(f"actor model hash changed: {actor_model['path']}")
+
     slot_ids: set[str] = set()
     generatable_slots = 0
     for slot in actor["slots"]:
@@ -74,12 +83,21 @@ def validate_semantics(style: dict, actor: dict) -> None:
         if slot_id in slot_ids:
             raise RuntimeError(f"duplicate actor slot id: {slot_id}")
         slot_ids.add(slot_id)
-        parent_bones = set(slot["attachment"]["parent_bones"])
-        for anchor in slot["attachment"]["anchors"]:
-            if anchor["parent_bone"] not in parent_bones:
-                raise RuntimeError(
-                    f"slot {slot_id} anchor {anchor['id']} uses undeclared parent bone"
-                )
+        if actor["schema"] == "assetsstudio_actor_slot_profile_v1":
+            parent_bones = set(slot["attachment"]["parent_bones"])
+            for anchor in slot["attachment"]["anchors"]:
+                if anchor["parent_bone"] not in parent_bones:
+                    raise RuntimeError(
+                        f"slot {slot_id} anchor {anchor['id']} uses undeclared parent bone"
+                    )
+        else:
+            if slot["attachment"]["rig_dependency"] != "none_until_rig_intake":
+                raise RuntimeError(f"slot {slot_id} unexpectedly depends on a rig")
+            for anchor in slot["attachment"]["anchors"]:
+                if any(abs(float(value)) > 2.0 for value in anchor["position_h"]):
+                    raise RuntimeError(
+                        f"slot {slot_id} anchor {anchor['id']} is outside normalized rest space"
+                    )
         for evidence in slot["evidence"]:
             if evidence["tracked"] and not (ROOT / evidence["path"]).is_file():
                 raise FileNotFoundError(ROOT / evidence["path"])
@@ -122,7 +140,8 @@ def main() -> int:
     style = load_json(args.style)
     actor = load_json(args.actor)
     validate_schema(style, STYLE_SCHEMA)
-    validate_schema(actor, ACTOR_SCHEMA)
+    actor_schema = ACTOR_SCHEMA_V2 if actor.get("schema") == "assetsstudio_actor_slot_profile_v2" else ACTOR_SCHEMA
+    validate_schema(actor, actor_schema)
     validate_semantics(style, actor)
     print(
         "ASSETSSTUDIO_STYLE_SLOT_PROFILE_PASS "

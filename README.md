@@ -46,4 +46,12 @@ npm.cmd test
 npm.cmd run build
 ```
 
+人工 Rig 暂不可用时，可在未绑定 T-Pose 上继续独立配件静态适配：
+
+```powershell
+.\tools\run_tpose_accessory_experiment.ps1 -Seed 20260832
+```
+
+该入口只产生静态候选；骨骼、蒙皮和动画 Gate 不会被自动标记为通过。详见 [未绑定 T-Pose 配件工作流](docs/TPOSE_ACCESSORY_WORKFLOW.md)。
+
 除 `references/style_profiles/published_seeds/` 中已批准的可移植种子包外，`workspace/`、模型权重和第三方运行时均保持本地，不上传 Git。

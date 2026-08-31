@@ -1,6 +1,6 @@
 {
   "schema": "assetsstudio_style_slot_registry_v1",
-  "updated": "2026-08-27",
+  "updated": "2026-08-31",
   "styles": [
     {
       "schema": "assetsstudio_style_profile_v1",
@@ -151,6 +151,164 @@
           "oversized softly flattened anime-head silhouette and narrow torso taper readability at thumbnail size",
           "identity and outfit may vary while shape and render grammar remain stable",
           "hair length, rear mass, side locks, bangs and parting describe one compatible topology across all views",
+          "same material response across character and accessory",
+          "no realism or detail-density drift"
+        ],
+        "human_review_required": true
+      }
+    },
+    {
+      "schema": "assetsstudio_style_profile_v1",
+      "id": "qstyle_anime_western_fantasy_chibi3_no_face_v1",
+      "label": "无嘴无鼻 Q 版日漫西幻三头身风格",
+      "revision": 1,
+      "status": "provisional",
+      "consumer_tags": [
+        "assetsstudio-lab",
+        "bombadvanture",
+        "ba"
+      ],
+      "scope": [
+        "character",
+        "wearable",
+        "prop",
+        "environment"
+      ],
+      "authorities": [
+        {
+          "id": "chibi3_registered_front_authority",
+          "path": "milestones/actor_core/chibi3_standard_v1_source_review_20260831/canonical_source/front.png",
+          "sha256": "d3d5304c08b0e535efbced68294675999de60b714b4b42dc502551d95e924561",
+          "role": "primary_proportion",
+          "required": true
+        },
+        {
+          "id": "legacy_style_evidence",
+          "path": "references/style_profiles/assets/qstyle_ratio_anchor_user_v1.png",
+          "sha256": "ce589213993cff489e59789dc2ca28a32b3fabc6a51860bb4b73217baed756d6",
+          "role": "material_evidence",
+          "required": true
+        }
+      ],
+      "proportions": {
+        "measured_actor_height_m": 1.988019,
+        "measured_head_height_m": 0.654398,
+        "measured_total_heads": 3.03789,
+        "target_total_heads_range": [
+          2.9,
+          3.1
+        ],
+        "silhouette": "three-head chibi with a broad curved anime head, narrow tapered torso, compact mitten hands, short readable limbs and small rounded feet; intended for modular equipment and humanoid animation"
+      },
+      "shape_language": [
+        "broad softly curved anime head with a shallow face plane and tapered jaw; never a flat crown or perfect sphere",
+        "large expressive anime eyes; emotion comes from eyes, eyebrows, ears and pose",
+        "no visible mouth, lips, nose, nose bridge or nostrils",
+        "large simple rounded masses and low-frequency silhouette before surface detail",
+        "soft bevels and thick readable fantasy accessory shapes",
+        "compact non-hammer mitten hands and clear wrist transitions",
+        "avoid thin fragile straps, realistic anatomy and decorative micro-detail"
+      ],
+      "render_language": {
+        "medium": "polished soft 3D Japanese-anime western-fantasy game figurine",
+        "surface": "clean matte color blocks with restrained roughness variation and no skin pores",
+        "lighting": "soft neutral studio key and fill with subtle ambient occlusion",
+        "linework": "no heavy outline; separation comes from broad value blocks and occlusion",
+        "detail_density": "low to medium; every feature remains readable at game camera distance"
+      },
+      "palette": [
+        {
+          "role": "warm_light_neutral",
+          "color_srgb": "#E8D3A4"
+        },
+        {
+          "role": "cool_mid_neutral",
+          "color_srgb": "#60788A"
+        },
+        {
+          "role": "dark_structure",
+          "color_srgb": "#3E3A3A"
+        },
+        {
+          "role": "warm_natural",
+          "color_srgb": "#765133"
+        },
+        {
+          "role": "hero_accent",
+          "color_srgb": "#A83D32"
+        },
+        {
+          "role": "magic_accent",
+          "color_srgb": "#3E78A8"
+        },
+        {
+          "role": "aged_metal",
+          "color_srgb": "#B08A50"
+        }
+      ],
+      "prompt_contract": {
+        "positive": [
+          "Q-style Japanese-anime western fantasy game asset profile",
+          "compact 2.9 to 3.1 heads-tall body with an oversized broad curved anime head and tapered jaw",
+          "large expressive anime eyes and simple eyebrows on a completely mouthless and noseless face",
+          "polished soft 3D game figurine with smooth rounded low-frequency geometry",
+          "clean matte semantic color blocks, soft neutral studio light and subtle ambient occlusion",
+          "thick readable construction suitable for modular equipment and a small game camera"
+        ],
+        "negative": [
+          "visible mouth, lips, teeth, tongue, smile line, nose, nose bridge, nostrils or muzzle",
+          "realistic adult anatomy, long slender limbs, small head, flat crown, perfect spherical head, pear-shaped belly or generic baby mannequin",
+          "extreme one-and-a-half-head super-deformed proportions",
+          "photoreal skin, pores, painterly brushwork or noisy micro-texture",
+          "thin fragile straps, excessive ornaments or sharp high-frequency detail",
+          "perspective distortion, action pose, dramatic lighting, text or labels"
+        ],
+        "immutable_traits": [
+          "no visible mouth or mouth line",
+          "no visible nose, nose bridge or nostrils",
+          "broad curved anime head and 2.9 to 3.1 heads-tall compact silhouette",
+          "large expressive anime eyes with simple eyebrows",
+          "soft 3D anime figurine material response",
+          "low-frequency readable western-fantasy geometry",
+          "semantic palette roles without fixed character identity colors"
+        ]
+      },
+      "actor_core_contract": {
+        "positive": [
+          "compact 2.9 to 3.1 heads-tall body with an oversized broad curved anime head and tapered jaw",
+          "small narrow torso, short clean limbs, compact integral mitten hands with clear wrist transitions, and small rounded feet",
+          "polished soft 3D game figurine with smooth rounded low-frequency geometry",
+          "single clean matte neutral material with soft studio light and subtle ambient occlusion"
+        ],
+        "negative": [
+          "eyes, eyebrows, eyelashes, eye sockets, mouth, lips, nose, ears or any facial feature",
+          "hair, scalp cap, clothes, bodysuit, underwear, shoes, boots, gloves, jewelry or accessories",
+          "seams, cuffs, collars, waistbands, hems, ankle bands, boot-like feet, soles, heel blocks, toe blocks, color blocking or garment-like topology",
+          "realistic adult anatomy, sexual anatomy, long slender limbs, small head, flat crown, perfect spherical head, pear-shaped belly, generic baby mannequin, separated fingers, toes or skin pores",
+          "perspective distortion, action pose, dramatic lighting, text or labels"
+        ],
+        "immutable_traits": [
+          "fully bald and earless smooth head",
+          "completely blank featureless face",
+          "single continuous non-sexual neutral mannequin body shell",
+          "broad curved anime head and 2.9 to 3.1 heads-tall compact silhouette",
+          "compact mitten hands with distinct wrist transitions",
+          "soft rounded low-frequency volume language"
+        ]
+      },
+      "qa": {
+        "required_views": [
+          "front",
+          "right",
+          "back",
+          "left"
+        ],
+        "checks": [
+          "no visible mouth, mouth line, lips, nose, nose bridge or nostrils",
+          "2.9 to 3.1 total-head range",
+          "curved crown, broad anime-head silhouette and narrow torso readability",
+          "compact non-hammer mitten hands and stable wrist transitions",
+          "identity and outfit may vary while shape and render grammar remain stable",
           "same material response across character and accessory",
           "no realism or detail-density drift"
         ],
@@ -837,14 +995,835 @@
           ]
         }
       ]
+    },
+    {
+      "schema": "assetsstudio_actor_slot_profile_v2",
+      "id": "actor_core_chibi3_v9b_tpose_slots_v1",
+      "label": "Chibi3 v9b experimental T-Pose attachment proxy",
+      "revision": 1,
+      "status": "experimental_proxy",
+      "actor_asset_id": "actor_core_chibi3_source_v9b_seed20260830",
+      "style_profile_id": "qstyle_anime_western_fantasy_chibi3_no_face_v1",
+      "actor_model": {
+        "path": "milestones/actor_core/chibi3_standard_v1_source_review_20260831/candidates/v9b_balanced/chibi3_v9b_balanced.glb",
+        "sha256": "74f8787c7b044b9aca86bc9f80f28e1f34c809bb39907b9e26675832e9505e45",
+        "role": "tpose_fitting_proxy"
+      },
+      "coordinate_contract": {
+        "unit": "meter",
+        "up": "+Z",
+        "front": "-Y",
+        "actor_left": "+X",
+        "ground_z": 0.0,
+        "normalization": "actor_height",
+        "rig_state": "unbound_tpose"
+      },
+      "measurements": {
+        "actor_bounds_m": {
+          "min": [
+            -0.872673,
+            -0.303144,
+            0.0
+          ],
+          "max": [
+            0.865764,
+            0.311234,
+            1.988019
+          ]
+        },
+        "head_bounds_m": {
+          "min": [
+            -0.303252,
+            -0.303144,
+            1.333694
+          ],
+          "max": [
+            0.295571,
+            0.311234,
+            1.988019
+          ]
+        },
+        "actor_height_m": 1.988019,
+        "total_heads": 3.038095,
+        "source": "milestones/actor_core/chibi3_standard_v1_source_review_20260831/candidates/v9b_balanced/validation/head_roundness_front.json"
+      },
+      "slots": [
+        {
+          "slot_id": "EarPair",
+          "label": "Replaceable ear pair",
+          "category": "body_feature",
+          "side": "bilateral",
+          "status": "static_tpose_only",
+          "attachment": {
+            "mode": "rest_surface_pair",
+            "rig_dependency": "none_until_rig_intake",
+            "anchors": [
+              {
+                "id": "EarRoot_L",
+                "position_h": [
+                  0.140414,
+                  0.0,
+                  0.79
+                ],
+                "future_parent_bone": "Head",
+                "normal": [
+                  1.0,
+                  0.0,
+                  0.0
+                ]
+              },
+              {
+                "id": "EarRoot_R",
+                "position_h": [
+                  -0.140802,
+                  0.0,
+                  0.79
+                ],
+                "future_parent_bone": "Head",
+                "normal": [
+                  -1.0,
+                  0.0,
+                  0.0
+                ]
+              }
+            ]
+          },
+          "fit_envelope": {
+            "frame": "actor_normalized_rest",
+            "kind": "surface",
+            "bounds_h": {
+              "min": [
+                -0.160802,
+                -0.16452,
+                0.660866
+              ],
+              "max": [
+                0.160414,
+                0.16452,
+                1.02
+              ]
+            },
+            "clearance_h": 0.008
+          },
+          "generation_policy": {
+            "preferred_mode": "on_actor_then_isolate",
+            "allowed_asset_kinds": [
+              "human_ear_pair",
+              "elf_ear_pair",
+              "fantasy_ear_pair"
+            ],
+            "include_actor_context": true
+          },
+          "validation": {
+            "required_views": 4,
+            "required_frames": 1,
+            "collision_policy": "project roots to the T-Pose head surface; animation clearance is deferred",
+            "human_review_required": true
+          },
+          "evidence": [
+            {
+              "path": "milestones/actor_core/chibi3_standard_v1_source_review_20260831/candidates/v9b_balanced/chibi3_v9b_balanced.glb",
+              "kind": "measurement",
+              "tracked": true,
+              "sha256": "74f8787c7b044b9aca86bc9f80f28e1f34c809bb39907b9e26675832e9505e45"
+            },
+            {
+              "path": "milestones/actor_core/chibi3_standard_v1_source_review_20260831/candidates/v9b_balanced/validation/head_roundness_front.json",
+              "kind": "fit_report",
+              "tracked": true,
+              "sha256": "d8ffc6eadef165f24ec1a01be83a2d85c8ee4ae7714539c559388842583e343f"
+            }
+          ]
+        },
+        {
+          "slot_id": "head_hair",
+          "label": "Independent hair shell",
+          "category": "hair",
+          "side": "center",
+          "status": "static_tpose_only",
+          "attachment": {
+            "mode": "rest_envelope",
+            "rig_dependency": "none_until_rig_intake",
+            "anchors": [
+              {
+                "id": "HeadSurfaceCenter",
+                "position_h": [
+                  0.0,
+                  0.0,
+                  0.835433
+                ],
+                "future_parent_bone": "Head"
+              }
+            ]
+          },
+          "fit_envelope": {
+            "frame": "actor_normalized_rest",
+            "kind": "surface",
+            "bounds_h": {
+              "min": [
+                -0.160802,
+                -0.16452,
+                0.660866
+              ],
+              "max": [
+                0.160414,
+                0.16452,
+                1.02
+              ]
+            },
+            "clearance_h": 0.008
+          },
+          "generation_policy": {
+            "preferred_mode": "on_actor_then_isolate",
+            "allowed_asset_kinds": [
+              "hair_cap",
+              "bangs",
+              "side_locks",
+              "back_hair"
+            ],
+            "include_actor_context": true
+          },
+          "validation": {
+            "required_views": 4,
+            "required_frames": 1,
+            "collision_policy": "closed crown and static head clearance; neck deformation is deferred",
+            "human_review_required": true
+          },
+          "evidence": [
+            {
+              "path": "milestones/actor_core/chibi3_standard_v1_source_review_20260831/candidates/v9b_balanced/chibi3_v9b_balanced.glb",
+              "kind": "measurement",
+              "tracked": true,
+              "sha256": "74f8787c7b044b9aca86bc9f80f28e1f34c809bb39907b9e26675832e9505e45"
+            },
+            {
+              "path": "milestones/actor_core/chibi3_standard_v1_source_review_20260831/candidates/v9b_balanced/validation/head_roundness_front.json",
+              "kind": "fit_report",
+              "tracked": true,
+              "sha256": "d8ffc6eadef165f24ec1a01be83a2d85c8ee4ae7714539c559388842583e343f"
+            }
+          ]
+        },
+        {
+          "slot_id": "headwear",
+          "label": "Headwear",
+          "category": "headwear",
+          "side": "center",
+          "status": "static_tpose_only",
+          "attachment": {
+            "mode": "rest_anchor",
+            "rig_dependency": "none_until_rig_intake",
+            "anchors": [
+              {
+                "id": "HeadTop",
+                "position_h": [
+                  0.0,
+                  0.0,
+                  1.0
+                ],
+                "future_parent_bone": "Head",
+                "normal": [
+                  0.0,
+                  0.0,
+                  1.0
+                ]
+              }
+            ]
+          },
+          "fit_envelope": {
+            "frame": "actor_normalized_rest",
+            "kind": "surface",
+            "bounds_h": {
+              "min": [
+                -0.160802,
+                -0.16452,
+                0.660866
+              ],
+              "max": [
+                0.160414,
+                0.16452,
+                1.02
+              ]
+            },
+            "clearance_h": 0.008
+          },
+          "generation_policy": {
+            "preferred_mode": "on_actor_then_isolate",
+            "allowed_asset_kinds": [
+              "hat",
+              "helmet",
+              "hood"
+            ],
+            "include_actor_context": true
+          },
+          "validation": {
+            "required_views": 4,
+            "required_frames": 1,
+            "collision_policy": "validate static crown, hair and ear envelopes",
+            "human_review_required": true
+          },
+          "evidence": [
+            {
+              "path": "milestones/actor_core/chibi3_standard_v1_source_review_20260831/candidates/v9b_balanced/chibi3_v9b_balanced.glb",
+              "kind": "measurement",
+              "tracked": true,
+              "sha256": "74f8787c7b044b9aca86bc9f80f28e1f34c809bb39907b9e26675832e9505e45"
+            },
+            {
+              "path": "milestones/actor_core/chibi3_standard_v1_source_review_20260831/candidates/v9b_balanced/validation/head_roundness_front.json",
+              "kind": "fit_report",
+              "tracked": true,
+              "sha256": "d8ffc6eadef165f24ec1a01be83a2d85c8ee4ae7714539c559388842583e343f"
+            }
+          ]
+        },
+        {
+          "slot_id": "torso_outer",
+          "label": "Torso outer layer",
+          "category": "wearable",
+          "side": "center",
+          "status": "static_tpose_only",
+          "attachment": {
+            "mode": "rest_envelope",
+            "rig_dependency": "none_until_rig_intake",
+            "anchors": [
+              {
+                "id": "UpperTorsoCenter",
+                "position_h": [
+                  0.0,
+                  0.0,
+                  0.54
+                ],
+                "future_parent_bone": "Spine2"
+              }
+            ]
+          },
+          "fit_envelope": {
+            "frame": "actor_normalized_rest",
+            "kind": "surface",
+            "bounds_h": {
+              "min": [
+                -0.137568,
+                -0.11265,
+                0.33
+              ],
+              "max": [
+                0.238624,
+                0.100549,
+                0.62
+              ]
+            },
+            "clearance_h": 0.008
+          },
+          "generation_policy": {
+            "preferred_mode": "on_actor_then_isolate",
+            "allowed_asset_kinds": [
+              "jacket",
+              "shirt",
+              "robe",
+              "scarf"
+            ],
+            "include_actor_context": true
+          },
+          "validation": {
+            "required_views": 4,
+            "required_frames": 1,
+            "collision_policy": "preserve static neck, axilla and arm clearance",
+            "human_review_required": true
+          },
+          "evidence": [
+            {
+              "path": "milestones/actor_core/chibi3_standard_v1_source_review_20260831/candidates/v9b_balanced/chibi3_v9b_balanced.glb",
+              "kind": "measurement",
+              "tracked": true,
+              "sha256": "74f8787c7b044b9aca86bc9f80f28e1f34c809bb39907b9e26675832e9505e45"
+            },
+            {
+              "path": "milestones/actor_core/chibi3_standard_v1_source_review_20260831/candidates/v9b_balanced/validation/head_roundness_front.json",
+              "kind": "fit_report",
+              "tracked": true,
+              "sha256": "d8ffc6eadef165f24ec1a01be83a2d85c8ee4ae7714539c559388842583e343f"
+            }
+          ]
+        },
+        {
+          "slot_id": "waist_accessory",
+          "label": "Belt and waist pouch",
+          "category": "prop",
+          "side": "center",
+          "status": "source_contract",
+          "attachment": {
+            "mode": "rest_envelope",
+            "rig_dependency": "none_until_rig_intake",
+            "anchors": [
+              {
+                "id": "WaistCenter",
+                "position_h": [
+                  0.0,
+                  0.0,
+                  0.39
+                ],
+                "future_parent_bone": "Waist"
+              }
+            ]
+          },
+          "fit_envelope": {
+            "frame": "actor_normalized_rest",
+            "kind": "surface",
+            "bounds_h": {
+              "min": [
+                -0.152568,
+                -0.14265,
+                0.33
+              ],
+              "max": [
+                0.152254,
+                0.164455,
+                0.46
+              ]
+            },
+            "clearance_h": 0.008
+          },
+          "generation_reference": {
+            "path": "references/slot_authorities/waist_accessory/waist_accessory_turnaround_v1.png",
+            "sha256": "3756c5dc6042a03fbf4e60a2e1cc6bacfd1ebad5d9718482763152e19c553e18",
+            "role": "isolated_slot_authority"
+          },
+          "generation_policy": {
+            "preferred_mode": "standalone",
+            "allowed_asset_kinds": [
+              "belt",
+              "waist_pouch",
+              "buckle",
+              "small_holster"
+            ],
+            "include_actor_context": true
+          },
+          "validation": {
+            "required_views": 4,
+            "required_frames": 1,
+            "collision_policy": "static T-Pose body clearance only; hand, thigh and locomotion gates are deferred",
+            "human_review_required": true
+          },
+          "evidence": [
+            {
+              "path": "milestones/actor_core/chibi3_standard_v1_source_review_20260831/candidates/v9b_balanced/chibi3_v9b_balanced.glb",
+              "kind": "measurement",
+              "tracked": true,
+              "sha256": "74f8787c7b044b9aca86bc9f80f28e1f34c809bb39907b9e26675832e9505e45"
+            },
+            {
+              "path": "milestones/actor_core/chibi3_standard_v1_source_review_20260831/candidates/v9b_balanced/validation/head_roundness_front.json",
+              "kind": "fit_report",
+              "tracked": true,
+              "sha256": "d8ffc6eadef165f24ec1a01be83a2d85c8ee4ae7714539c559388842583e343f"
+            },
+            {
+              "path": "references/slot_authorities/waist_accessory/waist_accessory_turnaround_v1.png",
+              "kind": "review",
+              "tracked": true,
+              "sha256": "3756c5dc6042a03fbf4e60a2e1cc6bacfd1ebad5d9718482763152e19c553e18"
+            }
+          ]
+        },
+        {
+          "slot_id": "legs_outer",
+          "label": "Leg outer layer",
+          "category": "wearable",
+          "side": "bilateral",
+          "status": "static_tpose_only",
+          "attachment": {
+            "mode": "rest_envelope",
+            "rig_dependency": "none_until_rig_intake",
+            "anchors": [
+              {
+                "id": "PelvisCenter",
+                "position_h": [
+                  0.0,
+                  0.0,
+                  0.335
+                ],
+                "future_parent_bone": "Pelvis"
+              }
+            ]
+          },
+          "fit_envelope": {
+            "frame": "actor_normalized_rest",
+            "kind": "surface",
+            "bounds_h": {
+              "min": [
+                -0.18,
+                -0.13,
+                0.08
+              ],
+              "max": [
+                0.18,
+                0.15,
+                0.39
+              ]
+            },
+            "clearance_h": 0.008
+          },
+          "generation_policy": {
+            "preferred_mode": "on_actor_then_isolate",
+            "allowed_asset_kinds": [
+              "shorts",
+              "pants",
+              "skirt",
+              "leg_armor"
+            ],
+            "include_actor_context": true
+          },
+          "validation": {
+            "required_views": 4,
+            "required_frames": 1,
+            "collision_policy": "preserve static pelvis and independent leg gaps",
+            "human_review_required": true
+          },
+          "evidence": [
+            {
+              "path": "milestones/actor_core/chibi3_standard_v1_source_review_20260831/candidates/v9b_balanced/chibi3_v9b_balanced.glb",
+              "kind": "measurement",
+              "tracked": true,
+              "sha256": "74f8787c7b044b9aca86bc9f80f28e1f34c809bb39907b9e26675832e9505e45"
+            },
+            {
+              "path": "milestones/actor_core/chibi3_standard_v1_source_review_20260831/candidates/v9b_balanced/validation/head_roundness_front.json",
+              "kind": "fit_report",
+              "tracked": true,
+              "sha256": "d8ffc6eadef165f24ec1a01be83a2d85c8ee4ae7714539c559388842583e343f"
+            }
+          ]
+        },
+        {
+          "slot_id": "feet_outer",
+          "label": "Footwear",
+          "category": "wearable",
+          "side": "bilateral",
+          "status": "static_tpose_only",
+          "attachment": {
+            "mode": "rest_anchor_pair",
+            "rig_dependency": "none_until_rig_intake",
+            "anchors": [
+              {
+                "id": "FootRoot_L",
+                "position_h": [
+                  0.069988,
+                  -0.007505,
+                  0.06601
+                ],
+                "future_parent_bone": "LeftFoot"
+              },
+              {
+                "id": "FootRoot_R",
+                "position_h": [
+                  -0.070572,
+                  -0.007542,
+                  0.065941
+                ],
+                "future_parent_bone": "RightFoot"
+              }
+            ]
+          },
+          "fit_envelope": {
+            "frame": "actor_normalized_rest",
+            "kind": "surface",
+            "bounds_h": {
+              "min": [
+                -0.18,
+                -0.13,
+                0.0
+              ],
+              "max": [
+                0.18,
+                0.16,
+                0.18
+              ]
+            },
+            "clearance_h": 0.006
+          },
+          "generation_policy": {
+            "preferred_mode": "on_actor_then_isolate",
+            "allowed_asset_kinds": [
+              "boots",
+              "shoes",
+              "greaves"
+            ],
+            "include_actor_context": true
+          },
+          "validation": {
+            "required_views": 4,
+            "required_frames": 1,
+            "collision_policy": "preserve ground contact and static toe direction",
+            "human_review_required": true
+          },
+          "evidence": [
+            {
+              "path": "milestones/actor_core/chibi3_standard_v1_source_review_20260831/candidates/v9b_balanced/chibi3_v9b_balanced.glb",
+              "kind": "measurement",
+              "tracked": true,
+              "sha256": "74f8787c7b044b9aca86bc9f80f28e1f34c809bb39907b9e26675832e9505e45"
+            },
+            {
+              "path": "milestones/actor_core/chibi3_standard_v1_source_review_20260831/candidates/v9b_balanced/validation/head_roundness_front.json",
+              "kind": "fit_report",
+              "tracked": true,
+              "sha256": "d8ffc6eadef165f24ec1a01be83a2d85c8ee4ae7714539c559388842583e343f"
+            }
+          ]
+        },
+        {
+          "slot_id": "wrist_accessory",
+          "label": "Wrist accessory",
+          "category": "prop",
+          "side": "bilateral",
+          "status": "static_tpose_only",
+          "attachment": {
+            "mode": "rest_anchor_pair",
+            "rig_dependency": "none_until_rig_intake",
+            "anchors": [
+              {
+                "id": "Wrist_L",
+                "position_h": [
+                  0.388629,
+                  0.0,
+                  0.598963
+                ],
+                "future_parent_bone": "LeftForearm"
+              },
+              {
+                "id": "Wrist_R",
+                "position_h": [
+                  -0.390129,
+                  0.0,
+                  0.598963
+                ],
+                "future_parent_bone": "RightForearm"
+              }
+            ]
+          },
+          "fit_envelope": null,
+          "generation_policy": {
+            "preferred_mode": "standalone",
+            "allowed_asset_kinds": [
+              "bracer",
+              "bracelet",
+              "wrist_guard"
+            ],
+            "include_actor_context": true
+          },
+          "validation": {
+            "required_views": 4,
+            "required_frames": 1,
+            "collision_policy": "validate static wrist and mitten clearance",
+            "human_review_required": true
+          },
+          "evidence": [
+            {
+              "path": "milestones/actor_core/chibi3_standard_v1_source_review_20260831/candidates/v9b_balanced/chibi3_v9b_balanced.glb",
+              "kind": "measurement",
+              "tracked": true,
+              "sha256": "74f8787c7b044b9aca86bc9f80f28e1f34c809bb39907b9e26675832e9505e45"
+            },
+            {
+              "path": "milestones/actor_core/chibi3_standard_v1_source_review_20260831/candidates/v9b_balanced/validation/head_roundness_front.json",
+              "kind": "fit_report",
+              "tracked": true,
+              "sha256": "d8ffc6eadef165f24ec1a01be83a2d85c8ee4ae7714539c559388842583e343f"
+            }
+          ]
+        },
+        {
+          "slot_id": "hand_prop_l",
+          "label": "Left-hand prop",
+          "category": "prop",
+          "side": "left",
+          "status": "static_tpose_only",
+          "attachment": {
+            "mode": "rest_anchor",
+            "rig_dependency": "none_until_rig_intake",
+            "anchors": [
+              {
+                "id": "Grip_L",
+                "position_h": [
+                  0.437229,
+                  -0.007965,
+                  0.598963
+                ],
+                "future_parent_bone": "LeftHand"
+              }
+            ]
+          },
+          "fit_envelope": null,
+          "generation_policy": {
+            "preferred_mode": "standalone",
+            "allowed_asset_kinds": [
+              "weapon",
+              "tool",
+              "lantern",
+              "shield"
+            ],
+            "include_actor_context": true
+          },
+          "validation": {
+            "required_views": 4,
+            "required_frames": 1,
+            "collision_policy": "static grip alignment only; hand pose is deferred",
+            "human_review_required": true
+          },
+          "evidence": [
+            {
+              "path": "milestones/actor_core/chibi3_standard_v1_source_review_20260831/candidates/v9b_balanced/chibi3_v9b_balanced.glb",
+              "kind": "measurement",
+              "tracked": true,
+              "sha256": "74f8787c7b044b9aca86bc9f80f28e1f34c809bb39907b9e26675832e9505e45"
+            },
+            {
+              "path": "milestones/actor_core/chibi3_standard_v1_source_review_20260831/candidates/v9b_balanced/validation/head_roundness_front.json",
+              "kind": "fit_report",
+              "tracked": true,
+              "sha256": "d8ffc6eadef165f24ec1a01be83a2d85c8ee4ae7714539c559388842583e343f"
+            }
+          ]
+        },
+        {
+          "slot_id": "hand_prop_r",
+          "label": "Right-hand prop",
+          "category": "prop",
+          "side": "right",
+          "status": "static_tpose_only",
+          "attachment": {
+            "mode": "rest_anchor",
+            "rig_dependency": "none_until_rig_intake",
+            "anchors": [
+              {
+                "id": "Grip_R",
+                "position_h": [
+                  -0.437229,
+                  -0.011919,
+                  0.598963
+                ],
+                "future_parent_bone": "RightHand"
+              }
+            ]
+          },
+          "fit_envelope": null,
+          "generation_policy": {
+            "preferred_mode": "standalone",
+            "allowed_asset_kinds": [
+              "weapon",
+              "tool",
+              "lantern",
+              "shield"
+            ],
+            "include_actor_context": true
+          },
+          "validation": {
+            "required_views": 4,
+            "required_frames": 1,
+            "collision_policy": "static grip alignment only; hand pose is deferred",
+            "human_review_required": true
+          },
+          "evidence": [
+            {
+              "path": "milestones/actor_core/chibi3_standard_v1_source_review_20260831/candidates/v9b_balanced/chibi3_v9b_balanced.glb",
+              "kind": "measurement",
+              "tracked": true,
+              "sha256": "74f8787c7b044b9aca86bc9f80f28e1f34c809bb39907b9e26675832e9505e45"
+            },
+            {
+              "path": "milestones/actor_core/chibi3_standard_v1_source_review_20260831/candidates/v9b_balanced/validation/head_roundness_front.json",
+              "kind": "fit_report",
+              "tracked": true,
+              "sha256": "d8ffc6eadef165f24ec1a01be83a2d85c8ee4ae7714539c559388842583e343f"
+            }
+          ]
+        },
+        {
+          "slot_id": "back_accessory",
+          "label": "Back accessory",
+          "category": "prop",
+          "side": "center",
+          "status": "static_tpose_only",
+          "attachment": {
+            "mode": "rest_anchor",
+            "rig_dependency": "none_until_rig_intake",
+            "anchors": [
+              {
+                "id": "BackCenter",
+                "position_h": [
+                  0.0,
+                  0.065008,
+                  0.54
+                ],
+                "future_parent_bone": "Spine2",
+                "normal": [
+                  0.0,
+                  1.0,
+                  0.0
+                ]
+              }
+            ]
+          },
+          "fit_envelope": {
+            "frame": "actor_normalized_rest",
+            "kind": "aabb",
+            "bounds_h": {
+              "min": [
+                -0.144147,
+                0.065008,
+                0.35
+              ],
+              "max": [
+                0.146509,
+                0.225008,
+                0.67
+              ]
+            },
+            "clearance_h": 0.01
+          },
+          "generation_policy": {
+            "preferred_mode": "standalone",
+            "allowed_asset_kinds": [
+              "backpack",
+              "cape_mount",
+              "quiver",
+              "back_weapon"
+            ],
+            "include_actor_context": true
+          },
+          "validation": {
+            "required_views": 4,
+            "required_frames": 1,
+            "collision_policy": "static back clearance only; spine and shoulder motion are deferred",
+            "human_review_required": true
+          },
+          "evidence": [
+            {
+              "path": "milestones/actor_core/chibi3_standard_v1_source_review_20260831/candidates/v9b_balanced/chibi3_v9b_balanced.glb",
+              "kind": "measurement",
+              "tracked": true,
+              "sha256": "74f8787c7b044b9aca86bc9f80f28e1f34c809bb39907b9e26675832e9505e45"
+            },
+            {
+              "path": "milestones/actor_core/chibi3_standard_v1_source_review_20260831/candidates/v9b_balanced/validation/head_roundness_front.json",
+              "kind": "fit_report",
+              "tracked": true,
+              "sha256": "d8ffc6eadef165f24ec1a01be83a2d85c8ee4ae7714539c559388842583e343f"
+            }
+          ]
+        }
+      ]
     }
   ],
   "sources": {
     "styles": [
-      "references/style_profiles/qstyle_anime_western_fantasy_no_face_v1.json"
+      "references/style_profiles/qstyle_anime_western_fantasy_no_face_v1.json",
+      "references/style_profiles/qstyle_anime_western_fantasy_chibi3_no_face_v1.json"
     ],
     "actors": [
-      "references/actor_core/actor_core_0ef398ca/actor_slot_profile_v1.json"
+      "references/actor_core/actor_core_0ef398ca/actor_slot_profile_v1.json",
+      "references/actor_core/actor_core_chibi3_v9b/actor_slot_profile_v2.json"
     ]
   }
 }

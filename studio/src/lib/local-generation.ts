@@ -151,8 +151,10 @@ export interface LocalLibraryAsset {
 export interface Local3DAsset {
   schema: "assetsstudio_local_3d_candidate_v1";
   candidate_id: string;
-  asset_kind: "base_actor_3d";
-  source_base_actor_asset_id: string;
+  asset_kind: "base_actor_3d" | "accessory_3d";
+  source_base_actor_asset_id?: string;
+  actor_profile_id?: string;
+  slot_id?: string;
   style_profile_id: string;
   subject: string;
   created_at: string;
@@ -163,6 +165,7 @@ export interface Local3DAsset {
   known_issues?: string[];
   local_only: true;
   model_url: string;
+  combined_model_url?: string;
   preview_urls: Partial<Record<"front" | "right" | "back" | "left", string>>;
   mesh_audit: {
     vertices: number;

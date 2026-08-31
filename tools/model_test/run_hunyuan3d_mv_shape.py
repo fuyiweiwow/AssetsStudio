@@ -11,6 +11,7 @@ import sys
 from pathlib import Path
 
 import torch
+import trimesh
 import yaml
 from PIL import Image
 
@@ -108,6 +109,9 @@ def main() -> int:
     parser.add_argument("--guidance-scale", type=float)
     parser.add_argument("--octree-resolution", type=int, default=256)
     parser.add_argument("--num-chunks", type=int, default=20000)
+    parser.add_argument("--asset-kind", choices=("base_actor", "accessory"), default="base_actor")
+    parser.add_argument("--max-components", type=int, default=16)
+    parser.add_argument("--min-component-face-fraction", type=float, default=0.00025)
     args = parser.parse_args()
 
     args.model = discover_model_root(args.model)
@@ -161,23 +165,51 @@ def main() -> int:
         if args.guidance_scale is not None:
             generation_args["guidance_scale"] = args.guidance_scale
         mesh = pipeline(**generation_args)[0]
-    mesh.export(args.output)
     peak_memory_bytes = int(torch.cuda.max_memory_allocated())
-    connected_components = len(mesh.split(only_watertight=False))
+    raw_components = list(mesh.split(only_watertight=False))
+    raw_face_count = len(mesh.faces)
+    discarded_components: list[dict[str, float | int]] = []
+    if args.asset_kind == "accessory":
+        kept_components = []
+        for component in raw_components:
+            fraction = len(component.faces) / max(raw_face_count, 1)
+            if fraction < args.min_component_face_fraction:
+                discarded_components.append(
+                    {"faces": len(component.faces), "face_fraction": fraction}
+                )
+            else:
+                kept_components.append(component)
+        if not kept_components:
+            raise RuntimeError("accessory cleanup removed every component")
+        if discarded_components:
+            mesh = trimesh.util.concatenate(kept_components)
+    mesh.export(args.output)
+    components = list(mesh.split(only_watertight=False))
+    connected_components = len(components)
     topology = {
         "geometry_count": 1,
         "connected_components": connected_components,
         "watertight": bool(mesh.is_watertight),
         "winding_consistent": bool(mesh.is_winding_consistent),
         "euler_number": int(mesh.euler_number),
+        "all_components_watertight": all(bool(component.is_watertight) for component in components),
     }
-    automatic_gates = {
-        "single_geometry": topology["geometry_count"] == 1,
-        "single_connected_component": connected_components == 1,
-        "watertight": topology["watertight"],
-        "winding_consistent": topology["winding_consistent"],
-        "genus_zero_euler_two": topology["euler_number"] == 2,
-    }
+    if args.asset_kind == "base_actor":
+        automatic_gates = {
+            "single_geometry": topology["geometry_count"] == 1,
+            "single_connected_component": connected_components == 1,
+            "watertight": topology["watertight"],
+            "winding_consistent": topology["winding_consistent"],
+            "genus_zero_euler_two": topology["euler_number"] == 2,
+        }
+    else:
+        automatic_gates = {
+            "single_geometry": topology["geometry_count"] == 1,
+            "component_count_within_slot_limit": 1 <= connected_components <= args.max_components,
+            "all_components_watertight": topology["all_components_watertight"],
+            "winding_consistent": topology["winding_consistent"],
+            "tiny_fragment_cleanup_bounded": sum(item["faces"] for item in discarded_components) / max(raw_face_count, 1) <= 0.001,
+        }
     automatic_pass = all(automatic_gates.values())
     report = {
         "schema": "assetsstudio_hunyuan3d_2mv_shape_v1",
@@ -195,10 +227,18 @@ def main() -> int:
         "octree_resolution": args.octree_resolution,
         "num_chunks": args.num_chunks,
         "cpu_offload": args.cpu_offload,
+        "asset_kind": args.asset_kind,
         "vertices": len(mesh.vertices),
         "faces": len(mesh.faces),
         "peak_cuda_memory_bytes": peak_memory_bytes,
         "mesh_audit": topology,
+        "component_policy": {
+            "max_components": args.max_components,
+            "min_component_face_fraction": args.min_component_face_fraction,
+            "raw_components": len(raw_components),
+            "kept_components": connected_components,
+            "discarded_components": discarded_components,
+        },
         "automatic_gates": automatic_gates,
         "status": "pass" if automatic_pass else "fail",
     }
