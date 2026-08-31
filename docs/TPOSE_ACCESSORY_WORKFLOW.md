@@ -41,6 +41,10 @@
 - 素体与配件表面三角形相交数为 0，四方向预览完整。
 - 当前状态为 `pass_static_tpose_manual_review_required`，只进入本地候选，不自动入库。
 
+首次人工复核确认腰线高度正确，但整体横向与前后尺寸过宽，因此原候选不得晋级。收窄候选 `waist_belt_pouch_chibi3_v9b_seed20260831_refined_v14` 保持腰线高度不变，使用 `WidthFactor=0.76`、`DepthFactor=0.66` 和角向表面贴合；扣环与腰包细节仍来自原 Hunyuan3D 网格，不是规则建模替代品。该候选重新通过槽位包围盒、最大轴缩放比 `1.4702`、表面相交数 0 和四视图 Gate，现为本地人工复核候选。
+
+收窄不能只做整体缩放：完全缩进素体内部时，单纯的三角面相交检测可能得到假阴性。`-SurfaceConform` 会以腰部表面和 Slot clearance 构造角向位移场，保留扣件厚度并在贴合后重新执行包围盒与表面相交 Gate；Fit Report 同时记录实测腰部尺寸、目标/最终包围盒和贴合位移。
+
 ## 一键实验入口
 
 ```powershell
@@ -60,6 +64,9 @@
 ```powershell
 # 已存在同 seed 的 Hunyuan shape 时复用，只重新装配和预览
 .\tools\run_tpose_accessory_experiment.ps1 -Seed 20260832 -ReuseShape
+
+# 对已有 shape 建立独立的收窄贴身候选；不会覆盖原候选或重新生成 shape
+.\tools\run_tpose_accessory_experiment.ps1 -Seed 20260832 -ReuseShape -FitVariant refined_v1 -WidthFactor 0.76 -DepthFactor 0.66 -SurfaceConform
 
 # 只生成并验证，不注册到 Studio 候选列表
 .\tools\run_tpose_accessory_experiment.ps1 -Seed 20260832 -NoRegister

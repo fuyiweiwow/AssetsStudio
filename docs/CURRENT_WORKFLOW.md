@@ -69,10 +69,12 @@ Studio 为多个游戏提供可复用美术资产。当前 `ba` 仅保留在 `co
 
 - 新增独立三头身 StyleProfile `qstyle_anime_western_fantasy_chibi3_no_face_v1`，目标 `2.9–3.1H`；没有扩大旧 `2.1–2.5H` Profile 的比例范围。
 - `v9b_balanced` 以 `experimental_proxy` 身份生成 ActorSlotProfile v2：11 个 Slot 使用高度归一化 Rest Anchor，当前 Rig 状态为 `unbound_tpose`。
-- 首个腰带腰包候选已复用现有独立权威图，经本地 Hunyuan3D-2MV 和静态装配 Gate：128,258 顶点、256,496 面、10 个有效封闭组件、最大轴缩放比 `1.0306`、表面相交数 0。
-- 候选 `waist_belt_pouch_chibi3_v9b_seed20260831` 已进入 Studio 本地候选列表，等待人工四方向确认；没有自动加入资产库。
+- 首个腰带腰包 shape 已复用现有独立权威图，经本地 Hunyuan3D-2MV 得到 128,258 顶点、256,496 面和 10 个有效封闭组件。原静态装配候选被人工判定过宽，不得晋级。
+- 收窄候选 `waist_belt_pouch_chibi3_v9b_seed20260831_refined_v14` 保持腰线高度，横向/前后基准为原槽位的 `0.76/0.66`，并执行角向表面贴合；最大轴缩放比 `1.4702`、槽位包围盒通过、表面相交数 0。它只进入 Studio 本地候选列表，等待人工四方向确认，没有自动加入资产库。
 - 配件与素体使用不同拓扑 Gate；素体的单连通/Euler=2 标准保持不变。
 - 完整方法与复现实验入口见 `docs/TPOSE_ACCESSORY_WORKFLOW.md`。
+
+对 BombAdventure/QQ 堂式俯视炸弹玩法，当前三头身、无面部、短粗四肢和清晰轮廓适合作为视觉基准素体；但仍只批准为美术与静态配件实验代理。进入游戏生产前必须补做俯视/斜俯视轮廓、四方向跑动、放置炸弹、脚下格可读性、手腿与配件动态间隙 Gate。
 
 ## 2026-08-28 当前停点
 

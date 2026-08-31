@@ -6,6 +6,13 @@ param(
     [string]$Subject = "Q版日漫西幻皮革腰带与腰包",
     [int]$Seed = 20260831,
     [int]$Steps = 20,
+    [ValidateRange(0.01, 1.0)]
+    [double]$WidthFactor = 1.0,
+    [ValidateRange(0.01, 1.0)]
+    [double]$DepthFactor = 1.0,
+    [ValidatePattern("^[A-Za-z0-9_-]*$")]
+    [string]$FitVariant = "",
+    [switch]$SurfaceConform,
     [switch]$ReuseShape,
     [switch]$NoRegister,
     [switch]$CheckEnvironment
@@ -57,14 +64,18 @@ if ($CheckEnvironment) {
     exit 0
 }
 
-$candidateId = "waist_belt_pouch_chibi3_v9b_seed$Seed"
+$shapeId = "waist_belt_pouch_chibi3_v9b_seed$Seed"
+$candidateId = $shapeId
+if (-not [string]::IsNullOrWhiteSpace($FitVariant)) {
+    $candidateId = "${candidateId}_$FitVariant"
+}
 $workRoot = Join-Path $projectRoot "workspace\accessory_fit\chibi3_v9b\$SlotId\seed_$Seed"
 $rgbRoot = Join-Path $workRoot "source_rgb"
 $rgbaRoot = Join-Path $workRoot "source_rgba"
 $shapeRoot = Join-Path $workRoot "hunyuan"
-$fitRoot = Join-Path $workRoot "fitted"
+$fitRoot = Join-Path $workRoot $(if ([string]::IsNullOrWhiteSpace($FitVariant)) { "fitted" } else { "fitted_$FitVariant" })
 $preparation = Join-Path $workRoot "source_preparation.json"
-$shape = Join-Path $shapeRoot "$candidateId.glb"
+$shape = Join-Path $shapeRoot "$shapeId.glb"
 $shapeManifest = Join-Path $shapeRoot "shape_manifest.json"
 
 Push-Location $projectRoot
@@ -90,16 +101,22 @@ try {
         if ($LASTEXITCODE -ne 0) { throw "Accessory Hunyuan shape gate failed." }
     }
 
-    & $Blender --background --factory-startup --python tools/model_test/fit_tpose_accessory_blender.py -- `
-        --actor $Actor `
-        --accessory $shape `
-        --profile $Profile `
-        --slot-id $SlotId `
-        --source-preparation $preparation `
-        --shape-manifest $shapeManifest `
-        --output-dir $fitRoot `
-        --asset-id $candidateId `
-        --resolution 768
+    $fitArguments = @(
+        "--background", "--factory-startup", "--python", "tools/model_test/fit_tpose_accessory_blender.py", "--",
+        "--actor", $Actor,
+        "--accessory", $shape,
+        "--profile", $Profile,
+        "--slot-id", $SlotId,
+        "--source-preparation", $preparation,
+        "--shape-manifest", $shapeManifest,
+        "--output-dir", $fitRoot,
+        "--asset-id", $candidateId,
+        "--width-factor", $WidthFactor,
+        "--depth-factor", $DepthFactor,
+        "--resolution", 768
+    )
+    if ($SurfaceConform) { $fitArguments += "--surface-conform" }
+    & $Blender @fitArguments
     if ($LASTEXITCODE -ne 0) { throw "Static T-Pose fit gate failed." }
 
     if (-not $NoRegister) {

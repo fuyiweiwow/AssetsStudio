@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import math
 import sys
 from pathlib import Path
 
@@ -26,6 +27,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--asset-id", required=True)
     parser.add_argument("--resolution", type=int, default=768)
     parser.add_argument("--max-axis-scale-ratio", type=float, default=4.5)
+    parser.add_argument("--width-factor", type=float, default=1.0)
+    parser.add_argument("--depth-factor", type=float, default=1.0)
+    parser.add_argument("--surface-conform", action="store_true")
     return parser.parse_args(argv)
 
 
@@ -76,6 +80,65 @@ def build_bvh(objects: list[bpy.types.Object]) -> BVHTree:
         vertices.extend(obj.matrix_world @ vertex.co for vertex in obj.data.vertices)
         polygons.extend(tuple(offset + index for index in polygon.vertices) for polygon in obj.data.polygons)
     return BVHTree.FromPolygons(vertices, polygons, all_triangles=False, epsilon=1e-6)
+
+
+def conform_to_actor_surface(
+    objects: list[bpy.types.Object],
+    actor_bvh: BVHTree,
+    center_x: float,
+    center_y: float,
+    clearance: float,
+    ray_distance: float,
+) -> dict[str, object]:
+    """Apply a shared angular offset field so accessory details retain thickness."""
+
+    bin_count = 720
+    angular_offsets = [0.0] * bin_count
+    vertices: list[tuple[bpy.types.MeshVertex, Vector, int]] = []
+    for obj in objects:
+        for vertex in obj.data.vertices:
+            point = obj.matrix_world @ vertex.co
+            radial = Vector((point.x - center_x, point.y - center_y, 0.0))
+            radius = radial.length
+            if radius <= 1e-8:
+                continue
+            direction = radial.normalized()
+            angle = (math.atan2(direction.y, direction.x) + math.tau) % math.tau
+            bin_index = min(int(angle / math.tau * bin_count), bin_count - 1)
+            vertices.append((vertex, direction, bin_index))
+            origin = Vector((center_x, center_y, point.z))
+            hit_location, _normal, _face, hit_distance = actor_bvh.ray_cast(
+                origin, direction, ray_distance
+            )
+            if hit_location is None or hit_distance is None:
+                continue
+            angular_offsets[bin_index] = max(
+                angular_offsets[bin_index],
+                hit_distance + clearance - radius,
+            )
+
+    safe_offsets = [
+        max(angular_offsets[(index + neighbor) % bin_count] for neighbor in range(-2, 3))
+        for index in range(bin_count)
+    ]
+    adjusted = 0
+    maximum_displacement = max(safe_offsets, default=0.0)
+    for vertex, direction, bin_index in vertices:
+        displacement = safe_offsets[bin_index]
+        if displacement <= 0.0:
+            continue
+        vertex.co.x += direction.x * displacement
+        vertex.co.y += direction.y * displacement
+        adjusted += 1
+    bpy.context.view_layer.update()
+    return {
+        "enabled": True,
+        "mode": "angular_radial_offset",
+        "angular_bins": bin_count,
+        "adjusted_vertices": adjusted,
+        "max_displacement_m": round(maximum_displacement, 6),
+        "clearance_m": round(clearance, 6),
+    }
 
 
 def material(name: str, color: tuple[float, float, float, float], metallic=0.0) -> bpy.types.Material:
@@ -190,6 +253,9 @@ def export_glb(objects: list[bpy.types.Object], path: Path) -> None:
 
 def main() -> int:
     args = parse_args()
+    for name, value in (("width-factor", args.width_factor), ("depth-factor", args.depth_factor)):
+        if not 0.0 < value <= 1.0:
+            raise ValueError(f"{name} must be greater than 0 and no greater than 1")
     for path in (args.actor, args.accessory, args.profile, args.source_preparation, args.shape_manifest):
         if not path.is_file():
             raise FileNotFoundError(path)
@@ -238,13 +304,14 @@ def main() -> int:
 
     source_size = source_maximum - source_minimum
     front_aspect = float(preparation["outputs"]["front"]["foreground_aspect_width_over_height"])
-    target_width = envelope_size.x
-    target_height = min(envelope_size.z, target_width / front_aspect)
-    target_depth = max(
-        source_size.y / source_size.x * target_width,
+    unadjusted_target_width = envelope_size.x
+    target_width = unadjusted_target_width * args.width_factor
+    target_height = min(envelope_size.z, unadjusted_target_width / front_aspect)
+    unadjusted_target_depth = max(
+        source_size.y / source_size.x * unadjusted_target_width,
         (waist_maximum.y - waist_minimum.y) + clearance * 2.0,
     )
-    target_depth = min(target_depth, envelope_size.y)
+    target_depth = min(unadjusted_target_depth * args.depth_factor, envelope_size.y)
     target_size = Vector((target_width, target_depth, target_height))
     scale = Vector((target_size.x / source_size.x, target_size.y / source_size.y, target_size.z / source_size.z))
     axis_scale_ratio = max(scale) / min(scale)
@@ -256,6 +323,23 @@ def main() -> int:
         obj.data.transform(transform)
     bpy.context.view_layer.update()
 
+    actor_bvh = build_bvh(actor)
+    conform_report: dict[str, object] = {
+        "enabled": False,
+        "adjusted_vertices": 0,
+        "max_displacement_m": 0.0,
+        "clearance_m": round(clearance, 6),
+    }
+    if args.surface_conform:
+        conform_report = conform_to_actor_surface(
+            accessory,
+            actor_bvh,
+            center_x,
+            center_y,
+            clearance,
+            height,
+        )
+
     fitted_minimum, fitted_maximum = bounds(world_vertices(accessory))
     tolerance = 1e-5
     envelope_contained = all(
@@ -263,7 +347,6 @@ def main() -> int:
         and fitted_maximum[index] <= envelope_maximum[index] + tolerance
         for index in range(3)
     )
-    actor_bvh = build_bvh(actor)
     accessory_bvh = build_bvh(accessory)
     overlap_pairs = actor_bvh.overlap(accessory_bvh)
 
@@ -304,10 +387,28 @@ def main() -> int:
         "registration": {
             "source_size_m": [round(value, 6) for value in source_size],
             "target_size_m": [round(value, 6) for value in target_size],
+            "envelope_bounds_m": {
+                "min": [round(value, 6) for value in envelope_minimum],
+                "max": [round(value, 6) for value in envelope_maximum],
+            },
+            "fitted_bounds_m": {
+                "min": [round(value, 6) for value in fitted_minimum],
+                "max": [round(value, 6) for value in fitted_maximum],
+            },
+            "waist_band_size_m": [
+                round(waist_maximum[index] - waist_minimum[index], 6)
+                for index in range(3)
+            ],
             "scale_xyz": [round(value, 6) for value in scale],
             "axis_scale_ratio": round(axis_scale_ratio, 6),
             "max_axis_scale_ratio": args.max_axis_scale_ratio,
             "source_front_aspect": front_aspect,
+            "fit_adjustments": {
+                "width_factor": args.width_factor,
+                "depth_factor": args.depth_factor,
+                "preserve_waist_height": True,
+                "surface_conform": conform_report,
+            },
         },
         "collision": {
             "surface_triangle_overlap_pairs": len(overlap_pairs),
