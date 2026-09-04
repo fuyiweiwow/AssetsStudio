@@ -1,0 +1,67 @@
+{
+  "schema": "assetsstudio_generated_actor_milestone_v1",
+  "id": "generated_actor_seed20260943_v1",
+  "status": "research_candidate_manual_review_required",
+  "approved_asset": false,
+  "consumer_tags": ["ba"],
+  "workflow": "actor_core_generation_v2",
+  "provenance": {
+    "teacher_backend": "TripoSG_hierarchical_portable",
+    "teacher_source_revision": "fc5c40990181e2a756c4e0b1c2f4d6b5202faf8c",
+    "teacher_modelscope_id": "VAST-AI-Research/TripoSG",
+    "skeleton_backend": "UniRig_skeleton_only",
+    "skeleton_source_revision": "6793c6640ff01c8fb389f3993434124bb43d2933",
+    "skeleton_modelscope_id": "VAST-AI-Research/UniRig",
+    "skeleton_checkpoint": "skeleton/articulation-xl_quantization_256/model.ckpt",
+    "seed": 20260943,
+    "steps": 30,
+    "guidance": 7.0
+  },
+  "teacher_machine": {
+    "gpu": "NVIDIA GeForce RTX 5070 Ti",
+    "peak_cuda_allocated_bytes": 5609937920,
+    "peak_cuda_reserved_bytes": 6595543040,
+    "elapsed_seconds": 23.423481300007552
+  },
+  "geometry": {
+    "vertices": 25002,
+    "faces": 50000,
+    "watertight": true,
+    "nonmanifold_edges": 0,
+    "topology_hash": "0d98f2a2f01c2b4e302dbc8f0b64bda28d52898f078faba1f48e57f4bed7ac7c",
+    "correction": {
+      "operation": "bounded_vertex_deformation_of_current_generated_mesh",
+      "legacy_or_canonical_mesh_imported": false,
+      "torso_compression": 0.08,
+      "belly_front_reduction": 0.12,
+      "maximum_vertex_displacement": 0.0544
+    }
+  },
+  "rig": {
+    "bones": 46,
+    "roots": 1,
+    "leaf_bones": 11,
+    "semantic_mapping": "validated_46_bone_biped_signature_v1",
+    "unweighted_vertices": 0,
+    "maximum_influences": 4,
+    "vertices_over_four_influences": 0,
+    "maximum_normalization_error": 1.6391277313232422e-7
+  },
+  "waist_accessory": {
+    "static_status": "pass_static_tpose",
+    "static_surface_triangle_overlap_pairs": 0,
+    "axis_scale_ratio": 1.141578,
+    "dynamic_status": "pass_dynamic_probe",
+    "dynamic_surface_triangle_overlap_pairs": 0,
+    "parent_bone": "CC_Base_Pelvis",
+    "deferred_gates": ["mixamo_walk_cycle", "human_four_view_review"]
+  },
+  "files": {
+    "source/front_rgba.png": {"bytes": 245063, "sha256": "5ee30804b76acd63af721eb26bcf6e0af2bc76efe50a2c54d3b4cf75a6b522b4"},
+    "actor/actor_corrected.glb": {"bytes": 4199644, "sha256": "0bbf33b6853151261b84d3cfd5417f37e24d15e58cf4756f5871289d4748e737"},
+    "actor/actor_rigged.glb": {"bytes": 7213000, "sha256": "367e44e70ca176f2b4d871ddf2ebe8380a889a1812a3cafe96fa2ff00d9573f0"},
+    "rig/unirig_skeleton.fbx": {"bytes": 1603212, "sha256": "17b1a99bf7762e3afc3766f658f2844a7b641318b490689566ca5aae9943d99d"},
+    "accessory/waist_belt_pouch_fitted.glb": {"bytes": 21496368, "sha256": "df7c2271a3589cb916b4e9fe5d90066b0724f34af8e58bc1cda551b4776bf675"}
+  },
+  "next_gate": "mixamo_walk_and_complete_actor_cleanup"
+}
