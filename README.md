@@ -2,9 +2,11 @@
 
 AssetsStudio 是一个通用、本地优先的美术素材供给实验室。BombAdventure（`ba`）是当前消费者标签，不是 Studio 的项目边界。
 
-当前唯一生产链：
+当前已批准的模块化生产链保持不变；Actor Core 的自动生成正在独立 V2 分支重构：
 
 `StyleProfile → 风格种子 → 无部件 Actor Core → Hunyuan3D 形体 → 手工 AccuRIG → 动作库适配/变形 QA → Slot 部件 → Recipe/组合预览`
+
+旧的“二维编辑三视图 → 旧素体规则缩放/随机拓扑直接入库”研究路线已经停止。V2 使用 TripoSG 生成形体，经闭合减面和有限比例校正后，由 UniRig 为每个 Actor 独立预测骨架；Slot 从语义骨骼和实际身体截面测量，不依赖跨角色固定顶点编号。通过完整 Gate 前不接入 Studio。详见 [Actor Core 自动生成 V2](docs/ACTOR_CORE_GENERATION_V2.md)。
 
 旧 Actor、完整角色直出、GarmentCode 扫参、历史 Gallery 与失败候选已从当前工作树移除；精确历史仍可从 Git 恢复。
 
@@ -29,6 +31,7 @@ AssetsStudio 是一个通用、本地优先的美术素材供给实验室。Bomb
 - [当前工作流](docs/CURRENT_WORKFLOW.md)
 - [环境发现与模型](docs/ENVIRONMENT.md)
 - [Actor Core 图像编辑训练](docs/ACTOR_CORE_TRAINING.md)
+- [Actor Core 自动生成 V2](docs/ACTOR_CORE_GENERATION_V2.md)
 - [AccuRIG 手工交接](docs/ACCURIG_HANDOFF.md)
 - [骨骼动画资产与自动适配](docs/ANIMATION_RETARGET.md)
 - [本地资产生命周期](docs/ASSET_LIFECYCLE.md)

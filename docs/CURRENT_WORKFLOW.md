@@ -4,9 +4,11 @@
 
 Studio 为多个游戏提供可复用美术资产。当前 `ba` 仅保留在 `consumer_tags`；生产对象不是完整角色，而是稳定 Actor Core 与可独立销毁/入库的 Slot 部件。
 
-唯一生产顺序：
+当前已批准的生产顺序：
 
 `StyleProfile → 风格种子 → 无部件 Actor Core 图像 → Hunyuan3D 形体 → 人工 AccuRIG → 动作库自动适配/变形 QA → 单个 Slot 部件 → Recipe/组合预览`
+
+Actor Core 自动生成 V2 正在独立验证“TripoSG 形体 → 闭合动画网格 → 每 Actor 独立 UniRig 骨架 → 骨骼/截面语义 Slot”。旧 canonical cage 拟合已经因轮廓平台期否决；Hunyuan3D 只保留为教师比较器。V2 未在真实 RTX 3060 和多个比例 Actor 上通过 G2/G3 前，不替换上述已批准生产入口，也不进入 Studio。详见 `docs/ACTOR_CORE_GENERATION_V2.md`。
 
 不得直接生成带头发、衣服和配件的完整 3D 角色。
 

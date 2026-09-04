@@ -45,10 +45,25 @@ def clear_scene() -> None:
     bpy.ops.wm.read_factory_settings(use_empty=True)
 
 
-def imported_meshes(path: Path) -> list[bpy.types.Object]:
+def imported_meshes(path: Path, *, skinned_actor: bool = False) -> list[bpy.types.Object]:
     before = set(bpy.context.scene.objects)
     bpy.ops.import_scene.gltf(filepath=str(path.resolve()))
-    meshes = [obj for obj in bpy.context.scene.objects if obj not in before and obj.type == "MESH"]
+    imported = [obj for obj in bpy.context.scene.objects if obj not in before]
+    meshes = [obj for obj in imported if obj.type == "MESH"]
+    if skinned_actor:
+        armatures = [obj for obj in imported if obj.type == "ARMATURE"]
+        if len(armatures) != 1:
+            raise RuntimeError(f"expected one imported actor armature, received {len(armatures)}")
+        armature = armatures[0]
+        meshes = [
+            obj
+            for obj in meshes
+            if obj.parent == armature
+            or any(
+                modifier.type == "ARMATURE" and modifier.object == armature
+                for modifier in obj.modifiers
+            )
+        ]
     if not meshes:
         raise RuntimeError(f"no mesh imported from {path}")
     return meshes
@@ -260,11 +275,31 @@ def main() -> int:
         if not path.is_file():
             raise FileNotFoundError(path)
     profile = json.loads(args.profile.read_text(encoding="utf-8"))
-    if profile.get("schema") != "assetsstudio_actor_slot_profile_v2":
-        raise ValueError("static fitting requires ActorSlotProfile v2")
-    if profile["coordinate_contract"]["rig_state"] != "unbound_tpose":
-        raise ValueError("profile is not an unbound T-Pose contract")
-    if sha256(args.actor).lower() != profile["actor_model"]["sha256"].lower():
+    profile_schema = profile.get("schema")
+    if profile_schema not in {
+        "assetsstudio_actor_slot_profile_v1",
+        "assetsstudio_actor_slot_profile_v2",
+    }:
+        raise ValueError("static fitting requires ActorSlotProfile v1 or v2")
+    if profile_schema == "assetsstudio_actor_slot_profile_v2":
+        if profile["coordinate_contract"]["rig_state"] != "unbound_tpose":
+            raise ValueError("profile is not an unbound T-Pose contract")
+        expected_actor_hash = profile["actor_model"]["sha256"]
+        rig_state = "unbound_tpose"
+    else:
+        actor_evidence = next(
+            (
+                item
+                for item in profile["slots"][0]["evidence"]
+                if item.get("kind") == "measurement" and item.get("sha256")
+            ),
+            None,
+        )
+        if actor_evidence is None:
+            raise RuntimeError("bound ActorSlotProfile v1 has no hashed actor measurement evidence")
+        expected_actor_hash = actor_evidence["sha256"]
+        rig_state = "bound_generated_rest"
+    if sha256(args.actor).lower() != expected_actor_hash.lower():
         raise RuntimeError("actor model hash does not match the slot profile")
     slot = next((item for item in profile["slots"] if item["slot_id"] == args.slot_id), None)
     if slot is None or slot.get("fit_envelope") is None:
@@ -273,7 +308,7 @@ def main() -> int:
     shape_manifest = json.loads(args.shape_manifest.read_text(encoding="utf-8"))
 
     clear_scene()
-    actor = imported_meshes(args.actor)
+    actor = imported_meshes(args.actor, skinned_actor=rig_state == "bound_generated_rest")
     accessory = imported_meshes(args.accessory)
     bake_world(actor)
     bake_world(accessory)
@@ -285,14 +320,20 @@ def main() -> int:
     center_x = (actor_minimum.x + actor_maximum.x) * 0.5
     center_y = (actor_minimum.y + actor_maximum.y) * 0.5
     envelope = slot["fit_envelope"]
-    low_h = Vector(envelope["bounds_h"]["min"])
-    high_h = Vector(envelope["bounds_h"]["max"])
-    envelope_minimum = Vector((center_x + low_h.x * height, center_y + low_h.y * height, actor_minimum.z + low_h.z * height))
-    envelope_maximum = Vector((center_x + high_h.x * height, center_y + high_h.y * height, actor_minimum.z + high_h.z * height))
+    if profile_schema == "assetsstudio_actor_slot_profile_v2":
+        low_h = Vector(envelope["bounds_h"]["min"])
+        high_h = Vector(envelope["bounds_h"]["max"])
+        envelope_minimum = Vector((center_x + low_h.x * height, center_y + low_h.y * height, actor_minimum.z + low_h.z * height))
+        envelope_maximum = Vector((center_x + high_h.x * height, center_y + high_h.y * height, actor_minimum.z + high_h.z * height))
+        waist_center_h = slot["attachment"]["anchors"][0]["position_h"]
+        waist_z = actor_minimum.z + float(waist_center_h[2]) * height
+        clearance = float(envelope["clearance_h"]) * height
+    else:
+        envelope_minimum = Vector(envelope["bounds_m"]["min"])
+        envelope_maximum = Vector(envelope["bounds_m"]["max"])
+        waist_z = float(slot["attachment"]["anchors"][0]["position_m"][2])
+        clearance = float(envelope["clearance_m"])
     envelope_size = envelope_maximum - envelope_minimum
-
-    waist_center_h = slot["attachment"]["anchors"][0]["position_h"]
-    waist_z = actor_minimum.z + float(waist_center_h[2]) * height
     waist_band = [
         value for value in actor_points
         if abs(value.z - waist_z) <= 0.025 * height and abs(value.x - center_x) <= 0.2 * height
@@ -300,11 +341,18 @@ def main() -> int:
     if not waist_band:
         raise RuntimeError("actor waist band contains no vertices")
     waist_minimum, waist_maximum = bounds(waist_band)
-    clearance = float(envelope["clearance_h"]) * height
 
     source_size = source_maximum - source_minimum
     front_aspect = float(preparation["outputs"]["front"]["foreground_aspect_width_over_height"])
-    unadjusted_target_width = envelope_size.x
+    if profile_schema == "assetsstudio_actor_slot_profile_v1":
+        # Bone-aware generated actors use the measured waist section as the
+        # sizing authority. The envelope remains a safety/review boundary and
+        # must not make the accessory larger merely because it has more room.
+        unadjusted_target_width = (
+            (waist_maximum.x - waist_minimum.x) + clearance * 2.0 + height * 0.025
+        )
+    else:
+        unadjusted_target_width = envelope_size.x
     target_width = unadjusted_target_width * args.width_factor
     target_height = min(envelope_size.z, unadjusted_target_width / front_aspect)
     unadjusted_target_depth = max(
@@ -374,7 +422,7 @@ def main() -> int:
         "actor_profile_id": profile["id"],
         "actor_asset_id": profile["actor_asset_id"],
         "slot_id": args.slot_id,
-        "rig_state": "unbound_tpose",
+        "rig_state": rig_state,
         "status": "pass_static_tpose" if automatic_pass else "automatic_review_failed",
         "inputs": {
             "actor": str(args.actor.resolve()),
@@ -415,13 +463,11 @@ def main() -> int:
             "scope": "static_tpose_only",
         },
         "automatic_gates": gates,
-        "deferred_gates": [
-            "bone_mapping",
-            "skin_weights",
-            "joint_deformation",
-            "hand_and_thigh_clearance_during_locomotion",
-            "mixamo_animation_review",
-        ],
+        "deferred_gates": (
+            ["bone_mapping", "skin_weights", "joint_deformation"]
+            if rig_state == "unbound_tpose"
+            else []
+        ) + ["hand_and_thigh_clearance_during_locomotion", "mixamo_animation_review"],
         "outputs": {
             "accessory_glb": str(accessory_glb),
             "combined_glb": str(combined_glb),
