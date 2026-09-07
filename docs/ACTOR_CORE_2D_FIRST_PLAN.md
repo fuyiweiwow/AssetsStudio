@@ -122,6 +122,18 @@
 
 seed 1002 仍为 `human_review_required`，重点判断肩部是否自然且没有形成腋下薄膜。人工通过后它替代 seed 98 成为正面 T Pose 权威，再扩展侧背面。
 
+### 2026-09-07 右侧正交 A Gate
+
+用户认为肩根修正后的正面 T Pose 整体可继续，因此只进入一个隔离的右侧 A 实验；该许可不是四向或 3D 批准。
+
+- 以 `tpose93_shoulders_seed20261002.png` 为唯一正面形态权威，由本机 FLUX.2 Klein 4B distilled FP8 生成严格 90 度右侧视图。seed 1004 腹部更鼓，选择更克制的 seed 1005；原始提示词、模型和参数记录在 `right_seed20261005.metrics.json`。
+- seed 1005 的后脑、头高、落地线和短粗躯干较稳定，但重新生成了耳和鼻。扩散局部清理 seed 1006/1007 分别留下耳部模糊和新增嘴线，均已拒绝且不纳入 Git。
+- `tools/model_test/remove_actor_core_side_semantics.py` 锁定 seed 1005 的 SHA256，以确定性曲面重建去内耳，并仅重塑原鼻部轮廓；没有调用扩散或远程模型。最终 A 为 `right_a_seed1005_clean.png`，保留单侧眼眉供风格审核。
+- `right_seed1005_alignment_audit.json` 的头顶/头底/地面漂移为 `1/0/2 px`，总高漂移 `0.45%`，头部侧深/正面宽 `1.003`，头高比 `1.003`，躯干侧深/正面宽 `0.913`，全部自动 Gate 通过。
+- 无脸右侧 B 的首次确定性清理出现明显眼部鬼影，已判失败并停止；它不进入成功包。先由人工审核 A 的侧脸平面、后脑、侧投影肩臂、躯干和脚，再决定 B 的新清理方式。
+
+当前右侧 A 状态为 `human_review_required`。人工通过前不生成背面、不进入 3D，也不把该候选登记到 Studio、训练 Target 或资产库。
+
 官方依据：
 
 - [FLUX.2 Klein 官方仓库](https://github.com/black-forest-labs/flux2)：4B 支持本地单参考与多参考编辑；

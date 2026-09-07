@@ -1,0 +1,36 @@
+{
+  "schema": "assetsstudio_local_inference_probe_v1",
+  "backend": "flux2_klein_4b_distilled_fp8",
+  "server": "http://127.0.0.1:8190",
+  "prompt_id": "e483c786-6a53-4a38-8294-612035a852b3",
+  "width": 768,
+  "height": 768,
+  "steps": 4,
+  "cfg": 1.0,
+  "seed": 20261005,
+  "prompt": "Create a strict orthographic right-side profile of the exact same actor in image 1, rotated exactly 90 degrees so the character faces screen left. Preserve the identical approved chibi proportions and landmark heights: top of cranium, bottom of head, shoulder center, chest, belly, hip, knee, ankle and floor. The head must have generous front-to-back depth with a full rounded back cranium, broad crown, shallow anime face plane and tiny tucked jaw; never flatten or narrow the back of the head. Show exactly one large blue anime eye and one simple eyebrow as temporary style evidence. No ear, nose or mouth. Preserve the corrected broad rounded shoulder root and open armpit structure. Maintain a true T pose in 3D: both arms remain horizontal along the camera axis and therefore overlap in strict side projection; do not lower the arms, spread them sideways in the image or turn to three-quarter view. The compact torso keeps the same short length and belly volume. Legs and small round feet are strict side profiles at the same ground line, with the far limb mostly occluded rather than inventing a different stance. Same warm-peach matte continuous shell, gray studio sweep, orthographic camera, scale, lighting and centered framing. No hair, ears, clothes, seams, navel, genitals, fingers, text or extra anatomy.",
+  "reference_image": "assetsstudio_actor_core_tpose93_seed1002_a.png",
+  "style_reference_image": null,
+  "style_reference_mode": "appearance_only",
+  "reference_roles": {
+    "image_1": "reference_authority"
+  },
+  "mask_image": null,
+  "mask_expand": null,
+  "mask_feather": null,
+  "composite_mask": null,
+  "lora": null,
+  "lora_strength": null,
+  "elapsed_seconds": 4.16,
+  "gpu": {
+    "name": "NVIDIA GeForce RTX 5070 Ti",
+    "total_mib": 16303,
+    "baseline_used_mib": 919,
+    "peak_used_mib": 12370,
+    "peak_delta_mib": 11451
+  },
+  "outputs": [
+    "actor_core_tpose93_right_seed20261005_00001_.png"
+  ],
+  "qualification": "3060_memory_cap_prescreen_only"
+}

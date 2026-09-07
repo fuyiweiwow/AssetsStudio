@@ -1,0 +1,73 @@
+{
+  "schema": "assetsstudio_actor_core_right_view_gate_v1",
+  "status": "human_review_required",
+  "front": {
+    "path": "workspace\\local_generation\\actor_core_tpose_shoulder_gate_20260907\\tpose93_shoulders_seed20261002.png",
+    "actor_bbox_xyxy": [
+      153,
+      66,
+      615,
+      731
+    ],
+    "actor_height_px": 666,
+    "head_bbox_xyxy": [
+      210,
+      66,
+      562,
+      443
+    ],
+    "head_width_px": 353,
+    "head_height_px": 378,
+    "head_center_x": 386.0,
+    "torso_span_y550_px": 149
+  },
+  "right": {
+    "path": "workspace\\local_generation\\actor_core_multiview_gate_20260907\\right_a_seed1005_clean.png",
+    "actor_bbox_xyxy": [
+      215,
+      65,
+      568,
+      733
+    ],
+    "actor_height_px": 669,
+    "head_bbox_xyxy": [
+      215,
+      65,
+      568,
+      443
+    ],
+    "head_width_px": 354,
+    "head_height_px": 379,
+    "head_center_x": 391.5,
+    "torso_span_y550_px": 136
+  },
+  "drift": {
+    "head_top_px": 1,
+    "head_bottom_px": 0,
+    "floor_px": 2,
+    "actor_height_ratio": 0.004505,
+    "head_center_x_px": 5.5,
+    "head_depth_to_front_width": 1.002833,
+    "head_height_ratio": 1.002646,
+    "torso_depth_to_front_width": 0.912752
+  },
+  "automatic_gates": {
+    "head_top_drift_lte_6px": true,
+    "head_bottom_drift_lte_10px": true,
+    "floor_drift_lte_3px": true,
+    "actor_height_drift_lte_0_02": true,
+    "head_center_drift_lte_8px": true,
+    "head_depth_ratio_0_85_to_1_05": true,
+    "head_height_ratio_0_95_to_1_03": true,
+    "torso_depth_ratio_0_75_to_1_05": true
+  },
+  "automatic_pass": true,
+  "human_checks": [
+    "strict 90-degree profile rather than three-quarter view",
+    "full rounded back cranium and shallow directional face plane",
+    "no ear, nose, mouth or semantic residue",
+    "T-pose arm projection remains plausible and shoulder height is preserved",
+    "torso depth and foot profile retain the approved chibi shape language"
+  ],
+  "next_stage_if_approved": "derive a blank-face right view, then isolate the back view"
+}
