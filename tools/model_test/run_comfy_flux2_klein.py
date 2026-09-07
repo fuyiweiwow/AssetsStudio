@@ -380,6 +380,7 @@ def main() -> int:
                 "steps": args.steps,
                 "cfg": args.cfg,
                 "seed": args.seed,
+                "prompt": args.prompt,
                 "reference_image": args.reference_image,
                 "style_reference_image": args.style_reference_image,
                 "style_reference_mode": args.style_reference_mode,
