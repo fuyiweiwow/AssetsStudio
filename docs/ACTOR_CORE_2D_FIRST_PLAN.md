@@ -100,6 +100,19 @@
 
 该节点证明 93 的正面形态可以无损分层为风格审查图 A 和几何输入图 B。下一步必须先由人工确认 A/B；通过后仅隔离实验“同一形态权威转 T Pose”，姿态导引只能移动关节，不能重新定义头、躯干和四肢比例。
 
+### 2026-09-07 93 基准的正面 T Pose Gate
+
+用户确认自然垂臂正视图效果后，开始隔离 T Pose 转换。全程继续使用本机 FLUX.2 Klein 4B distilled FP8 和确定性像素处理，没有调用托管生成或下载新模型。
+
+- 直接用文本要求 A93 抬臂的 seed 96/97 把肩点抬进头部、显著拉长手臂并生成分叉手指，已拒绝。
+- `tools/model_test/build_actor_core_tpose_guide.py` 从 A93 自身像素提取左右臂，以原肩点 `[318,458]`、`[450,458]` 旋转为水平姿态；头、躯干和腿仍是 A93 原像素。导引只定义姿态，不是 primitive 人体、候选资产或训练 Target。
+- 导引重绘 seed 98/99 都恢复了正确肩点和短臂，但重新生成了耳朵；复用确定性去耳流程后，98 的轮廓更干净，99 左侧残留边缘台阶，因此选择 `tpose93_guided_seed20260998_earless.png` 作为当前 T Pose A。
+- 对手端单独执行的 seed 100/101 没有改善连指轮廓，已拒绝。当前 A 保留与原自然姿态一致的连指手和小拇指侧突起，是否满足风格仍需人工确认，不用继续堆随机 seed 掩盖判断。
+- `tpose93_seed98_shape_audit_v2.json`：相对 A93，头部 bbox 四边漂移均为 `0 px`，总高漂移 `0`，躯干三处宽度和小腿宽度漂移均为 `0`；臂展 `463 px`，左右手端高度差 `1 px`，手端相对肩点为 `+8/+7 px`，自动 T Pose 形态 Gate 通过。
+- 从该 A 确定性生成 `tpose93_seed98_blankface_v1.png`；`tpose93_seed98_ab_audit_v1.json` 的整体 silhouette IoU 为 `0.99997`、head silhouette IoU 为 `1.0`、bbox 漂移和有效脸区外像素变化均为 `0`，自动 A/B 保持性 Gate 通过。
+
+当前仍是 `human_review_required`：必须检查肩点是否自然、腋下是否真正开放、手端是否可接受，以及无脸 B 是否仍保持 93 的头部体量。成功节点作为换机可续的实验包纳入 Git，但不登记到 Studio、训练 Target 或资产库。人工通过后才扩展严格对齐的 right/back/left，不直接送 3D。
+
 官方依据：
 
 - [FLUX.2 Klein 官方仓库](https://github.com/black-forest-labs/flux2)：4B 支持本地单参考与多参考编辑；

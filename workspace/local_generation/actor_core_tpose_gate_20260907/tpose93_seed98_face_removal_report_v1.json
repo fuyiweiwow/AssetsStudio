@@ -1,0 +1,16 @@
+{
+  "schema": "assetsstudio_actor_core_face_feature_removal_v1",
+  "status": "human_review_required",
+  "source": "workspace\\local_generation\\actor_core_tpose_gate_20260907\\tpose93_guided_seed20260998_earless.png",
+  "source_sha256": "af132b90aa5306d0e4ebd832db9603916f39fcf48f9ac87ebfb1f598daa0d198",
+  "edit_mask": "workspace\\local_generation\\actor_core_tpose_gate_20260907\\inputs\\tpose93_seed98_face_edit_mask_v1.png",
+  "feature_mask": "workspace\\local_generation\\actor_core_tpose_gate_20260907\\inputs\\tpose93_seed98_feature_mask_v1.png",
+  "output": "workspace\\local_generation\\actor_core_tpose_gate_20260907\\tpose93_seed98_blankface_v1.png",
+  "output_sha256": "58917bb3d33d8ba8562ab3bc57e7c1355f32040a06a9ce1d065e1f7860a5f2b5",
+  "outside_edit_mask_rgb_mae": 0.0,
+  "invariants": [
+    "head silhouette and proportions unchanged",
+    "body, pose, background and lighting outside the face edit mask unchanged",
+    "no diffusion or remote model used for feature removal"
+  ]
+}

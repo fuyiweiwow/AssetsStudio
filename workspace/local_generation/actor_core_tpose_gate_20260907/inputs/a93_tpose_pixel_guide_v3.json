@@ -1,0 +1,29 @@
+{
+  "schema": "assetsstudio_actor_core_tpose_guide_v1",
+  "status": "diagnostic_pose_guide_only",
+  "source": "workspace\\local_generation\\actor_core_style_gate_20260907\\a93_earless_candidate_v5.png",
+  "source_sha256": "354e7de4b3240fc4d5315e1882981094612aedc33dd5f72c48943525c54aca5d",
+  "output": "workspace\\local_generation\\actor_core_tpose_gate_20260907\\inputs\\a93_tpose_pixel_guide_v3.png",
+  "output_sha256": "418c56c40c405728c2d87cd7d2437f08217025aaf1edac91e60583ca3440edaa",
+  "pivots_xy": {
+    "left": [
+      318,
+      458
+    ],
+    "right": [
+      450,
+      458
+    ]
+  },
+  "rotations_degrees": {
+    "left": -63.0,
+    "right": 63.0
+  },
+  "restrictions": [
+    "source pixels define limb length and thickness",
+    "guide defines pose only",
+    "not an asset candidate",
+    "not a training target",
+    "local model redraw and human review required"
+  ]
+}

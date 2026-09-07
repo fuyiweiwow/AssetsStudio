@@ -1,0 +1,93 @@
+{
+  "schema": "assetsstudio_actor_core_tpose_shape_gate_v1",
+  "status": "human_review_required",
+  "source": {
+    "path": "workspace\\local_generation\\actor_core_style_gate_20260907\\a93_earless_candidate_v5.png",
+    "actor_y_bounds": [
+      66,
+      731
+    ],
+    "actor_height_px": 666,
+    "head_bbox_xyxy": [
+      210,
+      66,
+      562,
+      443
+    ],
+    "head_width_px": 353,
+    "head_height_px": 378,
+    "torso_widths_px": {
+      "550": 149,
+      "575": 151,
+      "595": 157
+    },
+    "lower_leg_width_px": 59.0
+  },
+  "candidate": {
+    "path": "workspace\\local_generation\\actor_core_tpose_gate_20260907\\tpose93_guided_seed20260998_earless.png",
+    "actor_y_bounds": [
+      66,
+      731
+    ],
+    "actor_height_px": 666,
+    "head_bbox_xyxy": [
+      210,
+      66,
+      562,
+      443
+    ],
+    "head_width_px": 353,
+    "head_height_px": 378,
+    "torso_widths_px": {
+      "550": 149,
+      "575": 151,
+      "595": 157
+    },
+    "lower_leg_width_px": 59.0,
+    "tpose": {
+      "arm_span_x": [
+        153,
+        615
+      ],
+      "arm_span_px": 463,
+      "left_tip_center_y": 466.0,
+      "right_tip_center_y": 465.0,
+      "tip_level_delta_px": 1.0,
+      "tip_to_shoulder_y_px": {
+        "left": 8.0,
+        "right": 7.0
+      }
+    }
+  },
+  "drift": {
+    "head_bbox_edges_px": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "actor_height_ratio": 0.0,
+    "torso_width_ratios": {
+      "550": 0.0,
+      "575": 0.0,
+      "595": 0.0
+    },
+    "lower_leg_width_ratio": 0.0
+  },
+  "automatic_gates": {
+    "head_bbox_max_edge_drift_lte_6px": true,
+    "actor_height_drift_lte_0_01": true,
+    "torso_width_drift_each_lte_0_06": true,
+    "lower_leg_width_drift_lte_0_06": true,
+    "arm_span_440_to_490px": true,
+    "arm_tip_level_delta_lte_4px": true,
+    "arm_tip_shoulder_offset_abs_lte_14px": true
+  },
+  "automatic_pass": true,
+  "human_checks": [
+    "shoulders remain below the head and connect naturally",
+    "armpits are open with no webbing or fused triangles",
+    "hands remain compact mitten ends without separated fingers",
+    "head, torso, legs and feet retain A93 style proportions"
+  ]
+}

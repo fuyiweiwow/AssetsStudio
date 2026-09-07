@@ -1,0 +1,36 @@
+{
+  "schema": "assetsstudio_local_inference_probe_v1",
+  "backend": "flux2_klein_4b_distilled_fp8",
+  "server": "http://127.0.0.1:8190",
+  "prompt_id": "a9aa933c-0a15-4585-9b89-184daf3b2a69",
+  "width": 768,
+  "height": 768,
+  "steps": 4,
+  "cfg": 1.0,
+  "seed": 20260998,
+  "prompt": "Redraw image 1 as a polished clean chibi actor-core T-pose while treating its current head, torso, leg silhouette, shoulder pivots, horizontal arm endpoints, limb thickness and total height as exact geometry. The image is a pixel-derived pose guide from the approved actor, not a new character. Keep the broad rounded anime head, tiny jaw, bald earless cranium, identical large blue eyes and simple eyebrows, short narrow rounded torso, compact legs and small round feet. Make both arms perfectly straight and level at shoulder height, symmetric, with the same short length shown in image 1. Rebuild smooth natural shoulder and armpit transitions with a clear open underarm gap; remove every faint downward-arm ghost and all cutout seams. Hands are tiny smooth rounded mitten ends with no separated fingers, no thumb prongs and no forked silhouette. Preserve the warm-peach matte material, front orthographic camera, centered framing, gray studio sweep and lighting. No ears, nose, mouth, hair, clothes, navel, genitals, seams, extra anatomy or text.",
+  "reference_image": "assetsstudio_actor_core_a93_tpose_pixel_guide_v2.png",
+  "style_reference_image": null,
+  "style_reference_mode": "appearance_only",
+  "reference_roles": {
+    "image_1": "reference_authority"
+  },
+  "mask_image": null,
+  "mask_expand": null,
+  "mask_feather": null,
+  "composite_mask": null,
+  "lora": null,
+  "lora_strength": null,
+  "elapsed_seconds": 4.14,
+  "gpu": {
+    "name": "NVIDIA GeForce RTX 5070 Ti",
+    "total_mib": 16303,
+    "baseline_used_mib": 914,
+    "peak_used_mib": 12147,
+    "peak_delta_mib": 11233
+  },
+  "outputs": [
+    "actor_core_tpose93_guided_seed20260998_00001_.png"
+  ],
+  "qualification": "3060_memory_cap_prescreen_only"
+}

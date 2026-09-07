@@ -1,0 +1,73 @@
+{
+  "schema": "assetsstudio_actor_core_ear_removal_v1",
+  "status": "human_review_required",
+  "source": "workspace\\local_generation\\actor_core_tpose_gate_20260907\\tpose93_guided_seed20260998.png",
+  "source_sha256": "30d306889246a22b0282dd5105efe456dc35a77dd996fae0a73abc2a3c88572f",
+  "output": "workspace\\local_generation\\actor_core_tpose_gate_20260907\\tpose93_guided_seed20260998_earless.png",
+  "output_sha256": "af132b90aa5306d0e4ebd832db9603916f39fcf48f9ac87ebfb1f598daa0d198",
+  "mask": "workspace\\local_generation\\actor_core_tpose_gate_20260907\\inputs\\tpose93_seed98_ear_mask.png",
+  "edited_rows": [
+    270,
+    410
+  ],
+  "target_boundary_control_points": {
+    "y": [
+      270,
+      280,
+      290,
+      300,
+      310,
+      320,
+      330,
+      340,
+      350,
+      360,
+      370,
+      380,
+      390,
+      400,
+      410
+    ],
+    "left": [
+      214,
+      216,
+      218,
+      221,
+      224,
+      227,
+      230,
+      233,
+      236,
+      239,
+      242,
+      245,
+      252,
+      258,
+      268
+    ],
+    "right": [
+      558,
+      556,
+      554,
+      551,
+      548,
+      545,
+      542,
+      539,
+      536,
+      533,
+      530,
+      524,
+      519,
+      513,
+      504
+    ]
+  },
+  "changed_pixels_over_3": 4106,
+  "outside_binary_mask_rgb_mae": 0.006814,
+  "invariants": [
+    "no rescale or translation",
+    "head crown, eyes, brows, jaw, neck and body unchanged",
+    "only the protruding ear pixels are replaced"
+  ]
+}
