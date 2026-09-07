@@ -96,7 +96,7 @@
 - `tools/model_test/remove_actor_core_ears.py` 只在耳区用同一图的工作室背景重建头部外轮廓；`a93_earless_candidate_v5.png` 是当前 A。耳区外 RGB MAE 约 `0.0055/255`，未缩放、平移或重画身体。v1-v4 的残余耳弧、肤色条带或轮廓台阶均已拒绝，不进入资产库或下游输入。
 - `tools/model_test/remove_actor_core_face_features.py` 从 A 的肤色低频曲面拟合无五官脸面，并在限定脸区做 Poisson 融合；`b93_blankface_poisson_v5.png` 是当前 B。Telea、Navier-Stokes、首轮 FLUX 局部重绘及 polynomial v2/v3 的阴影块、再生眼睛或补丁边界均已拒绝。
 - `a93_b93_front_ab_audit_v2.json`：整体 silhouette IoU `0.999935`、head silhouette IoU `1.0`、bbox 最大漂移 `0`、有效脸区外人物 RGB MAE `0/255`、超过 `8/255` 的区外变化比例 `0`，自动保持性 Gate 通过。Poisson 会影响输入椭圆包围矩形内的像素，审计明确发布并使用该真实有效编辑区，不把它误报为仅修改眼眉紧掩码。
-- `a93_b93_front_ab_review_v2.png` 是 A（无耳、保留眼眉）、B（无耳、无五官）及变化像素的并排人工审核图。当前两图仍在 Git 忽略的本地诊断目录中，不是资产库条目、训练 Target 或 Studio 默认候选。
+- `a93_b93_front_ab_review_v2.png` 是 A（无耳、保留眼眉）、B（无耳、无五官）及变化像素的并排人工审核图。为保证 3060 或其他机器能从同一节点继续，只有 93、A、B、必要掩码、报告与审核图作为冻结实验包被强制纳入 Git；它们不是资产库条目、训练 Target 或 Studio 默认候选，其余失败输出仍保持忽略。
 
 该节点证明 93 的正面形态可以无损分层为风格审查图 A 和几何输入图 B。下一步必须先由人工确认 A/B；通过后仅隔离实验“同一形态权威转 T Pose”，姿态导引只能移动关节，不能重新定义头、躯干和四肢比例。
 

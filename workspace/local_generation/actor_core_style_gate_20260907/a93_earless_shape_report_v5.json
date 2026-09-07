@@ -1,0 +1,73 @@
+{
+  "schema": "assetsstudio_actor_core_relaxed_style_gate_v1",
+  "status": "human_review_required",
+  "measurement_scope": "outer visual envelope in the same relaxed front pose",
+  "caveat": "The authority head includes hair and its body includes clothing; metrics reject gross drift but do not infer naked anatomy or replace human style review.",
+  "source": {
+    "path": "workspace\\local_generation\\actor_core_style_gate_20260907\\refine83_guided_seed20260993.png",
+    "canvas": [
+      768,
+      768
+    ],
+    "subject_bbox": [
+      201,
+      66,
+      566,
+      731
+    ],
+    "subject_height_px": 666,
+    "head_envelope": {
+      "neck_y": 443,
+      "height_px": 378,
+      "width_px": 366,
+      "total_heads": 1.7619,
+      "width_height": 0.9683
+    },
+    "leg_split_y": 614,
+    "leg_length_fraction": 0.1772,
+    "hand_tip_y": 610,
+    "hand_tip_to_leg_split_fraction": -0.006,
+    "lower_leg_sample_y": 665,
+    "lower_leg_average_width_px": 59.0,
+    "lower_leg_width_to_head_width": 0.1612
+  },
+  "candidates": [
+    {
+      "path": "workspace\\local_generation\\actor_core_style_gate_20260907\\a93_earless_candidate_v5.png",
+      "canvas": [
+        768,
+        768
+      ],
+      "subject_bbox": [
+        210,
+        66,
+        562,
+        731
+      ],
+      "subject_height_px": 666,
+      "head_envelope": {
+        "neck_y": 443,
+        "height_px": 378,
+        "width_px": 353,
+        "total_heads": 1.7619,
+        "width_height": 0.9339
+      },
+      "leg_split_y": 614,
+      "leg_length_fraction": 0.1772,
+      "hand_tip_y": 610,
+      "hand_tip_to_leg_split_fraction": -0.006,
+      "lower_leg_sample_y": 665,
+      "lower_leg_average_width_px": 59.0,
+      "lower_leg_width_to_head_width": 0.1671,
+      "automatic_shape_checks": {
+        "visual_total_heads": true,
+        "head_width_height": true,
+        "leg_length_fraction": true,
+        "hand_tip_to_leg_split": true,
+        "lower_leg_width": true
+      },
+      "automatic_shape_pass": true
+    }
+  ],
+  "next_stage_if_approved": "isolated pose transfer to T-pose while retaining the approved shape authority"
+}

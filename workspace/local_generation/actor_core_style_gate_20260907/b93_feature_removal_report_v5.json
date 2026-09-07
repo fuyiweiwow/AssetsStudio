@@ -1,0 +1,16 @@
+{
+  "schema": "assetsstudio_actor_core_face_feature_removal_v1",
+  "status": "human_review_required",
+  "source": "workspace\\local_generation\\actor_core_style_gate_20260907\\a93_earless_candidate_v5.png",
+  "source_sha256": "354e7de4b3240fc4d5315e1882981094612aedc33dd5f72c48943525c54aca5d",
+  "edit_mask": "workspace\\local_generation\\actor_core_style_gate_20260907\\inputs\\a93_face_edit_mask_v5.png",
+  "feature_mask": "workspace\\local_generation\\actor_core_style_gate_20260907\\inputs\\a93_feature_mask_v5.png",
+  "output": "workspace\\local_generation\\actor_core_style_gate_20260907\\b93_blankface_poisson_v5.png",
+  "output_sha256": "9c8150cfdf36f60d2c599479388e98cfa4d0f31eeaf402b85809e2bb604b79d6",
+  "outside_edit_mask_rgb_mae": 0.0,
+  "invariants": [
+    "head silhouette and proportions unchanged",
+    "body, pose, background and lighting outside the face edit mask unchanged",
+    "no diffusion or remote model used for feature removal"
+  ]
+}

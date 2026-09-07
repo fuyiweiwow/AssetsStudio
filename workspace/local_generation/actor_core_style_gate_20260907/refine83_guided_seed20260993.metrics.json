@@ -1,0 +1,36 @@
+{
+  "schema": "assetsstudio_local_inference_probe_v1",
+  "backend": "flux2_klein_4b_distilled_fp8",
+  "server": "http://127.0.0.1:8190",
+  "prompt_id": "b08794aa-3209-4eda-89f3-c7109a0b3d50",
+  "width": 768,
+  "height": 768,
+  "steps": 4,
+  "cfg": 1.0,
+  "seed": 20260993,
+  "prompt": "Redraw image 1 as a polished chibi actor-core while treating its current silhouette and landmarks as exact geometry. Preserve the adjusted head height, hand endpoints, lower-leg width, very short limbs, narrow rounded torso, relaxed frontal pose and framing. Clean every gray edge halo and make the warm-peach matte body one smooth continuous shell with natural shoulder, wrist, hip and ankle transitions. Keep the large Japanese-anime eyes and simple eyebrows. The bald cranium and cheek sides form one uninterrupted curve into the tiny jaw.",
+  "reference_image": "assetsstudio_actor_core_refine83_micro_guide_v3.png",
+  "style_reference_image": null,
+  "style_reference_mode": "appearance_only",
+  "reference_roles": {
+    "image_1": "reference_authority"
+  },
+  "mask_image": null,
+  "mask_expand": null,
+  "mask_feather": null,
+  "composite_mask": null,
+  "lora": null,
+  "lora_strength": null,
+  "elapsed_seconds": 4.14,
+  "gpu": {
+    "name": "NVIDIA GeForce RTX 5070 Ti",
+    "total_mib": 16303,
+    "baseline_used_mib": 1005,
+    "peak_used_mib": 12301,
+    "peak_delta_mib": 11296
+  },
+  "outputs": [
+    "actor_core_stylegate_refine83_guided_seed20260993_00001_.png"
+  ],
+  "qualification": "3060_memory_cap_prescreen_only"
+}

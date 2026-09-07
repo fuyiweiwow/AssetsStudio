@@ -64,7 +64,7 @@ Actor Core 自动生成 V2 正在独立验证“TripoSG 形体 → 闭合动画�
 ## 下一步
 
 1. 用户已确认自然垂臂候选 93 作为比例/形态基准；该确认不等于最终 Actor Core、T Pose 或四向批准。
-2. 审核 `a93_b93_front_ab_review_v2.png`：A 只保留眼眉作为风格读数，B 清除眼眉且不出现眼窝、鬼影、鼻嘴或补丁边界。自动审计已通过，但不能替代人工造型判断。失败版本只留诊断证据，不进入四向、3D、训练 Target 或资产库。
+2. 审核 `workspace/local_generation/actor_core_style_gate_20260907/a93_b93_front_ab_review_v2.png`：A 只保留眼眉作为风格读数，B 清除眼眉且不出现眼窝、鬼影、鼻嘴或补丁边界。自动审计已通过，但不能替代人工造型判断。该成功节点已作为可迁移实验包纳入 Git；失败版本不进入 Git、四向、3D、训练 Target 或资产库。
 3. 人工确认 A/B 后，才从同一 93 形态权威隔离转换 T Pose；姿态导引只提供关节位置，不再定义身体轮廓。
 4. T Pose 通过后扩展严格对齐的 front/right/back/left，不允许四个方向独立生成不同角色。
 5. 四向通过后冻结源图哈希与人工结论，再建立唯一 3D 基准素体；现有 TripoSG/UniRig/Hunyuan3D 结果只复用技术验证方法。
