@@ -1,0 +1,38 @@
+{
+  "schema": "assetsstudio_local_inference_probe_v1",
+  "backend": "flux2_klein_4b_distilled_fp8",
+  "server": "http://127.0.0.1:8190",
+  "prompt_id": "9976b1dc-61f5-49e1-8484-d7ee6e3246aa",
+  "width": 768,
+  "height": 768,
+  "steps": 4,
+  "cfg": 1.0,
+  "seed": 20261008,
+  "prompt": "Create a strict orthographic back view of the exact same actor in image 1, rotated exactly 180 degrees so the actor faces directly away from the camera. Image 1 is the sole authority for total height, head width and height, shoulder height, corrected rounded shoulder roots, arm span, short arm length, torso length, hip, knee, ankle and floor landmarks. Image 2 is approved evidence only for front-to-back head depth, compact torso depth and small foot depth; it must not change image 1 proportions. Show a perfectly centered symmetrical back view, never three-quarter. The back of the head is a smooth full rounded cranium with a broad crown; the head is not turned and absolutely no face, eye, eyebrow, ear, nose or mouth is visible. Maintain a true T pose with both arms horizontal to screen left and right, the corrected broad shoulder connections, clearly open armpits, short thick arms and simple fused mitten-like hands viewed from behind. Keep a compact slim chibi torso with a gently flat back and no protruding belly, realistic spine groove, shoulder blades or buttock crease. Preserve the same short sturdy legs and small rounded feet on the identical floor line. Same warm-peach matte continuous shell, gray studio sweep, orthographic camera, scale, lighting and centered framing. No hair, ears, facial features, clothes, seams, navel, genitals, fingers, nails, text or extra anatomy.",
+  "reference_image": "assetsstudio_actor_core_front_b_seed1002.png",
+  "style_reference_image": "assetsstudio_actor_core_right_b_seed1005.png",
+  "style_reference_mode": "appearance_only",
+  "reference_roles": {
+    "image_1": "structure_authority",
+    "image_2": "style_only_evidence",
+    "conflict_rule": "image_1_wins_geometry_and_semantics"
+  },
+  "mask_image": null,
+  "mask_expand": null,
+  "mask_feather": null,
+  "composite_mask": null,
+  "lora": null,
+  "lora_strength": null,
+  "elapsed_seconds": 6.2,
+  "gpu": {
+    "name": "NVIDIA GeForce RTX 5070 Ti",
+    "total_mib": 16303,
+    "baseline_used_mib": 902,
+    "peak_used_mib": 13606,
+    "peak_delta_mib": 12704
+  },
+  "outputs": [
+    "actor_core_tpose93_back_seed20261008_00001_.png"
+  ],
+  "qualification": "3060_memory_cap_prescreen_only"
+}

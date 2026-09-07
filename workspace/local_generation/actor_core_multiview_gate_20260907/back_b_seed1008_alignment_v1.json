@@ -1,0 +1,87 @@
+{
+  "schema": "assetsstudio_actor_core_back_view_gate_v1",
+  "status": "human_review_required",
+  "front": {
+    "path": "workspace\\local_generation\\actor_core_tpose_shoulder_gate_20260907\\tpose93_shoulders_seed1002_blankface_v1.png",
+    "actor_bbox_xyxy": [
+      153,
+      66,
+      615,
+      731
+    ],
+    "actor_width_px": 463,
+    "actor_height_px": 666,
+    "actor_center_x": 384.0,
+    "head_bbox_xyxy": [
+      210,
+      66,
+      562,
+      443
+    ],
+    "head_width_px": 353,
+    "head_height_px": 378,
+    "head_center_x": 386.0,
+    "torso_span_y550_px": 149,
+    "left_tip_center_y": 467.0,
+    "right_tip_center_y": 467.0
+  },
+  "back": {
+    "path": "workspace\\local_generation\\actor_core_multiview_gate_20260907\\back_b_seed1008_refined_v1.png",
+    "actor_bbox_xyxy": [
+      152,
+      64,
+      616,
+      733
+    ],
+    "actor_width_px": 465,
+    "actor_height_px": 670,
+    "actor_center_x": 384.0,
+    "head_bbox_xyxy": [
+      209,
+      64,
+      563,
+      443
+    ],
+    "head_width_px": 355,
+    "head_height_px": 380,
+    "head_center_x": 386.0,
+    "torso_span_y550_px": 150,
+    "left_tip_center_y": 468.0,
+    "right_tip_center_y": 467.0
+  },
+  "drift": {
+    "head_top_px": 2,
+    "head_bottom_px": 0,
+    "floor_px": 2,
+    "actor_height_ratio_delta": 0.006006,
+    "actor_center_x_px": 0.0,
+    "head_center_x_px": 0.0,
+    "head_width_ratio": 1.005666,
+    "head_height_ratio": 1.005291,
+    "arm_span_ratio": 1.00432,
+    "torso_width_ratio": 1.006711,
+    "back_tip_level_delta_px": 1.0
+  },
+  "automatic_gates": {
+    "head_top_drift_lte_6px": true,
+    "head_bottom_drift_lte_8px": true,
+    "floor_drift_lte_3px": true,
+    "actor_height_drift_lte_0_02": true,
+    "actor_center_drift_lte_6px": true,
+    "head_center_drift_lte_6px": true,
+    "head_width_ratio_0_95_to_1_05": true,
+    "head_height_ratio_0_95_to_1_03": true,
+    "arm_span_ratio_0_97_to_1_04": true,
+    "torso_width_ratio_0_90_to_1_08": true,
+    "back_tip_level_delta_lte_4px": true
+  },
+  "automatic_pass": true,
+  "human_checks": [
+    "strict centered back view with no head turn or facial semantics",
+    "full rounded cranium matches the approved front width and height",
+    "smooth featureless back and pelvis without spine or buttock groove",
+    "open armpits and corrected rounded shoulder roots remain plausible",
+    "hand shape is recorded but intentionally deferred until the topology gate"
+  ],
+  "next_stage_if_approved": "derive left B by deterministic mirroring, freeze four-view hashes, then start the isolated 3D reconstruction probe"
+}
