@@ -1,0 +1,54 @@
+{
+  "schema": "assetsstudio_actor_core_front_ab_audit_v1",
+  "a": "workspace\\local_generation\\actor_core_tpose_shoulder_gate_20260907\\tpose93_shoulders_seed20261002.png",
+  "a_sha256": "77b09afcd19ae7eae6dfc24e548fd351422ae2191935c5bf5cee125607399883",
+  "b": "workspace\\local_generation\\actor_core_tpose_shoulder_gate_20260907\\tpose93_shoulders_seed1002_blankface_v1.png",
+  "b_sha256": "689cc0013fc101d7e230245cdb9806f512c8aa5d24b4b5e5ff5799186afa17a3",
+  "edit_mask": "workspace\\local_generation\\actor_core_tpose_shoulder_gate_20260907\\inputs\\tpose93_shoulders_seed1002_face_edit_mask_v1.png",
+  "edit_mask_sha256": "deecd474ca4c285c1013149290a591fb1ae9ab798ef92599a6cf4b9c7cc29604",
+  "prompts": {
+    "a": null,
+    "b": null
+  },
+  "metrics": {
+    "silhouette_iou": 0.99997,
+    "head_silhouette_iou": 1.0,
+    "a_bbox_xyxy": [
+      152,
+      66,
+      617,
+      754
+    ],
+    "b_bbox_xyxy": [
+      152,
+      66,
+      617,
+      754
+    ],
+    "bbox_edge_drift_ratios": [
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "bbox_max_drift_ratio": 0.0,
+    "outside_edit_human_rgb_mae_0_255": 0.0,
+    "outside_edit_human_changed_pixel_ratio_gt_8": 0.0,
+    "outside_edit_human_pixel_count": 104357,
+    "effective_edit_margin_px": 3
+  },
+  "automatic_gates": {
+    "silhouette_iou_gte_0_98": true,
+    "bbox_max_drift_lte_0_005": true,
+    "outside_edit_human_rgb_mae_lte_3": true,
+    "outside_edit_human_changed_ratio_lte_0_05": true
+  },
+  "automatic_pass": true,
+  "human_review_required": true,
+  "human_checks": [
+    "A keeps only eyes and eyebrows as temporary facial features",
+    "B has no eyes, eyebrows, sockets, ghost lines, nose or mouth",
+    "head remains broad and directional rather than spherical or flat",
+    "torso and limbs read compact enough for the intended game style"
+  ]
+}

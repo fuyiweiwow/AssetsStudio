@@ -8,7 +8,7 @@ Studio 为多个游戏提供可复用美术资产。当前 `ba` 仅保留在 `co
 
 `StyleProfile → 风格种子 → 无部件 Actor Core 图像 → Hunyuan3D 形体 → 人工 AccuRIG → 动作库自动适配/变形 QA → 单个 Slot 部件 → Recipe/组合预览`
 
-当前实验停在“无部件 Actor Core 图像”的正面 T Pose Gate。用户已确认自然垂臂 93 的正视形态；从同一像素权威派生的 T Pose A/B 已通过自动比例、姿态和局部去五官保持性检查，正在等待人工审核肩点、腋下、手端和无脸头部体量。审核前暂停侧背面、3D、AccuRIG、动作和配件推进。该临时顺序与验收见 `docs/ACTOR_CORE_2D_FIRST_PLAN.md`；下面已经完成的 3D、绑定和配件条目都是技术证据，不代表当前下一步。
+当前实验停在“无部件 Actor Core 图像”的正面 T Pose Gate。用户已确认自然垂臂 93 的正视形态，并指出首枚 T Pose 的肩—上臂连接过窄；局部修正 seed 1002 已增加肩根体量且保留开放腋下，比例、姿态、蒙版外保持和无五官 A/B 自动 Gate 均通过，正在等待人工审核。审核前暂停侧背面、3D、AccuRIG、动作和配件推进。该临时顺序与验收见 `docs/ACTOR_CORE_2D_FIRST_PLAN.md`；下面已经完成的 3D、绑定和配件条目都是技术证据，不代表当前下一步。
 
 Actor Core 自动生成 V2 正在独立验证“TripoSG 形体 → 闭合动画网格 → 每 Actor 独立 UniRig 骨架 → 骨骼/截面语义 Slot”。旧 canonical cage 拟合已经因轮廓平台期否决；Hunyuan3D 只保留为教师比较器。V2 未在真实 RTX 3060 和多个比例 Actor 上通过 G2/G3 前，不替换上述已批准生产入口，也不进入 Studio。详见 `docs/ACTOR_CORE_GENERATION_V2.md`。
 
@@ -64,7 +64,7 @@ Actor Core 自动生成 V2 正在独立验证“TripoSG 形体 → 闭合动画�
 ## 下一步
 
 1. 用户已确认自然垂臂 93 的正视形态；该确认不等于最终 Actor Core、T Pose 或四向批准。
-2. 审核 `workspace/local_generation/actor_core_tpose_gate_20260907/tpose93_seed98_review_v2.png` 和 `tpose93_seed98_ab_review_v1.png`：重点检查肩点、开放腋下、连指手端，以及 B 是否无眼窝/鬼影并保持头部体量。自动审计已通过，但不能替代人工造型判断。
+2. 审核肩根修正后的 `workspace/local_generation/actor_core_tpose_shoulder_gate_20260907/tpose93_shoulders_seed1002_shape_review_v3.png` 和 `tpose93_shoulders_seed1002_ab_review_v1.png`：重点检查圆肩是否自然、腋下是否开放而非薄膜黏连、连指手端，以及 B 是否无眼窝/鬼影并保持头部体量。自动审计已通过，但不能替代人工造型判断。
 3. T Pose A/B 人工通过后扩展严格对齐的 front/right/back/left；姿态与视角导引只能约束关节和投影，不允许四个方向独立生成不同角色或重定义身体比例。
 4. 侧背面生成后先做头部厚度、后脑、躯干深度、四肢长度和落点审核，不凭单张正面直接晋升 3D。
 5. 四向通过后冻结源图哈希与人工结论，再建立唯一 3D 基准素体；现有 TripoSG/UniRig/Hunyuan3D 结果只复用技术验证方法。

@@ -113,6 +113,15 @@
 
 当前仍是 `human_review_required`：必须检查肩点是否自然、腋下是否真正开放、手端是否可接受，以及无脸 B 是否仍保持 93 的头部体量。成功节点作为换机可续的实验包纳入 Git，但不登记到 Studio、训练 Target 或资产库。人工通过后才扩展严格对齐的 right/back/left，不直接送 3D。
 
+用户复核指出首枚 T Pose 的肩—上臂连接过窄。该问题在多视图和 3D 前修正，不能留给模型自行猜测：
+
+- `tools/model_test/build_actor_core_shoulder_repair_mask.py` 只覆盖双侧肩根和三角肌过渡，不覆盖头、手端、躯干下半部或腿；局部提示词要求增加肩根体量，同时保留凹形开放腋下。
+- seed 1003 改动过轻，仍接近细插接感，已拒绝；seed 1002 形成更连续的圆肩，因此成为新的待审 T Pose A：`tpose93_shoulders_seed20261002.png`。
+- 扩展后的 T Pose Gate 以原 seed 98 T Pose 为局部基线：左右肩根垂直厚度从 `22/23 px` 增至 `46/48 px`，即增加 `24/25 px`；外侧采样仍保留 `35/26 px` 的腋下开放间隔。头部、总高、臂展、手端高度、躯干下部和小腿量测不变，肩部有效编辑区外 RGB MAE 与超过 `8/255` 的变化比例均为 `0`，自动 Gate 通过。
+- 新 A 已确定性派生无五官 `tpose93_shoulders_seed1002_blankface_v1.png`；A/B 整体 silhouette IoU `0.99997`、head silhouette IoU `1.0`、有效脸区外变化 `0`。
+
+seed 1002 仍为 `human_review_required`，重点判断肩部是否自然且没有形成腋下薄膜。人工通过后它替代 seed 98 成为正面 T Pose 权威，再扩展侧背面。
+
 官方依据：
 
 - [FLUX.2 Klein 官方仓库](https://github.com/black-forest-labs/flux2)：4B 支持本地单参考与多参考编辑；

@@ -1,0 +1,75 @@
+{
+  "schema": "assetsstudio_actor_core_shoulder_repair_mask_v1",
+  "status": "local_edit_input_only",
+  "source": "workspace\\local_generation\\actor_core_tpose_gate_20260907\\tpose93_guided_seed20260998_earless.png",
+  "mask": "workspace\\local_generation\\actor_core_tpose_shoulder_gate_20260907\\inputs\\tpose93_shoulder_repair_mask_v1.png",
+  "polygons_xy": {
+    "left": [
+      [
+        282,
+        448
+      ],
+      [
+        330,
+        443
+      ],
+      [
+        359,
+        450
+      ],
+      [
+        361,
+        479
+      ],
+      [
+        346,
+        510
+      ],
+      [
+        306,
+        501
+      ],
+      [
+        282,
+        479
+      ]
+    ],
+    "right": [
+      [
+        486,
+        448
+      ],
+      [
+        438,
+        443
+      ],
+      [
+        409,
+        450
+      ],
+      [
+        407,
+        479
+      ],
+      [
+        422,
+        510
+      ],
+      [
+        462,
+        501
+      ],
+      [
+        486,
+        479
+      ]
+    ]
+  },
+  "intent": "widen only the shoulder-to-upper-arm roots while retaining open armpits",
+  "invariants": [
+    "head silhouette and face unchanged",
+    "arm endpoints, span and level unchanged",
+    "torso below y=510 unchanged",
+    "legs and feet unchanged"
+  ]
+}

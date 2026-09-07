@@ -1,0 +1,16 @@
+{
+  "schema": "assetsstudio_actor_core_face_feature_removal_v1",
+  "status": "human_review_required",
+  "source": "workspace\\local_generation\\actor_core_tpose_shoulder_gate_20260907\\tpose93_shoulders_seed20261002.png",
+  "source_sha256": "77b09afcd19ae7eae6dfc24e548fd351422ae2191935c5bf5cee125607399883",
+  "edit_mask": "workspace\\local_generation\\actor_core_tpose_shoulder_gate_20260907\\inputs\\tpose93_shoulders_seed1002_face_edit_mask_v1.png",
+  "feature_mask": "workspace\\local_generation\\actor_core_tpose_shoulder_gate_20260907\\inputs\\tpose93_shoulders_seed1002_feature_mask_v1.png",
+  "output": "workspace\\local_generation\\actor_core_tpose_shoulder_gate_20260907\\tpose93_shoulders_seed1002_blankface_v1.png",
+  "output_sha256": "689cc0013fc101d7e230245cdb9806f512c8aa5d24b4b5e5ff5799186afa17a3",
+  "outside_edit_mask_rgb_mae": 0.0,
+  "invariants": [
+    "head silhouette and proportions unchanged",
+    "body, pose, background and lighting outside the face edit mask unchanged",
+    "no diffusion or remote model used for feature removal"
+  ]
+}

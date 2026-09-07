@@ -59,6 +59,55 @@ def leg_width(mask: np.ndarray, y: int) -> float:
     return float(sum(widths[:2]) / 2.0)
 
 
+def column_runs(mask: np.ndarray, x: int, top: int = 440, bottom: int = 550) -> list[tuple[int, int]]:
+    changes = np.diff(np.pad(mask[top:bottom, x].astype(np.int8), (1, 1)))
+    starts = np.where(changes == 1)[0] + top
+    ends = np.where(changes == -1)[0] - 1 + top
+    return [(int(start), int(end)) for start, end in zip(starts, ends)]
+
+
+def shoulder_metrics(
+    baseline_image: np.ndarray,
+    baseline_mask: np.ndarray,
+    candidate_image: np.ndarray,
+    candidate_mask: np.ndarray,
+    edit_mask: np.ndarray,
+) -> dict:
+    root_columns = {"left": 310, "right": 458}
+    gap_columns = {"left": 315, "right": 453}
+    root = {}
+    gaps = {}
+    for side, x in root_columns.items():
+        before = column_runs(baseline_mask, x)[0]
+        after = column_runs(candidate_mask, x)[0]
+        before_height = before[1] - before[0] + 1
+        after_height = after[1] - after[0] + 1
+        root[side] = {
+            "sample_x": x,
+            "before_px": before_height,
+            "after_px": after_height,
+            "increase_px": after_height - before_height,
+        }
+    for side, x in gap_columns.items():
+        runs = column_runs(candidate_mask, x)
+        gap = runs[1][0] - runs[0][1] - 1 if len(runs) >= 2 else 0
+        gaps[side] = {"sample_x": x, "open_gap_px": int(gap)}
+
+    effective = cv2.dilate(
+        (edit_mask > 0).astype(np.uint8),
+        cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (13, 13)),
+    ) > 0
+    difference = np.abs(candidate_image.astype(np.int16) - baseline_image.astype(np.int16))
+    outside = np.logical_not(effective)
+    changed = np.max(difference, axis=2) > 8
+    return {
+        "root_vertical_thickness": root,
+        "underarm_open_gap": gaps,
+        "outside_effective_mask_rgb_mae_0_255": round(float(difference[outside].mean()), 6),
+        "outside_effective_mask_changed_ratio_gt_8": round(float(changed[outside].mean()), 6),
+    }
+
+
 def basic_metrics(path: Path) -> tuple[np.ndarray, dict, np.ndarray]:
     image = cv2.imread(str(path), cv2.IMREAD_COLOR)
     if image is None:
@@ -111,13 +160,23 @@ def font(size: int) -> ImageFont.ImageFont:
     return ImageFont.load_default()
 
 
-def review(source: Path, candidate: Path, report: dict, output: Path) -> None:
-    tile = 640
+def review(
+    source: Path,
+    candidate: Path,
+    report: dict,
+    output: Path,
+    baseline_tpose: Path | None = None,
+) -> None:
+    entries = [("A93 RELAXED SHAPE", source)]
+    if baseline_tpose:
+        entries.append(("T-POSE BEFORE", baseline_tpose))
+    entries.append(("T-POSE CANDIDATE", candidate))
+    tile = 512 if baseline_tpose else 640
     header = 56
     footer = 100
-    canvas = Image.new("RGB", (tile * 2, header + tile + footer), "#202124")
+    canvas = Image.new("RGB", (tile * len(entries), header + tile + footer), "#202124")
     draw = ImageDraw.Draw(canvas)
-    for index, (label, path) in enumerate((("A93 RELAXED SHAPE", source), ("T-POSE CANDIDATE", candidate))):
+    for index, (label, path) in enumerate(entries):
         image = Image.open(path).convert("RGB").resize((tile, tile), Image.Resampling.LANCZOS)
         canvas.paste(image, (index * tile, header))
         draw.text((index * tile + 18, 14), label, font=font(24), fill="white")
@@ -138,12 +197,14 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--source", type=Path, required=True)
     parser.add_argument("--candidate", type=Path, required=True)
+    parser.add_argument("--baseline-tpose", type=Path)
+    parser.add_argument("--edit-mask", type=Path)
     parser.add_argument("--report", type=Path, required=True)
     parser.add_argument("--review", type=Path, required=True)
     args = parser.parse_args()
 
     _, source_metrics, _ = basic_metrics(args.source)
-    _, candidate_metrics, candidate_mask = basic_metrics(args.candidate)
+    candidate_image, candidate_metrics, candidate_mask = basic_metrics(args.candidate)
     candidate_metrics["tpose"] = tpose_metrics(candidate_mask)
 
     head_edge_drift = [
@@ -165,6 +226,37 @@ def main() -> int:
         "arm_tip_level_delta_lte_4px": pose["tip_level_delta_px"] <= 4,
         "arm_tip_shoulder_offset_abs_lte_14px": all(abs(value) <= 14 for value in pose["tip_to_shoulder_y_px"].values()),
     }
+    shoulder = None
+    if args.baseline_tpose or args.edit_mask:
+        if not args.baseline_tpose or not args.edit_mask:
+            parser.error("--baseline-tpose and --edit-mask must be provided together")
+        baseline_image, _, baseline_mask = basic_metrics(args.baseline_tpose)
+        edit_mask = cv2.imread(str(args.edit_mask), cv2.IMREAD_GRAYSCALE)
+        if edit_mask is None or edit_mask.shape != candidate_mask.shape:
+            raise ValueError("Shoulder edit mask is missing or has the wrong dimensions")
+        shoulder = shoulder_metrics(
+            baseline_image,
+            baseline_mask,
+            candidate_image,
+            candidate_mask,
+            edit_mask,
+        )
+        increases = [
+            item["increase_px"] for item in shoulder["root_vertical_thickness"].values()
+        ]
+        gaps = [item["open_gap_px"] for item in shoulder["underarm_open_gap"].values()]
+        gates.update(
+            {
+                "shoulder_root_increase_each_8_to_30px": all(8 <= value <= 30 for value in increases),
+                "underarm_open_gap_each_gte_18px": all(value >= 18 for value in gaps),
+                "outside_shoulder_edit_rgb_mae_lte_0_1": shoulder[
+                    "outside_effective_mask_rgb_mae_0_255"
+                ] <= 0.1,
+                "outside_shoulder_edit_changed_ratio_lte_0_001": shoulder[
+                    "outside_effective_mask_changed_ratio_gt_8"
+                ] <= 0.001,
+            }
+        )
     report_data = {
         "schema": "assetsstudio_actor_core_tpose_shape_gate_v1",
         "status": "human_review_required",
@@ -176,6 +268,7 @@ def main() -> int:
             "torso_width_ratios": torso_drift,
             "lower_leg_width_ratio": round(leg_drift, 6),
         },
+        "shoulder_repair": shoulder,
         "automatic_gates": gates,
         "automatic_pass": all(gates.values()),
         "human_checks": [
@@ -187,7 +280,7 @@ def main() -> int:
     }
     args.report.parent.mkdir(parents=True, exist_ok=True)
     args.report.write_text(json.dumps(report_data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    review(args.source, args.candidate, report_data, args.review)
+    review(args.source, args.candidate, report_data, args.review, args.baseline_tpose)
     print(json.dumps(report_data, ensure_ascii=False, indent=2))
     return 0 if report_data["automatic_pass"] else 2
 

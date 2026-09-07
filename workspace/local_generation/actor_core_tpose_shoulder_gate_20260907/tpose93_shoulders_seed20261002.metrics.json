@@ -1,0 +1,36 @@
+{
+  "schema": "assetsstudio_local_inference_probe_v1",
+  "backend": "flux2_klein_4b_distilled_fp8",
+  "server": "http://127.0.0.1:8190",
+  "prompt_id": "46681eb9-7d38-44b3-83c8-f4fa4234e725",
+  "width": 768,
+  "height": 768,
+  "steps": 4,
+  "cfg": 1.0,
+  "seed": 20261002,
+  "prompt": "Edit only the two masked shoulder-root regions in image 1. Make each upper arm connect naturally into the torso through a broader rounded chibi shoulder and subtle deltoid volume. Widen the narrow arm-to-torso root downward by roughly 10 to 15 pixels, without moving the shoulder centerline or changing the arm thickness away from the root. Keep a clean concave open armpit under each shoulder; do not fill the armpit and do not create webbing or a triangular membrane. Preserve the exact horizontal arm endpoints, arm span, head and jaw silhouette, neck position, torso below the masks, belly, hips, legs, feet, eyes, eyebrows, earless face, material, background and lighting. Smooth continuous warm-peach skin shell only. No ears, seams, shoulder pads, clothes, extra anatomy or text. Change absolutely nothing outside the masks.",
+  "reference_image": "assetsstudio_actor_core_tpose93_seed98_earless.png",
+  "style_reference_image": null,
+  "style_reference_mode": "appearance_only",
+  "reference_roles": {
+    "image_1": "reference_authority"
+  },
+  "mask_image": "assetsstudio_actor_core_tpose93_shoulder_mask_v1.png",
+  "mask_expand": 1,
+  "mask_feather": 5,
+  "composite_mask": true,
+  "lora": null,
+  "lora_strength": null,
+  "elapsed_seconds": 4.17,
+  "gpu": {
+    "name": "NVIDIA GeForce RTX 5070 Ti",
+    "total_mib": 16303,
+    "baseline_used_mib": 902,
+    "peak_used_mib": 12454,
+    "peak_delta_mib": 11552
+  },
+  "outputs": [
+    "actor_core_tpose93_shoulders_seed20261002_00001_.png"
+  ],
+  "qualification": "3060_memory_cap_prescreen_only"
+}
