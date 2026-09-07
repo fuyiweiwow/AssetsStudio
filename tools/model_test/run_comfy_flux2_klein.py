@@ -60,6 +60,11 @@ def write_metrics(path: str | None, payload: dict) -> None:
 
 
 def build_prompt(args: argparse.Namespace) -> dict:
+    style_reference_image = getattr(args, "style_reference_image", None)
+    mask_image = getattr(args, "mask_image", None)
+    mask_expand = getattr(args, "mask_expand", 0)
+    mask_feather = getattr(args, "mask_feather", 0)
+    composite_mask = getattr(args, "composite_mask", True)
     model_output = ["18", 0] if args.lora else ["1", 0]
     prompt = {
         "1": {
@@ -116,8 +121,16 @@ def build_prompt(args: argparse.Namespace) -> dict:
             "class_type": "CFGGuider",
             "inputs": {
                 "model": model_output,
-                "positive": ["16", 0] if args.reference_image else ["4", 0],
-                "negative": ["17", 0] if args.reference_image else ["5", 0],
+                "positive": (
+                    ["26", 0]
+                    if style_reference_image
+                    else (["16", 0] if args.reference_image else ["4", 0])
+                ),
+                "negative": (
+                    ["27", 0]
+                    if style_reference_image
+                    else (["17", 0] if args.reference_image else ["5", 0])
+                ),
                 "cfg": args.cfg,
             },
         },
@@ -128,7 +141,7 @@ def build_prompt(args: argparse.Namespace) -> dict:
                 "guider": ["10", 0],
                 "sampler": ["8", 0],
                 "sigmas": ["9", 0],
-                "latent_image": ["6", 0],
+                "latent_image": ["21", 0] if mask_image else ["6", 0],
             },
         },
         "12": {
@@ -138,7 +151,9 @@ def build_prompt(args: argparse.Namespace) -> dict:
         "13": {
             "class_type": "SaveImage",
             "inputs": {
-                "images": ["12", 0],
+                "images": (
+                    ["23", 0] if mask_image and composite_mask else ["12", 0]
+                ),
                 "filename_prefix": args.prefix,
             },
         },
@@ -185,6 +200,86 @@ def build_prompt(args: argparse.Namespace) -> dict:
             }
         )
 
+    if style_reference_image:
+        if not args.reference_image:
+            raise ValueError("--style-reference-image requires --reference-image")
+        prompt.update(
+            {
+                "24": {
+                    "class_type": "LoadImage",
+                    "inputs": {"image": style_reference_image},
+                },
+                "25": {
+                    "class_type": "VAEEncode",
+                    "inputs": {"pixels": ["24", 0], "vae": ["3", 0]},
+                },
+                "26": {
+                    "class_type": "ReferenceLatent",
+                    "inputs": {
+                        "conditioning": ["16", 0],
+                        "latent": ["25", 0],
+                    },
+                },
+                "27": {
+                    "class_type": "ReferenceLatent",
+                    "inputs": {
+                        "conditioning": ["17", 0],
+                        "latent": ["25", 0],
+                    },
+                },
+            }
+        )
+
+    if mask_image:
+        if not args.reference_image:
+            raise ValueError("--mask-image requires --reference-image")
+        prompt.update(
+            {
+                "19": {
+                    "class_type": "LoadImageMask",
+                    "inputs": {"image": mask_image, "channel": "red"},
+                },
+                "20": {
+                    "class_type": "GrowMask",
+                    "inputs": {
+                        "mask": ["19", 0],
+                        "expand": mask_expand,
+                        "tapered_corners": True,
+                    },
+                },
+                "21": {
+                    "class_type": "SetLatentNoiseMask",
+                    "inputs": {"samples": ["15", 0], "mask": ["20", 0]},
+                },
+            }
+        )
+        if composite_mask:
+            prompt.update(
+                {
+                    "22": {
+                        "class_type": "FeatherMask",
+                        "inputs": {
+                            "mask": ["20", 0],
+                            "left": mask_feather,
+                            "top": mask_feather,
+                            "right": mask_feather,
+                            "bottom": mask_feather,
+                        },
+                    },
+                    "23": {
+                        "class_type": "ImageCompositeMasked",
+                        "inputs": {
+                            "destination": ["14", 0],
+                            "source": ["12", 0],
+                            "x": 0,
+                            "y": 0,
+                            "resize_source": False,
+                            "mask": ["22", 0],
+                        },
+                    },
+                }
+            )
+
     return prompt
 
 
@@ -195,6 +290,27 @@ def main() -> int:
     parser.add_argument(
         "--reference-image",
         help="Filename relative to ComfyUI's input directory; enables image editing",
+    )
+    parser.add_argument(
+        "--style-reference-image",
+        help="Optional second ComfyUI input image used only as style evidence",
+    )
+    parser.add_argument(
+        "--style-reference-mode",
+        default="appearance_only",
+        choices=("appearance_only", "feature_prototype"),
+    )
+    parser.add_argument(
+        "--mask-image",
+        help="Optional red-channel ComfyUI input mask; requires --reference-image",
+    )
+    parser.add_argument("--mask-expand", type=int, default=4)
+    parser.add_argument("--mask-feather", type=int, default=12)
+    parser.add_argument(
+        "--no-composite-mask",
+        action="store_false",
+        dest="composite_mask",
+        help="Return the raw decoded image instead of restoring pixels outside the mask",
     )
     parser.add_argument("--width", type=int, default=768)
     parser.add_argument("--height", type=int, default=768)
@@ -265,6 +381,27 @@ def main() -> int:
                 "cfg": args.cfg,
                 "seed": args.seed,
                 "reference_image": args.reference_image,
+                "style_reference_image": args.style_reference_image,
+                "style_reference_mode": args.style_reference_mode,
+                "reference_roles": {
+                    "image_1": (
+                        "structure_authority"
+                        if args.style_reference_image
+                        else "reference_authority"
+                    ),
+                    **(
+                        {
+                            "image_2": "style_only_evidence",
+                            "conflict_rule": "image_1_wins_geometry_and_semantics",
+                        }
+                        if args.style_reference_image
+                        else {}
+                    ),
+                },
+                "mask_image": args.mask_image,
+                "mask_expand": args.mask_expand if args.mask_image else None,
+                "mask_feather": args.mask_feather if args.mask_image else None,
+                "composite_mask": args.composite_mask if args.mask_image else None,
                 "lora": args.lora,
                 "lora_strength": args.lora_strength if args.lora else None,
                 "elapsed_seconds": round(elapsed, 2),

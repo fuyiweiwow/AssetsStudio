@@ -8,6 +8,8 @@ Studio 为多个游戏提供可复用美术资产。当前 `ba` 仅保留在 `co
 
 `StyleProfile → 风格种子 → 无部件 Actor Core 图像 → Hunyuan3D 形体 → 人工 AccuRIG → 动作库自动适配/变形 QA → 单个 Slot 部件 → Recipe/组合预览`
 
+当前实验停在“无部件 Actor Core 图像”之前的二维造型 Gate。2026-09-06 起暂停直接重建 3D、AccuRIG、动作和配件推进，先完成同一张正面图的“带眼眉风格确认图 A → 局部去眼眉几何候选 B”，再由人工决定比例与形状。该临时顺序与验收见 `docs/ACTOR_CORE_2D_FIRST_PLAN.md`；下面已经完成的 3D、绑定和配件条目都是技术证据，不代表当前下一步。
+
 Actor Core 自动生成 V2 正在独立验证“TripoSG 形体 → 闭合动画网格 → 每 Actor 独立 UniRig 骨架 → 骨骼/截面语义 Slot”。旧 canonical cage 拟合已经因轮廓平台期否决；Hunyuan3D 只保留为教师比较器。V2 未在真实 RTX 3060 和多个比例 Actor 上通过 G2/G3 前，不替换上述已批准生产入口，也不进入 Studio。详见 `docs/ACTOR_CORE_GENERATION_V2.md`。
 
 不得直接生成带头发、衣服和配件的完整 3D 角色。
@@ -61,11 +63,11 @@ Actor Core 自动生成 V2 正在独立验证“TripoSG 形体 → 闭合动画�
 
 ## 下一步
 
-1. 在 AccuRIG 打开新实验 Actor 的专属输入文件，完成一对一标定和 FBX 导出；旧 Actor 的骨骼不得复制到新网格。
-2. 在 Studio 的 `actor_core_v6_seed20260867_hy3d_v1` 条目选择该 FBX，由 intake 处理并生成四向绑定预览。
-3. 检查绑定后的头颈、肩肘腕、髋膝踝和手脚变形；失败 intake 直接销毁，不进入动作阶段。
-4. 绑定通过后选择 `mixamo_standard_walk_v1` 做自动适配和变形 QA；通过后才进入单 Slot 配件生成。
-5. 在真实 RTX 3060 12GB 上补做二维 4-step 冷启动 Gate，并复测 Hunyuan3D 形状阶段；任何 5070 Ti 结果都不替代生产资格。
+1. 人工评审正面 A/B 的头型、躯干、四肢、手足与无脸表面；当前 `compact_2p35` 只是比例诊断，不是已发布 StyleProfile。
+2. 若正面未通过，只在二维结构图和局部编辑阶段返修；失败图不进入四向、3D、训练 Target 或资产库。
+3. 正面通过后，从同一候选扩展严格对齐的 front/right/back/left，不允许四个方向独立生成不同角色。
+4. 四向通过后冻结源图哈希与人工结论，再建立唯一 3D 基准素体；现有 TripoSG/UniRig/Hunyuan3D 结果只复用技术验证方法。
+5. 新基准素体通过形体后才恢复一对一 AccuRIG、动作适配和 Slot 配件流程；真实 RTX 3060 12GB 本地推理 Gate 仍必须单独完成。
 
 ## 2026-08-31 未绑定 T-Pose 配件检查点
 
