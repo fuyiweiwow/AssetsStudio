@@ -81,10 +81,10 @@ def font(size: int) -> ImageFont.ImageFont:
 
 
 def make_review(front: Path, right: Path, raw_right: Path | None, report: dict, output: Path) -> None:
-    entries = [("FRONT A", front)]
+    entries = [("FRONT B", front)]
     if raw_right:
         entries.append(("RIGHT RAW", raw_right))
-    entries.append(("RIGHT A CLEAN", right))
+    entries.append(("RIGHT B REFINED", right))
     tile = 512 if len(entries) == 3 else 640
     header = 56
     footer = 100
@@ -155,11 +155,11 @@ def main() -> int:
         "human_checks": [
             "strict 90-degree profile rather than three-quarter view",
             "full rounded back cranium and shallow directional face plane",
-            "no ear, nose, mouth or semantic residue",
+            "no eye, eyebrow, ear or mouth semantic residue; a shallow no-nose profile turn is allowed",
             "T-pose arm projection remains plausible and shoulder height is preserved",
             "torso depth and foot profile retain the approved chibi shape language",
         ],
-        "next_stage_if_approved": "derive a blank-face right view, then isolate the back view",
+        "next_stage_if_approved": "isolate the back A/B view from the approved front/right authority",
     }
     args.report.parent.mkdir(parents=True, exist_ok=True)
     args.report.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")

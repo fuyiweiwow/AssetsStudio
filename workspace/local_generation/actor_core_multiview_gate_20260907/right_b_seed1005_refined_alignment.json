@@ -2,7 +2,7 @@
   "schema": "assetsstudio_actor_core_right_view_gate_v1",
   "status": "human_review_required",
   "front": {
-    "path": "workspace\\local_generation\\actor_core_tpose_shoulder_gate_20260907\\tpose93_shoulders_seed20261002.png",
+    "path": "workspace\\local_generation\\actor_core_tpose_shoulder_gate_20260907\\tpose93_shoulders_seed1002_blankface_v1.png",
     "actor_bbox_xyxy": [
       153,
       66,
@@ -22,34 +22,34 @@
     "torso_span_y550_px": 149
   },
   "right": {
-    "path": "workspace\\local_generation\\actor_core_multiview_gate_20260907\\right_a_seed1005_clean.png",
+    "path": "workspace\\local_generation\\actor_core_multiview_gate_20260907\\right_b_seed1005_refined.png",
     "actor_bbox_xyxy": [
-      215,
+      214,
       65,
       568,
       733
     ],
     "actor_height_px": 669,
     "head_bbox_xyxy": [
-      215,
+      214,
       65,
       568,
       443
     ],
-    "head_width_px": 354,
+    "head_width_px": 355,
     "head_height_px": 379,
-    "head_center_x": 391.5,
-    "torso_span_y550_px": 136
+    "head_center_x": 391.0,
+    "torso_span_y550_px": 121
   },
   "drift": {
     "head_top_px": 1,
     "head_bottom_px": 0,
     "floor_px": 2,
     "actor_height_ratio": 0.004505,
-    "head_center_x_px": 5.5,
-    "head_depth_to_front_width": 1.002833,
+    "head_center_x_px": 5.0,
+    "head_depth_to_front_width": 1.005666,
     "head_height_ratio": 1.002646,
-    "torso_depth_to_front_width": 0.912752
+    "torso_depth_to_front_width": 0.812081
   },
   "automatic_gates": {
     "head_top_drift_lte_6px": true,
@@ -65,9 +65,9 @@
   "human_checks": [
     "strict 90-degree profile rather than three-quarter view",
     "full rounded back cranium and shallow directional face plane",
-    "no ear, nose, mouth or semantic residue",
+    "no eye, eyebrow, ear or mouth semantic residue; a shallow no-nose profile turn is allowed",
     "T-pose arm projection remains plausible and shoulder height is preserved",
     "torso depth and foot profile retain the approved chibi shape language"
   ],
-  "next_stage_if_approved": "derive a blank-face right view, then isolate the back view"
+  "next_stage_if_approved": "isolate the back A/B view from the approved front/right authority"
 }

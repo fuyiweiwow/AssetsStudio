@@ -128,11 +128,12 @@ seed 1002 仍为 `human_review_required`，重点判断肩部是否自然且没�
 
 - 以 `tpose93_shoulders_seed20261002.png` 为唯一正面形态权威，由本机 FLUX.2 Klein 4B distilled FP8 生成严格 90 度右侧视图。seed 1004 腹部更鼓，选择更克制的 seed 1005；原始提示词、模型和参数记录在 `right_seed20261005.metrics.json`。
 - seed 1005 的后脑、头高、落地线和短粗躯干较稳定，但重新生成了耳和鼻。扩散局部清理 seed 1006/1007 分别留下耳部模糊和新增嘴线，均已拒绝且不纳入 Git。
-- `tools/model_test/remove_actor_core_side_semantics.py` 锁定 seed 1005 的 SHA256，以确定性曲面重建去内耳，并仅重塑原鼻部轮廓；没有调用扩散或远程模型。最终 A 为 `right_a_seed1005_clean.png`，保留单侧眼眉供风格审核。
-- `right_seed1005_alignment_audit.json` 的头顶/头底/地面漂移为 `1/0/2 px`，总高漂移 `0.45%`，头部侧深/正面宽 `1.003`，头高比 `1.003`，躯干侧深/正面宽 `0.913`，全部自动 Gate 通过。
-- 无脸右侧 B 的首次确定性清理出现明显眼部鬼影，已判失败并停止；它不进入成功包。先由人工审核 A 的侧脸平面、后脑、侧投影肩臂、躯干和脚，再决定 B 的新清理方式。
+- 第一枚清理 A 仍保留眼部且腹部过凸，用户明确判定需要修正；该版本不再作为当前成功路径。用户同时确认浅鼻部轮廓可以保留，手部形状本轮暂缓。
+- `tools/model_test/remove_actor_core_side_semantics.py` 锁定 seed 1005 的 SHA256，在同一图上确定性去除眼眉和内耳，并把腹部前缘最多收回 `17 px`；浅鼻部轮廓、后脑、后背、骨盆、腿、肩手投影、落地线和光照保持不变，没有调用扩散或远程模型。
+- 修订后的无脸 B 为 `right_b_seed1005_refined.png`。`right_b_seed1005_refined_alignment.json` 的头顶/头底/地面漂移为 `1/0/2 px`，总高漂移 `0.45%`，头部侧深/正面宽 `1.006`，头高比 `1.003`，躯干侧深/正面宽从原始 `0.913` 收至 `0.812`，全部自动 Gate 通过。
+- 早期圆形皮肤补片和眼部鬼影尝试均已拒绝，不进入 Git、Studio、Gallery、训练 Target 或资产库。
 
-当前右侧 A 状态为 `human_review_required`。人工通过前不生成背面、不进入 3D，也不把该候选登记到 Studio、训练 Target 或资产库。
+当前右侧 B 状态为 `human_review_required`。人工通过前不生成背面、不进入 3D，也不把该候选登记到 Studio、训练 Target 或资产库；手部问题记录为 3D 拓扑前必须回查，而不是视为已解决。
 
 官方依据：
 

@@ -1,0 +1,26 @@
+{
+  "schema": "assetsstudio_actor_core_side_refinement_v2",
+  "status": "human_review_required",
+  "source": "workspace\\local_generation\\actor_core_multiview_gate_20260907\\right_seed20261005.png",
+  "source_sha256": "d96f3cabaabb69f06f8a3582f468d9057c495f61bff9d965118975e583b283f0",
+  "output": "workspace\\local_generation\\actor_core_multiview_gate_20260907\\right_b_seed1005_refined.png",
+  "output_sha256": "464626d6b21eb8ed348735a04385797d8ea280f158f8089d07f8fad7a70181d6",
+  "edit_mask": "workspace\\local_generation\\actor_core_multiview_gate_20260907\\right_b_seed1005_refined_mask.png",
+  "outside_edit_mask_rgb_mae_0_255": 0.0,
+  "belly_boundary_summary": {
+    "row_count": 162,
+    "y_range": [
+      448,
+      609
+    ],
+    "max_inward_shift_px": 17
+  },
+  "invariants": [
+    "head crown, back cranium, shallow nose contour and jaw bottom unchanged",
+    "eye, eyebrow and inner ear semantics removed",
+    "belly front edge reduced without changing the back, pelvis or legs",
+    "arm and hand projection unchanged for this isolated review",
+    "pose, ground line, lighting and total height unchanged",
+    "no diffusion or remote model used"
+  ]
+}
