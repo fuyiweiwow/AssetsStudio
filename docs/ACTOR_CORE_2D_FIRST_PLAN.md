@@ -87,7 +87,18 @@
 - 下肢平均宽/头宽 `0.1694 → 0.1612`，腿长占比 `0.1730 → 0.1772`，没有通过拉长腿来变细；
 - 比例自动检查通过，但耳朵尚未移除，因此仍是 `human_review_required` 的形态候选，不是合格 A。
 
-并排证据为本地忽略目录中的 `refine83_guided_review_v1.png`，量测为 `refine83_guided_report_v1.json`。只有人工确认 93 的微调方向后，才隔离处理耳朵和残余语义边界；不得同时转 T Pose 或生成 B。
+并排证据为本地忽略目录中的 `refine83_guided_review_v1.png`，量测为 `refine83_guided_report_v1.json`。用户已确认 93 可作为基准；该确认只冻结自然垂臂正面的比例与形态，不代表 T Pose、四向或 3D 已通过。
+
+### 2026-09-07 93 基准的 A/B 分层结果
+
+在冻结的 93 像素上依次执行两个局部、可复现且不依赖扩散模型的操作：
+
+- `tools/model_test/remove_actor_core_ears.py` 只在耳区用同一图的工作室背景重建头部外轮廓；`a93_earless_candidate_v5.png` 是当前 A。耳区外 RGB MAE 约 `0.0055/255`，未缩放、平移或重画身体。v1-v4 的残余耳弧、肤色条带或轮廓台阶均已拒绝，不进入资产库或下游输入。
+- `tools/model_test/remove_actor_core_face_features.py` 从 A 的肤色低频曲面拟合无五官脸面，并在限定脸区做 Poisson 融合；`b93_blankface_poisson_v5.png` 是当前 B。Telea、Navier-Stokes、首轮 FLUX 局部重绘及 polynomial v2/v3 的阴影块、再生眼睛或补丁边界均已拒绝。
+- `a93_b93_front_ab_audit_v2.json`：整体 silhouette IoU `0.999935`、head silhouette IoU `1.0`、bbox 最大漂移 `0`、有效脸区外人物 RGB MAE `0/255`、超过 `8/255` 的区外变化比例 `0`，自动保持性 Gate 通过。Poisson 会影响输入椭圆包围矩形内的像素，审计明确发布并使用该真实有效编辑区，不把它误报为仅修改眼眉紧掩码。
+- `a93_b93_front_ab_review_v2.png` 是 A（无耳、保留眼眉）、B（无耳、无五官）及变化像素的并排人工审核图。当前两图仍在 Git 忽略的本地诊断目录中，不是资产库条目、训练 Target 或 Studio 默认候选。
+
+该节点证明 93 的正面形态可以无损分层为风格审查图 A 和几何输入图 B。下一步必须先由人工确认 A/B；通过后仅隔离实验“同一形态权威转 T Pose”，姿态导引只能移动关节，不能重新定义头、躯干和四肢比例。
 
 官方依据：
 
