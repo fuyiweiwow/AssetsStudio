@@ -1,0 +1,35 @@
+{
+  "status": "pass",
+  "source": {
+    "sha256": "137f2970c9fe15bddd1c87934b46d328bc918e5882b74c2419208411c61cd010",
+    "faces": 256496,
+    "raw_vertices": 128258,
+    "exact_position_vertices": 128258,
+    "components": 10,
+    "watertight": true,
+    "winding_consistent": true,
+    "euler_number": 10,
+    "all_components_watertight": true
+  },
+  "candidate": {
+    "sha256": "9bc8abecb98384d2b091fcdc14f516ce7290b6229b2418705fb0d4d75d77c6ae",
+    "faces": 256496,
+    "raw_vertices": 766945,
+    "exact_position_vertices": 128258,
+    "components": 10,
+    "watertight": true,
+    "winding_consistent": true,
+    "euler_number": 10,
+    "all_components_watertight": true
+  },
+  "gates": {
+    "faces": true,
+    "exact_position_vertices": true,
+    "components": true,
+    "euler_number": true,
+    "watertight": true,
+    "winding_consistent": true,
+    "all_components_watertight": true
+  },
+  "policy": "exact-position seam weld for audit only; no self-intersection or animation approval"
+}

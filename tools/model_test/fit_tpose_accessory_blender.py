@@ -10,6 +10,7 @@ import sys
 from pathlib import Path
 
 import bpy
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 from mathutils import Matrix, Vector
 from mathutils.bvhtree import BVHTree
 
@@ -30,6 +31,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--width-factor", type=float, default=1.0)
     parser.add_argument("--depth-factor", type=float, default=1.0)
     parser.add_argument("--surface-conform", action="store_true")
+    parser.add_argument("--radial-contact-fit", action="store_true", help="Experimental closed waist-ring contact and front-relief contract")
     return parser.parse_args(argv)
 
 
@@ -87,14 +89,14 @@ def bake_world(objects: list[bpy.types.Object]) -> None:
     bpy.context.view_layer.update()
 
 
-def build_bvh(objects: list[bpy.types.Object]) -> BVHTree:
+def build_bvh(objects: list[bpy.types.Object], epsilon=1e-6) -> BVHTree:
     vertices: list[Vector] = []
     polygons: list[tuple[int, ...]] = []
     for obj in objects:
         offset = len(vertices)
         vertices.extend(obj.matrix_world @ vertex.co for vertex in obj.data.vertices)
         polygons.extend(tuple(offset + index for index in polygon.vertices) for polygon in obj.data.polygons)
-    return BVHTree.FromPolygons(vertices, polygons, all_triangles=False, epsilon=1e-6)
+    return BVHTree.FromPolygons(vertices, polygons, all_triangles=False, epsilon=epsilon)
 
 
 def conform_to_actor_surface(
@@ -268,6 +270,10 @@ def export_glb(objects: list[bpy.types.Object], path: Path) -> None:
 
 def main() -> int:
     args = parse_args()
+    if args.output_dir.exists():
+        raise ValueError('Use a new experiment output directory')
+    if args.radial_contact_fit and (args.surface_conform or args.slot_id != 'waist_accessory'):
+        raise ValueError('Radial contact is a separate waist-only strategy')
     for name, value in (("width-factor", args.width_factor), ("depth-factor", args.depth_factor)):
         if not 0.0 < value <= 1.0:
             raise ValueError(f"{name} must be greater than 0 and no greater than 1")
@@ -387,6 +393,11 @@ def main() -> int:
             clearance,
             height,
         )
+    if args.radial_contact_fit:
+        from waist_contact_fit import fit_contact
+        conform_report=fit_contact(accessory,actor_bvh,build_bvh(accessory),
+                                   Vector((center_x,center_y,waist_z)),height,clearance)
+        bpy.context.view_layer.update()
 
     fitted_minimum, fitted_maximum = bounds(world_vertices(accessory))
     tolerance = 1e-5
@@ -397,6 +408,16 @@ def main() -> int:
     )
     accessory_bvh = build_bvh(accessory)
     overlap_pairs = actor_bvh.overlap(accessory_bvh)
+    contact_report=None
+    if args.radial_contact_fit:
+        from waist_contact_fit import audit_contact, sampled_containment
+        contact_report=audit_contact(accessory,actor_bvh,accessory_bvh,Vector((center_x,center_y,waist_z)),
+                                     height,envelope_minimum,envelope_maximum)
+        contact_report['accessory_inside_actor']=sampled_containment(world_vertices(accessory),build_bvh(actor,epsilon=0),height)
+        actor_near_waist=[p for p in actor_points if fitted_minimum.z<=p.z<=fitted_maximum.z]
+        contact_report['actor_inside_accessory']=sampled_containment(actor_near_waist,build_bvh(accessory,epsilon=0),height)
+        contact_report['gates']['bidirectional_sampled_containment']=all(
+            contact_report[name]['pass'] for name in ['accessory_inside_actor','actor_inside_accessory'])
 
     output_dir = args.output_dir.resolve()
     preview_dir = output_dir / "preview"
@@ -415,6 +436,11 @@ def main() -> int:
         "no_surface_triangle_intersection": len(overlap_pairs) == 0,
         "four_view_preview_complete": len(previews) == 4 and all(Path(path).is_file() for path in previews.values()),
     }
+    if contact_report is not None:
+        # Preserve the old envelope result as a diagnostic, not silently as a
+        # pass. The explicitly selected alternative contract has its own gates.
+        del gates['fit_envelope_contained']
+        gates.update(contact_report['gates'])
     automatic_pass = all(gates.values())
     report = {
         "schema": "assetsstudio_tpose_accessory_fit_v1",
@@ -422,6 +448,9 @@ def main() -> int:
         "actor_profile_id": profile["id"],
         "actor_asset_id": profile["actor_asset_id"],
         "slot_id": args.slot_id,
+        "fit_contract": "waist_contact_front_relief_v1" if contact_report else "legacy_aabb",
+        "legacy_envelope_contained": envelope_contained,
+        "contact_audit": contact_report,
         "rig_state": rig_state,
         "status": "pass_static_tpose" if automatic_pass else "automatic_review_failed",
         "inputs": {
