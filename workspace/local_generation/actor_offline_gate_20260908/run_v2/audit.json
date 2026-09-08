@@ -1,0 +1,53 @@
+{
+  "schema": "actor_core_offline_mesh_v1",
+  "status": "pass",
+  "qualification": "structural_only_not_rig_approval",
+  "axis": "Y-up",
+  "gates": {
+    "single_component": true,
+    "watertight": true,
+    "euler_two": true,
+    "separated_feet": true,
+    "winding_consistent": true
+  },
+  "foot_slices": [
+    {
+      "height_fraction": 0.002,
+      "significant_loops": 2,
+      "crosses_center": false
+    },
+    {
+      "height_fraction": 0.005,
+      "significant_loops": 2,
+      "crosses_center": false
+    },
+    {
+      "height_fraction": 0.01,
+      "significant_loops": 2,
+      "crosses_center": false
+    },
+    {
+      "height_fraction": 0.02,
+      "significant_loops": 2,
+      "crosses_center": false
+    },
+    {
+      "height_fraction": 0.04,
+      "significant_loops": 2,
+      "crosses_center": false
+    },
+    {
+      "height_fraction": 0.08,
+      "significant_loops": 2,
+      "crosses_center": false
+    },
+    {
+      "height_fraction": 0.12,
+      "significant_loops": 2,
+      "crosses_center": false
+    }
+  ],
+  "euler_number": 2,
+  "components": 1,
+  "repair_policy": "revisit input first; no unbounded mesh cutting or whole-body smoothing"
+}

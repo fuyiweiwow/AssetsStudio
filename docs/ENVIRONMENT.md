@@ -2,6 +2,8 @@
 
 ## 发现规则
 
+2026-09-08 新增 [Actor Core 离线预处理/结构检查](OFFLINE_ACTOR_CORE_REPAIR.md)：沿用本地 Hunyuan 专用 Python 环境（numpy、Pillow、OpenCV、trimesh 及切片依赖）和现有 Hunyuan3D-2mv 拆分权重，无新增模型下载或在线图像 API。`actor_core_offline.py generate` 使用当前 Python 并搜索源码/模型；3060 仍需实机验证，5070 Ti 结果不能代替验收。
+
 所有入口按顺序搜索：显式命令行参数、专用环境变量、AssetsStudio 相邻目录、用户目录常见安装位置与模型缓存。找不到时必须列出已检查位置并停止；文档和代码不得依赖某台机器的盘符绝对路径。
 
 常用环境变量：

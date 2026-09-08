@@ -104,6 +104,7 @@ def main() -> int:
     parser.add_argument("--back", type=Path)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--manifest", type=Path)
+    parser.add_argument("--input-manifest", type=Path, help="Require offline input and output structural gates")
     parser.add_argument("--seed", type=int, default=20260821)
     parser.add_argument("--steps", type=int, default=5)
     parser.add_argument("--guidance-scale", type=float)
@@ -130,6 +131,12 @@ def main() -> int:
     for image_path in image_paths:
         if not image_path.is_file():
             raise FileNotFoundError(image_path)
+    input_gate = None
+    if args.input_manifest:
+        if args.left is None or args.back is None or args.asset_kind != "base_actor":
+            raise ValueError("Offline biped gate requires front/left/back and base_actor")
+        from actor_core_offline import validate_inputs
+        input_gate = validate_inputs(args.input_manifest, dict(front=args.front, left=args.left, back=args.back))
     args.output.parent.mkdir(parents=True, exist_ok=True)
 
     print("HUNYUAN_MV_LOAD_SPLIT", flush=True)
@@ -210,6 +217,11 @@ def main() -> int:
             "winding_consistent": topology["winding_consistent"],
             "tiny_fragment_cleanup_bounded": sum(item["faces"] for item in discarded_components) / max(raw_face_count, 1) <= 0.001,
         }
+    offline_mesh_gate = None
+    if input_gate is not None:
+        from actor_core_offline import audit_mesh
+        offline_mesh_gate = audit_mesh(mesh)
+        automatic_gates["offline_biped_structure"] = offline_mesh_gate["status"] == "pass"
     automatic_pass = all(automatic_gates.values())
     report = {
         "schema": "assetsstudio_hunyuan3d_2mv_shape_v1",
@@ -232,6 +244,8 @@ def main() -> int:
         "faces": len(mesh.faces),
         "peak_cuda_memory_bytes": peak_memory_bytes,
         "mesh_audit": topology,
+        "input_gate_manifest": input_gate,
+        "offline_mesh_gate": offline_mesh_gate,
         "component_policy": {
             "max_components": args.max_components,
             "min_component_face_fraction": args.min_component_face_fraction,

@@ -12,6 +12,7 @@ def main():
     parser.add_argument('--root', type=Path, required=True)
     parser.add_argument('--mesh', required=True)
     parser.add_argument('--render', default='render')
+    parser.add_argument('--beauty-subdir', default='beauty')
     parser.add_argument('--name', default='review20')
     args = parser.parse_args()
     mesh = trimesh.load(args.root / args.mesh, force='mesh', process=False)
@@ -22,7 +23,7 @@ def main():
     draw = ImageDraw.Draw(canvas)
     for i, view in enumerate(['front', 'right', 'back', 'left']):
         draw.text((i * 384 + 12, 12), view.upper() + ' SOURCE / 3D PROBE', fill='white')
-        for row, path in enumerate([args.root / (view + '.png'), args.root / args.render / 'beauty' / (view + '.png')]):
+        for row, path in enumerate([args.root / (view + '.png'), args.root / args.render / args.beauty_subdir / (view + '.png')]):
             im = Image.open(path).convert('RGBA').resize((384, 384))
             tile = Image.new('RGBA', im.size, '#999999')
             tile.alpha_composite(im)

@@ -1,0 +1,95 @@
+{
+  "schema": "actor_core_offline_inputs_v1",
+  "profile": "biped_colored_neutral_v2",
+  "status": "pass",
+  "qualification": "input_structure_only_not_art_approval",
+  "views": {
+    "front": {
+      "role": "front",
+      "threshold_saturation": 51.0,
+      "bbox": [
+        153,
+        67,
+        616,
+        732
+      ],
+      "removed_fraction": 0.0011380542451330698,
+      "added_foreground_pixels": 10,
+      "leg_gap": {
+        "left": 375,
+        "right": 397,
+        "start_y": 614,
+        "floor_y": 732,
+        "evidence_rows": 78,
+        "bbox": [
+          153,
+          67,
+          616,
+          732
+        ]
+      },
+      "status": "pass",
+      "rgb_unchanged": true,
+      "source": "D:\\Apps\\CodeXApp\\Tests\\AssetsStudio\\workspace\\local_generation\\actor_core_tpose_shoulder_gate_20260907\\tpose93_shoulders_seed1002_blankface_v1.png",
+      "source_sha256": "689cc0013fc101d7e230245cdb9806f512c8aa5d24b4b5e5ff5799186afa17a3",
+      "file": "front.png",
+      "sha256": "63746bc0cd0c535534409e321c6c091e755b159ac0207f62b744635eadb8fe0f"
+    },
+    "right": {
+      "role": "right",
+      "threshold_saturation": 50.0,
+      "bbox": [
+        214,
+        65,
+        568,
+        732
+      ],
+      "removed_fraction": 0.0,
+      "added_foreground_pixels": 4,
+      "leg_gap": null,
+      "status": "pass",
+      "rgb_unchanged": true,
+      "source": "D:\\Apps\\CodeXApp\\Tests\\AssetsStudio\\workspace\\local_generation\\actor_core_multiview_gate_20260907\\right_b_seed1005_refined.png",
+      "source_sha256": "464626d6b21eb8ed348735a04385797d8ea280f158f8089d07f8fad7a70181d6",
+      "file": "right.png",
+      "sha256": "bd489705d65e8d15ac2f52e32cf43ede9a620cb3271e78e8b5dcbe72d2720470"
+    },
+    "back": {
+      "role": "back",
+      "threshold_saturation": 53.0,
+      "bbox": [
+        152,
+        65,
+        617,
+        733
+      ],
+      "removed_fraction": 0.001391684844875687,
+      "added_foreground_pixels": 4960,
+      "leg_gap": {
+        "left": 376,
+        "right": 396,
+        "start_y": 615,
+        "floor_y": 733,
+        "evidence_rows": 78,
+        "bbox": [
+          152,
+          65,
+          617,
+          733
+        ]
+      },
+      "status": "pass",
+      "rgb_unchanged": true,
+      "source": "D:\\Apps\\CodeXApp\\Tests\\AssetsStudio\\workspace\\local_generation\\actor_core_multiview_gate_20260907\\back_b_seed1008_refined_v2.png",
+      "source_sha256": "62f74ffcc16cdeb6b336149689df71a7ad3b107934150375cfe55df84de76129",
+      "file": "back.png",
+      "sha256": "89b7b5143715a8812b35efb4a02364f161fac5bcac73781bde0c5a2797691818"
+    },
+    "left": {
+      "derived_from": "right",
+      "method": "horizontal_mirror_including_lighting",
+      "file": "left.png",
+      "sha256": "aeeea5a56143514b7d86f0c4d48eb3d880f79b4ecb2ae3c7dbee05f1330ac1f1"
+    }
+  }
+}
