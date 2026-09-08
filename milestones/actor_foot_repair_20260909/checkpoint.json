@@ -1,0 +1,251 @@
+{
+  "schema": "actor_foot_repair_checkpoint_v1",
+  "date": "2026-09-09",
+  "status": "ready_for_experimental_manual_calibration",
+  "approval_scope": "Assistant local foot, structure and FBX review; not user final art approval or animation certification",
+  "supersedes": "original 50k foot-flange handoff; retained as negative control",
+  "text_hash_mode": "LF normalized",
+  "model_download_required": false,
+  "files": [
+    {
+      "path": "docs/ACTOR_FOOT_REPAIR_20260909.md",
+      "sha256": "df79fcf2b5e69b1eb1615103b6a53c4564d16b1b8ef51af96dbb31dd5d1b72a9"
+    },
+    {
+      "path": "docs/CURRENT_WORKFLOW.md",
+      "sha256": "cd4a79c0b132c888830986dfbc1a67635c76f52fec6bd3318b14e49b2e13b361"
+    },
+    {
+      "path": "tools/model_test/actor_core_offline.py",
+      "sha256": "fb1bb5fe903ea36fa18e2f0bd5b912feabd4117e4aeec9ab5d35fe34e7458ead"
+    },
+    {
+      "path": "tools/model_test/audit_actor_foot_repair.py",
+      "sha256": "473bed2806dc9058bb311e70af80b759178fc11c269772d5fe43f0e173e66661"
+    },
+    {
+      "path": "tools/model_test/export_actor_offline_calibration.py",
+      "sha256": "62042aa6961eff58785befc0524e65810d46a0040ddf2024580e25dfeac61026"
+    },
+    {
+      "path": "tools/model_test/rebuild_actor_sole_blender.py",
+      "sha256": "87f84cc29fba99ecdad072554757105b1067672ed77aee2feba62387570d9f49"
+    },
+    {
+      "path": "tools/model_test/render_actor_foot_review_blender.py",
+      "sha256": "efd520dc4cc08f36dc9220331fb2fc7d3554f11d01cec4b76cb82c5b46b73ec2"
+    },
+    {
+      "path": "tools/model_test/repair_actor_foot_local.py",
+      "sha256": "4665f12fafcebf274d5ac7d6f19ea030c74c734f51f95b17b85b7bd45f227e46"
+    },
+    {
+      "path": "tools/model_test/test_actor_foot_repair.py",
+      "sha256": "3a4c3728a3b2f048dee3e439ff7f89bc320f3675d8820557b18363f4047e645f"
+    },
+    {
+      "path": "tools/model_test/verify_actor_foot_checkpoint.py",
+      "sha256": "a74d61fab7b87bbb59cdd5f97cfb55afa4321b0126f494a5d9ec0bea22b28cdf"
+    },
+    {
+      "path": "workspace/local_generation/actor_foot_repair_20260908/REPAIR_PLAN.md",
+      "sha256": "70ac751a916d49cce9d9b3adfc1955b286c52111bfc30deffead4369b7c94ae2"
+    },
+    {
+      "path": "workspace/local_generation/actor_foot_repair_20260908/before_review/body_back.png",
+      "sha256": "8714c6ff14037fc3caf890f8800acb0338b54084be13b0344ac3bcbbbe52e348"
+    },
+    {
+      "path": "workspace/local_generation/actor_foot_repair_20260908/before_review/body_bottom.png",
+      "sha256": "d3a062d339c25fa31c0c2c44b06dadfc30eca47b74a8a6e30a431202c362d4bb"
+    },
+    {
+      "path": "workspace/local_generation/actor_foot_repair_20260908/before_review/body_front.png",
+      "sha256": "9fd3ac047a012a6038169ae92962fb8e6a86839b794ffcafaa5fc4db18afcd0d"
+    },
+    {
+      "path": "workspace/local_generation/actor_foot_repair_20260908/before_review/body_left.png",
+      "sha256": "e809b10a6b072c86f6b3407ed9818485350e360abc2558422e0a2502abc89579"
+    },
+    {
+      "path": "workspace/local_generation/actor_foot_repair_20260908/before_review/body_oblique.png",
+      "sha256": "031a188f6732f723a6defe59ff2c2252b8cfd82553c7f276f0660fd12861883e"
+    },
+    {
+      "path": "workspace/local_generation/actor_foot_repair_20260908/before_review/body_right.png",
+      "sha256": "2fe0f646a826d82ab086126e8bd7ac5ec8cfbb3b283dc30c07cd164ff99b8daf"
+    },
+    {
+      "path": "workspace/local_generation/actor_foot_repair_20260908/before_review/feet_back.png",
+      "sha256": "1bfaef8a9caf6b56a084ab6d276df5e45294f0adb947d07810ca0688799ac756"
+    },
+    {
+      "path": "workspace/local_generation/actor_foot_repair_20260908/before_review/feet_bottom.png",
+      "sha256": "3e4507b7d92c7fd25a22a1cea51613d21d7c5b45f80a8c368e5ac1a61bef7835"
+    },
+    {
+      "path": "workspace/local_generation/actor_foot_repair_20260908/before_review/feet_front.png",
+      "sha256": "d32bf4f13d71e3e5db4f77c645db5d16b15d16f69d3ff4d68f4660bb4e2efeb0"
+    },
+    {
+      "path": "workspace/local_generation/actor_foot_repair_20260908/before_review/feet_left.png",
+      "sha256": "899ff26cd1321ad154e092737f4555713a9cca43d43103b7a218b2a464a9811b"
+    },
+    {
+      "path": "workspace/local_generation/actor_foot_repair_20260908/before_review/feet_oblique.png",
+      "sha256": "0b054f0c10f09a2400787e8aff1cf049489bd006e6dcc6a342e2ad1bfaa6a09d"
+    },
+    {
+      "path": "workspace/local_generation/actor_foot_repair_20260908/before_review/feet_right.png",
+      "sha256": "cdbb6097165276504d098bc2fd1f3106b098256869dfb1249ea4b1ead0960306"
+    },
+    {
+      "path": "workspace/local_generation/actor_foot_repair_20260908/before_review/framing.json",
+      "sha256": "439f1a9f57a6540c6f396e2a6f8f4c4bd301c9fb83e3b8bf234ebbe24fcdab92"
+    },
+    {
+      "path": "workspace/local_generation/actor_foot_repair_20260908/before_review/report.json",
+      "sha256": "1f8f23536c9ec6cd937655c7de40e647174379820aaa4ff56d828df2c15098fc"
+    },
+    {
+      "path": "workspace/local_generation/actor_foot_repair_20260908/local_v1/alpha_diagnostic/back.png",
+      "sha256": "740ea4eee37cab08c70a4e9a60a0be98b60a0cb9ce0e138d2a73e1542ea40dc5"
+    },
+    {
+      "path": "workspace/local_generation/actor_foot_repair_20260908/local_v1/alpha_diagnostic/foot_alpha_review.png",
+      "sha256": "c3217e1b146217c9c39a37e32a4cdb6bfac440de25a8913e7ddfb5a6ef0540d3"
+    },
+    {
+      "path": "workspace/local_generation/actor_foot_repair_20260908/local_v1/alpha_diagnostic/front.png",
+      "sha256": "16f5416d8e8a17d3566fea11e8f7b434128a296080dc4a299ec028e7d79518b4"
+    },
+    {
+      "path": "workspace/local_generation/actor_foot_repair_20260908/local_v1/alpha_diagnostic/left.png",
+      "sha256": "2b1bb7e39459614f3d9ca580152620ffb6c942047fa5ef514838ad649f8903a3"
+    },
+    {
+      "path": "workspace/local_generation/actor_foot_repair_20260908/local_v1/alpha_diagnostic/repair_report.json",
+      "sha256": "e3a020f89791bc470ea57a904637da1308039c54e44027c2f51bb23a995f4ef5"
+    },
+    {
+      "path": "workspace/local_generation/actor_foot_repair_20260908/local_v1/alpha_diagnostic/right.png",
+      "sha256": "acd9774658a02323fca495c3b9b21445720074fa36356e36ff7037485483c426"
+    },
+    {
+      "path": "workspace/local_generation/actor_foot_repair_20260908/local_v1/reference_manifest.json",
+      "sha256": "3f002a6331f830f6698c512c0a0b76783f50f8ca0917153280a508cfd74ac4b0"
+    },
+    {
+      "path": "workspace/local_generation/actor_foot_repair_20260908/local_v1/repair_report.json",
+      "sha256": "80d445ae09f56a0bffdfb9cc2f7db569d45890831e6baecbcdc771682685978f"
+    },
+    {
+      "path": "workspace/local_generation/actor_foot_repair_20260908/local_v2/accurig_input/Actor_Offline_v2_FootRepair_AccuRIG.fbx",
+      "sha256": "a68f73041f5d370495aa7e58ecdd5c7c4875ba980de91cdbbb9986c477dee0b8"
+    },
+    {
+      "path": "workspace/local_generation/actor_foot_repair_20260908/local_v2/accurig_input/handoff.json",
+      "sha256": "bce4212eb87266e7c5805802b79a3d4fca0bb1582cc7b045b0700d185c0874f5"
+    },
+    {
+      "path": "workspace/local_generation/actor_foot_repair_20260908/local_v2/final_audit_v2.json",
+      "sha256": "65ed25570cb333a49584729f680bb203dad6094cde9af49be952f118b2a18b10"
+    },
+    {
+      "path": "workspace/local_generation/actor_foot_repair_20260908/local_v2/foot_before_after.png",
+      "sha256": "8f0b1a4914b11a05cc267d45c6853b8b2efef6fa9bc9d4a73ffbb0cea134fe56"
+    },
+    {
+      "path": "workspace/local_generation/actor_foot_repair_20260908/local_v2/foot_candidate.glb",
+      "sha256": "f20120e0a0d6708516d6c66d01aec111bc5a6559e84db1f0082925b281498f6d"
+    },
+    {
+      "path": "workspace/local_generation/actor_foot_repair_20260908/local_v2/repair_report.json",
+      "sha256": "3cd5c3d81110d2d61d393e7bef5a8a43d3c124d88ff3bf8dfab868895ad01988"
+    },
+    {
+      "path": "workspace/local_generation/actor_foot_repair_20260908/local_v2/review/body_back.png",
+      "sha256": "25a4068817568bf435521b72fa6f2ef3681c4aeb59bc7ce4e8fa72a3e8e0a599"
+    },
+    {
+      "path": "workspace/local_generation/actor_foot_repair_20260908/local_v2/review/body_bottom.png",
+      "sha256": "e56337a81d18fe8f62044ac118c2d9752f7cae85755c55a892bf204bf9690922"
+    },
+    {
+      "path": "workspace/local_generation/actor_foot_repair_20260908/local_v2/review/body_front.png",
+      "sha256": "89f6d4e14e730bceb6a428d1a637a90174043b1c22fb346523561bc8d50ba901"
+    },
+    {
+      "path": "workspace/local_generation/actor_foot_repair_20260908/local_v2/review/body_left.png",
+      "sha256": "09c56eb89c216cd561f83ae2d2c12842434fb1fd0506238de2b10b845c1b2d20"
+    },
+    {
+      "path": "workspace/local_generation/actor_foot_repair_20260908/local_v2/review/body_oblique.png",
+      "sha256": "6e046aa92ce3370192ad121d9bc064177cb1f2ab2194c362ed6d6516a116e2c5"
+    },
+    {
+      "path": "workspace/local_generation/actor_foot_repair_20260908/local_v2/review/body_right.png",
+      "sha256": "2c9d6822b78586771b7055262cfce1742eb458d34aa301089f30ff6543c0cb1f"
+    },
+    {
+      "path": "workspace/local_generation/actor_foot_repair_20260908/local_v2/review/feet_back.png",
+      "sha256": "4f1027d6bddbf5371ee967fab1d1d6aaa6ff0b2f42fd2d01d39d8f49ef10afa5"
+    },
+    {
+      "path": "workspace/local_generation/actor_foot_repair_20260908/local_v2/review/feet_bottom.png",
+      "sha256": "a0057b7836aa7338b222b9706a8c774bb2bcda650d1f88706a665f34f13362e1"
+    },
+    {
+      "path": "workspace/local_generation/actor_foot_repair_20260908/local_v2/review/feet_front.png",
+      "sha256": "285b565795fded34cdae7b0713f52a3d32b9836cc6c63e21a2a9e14dddb1f0b2"
+    },
+    {
+      "path": "workspace/local_generation/actor_foot_repair_20260908/local_v2/review/feet_left.png",
+      "sha256": "7e94b50b8291b62bcc500cda9bbb203065cee3df78b4c43bbf319a3a510018fb"
+    },
+    {
+      "path": "workspace/local_generation/actor_foot_repair_20260908/local_v2/review/feet_oblique.png",
+      "sha256": "aeb400c19fea7d52f7701ec936e5a08d8f690ecc59287d3a1e65e91e5448cccc"
+    },
+    {
+      "path": "workspace/local_generation/actor_foot_repair_20260908/local_v2/review/feet_right.png",
+      "sha256": "a452fe85d69188ba66395d5ac19cb7b64df52564d5888fcb36a8af3420db2836"
+    },
+    {
+      "path": "workspace/local_generation/actor_foot_repair_20260908/local_v2/review/framing.json",
+      "sha256": "439f1a9f57a6540c6f396e2a6f8f4c4bd301c9fb83e3b8bf234ebbe24fcdab92"
+    },
+    {
+      "path": "workspace/local_generation/actor_foot_repair_20260908/local_v2/review/report.json",
+      "sha256": "37b11af96d2c0679020f8cfc2bbb4376eac1af742eafcd1dec0c3eeb2cff33d4"
+    },
+    {
+      "path": "workspace/local_generation/actor_foot_repair_20260908/local_v2/structure_audit.json",
+      "sha256": "7404ffa3ecdcf945e456e120571dc9536c6b6a3e61edd937b88d250043ba81e6"
+    },
+    {
+      "path": "workspace/local_generation/actor_offline_gate_20260908/inputs_v2/back.png",
+      "sha256": "89b7b5143715a8812b35efb4a02364f161fac5bcac73781bde0c5a2797691818"
+    },
+    {
+      "path": "workspace/local_generation/actor_offline_gate_20260908/inputs_v2/front.png",
+      "sha256": "63746bc0cd0c535534409e321c6c091e755b159ac0207f62b744635eadb8fe0f"
+    },
+    {
+      "path": "workspace/local_generation/actor_offline_gate_20260908/inputs_v2/input_manifest.json",
+      "sha256": "89d22080d5acfe8311e3d1fd1d1fb1486b51c0175777720398825956bb37a8e4"
+    },
+    {
+      "path": "workspace/local_generation/actor_offline_gate_20260908/inputs_v2/left.png",
+      "sha256": "aeeea5a56143514b7d86f0c4d48eb3d880f79b4ecb2ae3c7dbee05f1330ac1f1"
+    },
+    {
+      "path": "workspace/local_generation/actor_offline_gate_20260908/inputs_v2/right.png",
+      "sha256": "bd489705d65e8d15ac2f52e32cf43ede9a620cb3271e78e8b5dcbe72d2720470"
+    },
+    {
+      "path": "workspace/local_generation/actor_offline_gate_20260908/static_50k_v2/actor_offline_v2_50k_rig_mesh.glb",
+      "sha256": "e7e88465037df7ef3e5b018f19d36694e0d6c8ab081dced7fc17ace307a17068"
+    }
+  ]
+}

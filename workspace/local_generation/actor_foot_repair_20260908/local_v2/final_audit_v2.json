@@ -1,0 +1,171 @@
+{
+  "status": "pass_foot_and_structure_only",
+  "gates": {
+    "original_defect_rejected": true,
+    "sole_overhang": true,
+    "structure": true,
+    "protected_geometry_preserved": true,
+    "height_and_floor_preserved": true,
+    "no_degenerate_triangles": true,
+    "positive_volume": true
+  },
+  "before": {
+    "samples": [
+      {
+        "fraction": 0.002,
+        "side": 1,
+        "max_overhang_over_height": 0.015038826466138355
+      },
+      {
+        "fraction": 0.002,
+        "side": -1,
+        "max_overhang_over_height": 0.016479676639342553
+      },
+      {
+        "fraction": 0.004,
+        "side": 1,
+        "max_overhang_over_height": 0.01401356878255494
+      },
+      {
+        "fraction": 0.004,
+        "side": -1,
+        "max_overhang_over_height": 0.01600505447456388
+      },
+      {
+        "fraction": 0.006,
+        "side": -1,
+        "max_overhang_over_height": 0.013877089533530979
+      },
+      {
+        "fraction": 0.006,
+        "side": 1,
+        "max_overhang_over_height": 0.009554411243191669
+      },
+      {
+        "fraction": 0.006,
+        "side": 1,
+        "max_overhang_over_height": 0.013009764278741886
+      },
+      {
+        "fraction": 0.006,
+        "side": 1,
+        "max_overhang_over_height": 0.005528602114330201
+      },
+      {
+        "fraction": 0.006,
+        "side": -1,
+        "max_overhang_over_height": 0.004104437025183704
+      },
+      {
+        "fraction": 0.006,
+        "side": 1,
+        "max_overhang_over_height": 0.004314119465260507
+      }
+    ],
+    "max_overhang_over_height": 0.016479676639342553,
+    "threshold": 0.0015,
+    "pass": false,
+    "scope": "Low sole protrusion beyond intact .015H foot section. Not a universal shoe/foot style detector."
+  },
+  "after": {
+    "samples": [
+      {
+        "fraction": 0.002,
+        "side": -1,
+        "max_overhang_over_height": 0.0
+      },
+      {
+        "fraction": 0.002,
+        "side": 1,
+        "max_overhang_over_height": 0.0
+      },
+      {
+        "fraction": 0.004,
+        "side": -1,
+        "max_overhang_over_height": 0.0
+      },
+      {
+        "fraction": 0.004,
+        "side": 1,
+        "max_overhang_over_height": 0.0
+      },
+      {
+        "fraction": 0.006,
+        "side": -1,
+        "max_overhang_over_height": 0.0
+      },
+      {
+        "fraction": 0.006,
+        "side": 1,
+        "max_overhang_over_height": 0.0
+      }
+    ],
+    "max_overhang_over_height": 0.0,
+    "threshold": 0.0015,
+    "pass": true,
+    "scope": "Low sole protrusion beyond intact .015H foot section. Not a universal shoe/foot style detector."
+  },
+  "structure": {
+    "schema": "actor_core_offline_mesh_v1",
+    "status": "pass",
+    "qualification": "structural_only_not_rig_approval",
+    "axis": "Y-up",
+    "gates": {
+      "single_component": true,
+      "watertight": true,
+      "euler_two": true,
+      "separated_feet": true,
+      "winding_consistent": true
+    },
+    "foot_slices": [
+      {
+        "height_fraction": 0.002,
+        "significant_loops": 2,
+        "crosses_center": false
+      },
+      {
+        "height_fraction": 0.005,
+        "significant_loops": 2,
+        "crosses_center": false
+      },
+      {
+        "height_fraction": 0.01,
+        "significant_loops": 2,
+        "crosses_center": false
+      },
+      {
+        "height_fraction": 0.02,
+        "significant_loops": 2,
+        "crosses_center": false
+      },
+      {
+        "height_fraction": 0.04,
+        "significant_loops": 2,
+        "crosses_center": false
+      },
+      {
+        "height_fraction": 0.08,
+        "significant_loops": 2,
+        "crosses_center": false
+      },
+      {
+        "height_fraction": 0.12,
+        "significant_loops": 2,
+        "crosses_center": false
+      }
+    ],
+    "euler_number": 2,
+    "components": 1,
+    "repair_policy": "revisit input first; no unbounded mesh cutting or whole-body smoothing"
+  },
+  "protected_vertex_error_max": 0.0,
+  "protected_reverse_error_max": 0.0,
+  "export_coordinate_tolerance": 1.9882908408767434e-06,
+  "limits": [
+    "No full-body self-intersection certification",
+    "No skinning/motion validation",
+    "Face/hand artistic issues remain outside this foot-only repair"
+  ],
+  "source_sha256": "e7e88465037df7ef3e5b018f19d36694e0d6c8ab081dced7fc17ace307a17068",
+  "candidate_sha256": "f20120e0a0d6708516d6c66d01aec111bc5a6559e84db1f0082925b281498f6d"
+}

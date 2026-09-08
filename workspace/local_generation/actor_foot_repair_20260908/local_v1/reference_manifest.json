@@ -1,0 +1,15 @@
+{
+  "source_mesh_sha256": "e7e88465037df7ef3e5b018f19d36694e0d6c8ab081dced7fc17ace307a17068",
+  "canonical_views": [
+    "front",
+    "right"
+  ],
+  "expected_parts": 1,
+  "scope": "feet only; no source/model authority promotion",
+  "thresholds": {
+    "roi_height_fraction": 0.015,
+    "max_displacement_over_height": 0.025,
+    "sole_overhang_over_height_max": 0.0015,
+    "protected_vertex_change": 0
+  }
+}

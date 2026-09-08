@@ -1,0 +1,13 @@
+{
+  "source_sha256": "f20120e0a0d6708516d6c66d01aec111bc5a6559e84db1f0082925b281498f6d",
+  "source_unchanged": true,
+  "method": "fixed shared orthographic framing; texture-free studio shading, no ground/shadow/cavity",
+  "views": [
+    "front",
+    "right",
+    "back",
+    "left",
+    "oblique",
+    "bottom"
+  ]
+}

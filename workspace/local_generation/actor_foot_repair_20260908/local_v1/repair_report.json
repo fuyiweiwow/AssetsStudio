@@ -1,0 +1,224 @@
+{
+  "status": "fail",
+  "gates": {
+    "source_defect_rejected": true,
+    "flange_check": true,
+    "protected_exact": true,
+    "height_exact": true,
+    "bounded_displacement": true,
+    "faces_exact": true,
+    "structure": true,
+    "no_degenerate_faces": true,
+    "no_face_normal_reversal": false,
+    "glb_structure": true
+  },
+  "preservation": {
+    "editable_vertices": 1103,
+    "changed_vertices": 374,
+    "protected_vertices_exact": true,
+    "vertical_positions_exact": true,
+    "max_displacement_over_height": 0.015800515957544798,
+    "roi_height_fraction": 0.015,
+    "max_allowed_displacement_over_height": 0.025
+  },
+  "before": {
+    "samples": [
+      {
+        "fraction": 0.002,
+        "side": 1,
+        "max_overhang_over_height": 0.015038826466138355
+      },
+      {
+        "fraction": 0.002,
+        "side": -1,
+        "max_overhang_over_height": 0.016479676639342553
+      },
+      {
+        "fraction": 0.004,
+        "side": 1,
+        "max_overhang_over_height": 0.01401356878255494
+      },
+      {
+        "fraction": 0.004,
+        "side": -1,
+        "max_overhang_over_height": 0.01600505447456388
+      },
+      {
+        "fraction": 0.006,
+        "side": -1,
+        "max_overhang_over_height": 0.013877089533530979
+      },
+      {
+        "fraction": 0.006,
+        "side": 1,
+        "max_overhang_over_height": 0.009554411243191669
+      },
+      {
+        "fraction": 0.006,
+        "side": 1,
+        "max_overhang_over_height": 0.013009764278741886
+      },
+      {
+        "fraction": 0.006,
+        "side": 1,
+        "max_overhang_over_height": 0.005528602114330201
+      },
+      {
+        "fraction": 0.006,
+        "side": -1,
+        "max_overhang_over_height": 0.004104437025183704
+      },
+      {
+        "fraction": 0.006,
+        "side": 1,
+        "max_overhang_over_height": 0.004314119465260507
+      }
+    ],
+    "max_overhang_over_height": 0.016479676639342553,
+    "threshold": 0.0015,
+    "pass": false,
+    "scope": "Low sole protrusion beyond intact .015H foot section. Not a universal shoe/foot style detector."
+  },
+  "after": {
+    "samples": [
+      {
+        "fraction": 0.002,
+        "side": 1,
+        "max_overhang_over_height": 0.0007299375902854704
+      },
+      {
+        "fraction": 0.002,
+        "side": -1,
+        "max_overhang_over_height": 0.0007018867562782958
+      },
+      {
+        "fraction": 0.004,
+        "side": 1,
+        "max_overhang_over_height": 0.0007247110285287043
+      },
+      {
+        "fraction": 0.004,
+        "side": -1,
+        "max_overhang_over_height": 0.0007127424535228479
+      },
+      {
+        "fraction": 0.006,
+        "side": -1,
+        "max_overhang_over_height": 0.0007137357357588223
+      },
+      {
+        "fraction": 0.006,
+        "side": 1,
+        "max_overhang_over_height": 0.0007249970274847584
+      },
+      {
+        "fraction": 0.006,
+        "side": -1,
+        "max_overhang_over_height": 0.0006999650907580055
+      },
+      {
+        "fraction": 0.006,
+        "side": 1,
+        "max_overhang_over_height": 0.0006999393002665613
+      },
+      {
+        "fraction": 0.006,
+        "side": 1,
+        "max_overhang_over_height": 0.0007136607057669831
+      },
+      {
+        "fraction": 0.006,
+        "side": 1,
+        "max_overhang_over_height": 0.0007136607057669831
+      }
+    ],
+    "max_overhang_over_height": 0.0007299375902854704,
+    "threshold": 0.0015,
+    "pass": true,
+    "scope": "Low sole protrusion beyond intact .015H foot section. Not a universal shoe/foot style detector."
+  },
+  "face_normal_reversals": 23,
+  "structure": {
+    "schema": "actor_core_offline_mesh_v1",
+    "status": "pass",
+    "qualification": "structural_only_not_rig_approval",
+    "axis": "Y-up",
+    "gates": {
+      "single_component": true,
+      "watertight": true,
+      "euler_two": true,
+      "separated_feet": true,
+      "winding_consistent": true
+    },
+    "foot_slices": [
+      {
+        "height_fraction": 0.002,
+        "significant_loops": 2,
+        "crosses_center": false
+      },
+      {
+        "height_fraction": 0.005,
+        "significant_loops": 2,
+        "crosses_center": false
+      },
+      {
+        "height_fraction": 0.01,
+        "significant_loops": 2,
+        "crosses_center": false
+      },
+      {
+        "height_fraction": 0.02,
+        "significant_loops": 2,
+        "crosses_center": false
+      },
+      {
+        "height_fraction": 0.04,
+        "significant_loops": 2,
+        "crosses_center": false
+      },
+      {
+        "height_fraction": 0.08,
+        "significant_loops": 2,
+        "crosses_center": false
+      },
+      {
+        "height_fraction": 0.12,
+        "significant_loops": 2,
+        "crosses_center": false
+      }
+    ],
+    "euler_number": 2,
+    "components": 1,
+    "repair_policy": "revisit input first; no unbounded mesh cutting or whole-body smoothing"
+  },
+  "source_sha256": "e7e88465037df7ef3e5b018f19d36694e0d6c8ab081dced7fc17ace307a17068",
+  "candidate_sha256": "e375a445b5aead09b2cfacff453a8309b6527de0264bc616d45d9c69ba4d06ef",
+  "alpha_diagnostic": {
+    "front": {
+      "input_sha256": "63746bc0cd0c535534409e321c6c091e755b159ac0207f62b744635eadb8fe0f",
+      "output_sha256": "16f5416d8e8a17d3566fea11e8f7b434128a296080dc4a299ec028e7d79518b4",
+      "removed_pixels": 264,
+      "added_pixels": 0,
+      "outside_roi_exact": true,
+      "rgb_exact": true
+    },
+    "right": {
+      "input_sha256": "bd489705d65e8d15ac2f52e32cf43ede9a620cb3271e78e8b5dcbe72d2720470",
+      "output_sha256": "acd9774658a02323fca495c3b9b21445720074fa36356e36ff7037485483c426",
+      "removed_pixels": 79,
+      "added_pixels": 0,
+      "outside_roi_exact": true,
+      "rgb_exact": true
+    },
+    "back": {
+      "input_sha256": "89b7b5143715a8812b35efb4a02364f161fac5bcac73781bde0c5a2797691818",
+      "output_sha256": "740ea4eee37cab08c70a4e9a60a0be98b60a0cb9ce0e138d2a73e1542ea40dc5",
+      "removed_pixels": 308,
+      "added_pixels": 0,
+      "outside_roi_exact": true,
+      "rgb_exact": true
+    }
+  },
+  "allow_calibration": false,
+  "allow_production": false
+}

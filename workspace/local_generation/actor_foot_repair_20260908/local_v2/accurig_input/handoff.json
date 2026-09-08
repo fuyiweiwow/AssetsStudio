@@ -1,0 +1,26 @@
+{
+  "status": "pass_interchange_only",
+  "purpose": "User manual calibration then motion diagnostics; not final art approval",
+  "source_sha256": "f20120e0a0d6708516d6c66d01aec111bc5a6559e84db1f0082925b281498f6d",
+  "output_sha256": "a68f73041f5d370495aa7e58ecdd5c7c4875ba980de91cdbbb9986c477dee0b8",
+  "source": "workspace\\local_generation\\actor_foot_repair_20260908\\local_v2\\foot_candidate.glb",
+  "output": "Actor_Offline_v2_FootRepair_AccuRIG.fbx",
+  "before": {
+    "vertices": 26115,
+    "faces": 52226,
+    "manifold": true,
+    "euler": 2
+  },
+  "after": {
+    "vertices": 26115,
+    "faces": 52226,
+    "manifold": true,
+    "euler": 2
+  },
+  "bidirectional_world_vertex_error_max": 3.2782554626464844e-07,
+  "error_tolerance": 1.9882908408767435e-05,
+  "source_unchanged": true,
+  "finger_count": 0,
+  "accessory_included": false,
+  "allow_production": false
+}
