@@ -39,6 +39,7 @@ def smooth_center_surface(source: np.ndarray) -> tuple[np.ndarray, np.ndarray, l
     subject = foreground_component(source)
     output = source.copy()
     edit_mask = np.zeros(subject.shape, dtype=np.uint8)
+    interior = cv2.erode(subject.astype(np.uint8), np.ones((5, 5), np.uint8))
     control_y = np.asarray([438, 470, 510, 535, 555, 575, 595, 612, 622])
     control_half_width = np.asarray([5, 7, 9, 14, 24, 32, 31, 18, 7])
     rows: list[dict] = []
@@ -62,7 +63,11 @@ def smooth_center_surface(source: np.ndarray) -> tuple[np.ndarray, np.ndarray, l
             continue
         xn = (sample_x.astype(np.float64) - CENTER_X) / 64.0
         design = np.stack([np.ones_like(xn), xn, xn * xn], axis=1)
+        # Keep separate leg runs separate: never paint the crotch background.
         target_x = np.arange(left, right + 1)
+        target_x = target_x[interior[y, target_x] > 0]
+        if not target_x.size:
+            continue
         target_xn = (target_x.astype(np.float64) - CENTER_X) / 64.0
         target_design = np.stack(
             [np.ones_like(target_xn), target_xn, target_xn * target_xn], axis=1
@@ -108,6 +113,11 @@ def main() -> int:
     if source is None:
         raise FileNotFoundError(args.source)
     output, edit_mask, rows = smooth_center_surface(source)
+    source_mask = foreground_component(source)
+    output_mask = foreground_component(output)
+    silhouette_changed = int(np.count_nonzero(source_mask != output_mask))
+    if silhouette_changed:
+        raise RuntimeError(f'Surface edit changed {silhouette_changed} silhouette pixels')
     difference = np.abs(output.astype(np.int16) - source.astype(np.int16))
     outside = edit_mask == 0
 
@@ -124,6 +134,7 @@ def main() -> int:
         "output": str(args.output),
         "output_sha256": sha256(args.output),
         "edit_mask": str(args.mask_output),
+        "silhouette_changed_pixels": silhouette_changed,
         "outside_edit_mask_rgb_mae_0_255": round(float(difference[outside].mean()), 6),
         "center_surface_summary": {
             "center_x": CENTER_X,

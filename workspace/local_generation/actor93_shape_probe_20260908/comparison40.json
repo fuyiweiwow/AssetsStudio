@@ -1,0 +1,118 @@
+{
+  "schema": "assetsstudio_hunyuan_source_silhouette_comparison_v1",
+  "status": "diagnostic_only",
+  "normalization": {
+    "canvas_size": 1024,
+    "target_height": 900,
+    "preserves_aspect_ratio": true,
+    "removes_canvas_placement": true
+  },
+  "thresholds": null,
+  "source_dir": "D:\\Apps\\CodeXApp\\Tests\\AssetsStudio\\workspace\\local_generation\\actor93_shape_probe_20260908",
+  "candidate_dir": "D:\\Apps\\CodeXApp\\Tests\\AssetsStudio\\workspace\\local_generation\\actor93_shape_probe_20260908\\render40\\silhouette",
+  "views": {
+    "front": {
+      "iou": 0.9412719909324447,
+      "relative_aspect_drift": 0.047119100427122654,
+      "source": {
+        "source_bbox": [
+          153,
+          66,
+          616,
+          732
+        ],
+        "source_width_height_ratio": 0.6951951951951952,
+        "normalized_width": 626
+      },
+      "candidate": {
+        "source_bbox": [
+          140,
+          49,
+          627,
+          718
+        ],
+        "source_width_height_ratio": 0.7279521674140508,
+        "normalized_width": 655
+      },
+      "pass": null
+    },
+    "right": {
+      "iou": 0.9290849234076861,
+      "relative_aspect_drift": 0.06319711993936708,
+      "source": {
+        "source_bbox": [
+          214,
+          65,
+          569,
+          733
+        ],
+        "source_width_height_ratio": 0.531437125748503,
+        "normalized_width": 478
+      },
+      "candidate": {
+        "source_bbox": [
+          195,
+          49,
+          573,
+          718
+        ],
+        "source_width_height_ratio": 0.5650224215246636,
+        "normalized_width": 509
+      },
+      "pass": null
+    },
+    "back": {
+      "iou": 0.9449941707720236,
+      "relative_aspect_drift": 0.04731182795698917,
+      "source": {
+        "source_bbox": [
+          152,
+          64,
+          617,
+          733
+        ],
+        "source_width_height_ratio": 0.695067264573991,
+        "normalized_width": 626
+      },
+      "candidate": {
+        "source_bbox": [
+          140,
+          49,
+          627,
+          718
+        ],
+        "source_width_height_ratio": 0.7279521674140508,
+        "normalized_width": 655
+      },
+      "pass": null
+    },
+    "left": {
+      "iou": 0.9292418664735179,
+      "relative_aspect_drift": 0.06319711993936708,
+      "source": {
+        "source_bbox": [
+          199,
+          65,
+          554,
+          733
+        ],
+        "source_width_height_ratio": 0.531437125748503,
+        "normalized_width": 478
+      },
+      "candidate": {
+        "source_bbox": [
+          195,
+          49,
+          573,
+          718
+        ],
+        "source_width_height_ratio": 0.5650224215246636,
+        "normalized_width": 509
+      },
+      "pass": null
+    }
+  },
+  "minimum_iou": 0.9290849234076861,
+  "mean_iou": 0.9361482378964181,
+  "maximum_relative_aspect_drift": 0.06319711993936708
+}

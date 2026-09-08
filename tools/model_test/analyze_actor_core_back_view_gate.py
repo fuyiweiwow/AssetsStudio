@@ -67,6 +67,11 @@ def metrics(path: Path) -> dict:
     actor_bbox = bounds(mask)
     head = mask.copy()
     head[HEAD_CROP_BOTTOM + 1 :] = False
+    # Raised thumbs may enter this crop; measure only the largest head component.
+    count, labels, stats, _ = cv2.connectedComponentsWithStats(head.astype(np.uint8))
+    if count < 2:
+        raise RuntimeError('No head component')
+    head = labels == 1 + int(np.argmax(stats[1:, cv2.CC_STAT_AREA]))
     head_bbox = bounds(head)
     left_tip_y = tip_center_y(mask, actor_bbox[0], actor_bbox[0] + 6)
     right_tip_y = tip_center_y(mask, actor_bbox[2] - 5, actor_bbox[2] + 1)
@@ -79,6 +84,7 @@ def metrics(path: Path) -> dict:
         "head_bbox_xyxy": head_bbox,
         "head_width_px": head_bbox[2] - head_bbox[0] + 1,
         "head_height_px": head_bbox[3] - head_bbox[1] + 1,
+        "head_bottom_is_crop_limited": head_bbox[3] == HEAD_CROP_BOTTOM,
         "head_center_x": round((head_bbox[0] + head_bbox[2]) / 2.0, 2),
         "torso_span_y550_px": widest_run(mask, 550),
         "left_tip_center_y": round(left_tip_y, 2),

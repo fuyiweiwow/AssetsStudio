@@ -1,0 +1,37 @@
+{
+  "status": "experimental_input_not_production_approval",
+  "method": "largest skin-color component; fill internal holes; preserve original canvas and scale",
+  "left": "horizontal mirror of right, including illumination; geometry probe only",
+  "sources": {
+    "front": {
+      "source": "workspace/local_generation/actor_core_tpose_shoulder_gate_20260907/tpose93_shoulders_seed1002_blankface_v1.png",
+      "sha256": "689cc0013fc101d7e230245cdb9806f512c8aa5d24b4b5e5ff5799186afa17a3",
+      "bbox": [
+        153,
+        66,
+        616,
+        732
+      ]
+    },
+    "right": {
+      "source": "workspace/local_generation/actor_core_multiview_gate_20260907/right_b_seed1005_refined.png",
+      "sha256": "464626d6b21eb8ed348735a04385797d8ea280f158f8089d07f8fad7a70181d6",
+      "bbox": [
+        214,
+        65,
+        569,
+        733
+      ]
+    },
+    "back": {
+      "source": "workspace/local_generation/actor_core_multiview_gate_20260907/back_b_seed1008_refined_v2.png",
+      "sha256": "62f74ffcc16cdeb6b336149689df71a7ad3b107934150375cfe55df84de76129",
+      "bbox": [
+        152,
+        64,
+        617,
+        733
+      ]
+    }
+  }
+}

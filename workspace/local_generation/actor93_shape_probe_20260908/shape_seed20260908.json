@@ -1,0 +1,44 @@
+{
+  "schema": "assetsstudio_hunyuan3d_2mv_shape_v1",
+  "model": "D:\\Apps\\CodeXApp\\Tests\\Hunyuan3D_Experiment\\local_models\\Hunyuan3D-2mv",
+  "subfolder": "hunyuan3d-dit-v2-mv",
+  "inputs": {
+    "front": "D:\\Apps\\CodeXApp\\Tests\\AssetsStudio\\workspace\\local_generation\\actor93_shape_probe_20260908\\front.png",
+    "left": "D:\\Apps\\CodeXApp\\Tests\\AssetsStudio\\workspace\\local_generation\\actor93_shape_probe_20260908\\left.png",
+    "back": "D:\\Apps\\CodeXApp\\Tests\\AssetsStudio\\workspace\\local_generation\\actor93_shape_probe_20260908\\back.png"
+  },
+  "output": "D:\\Apps\\CodeXApp\\Tests\\AssetsStudio\\workspace\\local_generation\\actor93_shape_probe_20260908\\shape_seed20260908.glb",
+  "seed": 20260908,
+  "steps": 20,
+  "guidance_scale": 5.0,
+  "octree_resolution": 256,
+  "num_chunks": 20000,
+  "cpu_offload": false,
+  "asset_kind": "base_actor",
+  "vertices": 136124,
+  "faces": 272232,
+  "peak_cuda_memory_bytes": 5828215296,
+  "mesh_audit": {
+    "geometry_count": 1,
+    "connected_components": 12,
+    "watertight": false,
+    "winding_consistent": true,
+    "euler_number": 13,
+    "all_components_watertight": false
+  },
+  "component_policy": {
+    "max_components": 16,
+    "min_component_face_fraction": 0.00025,
+    "raw_components": 12,
+    "kept_components": 12,
+    "discarded_components": []
+  },
+  "automatic_gates": {
+    "single_geometry": true,
+    "single_connected_component": false,
+    "watertight": false,
+    "winding_consistent": true,
+    "genus_zero_euler_two": false
+  },
+  "status": "fail"
+}

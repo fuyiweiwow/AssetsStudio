@@ -1,0 +1,25 @@
+{
+  "schema": "assetsstudio_actor_core_back_surface_refinement_v1",
+  "status": "human_review_required",
+  "source": "workspace\\local_generation\\actor_core_multiview_gate_20260907\\back_seed20261008.png",
+  "source_sha256": "076c2e9fc299326f1b6c34b75d97ed83f8a87fd5b7f17946908bd0ea6cc70a88",
+  "output": "workspace\\local_generation\\actor_core_multiview_gate_20260907\\back_b_seed1008_refined_v2.png",
+  "output_sha256": "62f74ffcc16cdeb6b336149689df71a7ad3b107934150375cfe55df84de76129",
+  "edit_mask": "workspace\\local_generation\\actor_core_multiview_gate_20260907\\back_b_seed1008_refined_v2_mask.png",
+  "silhouette_changed_pixels": 0,
+  "outside_edit_mask_rgb_mae_0_255": 0.0,
+  "center_surface_summary": {
+    "center_x": 386,
+    "row_count": 180,
+    "y_range": [
+      438,
+      617
+    ],
+    "max_half_width_px": 32
+  },
+  "invariants": [
+    "head, silhouette, shoulders, arms, hands, legs and feet unchanged",
+    "only the torso and pelvis center surface is smoothed",
+    "no diffusion or remote model used for refinement"
+  ]
+}
