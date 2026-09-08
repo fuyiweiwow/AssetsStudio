@@ -1,0 +1,49 @@
+{
+  "schema": "assetsstudio_hunyuan3d_2mv_shape_v1",
+  "model": "D:\\Apps\\CodeXApp\\Tests\\Hunyuan3D_Experiment\\local_models\\Hunyuan3D-2mv",
+  "subfolder": "hunyuan3d-dit-v2-mv",
+  "inputs": {
+    "front": "D:\\Apps\\CodeXApp\\Tests\\AssetsStudio\\workspace\\accessory_fit\\chibi3_v9b\\waist_accessory\\source_rgba\\front.png",
+    "left": "D:\\Apps\\CodeXApp\\Tests\\AssetsStudio\\workspace\\accessory_fit\\chibi3_v9b\\waist_accessory\\source_rgba\\left.png",
+    "back": "D:\\Apps\\CodeXApp\\Tests\\AssetsStudio\\workspace\\accessory_fit\\chibi3_v9b\\waist_accessory\\source_rgba\\back.png"
+  },
+  "output": "D:\\Apps\\CodeXApp\\Tests\\AssetsStudio\\workspace\\accessory_fit\\chibi3_v9b\\waist_accessory\\hunyuan\\waist_accessory_seed20260831_accessory.glb",
+  "seed": 20260831,
+  "steps": 20,
+  "guidance_scale": null,
+  "octree_resolution": 256,
+  "num_chunks": 20000,
+  "cpu_offload": true,
+  "asset_kind": "accessory",
+  "vertices": 128258,
+  "faces": 256496,
+  "peak_cuda_memory_bytes": 2898266112,
+  "mesh_audit": {
+    "geometry_count": 1,
+    "connected_components": 10,
+    "watertight": true,
+    "winding_consistent": true,
+    "euler_number": 10,
+    "all_components_watertight": true
+  },
+  "component_policy": {
+    "max_components": 16,
+    "min_component_face_fraction": 0.00025,
+    "raw_components": 11,
+    "kept_components": 10,
+    "discarded_components": [
+      {
+        "faces": 16,
+        "face_fraction": 6.2375249500998e-05
+      }
+    ]
+  },
+  "automatic_gates": {
+    "single_geometry": true,
+    "component_count_within_slot_limit": true,
+    "all_components_watertight": true,
+    "winding_consistent": true,
+    "tiny_fragment_cleanup_bounded": true
+  },
+  "status": "pass"
+}

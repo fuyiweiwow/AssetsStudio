@@ -1,0 +1,595 @@
+{
+  "schema": "assetsstudio_actor_slot_profile_v2",
+  "id": "actor_offline_v2_50k_waist_measured_v1",
+  "actor_asset_id": "actor_offline_v2_50k",
+  "status": "experimental_manual_review_required",
+  "actor_model": {
+    "path": "D:\\Apps\\CodeXApp\\Tests\\AssetsStudio\\workspace\\local_generation\\actor_offline_gate_20260908\\static_50k_v2\\actor_offline_v2_50k_rig_mesh.glb",
+    "sha256": "e7e88465037df7ef3e5b018f19d36694e0d6c8ab081dced7fc17ace307a17068"
+  },
+  "coordinate_contract": {
+    "rig_state": "unbound_tpose",
+    "frame": "actor_normalized_rest"
+  },
+  "measurement": {
+    "method": "lower-body two-loop transition and maximum arm span; waist at 45 percent of torso interval",
+    "crotch_h": 0.16499999999999998,
+    "arm_h": 0.395,
+    "waist_h": 0.2685,
+    "slices": [
+      {
+        "height": 0.12,
+        "loops": 2,
+        "width": 0.24422985941158232
+      },
+      {
+        "height": 0.125,
+        "loops": 2,
+        "width": 0.24533387570482176
+      },
+      {
+        "height": 0.13,
+        "loops": 2,
+        "width": 0.24618223040332968
+      },
+      {
+        "height": 0.135,
+        "loops": 2,
+        "width": 0.24699109874243913
+      },
+      {
+        "height": 0.13999999999999999,
+        "loops": 2,
+        "width": 0.24769778264814776
+      },
+      {
+        "height": 0.145,
+        "loops": 2,
+        "width": 0.24832863754149448
+      },
+      {
+        "height": 0.15,
+        "loops": 2,
+        "width": 0.2489077483172224
+      },
+      {
+        "height": 0.155,
+        "loops": 2,
+        "width": 0.24934597534727926
+      },
+      {
+        "height": 0.16,
+        "loops": 2,
+        "width": 0.24957499042194398
+      },
+      {
+        "height": 0.16499999999999998,
+        "loops": 2,
+        "width": 0.2498040054966087
+      },
+      {
+        "height": 0.16999999999999998,
+        "loops": 1,
+        "width": 0.2500142660717256
+      },
+      {
+        "height": 0.175,
+        "loops": 1,
+        "width": 0.24981487745609998
+      },
+      {
+        "height": 0.18,
+        "loops": 1,
+        "width": 0.2495231287674459
+      },
+      {
+        "height": 0.185,
+        "loops": 1,
+        "width": 0.24920302311655634
+      },
+      {
+        "height": 0.19,
+        "loops": 1,
+        "width": 0.2485924006646509
+      },
+      {
+        "height": 0.195,
+        "loops": 1,
+        "width": 0.24763560512001406
+      },
+      {
+        "height": 0.2,
+        "loops": 1,
+        "width": 0.24666709239423623
+      },
+      {
+        "height": 0.20500000000000002,
+        "loops": 1,
+        "width": 0.24539201683778214
+      },
+      {
+        "height": 0.21,
+        "loops": 1,
+        "width": 0.24405183138791672
+      },
+      {
+        "height": 0.215,
+        "loops": 1,
+        "width": 0.2424435792205706
+      },
+      {
+        "height": 0.22,
+        "loops": 1,
+        "width": 0.24062771818325063
+      },
+      {
+        "height": 0.22499999999999998,
+        "loops": 1,
+        "width": 0.23881185714593064
+      },
+      {
+        "height": 0.22999999999999998,
+        "loops": 1,
+        "width": 0.2364632570165774
+      },
+      {
+        "height": 0.235,
+        "loops": 1,
+        "width": 0.23524572831454799
+      },
+      {
+        "height": 0.24,
+        "loops": 1,
+        "width": 0.23705520164569535
+      },
+      {
+        "height": 0.245,
+        "loops": 1,
+        "width": 0.2374605799198746
+      },
+      {
+        "height": 0.25,
+        "loops": 1,
+        "width": 0.2367928899788352
+      },
+      {
+        "height": 0.255,
+        "loops": 1,
+        "width": 0.235445003607414
+      },
+      {
+        "height": 0.26,
+        "loops": 1,
+        "width": 0.23362026727274102
+      },
+      {
+        "height": 0.265,
+        "loops": 1,
+        "width": 0.23153585656881745
+      },
+      {
+        "height": 0.27,
+        "loops": 1,
+        "width": 0.22923637030199373
+      },
+      {
+        "height": 0.275,
+        "loops": 1,
+        "width": 0.2268169229188379
+      },
+      {
+        "height": 0.28,
+        "loops": 1,
+        "width": 0.22439747553568212
+      },
+      {
+        "height": 0.28500000000000003,
+        "loops": 1,
+        "width": 0.22192155765597665
+      },
+      {
+        "height": 0.29000000000000004,
+        "loops": 1,
+        "width": 0.21936523004102743
+      },
+      {
+        "height": 0.29500000000000004,
+        "loops": 1,
+        "width": 0.21680890242607812
+      },
+      {
+        "height": 0.3,
+        "loops": 1,
+        "width": 0.21425257481112886
+      },
+      {
+        "height": 0.305,
+        "loops": 1,
+        "width": 0.21167954816432782
+      },
+      {
+        "height": 0.31,
+        "loops": 1,
+        "width": 0.2091330886821045
+      },
+      {
+        "height": 0.315,
+        "loops": 1,
+        "width": 0.20658767197214295
+      },
+      {
+        "height": 0.32,
+        "loops": 1,
+        "width": 0.20404407824981446
+      },
+      {
+        "height": 0.325,
+        "loops": 1,
+        "width": 0.20165286117854092
+      },
+      {
+        "height": 0.32999999999999996,
+        "loops": 1,
+        "width": 0.19930250839365157
+      },
+      {
+        "height": 0.33499999999999996,
+        "loops": 1,
+        "width": 0.19726415165295477
+      },
+      {
+        "height": 0.33999999999999997,
+        "loops": 1,
+        "width": 0.2004289483283557
+      },
+      {
+        "height": 0.345,
+        "loops": 1,
+        "width": 0.21591719341177157
+      },
+      {
+        "height": 0.35,
+        "loops": 1,
+        "width": 0.23650064778083554
+      },
+      {
+        "height": 0.355,
+        "loops": 1,
+        "width": 0.2571490068365416
+      },
+      {
+        "height": 0.36,
+        "loops": 1,
+        "width": 0.2758906673897915
+      },
+      {
+        "height": 0.365,
+        "loops": 3,
+        "width": 0.6331866024999939
+      },
+      {
+        "height": 0.37,
+        "loops": 3,
+        "width": 0.6407901117705567
+      },
+      {
+        "height": 0.375,
+        "loops": 3,
+        "width": 0.6402826657958189
+      },
+      {
+        "height": 0.38,
+        "loops": 1,
+        "width": 0.6355715419490142
+      },
+      {
+        "height": 0.385,
+        "loops": 1,
+        "width": 0.7175092317499505
+      },
+      {
+        "height": 0.39,
+        "loops": 1,
+        "width": 0.7243514403311521
+      },
+      {
+        "height": 0.395,
+        "loops": 1,
+        "width": 0.726285698771235
+      },
+      {
+        "height": 0.4,
+        "loops": 1,
+        "width": 0.7240013338958093
+      },
+      {
+        "height": 0.405,
+        "loops": 1,
+        "width": 0.7182129085087992
+      },
+      {
+        "height": 0.41,
+        "loops": 1,
+        "width": 0.7087393962605144
+      },
+      {
+        "height": 0.415,
+        "loops": 1,
+        "width": 0.6943568676954144
+      },
+      {
+        "height": 0.42,
+        "loops": 1,
+        "width": 0.6755751856941608
+      },
+      {
+        "height": 0.425,
+        "loops": 3,
+        "width": 0.6490105499624553
+      },
+      {
+        "height": 0.43,
+        "loops": 3,
+        "width": 0.601960098451579
+      },
+      {
+        "height": 0.435,
+        "loops": 3,
+        "width": 0.5218045243466628
+      },
+      {
+        "height": 0.44,
+        "loops": 1,
+        "width": 0.12768024485054746
+      },
+      {
+        "height": 0.445,
+        "loops": 1,
+        "width": 0.1746644503554922
+      },
+      {
+        "height": 0.45,
+        "loops": 1,
+        "width": 0.216379924685885
+      },
+      {
+        "height": 0.455,
+        "loops": 1,
+        "width": 0.24770026864399292
+      },
+      {
+        "height": 0.46,
+        "loops": 1,
+        "width": 0.27252311316149963
+      },
+      {
+        "height": 0.465,
+        "loops": 1,
+        "width": 0.29354644035529864
+      },
+      {
+        "height": 0.47000000000000003,
+        "loops": 1,
+        "width": 0.3115675279656215
+      },
+      {
+        "height": 0.475,
+        "loops": 1,
+        "width": 0.3268843653195465
+      },
+      {
+        "height": 0.48,
+        "loops": 1,
+        "width": 0.34030282160639563
+      },
+      {
+        "height": 0.485,
+        "loops": 1,
+        "width": 0.3525097003537615
+      },
+      {
+        "height": 0.49,
+        "loops": 1,
+        "width": 0.3635199642584027
+      },
+      {
+        "height": 0.495,
+        "loops": 1,
+        "width": 0.37417292666914054
+      },
+      {
+        "height": 0.5,
+        "loops": 1,
+        "width": 0.38494224780065667
+      },
+      {
+        "height": 0.505,
+        "loops": 1,
+        "width": 0.3951215687721502
+      },
+      {
+        "height": 0.51,
+        "loops": 1,
+        "width": 0.4045917221142513
+      },
+      {
+        "height": 0.515,
+        "loops": 1,
+        "width": 0.41303390036024373
+      },
+      {
+        "height": 0.52,
+        "loops": 1,
+        "width": 0.42131961661495737
+      },
+      {
+        "height": 0.525,
+        "loops": 1,
+        "width": 0.42886203266123113
+      },
+      {
+        "height": 0.53,
+        "loops": 1,
+        "width": 0.4357604222711257
+      },
+      {
+        "height": 0.535,
+        "loops": 1,
+        "width": 0.441978560328589
+      },
+      {
+        "height": 0.54,
+        "loops": 1,
+        "width": 0.44736866674233466
+      },
+      {
+        "height": 0.5449999999999999,
+        "loops": 1,
+        "width": 0.4520328134630322
+      },
+      {
+        "height": 0.55,
+        "loops": 1,
+        "width": 0.4558475585596905
+      },
+      {
+        "height": 0.5549999999999999,
+        "loops": 1,
+        "width": 0.45886334445604093
+      },
+      {
+        "height": 0.56,
+        "loops": 1,
+        "width": 0.46147284302794234
+      },
+      {
+        "height": 0.565,
+        "loops": 1,
+        "width": 0.46385101451516425
+      },
+      {
+        "height": 0.5700000000000001,
+        "loops": 1,
+        "width": 0.46622918600238633
+      },
+      {
+        "height": 0.575,
+        "loops": 1,
+        "width": 0.4685934905882576
+      },
+      {
+        "height": 0.5800000000000001,
+        "loops": 1,
+        "width": 0.4709209496564575
+      },
+      {
+        "height": 0.585,
+        "loops": 1,
+        "width": 0.4732484087246573
+      },
+      {
+        "height": 0.5900000000000001,
+        "loops": 1,
+        "width": 0.4755704252580227
+      },
+      {
+        "height": 0.595,
+        "loops": 1,
+        "width": 0.4779447959048253
+      },
+      {
+        "height": 0.6,
+        "loops": 1,
+        "width": 0.48035077448299873
+      },
+      {
+        "height": 0.605,
+        "loops": 1,
+        "width": 0.48275422387640116
+      },
+      {
+        "height": 0.61,
+        "loops": 1,
+        "width": 0.48520444414944164
+      },
+      {
+        "height": 0.615,
+        "loops": 1,
+        "width": 0.4877013382940372
+      },
+      {
+        "height": 0.62,
+        "loops": 1,
+        "width": 0.4902223148882178
+      },
+      {
+        "height": 0.625,
+        "loops": 1,
+        "width": 0.4927563726659981
+      },
+      {
+        "height": 0.63,
+        "loops": 1,
+        "width": 0.4952967848187231
+      },
+      {
+        "height": 0.635,
+        "loops": 1,
+        "width": 0.49778593076132155
+      },
+      {
+        "height": 0.64,
+        "loops": 1,
+        "width": 0.5003296297078851
+      },
+      {
+        "height": 0.645,
+        "loops": 1,
+        "width": 0.5029226315725731
+      },
+      {
+        "height": 0.65,
+        "loops": 1,
+        "width": 0.5054903653737327
+      }
+    ]
+  },
+  "slots": [
+    {
+      "slot_id": "waist_accessory",
+      "status": "static_tpose_only",
+      "attachment": {
+        "mode": "rest_surface",
+        "rig_dependency": "none_until_rig_intake",
+        "anchors": [
+          {
+            "id": "Waist",
+            "position_h": [
+              0,
+              0,
+              0.2685
+            ],
+            "future_parent_bone": "Hips"
+          }
+        ]
+      },
+      "fit_envelope": {
+        "frame": "actor_normalized_rest",
+        "kind": "surface",
+        "clearance_h": 0.006,
+        "bounds_h": {
+          "min": [
+            -0.14866475930402118,
+            -0.1209249616949565,
+            0.22350000000000003
+          ],
+          "max": [
+            0.14861208076229165,
+            0.12515294490161852,
+            0.3135
+          ]
+        }
+      }
+    }
+  ]
+}

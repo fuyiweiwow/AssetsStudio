@@ -1,0 +1,102 @@
+{
+  "schema": "assetsstudio_actor_core_rig_mesh_v1",
+  "asset_id": "actor_offline_v2_50k",
+  "status": "pass",
+  "source": "D:\\Apps\\CodeXApp\\Tests\\AssetsStudio\\workspace\\local_generation\\actor_offline_gate_20260908\\run_v2\\shape.glb",
+  "source_sha256": "668fe984895c727be3e6abc65d50a4b8881dcfa4c633f4077d069daf1305c3b4",
+  "output_sha256": "e7e88465037df7ef3e5b018f19d36694e0d6c8ab081dced7fc17ace307a17068",
+  "canonical_offset_blender": [
+    0.0037545859813690186,
+    -0.0007870793342590332,
+    0.9982892870903015
+  ],
+  "qualification": "mesh_preparation_only_not_animation_approval",
+  "outputs": {
+    "blend": "D:\\Apps\\CodeXApp\\Tests\\AssetsStudio\\workspace\\local_generation\\actor_offline_gate_20260908\\static_50k_v2\\actor_offline_v2_50k_rig_mesh.blend",
+    "glb": "D:\\Apps\\CodeXApp\\Tests\\AssetsStudio\\workspace\\local_generation\\actor_offline_gate_20260908\\static_50k_v2\\actor_offline_v2_50k_rig_mesh.glb"
+  },
+  "strategy": {
+    "name": "blender_collapse_decimation",
+    "target_faces": 50000,
+    "ratio": 0.1850686604730355,
+    "preprocess": {
+      "name": "weld_coincident_glb_normal_splits",
+      "distance_m": 1e-06,
+      "imported_vertices": 135098,
+      "welded_vertices": 135087
+    },
+    "source_asset_preserved": true,
+    "purpose": "rigging_handoff_candidate",
+    "normal_policy": "smooth_shared_normals_for_untextured_body"
+  },
+  "source_topology": {
+    "vertices": 135087,
+    "edges": 405255,
+    "faces": 270170,
+    "boundary_edges": 0,
+    "non_manifold_edges": 0,
+    "connected_components": 1
+  },
+  "candidate_topology": {
+    "vertices": 25002,
+    "edges": 75000,
+    "faces": 50000,
+    "boundary_edges": 0,
+    "non_manifold_edges": 0,
+    "connected_components": 1
+  },
+  "source_canonical_bounds": {
+    "min": [
+      -0.7221786975860596,
+      -0.5602152943611145,
+      0.0
+    ],
+    "max": [
+      0.7221786975860596,
+      0.5602152943611145,
+      1.9883016347885132
+    ],
+    "dimensions": [
+      1.4443573951721191,
+      1.120430588722229,
+      1.9883016347885132
+    ],
+    "center": [
+      0.0,
+      0.0,
+      0.9941508173942566
+    ]
+  },
+  "candidate_bounds": {
+    "min": [
+      -0.7221786975860596,
+      -0.5602233409881592,
+      -1.9614822122093756e-06
+    ],
+    "max": [
+      0.7221786975860596,
+      0.5602710247039795,
+      1.9882888793945312
+    ],
+    "dimensions": [
+      1.4443573951721191,
+      1.1204943656921387,
+      1.988290786743164
+    ],
+    "center": [
+      0.0,
+      2.384185791015625e-05,
+      0.9941434860229492
+    ]
+  },
+  "max_relative_dimension_drift": 5.692183929251793e-05,
+  "gates": {
+    "one_mesh": true,
+    "no_armature": true,
+    "single_component": true,
+    "watertight": true,
+    "manifold_edges": true,
+    "target_faces_within_1_percent": true,
+    "bounds_drift_within_limit": true
+  }
+}

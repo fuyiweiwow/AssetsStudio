@@ -21,6 +21,8 @@
 
 ## 当前实验代理
 
+本节记录 2026-08-31 的旧代理，不能直接用于新的大头素体。2026-09-08 当前 Actor 的 50k 副本与重新测量腰部试装见 [未绑定交接](ACTOR_OFFLINE_STATIC_HANDOFF_20260908.md)；新试装仍未通过边界门，不继承下方旧候选的通过状态。
+
 - StyleProfile：`qstyle_anime_western_fantasy_chibi3_no_face_v1`，目标比例 `2.9–3.1H`。
 - T-Pose Profile：`actor_core_chibi3_v9b_tpose_slots_v1`。
 - 代理模型：`candidates/v9b_balanced/chibi3_v9b_balanced.glb`。

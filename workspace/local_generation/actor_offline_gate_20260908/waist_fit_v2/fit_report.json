@@ -1,0 +1,108 @@
+{
+  "schema": "assetsstudio_tpose_accessory_fit_v1",
+  "asset_id": "actor_offline_v2_waist",
+  "actor_profile_id": "actor_offline_v2_50k_waist_measured_v1",
+  "actor_asset_id": "actor_offline_v2_50k",
+  "slot_id": "waist_accessory",
+  "rig_state": "unbound_tpose",
+  "status": "automatic_review_failed",
+  "inputs": {
+    "actor": "D:\\Apps\\CodeXApp\\Tests\\AssetsStudio\\workspace\\local_generation\\actor_offline_gate_20260908\\static_50k_v2\\actor_offline_v2_50k_rig_mesh.glb",
+    "actor_sha256": "e7e88465037df7ef3e5b018f19d36694e0d6c8ab081dced7fc17ace307a17068",
+    "accessory": "D:\\Apps\\CodeXApp\\Tests\\AssetsStudio\\workspace\\accessory_fit\\chibi3_v9b\\waist_accessory\\hunyuan\\waist_accessory_seed20260831_accessory.glb",
+    "accessory_sha256": "137f2970c9fe15bddd1c87934b46d328bc918e5882b74c2419208411c61cd010",
+    "profile": "D:\\Apps\\CodeXApp\\Tests\\AssetsStudio\\workspace\\local_generation\\actor_offline_gate_20260908\\static_50k_v2\\waist_profile.json",
+    "shape_manifest": "D:\\Apps\\CodeXApp\\Tests\\AssetsStudio\\workspace\\accessory_fit\\chibi3_v9b\\waist_accessory\\hunyuan\\shape_manifest_accessory.json"
+  },
+  "registration": {
+    "source_size_m": [
+      1.984953,
+      1.815151,
+      0.766355
+    ],
+    "target_size_m": [
+      0.531965,
+      0.486459,
+      0.178946
+    ],
+    "envelope_bounds_m": {
+      "min": [
+        -0.295589,
+        -0.24041,
+        0.444381
+      ],
+      "max": [
+        0.295484,
+        0.248864,
+        0.623327
+      ]
+    },
+    "fitted_bounds_m": {
+      "min": [
+        -0.267041,
+        -0.252133,
+        0.444381
+      ],
+      "max": [
+        0.281124,
+        0.247456,
+        0.623327
+      ]
+    },
+    "waist_band_size_m": [
+      0.471775,
+      0.369977,
+      0.099241
+    ],
+    "scale_xyz": [
+      0.267999,
+      0.267999,
+      0.233503
+    ],
+    "axis_scale_ratio": 1.147732,
+    "max_axis_scale_ratio": 4.5,
+    "source_front_aspect": 2.669291,
+    "fit_adjustments": {
+      "width_factor": 0.9,
+      "depth_factor": 0.9,
+      "preserve_waist_height": true,
+      "surface_conform": {
+        "enabled": true,
+        "mode": "angular_radial_offset",
+        "angular_bins": 720,
+        "adjusted_vertices": 75105,
+        "max_displacement_m": 0.019317,
+        "clearance_m": 0.01193
+      }
+    }
+  },
+  "collision": {
+    "surface_triangle_overlap_pairs": 0,
+    "scope": "static_tpose_only"
+  },
+  "automatic_gates": {
+    "shape_topology_pass": true,
+    "fit_envelope_contained": false,
+    "axis_registration_within_limit": true,
+    "no_surface_triangle_intersection": true,
+    "four_view_preview_complete": true
+  },
+  "deferred_gates": [
+    "bone_mapping",
+    "skin_weights",
+    "joint_deformation",
+    "hand_and_thigh_clearance_during_locomotion",
+    "mixamo_animation_review"
+  ],
+  "outputs": {
+    "accessory_glb": "D:\\Apps\\CodeXApp\\Tests\\AssetsStudio\\workspace\\local_generation\\actor_offline_gate_20260908\\waist_fit_v2\\actor_offline_v2_waist.glb",
+    "combined_glb": "D:\\Apps\\CodeXApp\\Tests\\AssetsStudio\\workspace\\local_generation\\actor_offline_gate_20260908\\waist_fit_v2\\actor_offline_v2_waist_on_actor_offline_v2_50k.glb",
+    "review_blend": "D:\\Apps\\CodeXApp\\Tests\\AssetsStudio\\workspace\\local_generation\\actor_offline_gate_20260908\\waist_fit_v2\\actor_offline_v2_waist_review.blend",
+    "previews": {
+      "front": "D:\\Apps\\CodeXApp\\Tests\\AssetsStudio\\workspace\\local_generation\\actor_offline_gate_20260908\\waist_fit_v2\\preview\\front.png",
+      "right": "D:\\Apps\\CodeXApp\\Tests\\AssetsStudio\\workspace\\local_generation\\actor_offline_gate_20260908\\waist_fit_v2\\preview\\right.png",
+      "back": "D:\\Apps\\CodeXApp\\Tests\\AssetsStudio\\workspace\\local_generation\\actor_offline_gate_20260908\\waist_fit_v2\\preview\\back.png",
+      "left": "D:\\Apps\\CodeXApp\\Tests\\AssetsStudio\\workspace\\local_generation\\actor_offline_gate_20260908\\waist_fit_v2\\preview\\left.png"
+    }
+  }
+}

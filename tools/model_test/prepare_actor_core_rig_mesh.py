@@ -8,6 +8,7 @@ basic topology/bounds gates, and writes a separate GLB/BLEND candidate.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import sys
 from pathlib import Path
@@ -107,7 +108,10 @@ def main() -> int:
     if args.target_faces < 1_000:
         raise ValueError("--target-faces must be at least 1000")
 
-    args.output_dir.mkdir(parents=True, exist_ok=True)
+    if args.output_dir.exists():
+        raise ValueError('Use a new output directory; never overwrite handoff candidates')
+    source_sha256 = hashlib.sha256(args.input.read_bytes()).hexdigest()
+    args.output_dir.mkdir(parents=True)
     clear_scene()
     bpy.ops.import_scene.gltf(filepath=str(args.input.resolve()))
     meshes = [obj for obj in bpy.context.scene.objects if obj.type == "MESH"]
@@ -149,6 +153,10 @@ def main() -> int:
     bpy.context.view_layer.update()
 
     candidate_minimum, candidate_maximum = bounds(actor)
+    # Untextured body: smooth shared normals prevent glTF from splitting every
+    # triangle into disconnected normal-island vertices. Geometry is unchanged.
+    for polygon in actor.data.polygons:
+        polygon.use_smooth = True
     candidate_topology = topology(actor)
     source_dimensions = canonical_maximum - canonical_minimum
     candidate_dimensions = candidate_maximum - candidate_minimum
@@ -186,6 +194,10 @@ def main() -> int:
         "asset_id": args.asset_id,
         "status": "pass" if all(gates.values()) else "fail",
         "source": str(args.input.resolve()),
+        "source_sha256": source_sha256,
+        "output_sha256": hashlib.sha256(glb_path.read_bytes()).hexdigest(),
+        "canonical_offset_blender": list(canonical_offset),
+        "qualification": "mesh_preparation_only_not_animation_approval",
         "outputs": {
             "blend": str(blend_path.resolve()),
             "glb": str(glb_path.resolve()),
@@ -202,6 +214,7 @@ def main() -> int:
             },
             "source_asset_preserved": True,
             "purpose": "rigging_handoff_candidate",
+            "normal_policy": "smooth_shared_normals_for_untextured_body",
         },
         "source_topology": source_topology,
         "candidate_topology": candidate_topology,
@@ -211,6 +224,8 @@ def main() -> int:
         "gates": gates,
     }
     report_path = args.output_dir / "rig_mesh_manifest.json"
+    if hashlib.sha256(args.input.read_bytes()).hexdigest() != source_sha256:
+        raise RuntimeError('Source changed during preparation')
     report_path.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     if report["status"] != "pass":
         raise RuntimeError(f"Rig mesh gates failed: {gates}")

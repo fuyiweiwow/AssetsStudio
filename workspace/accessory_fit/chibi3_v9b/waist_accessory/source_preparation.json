@@ -1,0 +1,74 @@
+{
+  "schema": "assetsstudio_accessory_multiview_preparation_v1",
+  "input": "D:\\Apps\\CodeXApp\\Tests\\AssetsStudio\\references\\slot_authorities\\waist_accessory\\waist_accessory_turnaround_v1.png",
+  "input_sha256": "3756c5dc6042a03fbf4e60a2e1cc6bacfd1ebad5d9718482763152e19c553e18",
+  "panel_order": [
+    "front",
+    "right",
+    "back",
+    "left"
+  ],
+  "background": "white_pending_official_hunyuan_rembg",
+  "outputs": {
+    "front": {
+      "path": "D:\\Apps\\CodeXApp\\Tests\\AssetsStudio\\workspace\\accessory_fit\\chibi3_v9b\\waist_accessory\\source_rgb\\front.png",
+      "sha256": "8bca47752e4f5ee36f0e84ae12b8ec8f4def071bc0e831b28e8074beac7311ba",
+      "size": [
+        1024,
+        1024
+      ],
+      "source_bbox": [
+        45,
+        438,
+        384,
+        565
+      ],
+      "foreground_aspect_width_over_height": 2.669291
+    },
+    "right": {
+      "path": "D:\\Apps\\CodeXApp\\Tests\\AssetsStudio\\workspace\\accessory_fit\\chibi3_v9b\\waist_accessory\\source_rgb\\right.png",
+      "sha256": "7dd34944df2e915e36fca44c2fefaa46ae34f0b0e9a62874d675b29687e7db2f",
+      "size": [
+        1024,
+        1024
+      ],
+      "source_bbox": [
+        0,
+        428,
+        351,
+        560
+      ],
+      "foreground_aspect_width_over_height": 2.659091
+    },
+    "back": {
+      "path": "D:\\Apps\\CodeXApp\\Tests\\AssetsStudio\\workspace\\accessory_fit\\chibi3_v9b\\waist_accessory\\source_rgb\\back.png",
+      "sha256": "548bfb16a2bd226cd349c56035b40ce10806449c03b6ffd96ee59403677e35d0",
+      "size": [
+        1024,
+        1024
+      ],
+      "source_bbox": [
+        25,
+        437,
+        377,
+        560
+      ],
+      "foreground_aspect_width_over_height": 2.861789
+    },
+    "left": {
+      "path": "D:\\Apps\\CodeXApp\\Tests\\AssetsStudio\\workspace\\accessory_fit\\chibi3_v9b\\waist_accessory\\source_rgb\\left.png",
+      "sha256": "11ff5859c8977b7940ee8c367d1ba7186dc16740a5d688bff86ce63c99e2b080",
+      "size": [
+        1024,
+        1024
+      ],
+      "source_bbox": [
+        60,
+        428,
+        336,
+        560
+      ],
+      "foreground_aspect_width_over_height": 2.090909
+    }
+  }
+}
