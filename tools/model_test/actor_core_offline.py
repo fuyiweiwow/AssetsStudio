@@ -227,6 +227,7 @@ def main():
                  '--input-manifest',str(manifest), '--output',str(args.output/'shape.glb'),
                  '--manifest',str(args.output/'shape.json'),'--seed',str(args.seed),
                  '--steps',str(args.steps),'--guidance-scale','5','--octree-resolution','256']
+        command.extend(['--subfolder','hunyuan3d-dit-v2-mv'])
         for role,path in paths.items():
             command.extend(['--'+role,str(path)])
         if args.cpu_offload:

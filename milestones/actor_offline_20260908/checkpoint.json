@@ -1,0 +1,233 @@
+{
+  "schema": "assetsstudio_actor_offline_checkpoint_v1",
+  "date": "2026-09-08",
+  "status": "static_candidate_human_review_required",
+  "model_download_required_for_static_replay": false,
+  "files": [
+    {
+      "path": "docs/ACTOR_HOME_CHECKPOINT_20260908.md",
+      "sha256": "6f6d5d636c21b914ef0de86ed11ed400f87f01e9dcdc47f594b75edafcdaf546",
+      "hash_mode": "lf_normalized"
+    },
+    {
+      "path": "requirements-actor-static.txt",
+      "sha256": "0e165e4d30c0fffbc9738b54810fcae0f278d412cd63abb99c9cadcf92d47452",
+      "hash_mode": "lf_normalized"
+    },
+    {
+      "path": "tools/model_test/actor_checkpoint.py",
+      "sha256": "d895290f84bdf1eae4bf59599cc8599bc7defe034ab7c6641d08ee1375822fb0",
+      "hash_mode": "lf_normalized"
+    },
+    {
+      "path": "tools/model_test/actor_core_offline.py",
+      "sha256": "fb1bb5fe903ea36fa18e2f0bd5b912feabd4117e4aeec9ab5d35fe34e7458ead",
+      "hash_mode": "lf_normalized"
+    },
+    {
+      "path": "tools/model_test/audit_accessory_export.py",
+      "sha256": "97c82850102ec5a4d1340dd8c5aa5c4cf60f7474864038d5df07bb7dd0264e87",
+      "hash_mode": "lf_normalized"
+    },
+    {
+      "path": "tools/model_test/blender_environment.py",
+      "sha256": "d56ce697fbd278de4a35e35301412460f5e5e3f8518ae9bbd7f09ebe0bd4b971",
+      "hash_mode": "lf_normalized"
+    },
+    {
+      "path": "tools/model_test/compare_hunyuan_source_silhouettes.py",
+      "sha256": "db98163086a832c2ce190ce96f7d26d7c4281234ae4d2234004a7fa96bfa387d",
+      "hash_mode": "lf_normalized"
+    },
+    {
+      "path": "tools/model_test/fit_tpose_accessory_blender.py",
+      "sha256": "f74b4e02738a3e6abc65b85495d4e340b0375841ffd3712c5b9568c3fa418d85",
+      "hash_mode": "lf_normalized"
+    },
+    {
+      "path": "tools/model_test/hunyuan_environment.py",
+      "sha256": "e3f1e7981ab32dcd67b7fda6ee9a6b0134adea993c6cb2730d285aa80b430b61",
+      "hash_mode": "lf_normalized"
+    },
+    {
+      "path": "tools/model_test/measure_unbound_waist.py",
+      "sha256": "d29ad7f1c9c7629634677f3f8d731887e8b78c5f8f0919606e0cce264f0c89eb",
+      "hash_mode": "lf_normalized"
+    },
+    {
+      "path": "tools/model_test/prepare_actor93_shape_probe.py",
+      "sha256": "224c2d0dedf246ef8096ecc4d0e5b8566039bc392875fdbef54f6d16ba077d02",
+      "hash_mode": "lf_normalized"
+    },
+    {
+      "path": "tools/model_test/prepare_actor_core_rig_mesh.py",
+      "sha256": "c4dd954cb27b9ff9cc3f5341e017174c8c39543cdfd70d13885fa650fc0e7f90",
+      "hash_mode": "lf_normalized"
+    },
+    {
+      "path": "tools/model_test/render_actor93_shadowless.py",
+      "sha256": "a2a8c6616b06f0cb2b28fb0d8a6b6d3ef3fd59797797f5496d44c7414ec88ba3",
+      "hash_mode": "lf_normalized"
+    },
+    {
+      "path": "tools/model_test/review_mesh_stage.py",
+      "sha256": "42f305b865b433e2bd71c5398364371cf4323068c630f4febb607b88c3d85d54",
+      "hash_mode": "lf_normalized"
+    },
+    {
+      "path": "tools/model_test/review_offline_actor_inputs.py",
+      "sha256": "b94b5ab4a21330fca0c42b0b4a1916b55227d7ec18a143d711036598b70e2f37",
+      "hash_mode": "lf_normalized"
+    },
+    {
+      "path": "tools/model_test/run_hunyuan3d_mv_shape.py",
+      "sha256": "a90dbe70adf02a6341c3ebe54d591a34d5f6546ae141c7d775900a315f099e9b",
+      "hash_mode": "lf_normalized"
+    },
+    {
+      "path": "tools/model_test/split_hunyuan_checkpoint.py",
+      "sha256": "8a8e44534cd18c37f54fbadd412de97e5807781b11dfb896325d68289b59af06",
+      "hash_mode": "lf_normalized"
+    },
+    {
+      "path": "tools/model_test/test_actor_core_offline.py",
+      "sha256": "a7b0b5b3802f1bffd48058fee9a25a76a472c3253049ad0712cade1654bb3758",
+      "hash_mode": "lf_normalized"
+    },
+    {
+      "path": "tools/model_test/test_waist_contact_blender.py",
+      "sha256": "f7700d09701ddce34b32a34dae675a0c0227b98d931c138a772346d1eeb44bf3",
+      "hash_mode": "lf_normalized"
+    },
+    {
+      "path": "tools/model_test/validate_hunyuan_mv_blender.py",
+      "sha256": "e7897096939563ab30ae54e8ac6298a5b84cb41dff4a8f174b424edc8d54cd25",
+      "hash_mode": "lf_normalized"
+    },
+    {
+      "path": "tools/model_test/waist_contact_fit.py",
+      "sha256": "8cfb9c36a274c98f69bb5a2f70555be849aae425e749b17019434b7810e822c6",
+      "hash_mode": "lf_normalized"
+    },
+    {
+      "path": "workspace/accessory_fit/chibi3_v9b/waist_accessory/hunyuan/shape_manifest_accessory.json",
+      "sha256": "86b24c5eeda72533cd450375582d0dad1ae39303889233a7752ab506bb0fe2c8",
+      "hash_mode": "lf_normalized"
+    },
+    {
+      "path": "workspace/accessory_fit/chibi3_v9b/waist_accessory/hunyuan/waist_accessory_seed20260831_accessory.glb",
+      "sha256": "137f2970c9fe15bddd1c87934b46d328bc918e5882b74c2419208411c61cd010",
+      "hash_mode": "raw"
+    },
+    {
+      "path": "workspace/accessory_fit/chibi3_v9b/waist_accessory/source_preparation.json",
+      "sha256": "d4f40053c1bcca217eea1b43bb16985c969c876f58af9e5528d451a8811a33b4",
+      "hash_mode": "lf_normalized"
+    },
+    {
+      "path": "workspace/local_generation/actor_core_multiview_gate_20260907/back_b_seed1008_refined_v2.png",
+      "sha256": "62f74ffcc16cdeb6b336149689df71a7ad3b107934150375cfe55df84de76129",
+      "hash_mode": "raw"
+    },
+    {
+      "path": "workspace/local_generation/actor_core_multiview_gate_20260907/right_b_seed1005_refined.png",
+      "sha256": "464626d6b21eb8ed348735a04385797d8ea280f158f8089d07f8fad7a70181d6",
+      "hash_mode": "raw"
+    },
+    {
+      "path": "workspace/local_generation/actor_core_tpose_shoulder_gate_20260907/tpose93_shoulders_seed1002_blankface_v1.png",
+      "sha256": "689cc0013fc101d7e230245cdb9806f512c8aa5d24b4b5e5ff5799186afa17a3",
+      "hash_mode": "raw"
+    },
+    {
+      "path": "workspace/local_generation/actor_offline_gate_20260908/inputs_v2/back.png",
+      "sha256": "89b7b5143715a8812b35efb4a02364f161fac5bcac73781bde0c5a2797691818",
+      "hash_mode": "raw"
+    },
+    {
+      "path": "workspace/local_generation/actor_offline_gate_20260908/inputs_v2/front.png",
+      "sha256": "63746bc0cd0c535534409e321c6c091e755b159ac0207f62b744635eadb8fe0f",
+      "hash_mode": "raw"
+    },
+    {
+      "path": "workspace/local_generation/actor_offline_gate_20260908/inputs_v2/input_manifest.json",
+      "sha256": "89d22080d5acfe8311e3d1fd1d1fb1486b51c0175777720398825956bb37a8e4",
+      "hash_mode": "lf_normalized"
+    },
+    {
+      "path": "workspace/local_generation/actor_offline_gate_20260908/inputs_v2/left.png",
+      "sha256": "aeeea5a56143514b7d86f0c4d48eb3d880f79b4ecb2ae3c7dbee05f1330ac1f1",
+      "hash_mode": "raw"
+    },
+    {
+      "path": "workspace/local_generation/actor_offline_gate_20260908/inputs_v2/right.png",
+      "sha256": "bd489705d65e8d15ac2f52e32cf43ede9a620cb3271e78e8b5dcbe72d2720470",
+      "hash_mode": "raw"
+    },
+    {
+      "path": "workspace/local_generation/actor_offline_gate_20260908/run_v2/audit.json",
+      "sha256": "7404ffa3ecdcf945e456e120571dc9536c6b6a3e61edd937b88d250043ba81e6",
+      "hash_mode": "lf_normalized"
+    },
+    {
+      "path": "workspace/local_generation/actor_offline_gate_20260908/run_v2/shape.glb",
+      "sha256": "668fe984895c727be3e6abc65d50a4b8881dcfa4c633f4077d069daf1305c3b4",
+      "hash_mode": "raw"
+    },
+    {
+      "path": "workspace/local_generation/actor_offline_gate_20260908/run_v2/shape.json",
+      "sha256": "6f62ea562db0b7bb22db21b309ad4b0a3c00320a83a5470d38f0a0a926a74231",
+      "hash_mode": "lf_normalized"
+    },
+    {
+      "path": "workspace/local_generation/actor_offline_gate_20260908/static_50k_v2/actor_offline_v2_50k_rig_mesh.glb",
+      "sha256": "e7e88465037df7ef3e5b018f19d36694e0d6c8ab081dced7fc17ace307a17068",
+      "hash_mode": "raw"
+    },
+    {
+      "path": "workspace/local_generation/actor_offline_gate_20260908/static_50k_v2/audit.json",
+      "sha256": "7404ffa3ecdcf945e456e120571dc9536c6b6a3e61edd937b88d250043ba81e6",
+      "hash_mode": "lf_normalized"
+    },
+    {
+      "path": "workspace/local_generation/actor_offline_gate_20260908/static_50k_v2/review.png",
+      "sha256": "7b51f8d42235cdaba413148e4bf630aedd66ccd788b150469121bc32fd33b58d",
+      "hash_mode": "raw"
+    },
+    {
+      "path": "workspace/local_generation/actor_offline_gate_20260908/static_50k_v2/rig_mesh_manifest.json",
+      "sha256": "e31542ea7728408e8d003b5714604dddd55e6cc2d3fd7bd9e2f2081c7a049b72",
+      "hash_mode": "lf_normalized"
+    },
+    {
+      "path": "workspace/local_generation/actor_offline_gate_20260908/static_50k_v2/silhouette_comparison.json",
+      "sha256": "21f03beab21c455a46bfa0a4353118a1241d5d405d4b7948dc8da173a7208695",
+      "hash_mode": "lf_normalized"
+    },
+    {
+      "path": "workspace/local_generation/actor_offline_gate_20260908/static_50k_v2/waist_profile.json",
+      "sha256": "7a4c67bbd73d1509fcf7349f7ce7443bae734ac2c47ee70df62f0699bdb757d9",
+      "hash_mode": "lf_normalized"
+    },
+    {
+      "path": "workspace/local_generation/actor_offline_gate_20260908/waist_contact_v5/actor_offline_v2_waist_contact.glb",
+      "sha256": "9bc8abecb98384d2b091fcdc14f516ce7290b6229b2418705fb0d4d75d77c6ae",
+      "hash_mode": "raw"
+    },
+    {
+      "path": "workspace/local_generation/actor_offline_gate_20260908/waist_contact_v5/export_audit.json",
+      "sha256": "2f1090ee021df3cd7efd533b177610e65dbdab3220596ddd0a6be71701ac97aa",
+      "hash_mode": "lf_normalized"
+    },
+    {
+      "path": "workspace/local_generation/actor_offline_gate_20260908/waist_contact_v5/fit_report.json",
+      "sha256": "d46184b78db5b22b463a4370d767a3c49c974ebf52477efc80dc1df26ddbd50c",
+      "hash_mode": "lf_normalized"
+    },
+    {
+      "path": "workspace/local_generation/actor_offline_gate_20260908/waist_contact_v5/review.png",
+      "sha256": "369678d29e40b149a0d4e20bd9a1af260869be853886e74c9d3d0126c79a5ca1",
+      "hash_mode": "raw"
+    }
+  ]
+}

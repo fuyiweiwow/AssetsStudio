@@ -1,0 +1,8 @@
+# Tested CPU-side static replay environment: Python 3.10.20.
+# Blender is discovered separately. No torch/FLUX/Hunyuan weights required.
+numpy==1.26.4
+Pillow==12.3.0
+opencv-python==4.10.0.84
+trimesh==4.4.7
+scipy==1.14.1
+networkx==3.4.2
