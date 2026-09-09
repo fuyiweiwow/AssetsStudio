@@ -1,0 +1,142 @@
+{
+  "schema": "assetsstudio_mixamo_actor_core_retarget_v1",
+  "status": "pass",
+  "actor_id": "actor_offline_v2_headrepair",
+  "animation_asset_id": "mixamo_standard_walk_v1",
+  "actor_source": "workspace/head_portable_replay_20260909/Actor_HeadWeights_Repaired.blend",
+  "animation_source": "milestones/actor_head_repair_20260909/walk_source.fbx",
+  "source_action": "Armature.001|mixamo.com|Layer0",
+  "target_action": "mixamo_standard_walk_v1",
+  "frame_range": [
+    1,
+    71
+  ],
+  "fps": 30,
+  "loop": true,
+  "root_motion": "in_place",
+  "mapped_bones": {
+    "CC_Base_Hip": "mixamorig:Hips",
+    "CC_Base_Waist": "mixamorig:Spine",
+    "CC_Base_Spine01": "mixamorig:Spine1",
+    "CC_Base_Spine02": "mixamorig:Spine2",
+    "CC_Base_NeckTwist01": "mixamorig:Neck",
+    "CC_Base_Head": "mixamorig:Head",
+    "CC_Base_L_Clavicle": "mixamorig:LeftShoulder",
+    "CC_Base_L_Upperarm": "mixamorig:LeftArm",
+    "CC_Base_L_Forearm": "mixamorig:LeftForeArm",
+    "CC_Base_L_Hand": "mixamorig:LeftHand",
+    "CC_Base_R_Clavicle": "mixamorig:RightShoulder",
+    "CC_Base_R_Upperarm": "mixamorig:RightArm",
+    "CC_Base_R_Forearm": "mixamorig:RightForeArm",
+    "CC_Base_R_Hand": "mixamorig:RightHand",
+    "CC_Base_L_Thigh": "mixamorig:LeftUpLeg",
+    "CC_Base_L_Calf": "mixamorig:LeftLeg",
+    "CC_Base_L_Foot": "mixamorig:LeftFoot",
+    "CC_Base_L_ToeBase": "mixamorig:LeftToeBase",
+    "CC_Base_R_Thigh": "mixamorig:RightUpLeg",
+    "CC_Base_R_Calf": "mixamorig:RightLeg",
+    "CC_Base_R_Foot": "mixamorig:RightFoot",
+    "CC_Base_R_ToeBase": "mixamorig:RightToeBase"
+  },
+  "motion_ranges_degrees": {
+    "CC_Base_Hip": 10.8193,
+    "CC_Base_Waist": 5.8356,
+    "CC_Base_Spine01": 2.3277,
+    "CC_Base_Spine02": 2.1664,
+    "CC_Base_NeckTwist01": 1.2761,
+    "CC_Base_Head": 6.5039,
+    "CC_Base_L_Clavicle": 3.3716,
+    "CC_Base_L_Upperarm": 17.2269,
+    "CC_Base_L_Forearm": 21.5579,
+    "CC_Base_L_Hand": 14.3789,
+    "CC_Base_R_Clavicle": 2.2425,
+    "CC_Base_R_Upperarm": 8.8807,
+    "CC_Base_R_Forearm": 21.5043,
+    "CC_Base_R_Hand": 15.92,
+    "CC_Base_L_Thigh": 26.2337,
+    "CC_Base_L_Calf": 57.5233,
+    "CC_Base_L_Foot": 25.9387,
+    "CC_Base_L_ToeBase": 36.3877,
+    "CC_Base_R_Thigh": 29.7395,
+    "CC_Base_R_Calf": 44.0376,
+    "CC_Base_R_Foot": 31.707,
+    "CC_Base_R_ToeBase": 44.3212
+  },
+  "hand_trajectory": {
+    "minimum_left_right_separation": 0.343683,
+    "maximum_left_right_separation": 0.444371,
+    "left_depth_range": [
+      -0.317526,
+      0.14529
+    ],
+    "right_depth_range": [
+      -0.271083,
+      0.108257
+    ],
+    "depth_correlation": -0.984766,
+    "both_hands_behind_fraction": 0.0
+  },
+  "retarget_strategy": "rest_basis_body_with_tpose_world_delta_arms",
+  "upperarm_rest_downward_fraction": [
+    -0.12807808816432953,
+    -0.12807199358940125
+  ],
+  "gates": {
+    "complete_22_bone_mapping": true,
+    "usable_frame_range": true,
+    "left_arm_motion": true,
+    "right_arm_motion": true,
+    "left_leg_motion": true,
+    "right_leg_motion": true,
+    "hands_keep_left_right_order": true,
+    "hands_counter_swing": true,
+    "hands_not_together_behind_back": true
+  },
+  "outputs": {
+    "blend": "workspace/local_generation/actor_motion_validation_20260909/walk_v1/retargeted.blend",
+    "glb": "workspace/local_generation/actor_motion_validation_20260909/walk_v1/retargeted.glb"
+  },
+  "preview_frames": {
+    "front": [
+      "workspace/local_generation/actor_motion_validation_20260909/walk_v1/preview_frames/front_00.png",
+      "workspace/local_generation/actor_motion_validation_20260909/walk_v1/preview_frames/front_01.png",
+      "workspace/local_generation/actor_motion_validation_20260909/walk_v1/preview_frames/front_02.png",
+      "workspace/local_generation/actor_motion_validation_20260909/walk_v1/preview_frames/front_03.png",
+      "workspace/local_generation/actor_motion_validation_20260909/walk_v1/preview_frames/front_04.png",
+      "workspace/local_generation/actor_motion_validation_20260909/walk_v1/preview_frames/front_05.png",
+      "workspace/local_generation/actor_motion_validation_20260909/walk_v1/preview_frames/front_06.png",
+      "workspace/local_generation/actor_motion_validation_20260909/walk_v1/preview_frames/front_07.png"
+    ],
+    "right": [
+      "workspace/local_generation/actor_motion_validation_20260909/walk_v1/preview_frames/right_00.png",
+      "workspace/local_generation/actor_motion_validation_20260909/walk_v1/preview_frames/right_01.png",
+      "workspace/local_generation/actor_motion_validation_20260909/walk_v1/preview_frames/right_02.png",
+      "workspace/local_generation/actor_motion_validation_20260909/walk_v1/preview_frames/right_03.png",
+      "workspace/local_generation/actor_motion_validation_20260909/walk_v1/preview_frames/right_04.png",
+      "workspace/local_generation/actor_motion_validation_20260909/walk_v1/preview_frames/right_05.png",
+      "workspace/local_generation/actor_motion_validation_20260909/walk_v1/preview_frames/right_06.png",
+      "workspace/local_generation/actor_motion_validation_20260909/walk_v1/preview_frames/right_07.png"
+    ],
+    "back": [
+      "workspace/local_generation/actor_motion_validation_20260909/walk_v1/preview_frames/back_00.png",
+      "workspace/local_generation/actor_motion_validation_20260909/walk_v1/preview_frames/back_01.png",
+      "workspace/local_generation/actor_motion_validation_20260909/walk_v1/preview_frames/back_02.png",
+      "workspace/local_generation/actor_motion_validation_20260909/walk_v1/preview_frames/back_03.png",
+      "workspace/local_generation/actor_motion_validation_20260909/walk_v1/preview_frames/back_04.png",
+      "workspace/local_generation/actor_motion_validation_20260909/walk_v1/preview_frames/back_05.png",
+      "workspace/local_generation/actor_motion_validation_20260909/walk_v1/preview_frames/back_06.png",
+      "workspace/local_generation/actor_motion_validation_20260909/walk_v1/preview_frames/back_07.png"
+    ],
+    "left": [
+      "workspace/local_generation/actor_motion_validation_20260909/walk_v1/preview_frames/left_00.png",
+      "workspace/local_generation/actor_motion_validation_20260909/walk_v1/preview_frames/left_01.png",
+      "workspace/local_generation/actor_motion_validation_20260909/walk_v1/preview_frames/left_02.png",
+      "workspace/local_generation/actor_motion_validation_20260909/walk_v1/preview_frames/left_03.png",
+      "workspace/local_generation/actor_motion_validation_20260909/walk_v1/preview_frames/left_04.png",
+      "workspace/local_generation/actor_motion_validation_20260909/walk_v1/preview_frames/left_05.png",
+      "workspace/local_generation/actor_motion_validation_20260909/walk_v1/preview_frames/left_06.png",
+      "workspace/local_generation/actor_motion_validation_20260909/walk_v1/preview_frames/left_07.png"
+    ]
+  },
+  "next_required_gate": "manual four-direction deformation review"
+}

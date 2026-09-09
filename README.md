@@ -29,6 +29,8 @@ AssetsStudio 是一个通用、本地优先的美术素材供给实验室。Bomb
 ## 当前文档
 
 - [2026-09-09 头部修复：换机校验与无模型重放](milestones/actor_head_repair_20260909/README.md)
+- [走路与四权重运行时验证](docs/ACTOR_WALK_VALIDATION_20260909.md)
+- [C 盘项目包缓存清理记录](docs/PROJECT_CACHE_CLEANUP_20260909.md)
 - [当前工作流](docs/CURRENT_WORKFLOW.md)
 - [环境发现与模型](docs/ENVIRONMENT.md)
 - [Actor Core 图像编辑训练](docs/ACTOR_CORE_TRAINING.md)

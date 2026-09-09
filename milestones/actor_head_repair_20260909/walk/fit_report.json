@@ -1,0 +1,20 @@
+{
+  "source_unchanged": true,
+  "source_sha256": "494e0262fab1db50a87d85937e9874a6925ff959fa0f6f379deb9bbb3bcc6f31",
+  "changed_vertices": 6097,
+  "frames": 71,
+  "skin_formula_error_H": 1.989355884627055e-07,
+  "fit_max_error_H": 0.0012108548938568951,
+  "actual_max_error_H": 0.001210854131477382,
+  "geometry_unchanged": true,
+  "max_influences": 4,
+  "scope": "71-frame walk-specific fit; additional motions require fresh validation",
+  "gates": {
+    "source_unchanged": true,
+    "geometry_unchanged": true,
+    "skin_formula_matches": true,
+    "four_weights": true,
+    "max_error_below_005H": true
+  },
+  "status": "pass_walk_specific_fit"
+}

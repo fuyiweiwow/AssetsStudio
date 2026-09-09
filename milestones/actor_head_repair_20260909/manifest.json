@@ -1,6 +1,6 @@
 {
   "schema": "actor_head_repair_checkpoint_v1",
-  "status": "head_repair_verified_full_motion_pending",
+  "status": "head_repair_and_walk_specific_runtime_verified_human_review_pending",
   "files": [
     {
       "path": "diagnosis_report.json",
@@ -37,6 +37,72 @@
       "sha256": "17344bc2531dd0062066f7a3ff9ea31c6a75174909914f8de8cbbbc9d54b35f2",
       "bytes": 521968,
       "hash_mode": "raw"
+    },
+    {
+      "path": "walk/back.gif",
+      "sha256": "4e1e4de47fa63536d11e79ac181aa16d2999a91dbbf7bcdec1e46e4ae3447d16",
+      "hash_mode": "raw",
+      "bytes": 975896
+    },
+    {
+      "path": "walk/contact_sheet.jpg",
+      "sha256": "a98f90fa020bd05c8695dc908db14a3969f20d4494e94713d04119e7fb2c12d7",
+      "hash_mode": "raw",
+      "bytes": 60841
+    },
+    {
+      "path": "walk/fit_report.json",
+      "sha256": "a474deece938975ad60e024dd9bebd053abf8fe9006d2acb64ccb2dabb95ec6a",
+      "hash_mode": "lf_normalized",
+      "bytes": 669
+    },
+    {
+      "path": "walk/front.gif",
+      "sha256": "218c23dcd0d9df229f99c8561bf053dae8eff93bf214e17678f8a78d2649dd5a",
+      "hash_mode": "raw",
+      "bytes": 1004456
+    },
+    {
+      "path": "walk/left.gif",
+      "sha256": "15ad61b6d3d6e75c9cba95d1392cddeafa849b4a3316b9c9e5008f9c32f19231",
+      "hash_mode": "raw",
+      "bytes": 985917
+    },
+    {
+      "path": "walk/legacy_regression.json",
+      "sha256": "6242aacb412cc803fa3b730ec3db30077059a7e1f12f53985b271786a3d33cb1",
+      "hash_mode": "lf_normalized",
+      "bytes": 7416
+    },
+    {
+      "path": "walk/retarget_report.json",
+      "sha256": "d3bf8f89bd7feb7ffc6c554bfc2a79b7389d4492256186fe4b5e8dda9ba12ec2",
+      "hash_mode": "lf_normalized",
+      "bytes": 7003
+    },
+    {
+      "path": "walk/right.gif",
+      "sha256": "1b7ef443f70fc43053040c16301707a510c54e8d33119015eed5d5f88bf234d4",
+      "hash_mode": "raw",
+      "bytes": 981708
+    },
+    {
+      "path": "walk/runtime4.glb",
+      "sha256": "81ee16fafef9ac7ec7e7acc9eaaadc0e055653196ade477416d4bb5fa2d2a6ff",
+      "hash_mode": "raw",
+      "bytes": 2085636
+    },
+    {
+      "path": "walk/runtime_report.json",
+      "sha256": "8d4325633e440db26799eb62807a6b29802530d816a0117193ae8bbe71916e56",
+      "hash_mode": "lf_normalized",
+      "bytes": 19521
+    },
+    {
+      "path": "walk/clean_replay_result.json",
+      "sha256": "570c7d11de3e6a16529b08b9c28b4566653e8ebd91edebf0b3c04d3ed4cfa83b",
+      "hash_mode": "lf_normalized",
+      "bytes": 730
     }
   ]
 }

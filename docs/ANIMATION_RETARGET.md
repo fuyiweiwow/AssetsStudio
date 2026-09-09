@@ -1,5 +1,7 @@
 # 骨骼动画资产与自动适配
 
+2026-09-09：新增按实际上臂姿态区分 T-pose 与 Relaxed-A 的适配，修复后 Actor 的 Walk 与四权重运行时已完成专项验证。当前文件、数值与未验收边界见 [走路验证](ACTOR_WALK_VALIDATION_20260909.md)。下文早期 Relaxed-A 说明只适用于该类输入。
+
 骨骼动画是通用、本地资产库，不属于 BombAdventure 或某个 Actor。动画源可以被多个已经完成人工绑定的 Actor 消费；每次适配结果仍与 Actor 和 AccuRIG intake 一对一。
 
 ## 当前资产

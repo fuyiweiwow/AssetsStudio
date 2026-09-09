@@ -283,6 +283,15 @@ def main() -> int:
     }
     target_to_world_inverse = target.matrix_world.inverted()
     upperarm_names = ("CC_Base_L_Upperarm", "CC_Base_R_Upperarm")
+    # A horizontal T-pose needs the source's arm-lowering rotation. The legacy
+    # relaxed-A strategy intentionally removes it and leaves this actor's arms
+    # outstretched. Classify the actual rest geometry, not the asset name.
+    upperarm_downward = []
+    for name in upperarm_names:
+        bone = target.data.bones[name]
+        direction = target.matrix_world.to_3x3() @ (bone.tail_local - bone.head_local)
+        upperarm_downward.append(-direction.normalized().z)
+    tpose_arms = all(abs(value) <= 0.35 for value in upperarm_downward)
     arm_swing_radians: dict[str, dict[int, float]] = {
         name: {} for name in upperarm_names
     }
@@ -312,9 +321,10 @@ def main() -> int:
         scene.frame_set(frame)
         bpy.context.view_layer.update()
         reset_target_pose(target)
+        bpy.context.view_layer.update()
         for target_name, source_name in mapping.items():
             pose_bone = target.pose.bones[target_name]
-            if target_name in ARM_CHAIN:
+            if target_name in ARM_CHAIN and not tpose_arms:
                 if target_name in upperarm_names:
                     parent = pose_bone.parent
                     rest_relative = (
@@ -344,6 +354,7 @@ def main() -> int:
                 rotation_samples[target_name].append(
                     rotation_angle_degrees(mapped_rotation)
                 )
+                bpy.context.view_layer.update()
                 continue
             source_pose_world = source.matrix_world @ source.pose.bones[source_name].matrix
             # Re-express the source pose in the target bone's rest basis.
@@ -352,6 +363,12 @@ def main() -> int:
                 @ source_rest_world[target_name].to_quaternion().inverted()
                 @ source_pose_world.to_quaternion()
             )
+            if target_name in ARM_CHAIN and tpose_arms:
+                desired_world_rotation = (
+                    source_pose_world.to_quaternion()
+                    @ source_rest_world[target_name].to_quaternion().inverted()
+                    @ target_rest_world[target_name].to_quaternion()
+                )
             desired_world = desired_world_rotation.to_matrix().to_4x4()
             desired_world.translation = target_rest_world[target_name].translation
             pose_bone.matrix = target_to_world_inverse @ desired_world
@@ -365,6 +382,7 @@ def main() -> int:
             if target_name == "CC_Base_Hip":
                 pose_bone.keyframe_insert("location", frame=frame, group=target_name)
             rotation_samples[target_name].append(rotation_angle_degrees(mapped_rotation))
+            bpy.context.view_layer.update()
         left_hand = target.matrix_world @ target.pose.bones["CC_Base_L_Hand"].tail
         right_hand = target.matrix_world @ target.pose.bones["CC_Base_R_Hand"].tail
         hip = target.matrix_world @ target.pose.bones["CC_Base_Hip"].head
@@ -464,7 +482,9 @@ def main() -> int:
             "depth_correlation": round(hand_depth_correlation, 6),
             "both_hands_behind_fraction": round(both_hands_behind_fraction, 6),
         },
-        "retarget_strategy": "rest_basis_body_with_centered_world_z_chibi_arm_swing",
+        "retarget_strategy": ("rest_basis_body_with_tpose_world_delta_arms" if tpose_arms
+                              else "rest_basis_body_with_centered_world_z_chibi_arm_swing"),
+        "upperarm_rest_downward_fraction": upperarm_downward,
         "gates": gates,
         "outputs": {"blend": str(blend_path), "glb": str(glb_path)},
         "preview_frames": preview_frames,

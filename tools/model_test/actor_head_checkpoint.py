@@ -25,12 +25,12 @@ def verify():
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument('action', choices=['verify', 'replay'])
+    ap.add_argument('action', choices=['verify', 'replay', 'walk'])
     ap.add_argument('--output', type=Path)
     ap.add_argument('--blender', type=Path)
     args = ap.parse_args()
     verify()
-    if args.action == 'replay':
+    if args.action in {'replay', 'walk'}:
         if args.output is None:
             ap.error('replay requires --output (a new directory)')
         from blender_environment import discover_blender
@@ -43,6 +43,24 @@ def main():
         if not all(report['gates'].values()) or len(report['after']) != 32:
             raise ValueError('Replay did not pass the expected head checks')
         print('HEAD_REPLAY_PASS', flush=True)
+        if args.action == 'walk':
+            blender = str(discover_blender(args.blender))
+            output = args.output.resolve()
+            def run(script, arguments):
+                subprocess.run([blender, '-b', '--factory-startup', '-t', '4',
+                                '--python-exit-code', '1', '--python',
+                                str(ROOT / 'tools/model_test' / script), '--',
+                                *map(str, arguments)], cwd=ROOT, check=True)
+            run('retarget_mixamo_to_actor_core.py', [
+                '--actor-blend', output/'Actor_HeadWeights_Repaired.blend',
+                '--animation-fbx', BUNDLE/'walk_source.fbx', '--output-dir', output/'walk',
+                '--actor-id', 'actor_offline_v2_headrepair', '--animation-asset-id', 'mixamo_standard_walk_v1'])
+            run('optimize_actor_runtime_weights_blender.py', [
+                '--input', output/'walk/retargeted.blend', '--output', output/'runtime4'])
+            run('validate_actor_walk_runtime_blender.py', [
+                '--blend', output/'walk/retargeted.blend', '--glb', output/'runtime4/runtime4.glb',
+                '--output', output/'runtime_review'])
+            print('WALK_RUNTIME_REPLAY_PASS (walk-specific; human review pending)', flush=True)
 
 
 if __name__ == '__main__':

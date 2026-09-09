@@ -1,0 +1,19 @@
+{
+  "status": "pass",
+  "snapshot_tree": "5167b51c84898d28d32c98f485fb8697bba18763",
+  "method": "git archive of staged tracked files only; isolated checkout; explicit Blender; no original workspace inputs",
+  "head_pose_count": 32,
+  "walk_frames": 71,
+  "runtime_gates": {
+    "four_weights": true,
+    "normalized": true,
+    "matching_duration": true,
+    "all_source_vertices_mapped": true,
+    "head_rigid_all_frames": true,
+    "runtime_error_below_005H": true,
+    "loop_endpoint_below_001H": true
+  },
+  "loop_endpoint_error_H": 6.480000190183806e-07,
+  "runtime_max_position_error_H": 0.0012106842391458631,
+  "runtime_glb_sha256": "81ee16fafef9ac7ec7e7acc9eaaadc0e055653196ade477416d4bb5fa2d2a6ff"
+}
