@@ -28,6 +28,7 @@ AssetsStudio 是一个通用、本地优先的美术素材供给实验室。Bomb
 
 ## 当前文档
 
+- [2026-09-09 头部修复：换机校验与无模型重放](milestones/actor_head_repair_20260909/README.md)
 - [当前工作流](docs/CURRENT_WORKFLOW.md)
 - [环境发现与模型](docs/ENVIRONMENT.md)
 - [Actor Core 图像编辑训练](docs/ACTOR_CORE_TRAINING.md)
@@ -57,4 +58,4 @@ npm.cmd run build
 
 该入口只产生静态候选；骨骼、蒙皮和动画 Gate 不会被自动标记为通过。详见 [未绑定 T-Pose 配件工作流](docs/TPOSE_ACCESSORY_WORKFLOW.md)。
 
-除 `references/style_profiles/published_seeds/` 中已批准的可移植种子包外，`workspace/`、模型权重和第三方运行时均保持本地，不上传 Git。
+可移植种子与明确冻结的 `milestones/` 检查点随 Git 发布；检查点只携带复现必需的选定输入、输出和证据，不等于生产批准。其余本地 `workspace/` 内容、AI 模型权重和第三方运行时不上传 Git。

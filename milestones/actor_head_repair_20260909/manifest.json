@@ -1,0 +1,42 @@
+{
+  "schema": "actor_head_repair_checkpoint_v1",
+  "status": "head_repair_verified_full_motion_pending",
+  "files": [
+    {
+      "path": "diagnosis_report.json",
+      "sha256": "6068b6256bdb4e4a56608820930b182c54f99b2f128874b49e62954a65dbd74e",
+      "bytes": 519835,
+      "hash_mode": "lf_normalized"
+    },
+    {
+      "path": "repair_report.json",
+      "sha256": "ebc379146bac86381afa8194bf952deafb04fbfdb9db267ada3785971d7a956a",
+      "bytes": 62710,
+      "hash_mode": "lf_normalized"
+    },
+    {
+      "path": "repaired.fbx",
+      "sha256": "cbbb8fc3b80731485f9d64e3cf4b41d8c1b446b3299100a5032977be07d58887",
+      "bytes": 2002924,
+      "hash_mode": "raw"
+    },
+    {
+      "path": "review_contact_sheet.jpg",
+      "sha256": "55264ae8d5f094d574bb2262431108a6e5636468e84f7d6bb381c0d213683941",
+      "bytes": 109979,
+      "hash_mode": "raw"
+    },
+    {
+      "path": "source_accurig.fbx",
+      "sha256": "58435dada868a5e7f0c67ae178dd5f7118979b70a033171d149962ae8eeee825",
+      "bytes": 2383088,
+      "hash_mode": "raw"
+    },
+    {
+      "path": "walk_source.fbx",
+      "sha256": "17344bc2531dd0062066f7a3ff9ea31c6a75174909914f8de8cbbbc9d54b35f2",
+      "bytes": 521968,
+      "hash_mode": "raw"
+    }
+  ]
+}
