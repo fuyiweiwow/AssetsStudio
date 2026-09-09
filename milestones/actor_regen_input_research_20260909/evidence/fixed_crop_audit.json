@@ -1,0 +1,171 @@
+{
+  "views": {
+    "front": {
+      "iou": 0.9398156809965539,
+      "relative_aspect_drift": 0.017092209562725058,
+      "center_error_px": 0.0,
+      "source_bbox": [
+        186,
+        66,
+        583,
+        731
+      ],
+      "render_bbox": [
+        182,
+        65,
+        587,
+        732
+      ],
+      "pass": true
+    },
+    "right": {
+      "iou": 0.9166157522436289,
+      "relative_aspect_drift": 0.04507042253521143,
+      "center_error_px": 7.0,
+      "source_bbox": [
+        214,
+        65,
+        569,
+        732
+      ],
+      "render_bbox": [
+        199,
+        65,
+        570,
+        732
+      ],
+      "pass": false
+    },
+    "back": {
+      "iou": 0.9431241945003191,
+      "relative_aspect_drift": 0.019113558798490304,
+      "center_error_px": 0.7071067811865476,
+      "source_bbox": [
+        185,
+        64,
+        583,
+        732
+      ],
+      "render_bbox": [
+        182,
+        65,
+        587,
+        732
+      ],
+      "pass": true
+    },
+    "left": {
+      "iou": 0.9137227524129704,
+      "relative_aspect_drift": 0.04507042253521143,
+      "center_error_px": 8.0,
+      "source_bbox": [
+        199,
+        65,
+        554,
+        732
+      ],
+      "render_bbox": [
+        199,
+        65,
+        570,
+        732
+      ],
+      "pass": false
+    }
+  },
+  "structural_status": "fail",
+  "topology_diagnosis": {
+    "repeated_index_face_ids": [],
+    "raw_components_diagnostic": [
+      {
+        "vertices": 132790,
+        "faces": 265580,
+        "watertight": true,
+        "euler": 0,
+        "bounds_y_up": [
+          [
+            -0.6087464690208435,
+            -0.9979186058044434,
+            -0.5562407374382019
+          ],
+          [
+            0.5995815992355347,
+            0.990204930305481,
+            0.5509992837905884
+          ]
+        ]
+      },
+      {
+        "vertices": 6,
+        "faces": 8,
+        "watertight": true,
+        "euler": 2,
+        "bounds_y_up": [
+          [
+            0.15195629000663757,
+            -0.8771233558654785,
+            0.05830489844083786
+          ],
+          [
+            0.15452562272548676,
+            -0.8757526874542236,
+            0.06167836859822273
+          ]
+        ]
+      }
+    ],
+    "zero_area_faces": 0,
+    "boundary_edges": 0,
+    "nonmanifold_edges": 0,
+    "diagnostic_only_excluding_repeated_indices": {
+      "vertices_unchanged": true,
+      "faces": 265588,
+      "watertight": true,
+      "euler": 2,
+      "components": 2
+    },
+    "policy": "In-memory diagnosis only, no candidate exported or promoted",
+    "sole_flange": {
+      "samples": [
+        {
+          "fraction": 0.002,
+          "side": -1,
+          "max_overhang_over_height": 0.0
+        },
+        {
+          "fraction": 0.002,
+          "side": 1,
+          "max_overhang_over_height": 0.0
+        },
+        {
+          "fraction": 0.004,
+          "side": -1,
+          "max_overhang_over_height": 0.0
+        },
+        {
+          "fraction": 0.004,
+          "side": 1,
+          "max_overhang_over_height": 0.0
+        },
+        {
+          "fraction": 0.006,
+          "side": 1,
+          "max_overhang_over_height": 0.0
+        },
+        {
+          "fraction": 0.006,
+          "side": -1,
+          "max_overhang_over_height": 0.0
+        }
+      ],
+      "max_overhang_over_height": 0.0,
+      "threshold": 0.0015,
+      "pass": true,
+      "scope": "Low sole protrusion beyond intact .015H foot section. Not a universal shoe/foot style detector."
+    }
+  },
+  "fixed_frame_status": "fail",
+  "qualification": "Numerical evidence only; hands, crown and soles require visual review",
+  "allow_rigging": false,
+  "allow_asset_registration": false
+}

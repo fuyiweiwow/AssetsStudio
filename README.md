@@ -28,6 +28,7 @@ AssetsStudio 是一个通用、本地优先的美术素材供给实验室。Bomb
 
 ## 当前文档
 
+- [短臂超 Q 输入清理与固定裁切检查点（非可标定模型）](milestones/actor_regen_input_research_20260909/README.md)
 - [2026-09-09 头部修复：换机校验与无模型重放](milestones/actor_head_repair_20260909/README.md)
 - [走路与四权重运行时验证](docs/ACTOR_WALK_VALIDATION_20260909.md)
 - [C 盘项目包缓存清理记录](docs/PROJECT_CACHE_CLEANUP_20260909.md)

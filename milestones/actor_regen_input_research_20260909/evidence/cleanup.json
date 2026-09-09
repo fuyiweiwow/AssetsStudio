@@ -1,0 +1,12 @@
+{
+  "date": "2026-09-10",
+  "method": "Windows Recycle Bin; recoverable, no permanent deletion",
+  "scope": "Only three assistant-generated failed experiment GLBs; approved assets, frozen inputs and unrelated user changes untouched",
+  "files": [
+    {"path": "workspace/local_generation/actor_regen_3060_20260909/shape_seed20260909/shape.glb", "bytes": 4961260, "sha256": "bf30c0eec1f108b38868ac0cb5900cf5a2fa34d3856c7ff39e28cab0afd69a2a"},
+    {"path": "workspace/local_generation/actor_regen_foot_ab_20260909/shape_seed20260909/shape.glb", "bytes": 4774392, "sha256": "36cbc98e4837f2ba87497d9badc56019a0206ac0e56906b1771e510d31de649d"},
+    {"path": "workspace/local_generation/actor_regen_fixed_crop_20260909/shape_seed20260909/shape.glb", "bytes": 4781424, "sha256": "e1d2ce33202f95b427f95dc2fe52bbe52a2927ecd8a374cf91bf227400ec4c47"}
+  ],
+  "reports_and_images_retained": true,
+  "failed_models_in_upload": false
+}

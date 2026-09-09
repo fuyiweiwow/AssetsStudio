@@ -1,0 +1,148 @@
+{
+  "version": "1.0.0",
+  "status": "validated_input_method_not_actor_approval",
+  "files": [
+    {
+      "path": "milestones/actor_regen_input_research_20260909/baseline/input_replay/inputs/back.png",
+      "sha256": "1ead236ed3a666edcd29a852230684c8e75029bfc9e73576194a5ac10a68f3d2"
+    },
+    {
+      "path": "milestones/actor_regen_input_research_20260909/baseline/input_replay/inputs/front.png",
+      "sha256": "3f977dfd80c6e5533086aad70c19a43a013b2cf490a1c878c75b24105c3092e4"
+    },
+    {
+      "path": "milestones/actor_regen_input_research_20260909/baseline/input_replay/inputs/input_manifest.json",
+      "sha256": "8fc2682bee00cd3691918d85f660c930beafb4e22a157ed397225cc01dcd83df"
+    },
+    {
+      "path": "milestones/actor_regen_input_research_20260909/baseline/input_replay/inputs/left.png",
+      "sha256": "9b79b94b0ed0cd5b242fc54d3bd98ef091609143479aecf3a8c9300f3e85a366"
+    },
+    {
+      "path": "milestones/actor_regen_input_research_20260909/baseline/input_replay/inputs/right.png",
+      "sha256": "46aae48aeeedd8af6e05bb90856a38a140bce3d5c92a6e8403bb922cbd6dde64"
+    },
+    {
+      "path": "milestones/actor_regen_input_research_20260909/baseline/preflight.json",
+      "sha256": "b335c2f805dc5939317870a9e0011920b4f353d769abef45ad585cb60c6e37e8"
+    },
+    {
+      "path": "milestones/actor_regen_input_research_20260909/cleaned_inputs/back.png",
+      "sha256": "f418315e60faa1081873a9479c79179aa97e861938f9ed6fe67d7190e311c441"
+    },
+    {
+      "path": "milestones/actor_regen_input_research_20260909/cleaned_inputs/front.png",
+      "sha256": "a510d8d8dcbfa1af213abf2c99d12834035503324d0d951f1b7ca7b438f61be0"
+    },
+    {
+      "path": "milestones/actor_regen_input_research_20260909/cleaned_inputs/input_manifest.json",
+      "sha256": "4e315a09333a8e0225b14e35c63f46a8030002e2a59b87dd1a70cc7ac8ed7e77"
+    },
+    {
+      "path": "milestones/actor_regen_input_research_20260909/cleaned_inputs/left.png",
+      "sha256": "3f0bb3a644c5e7108f47f39477d4bbddbb47ce571eccc35ae31b3e02c162fccf"
+    },
+    {
+      "path": "milestones/actor_regen_input_research_20260909/cleaned_inputs/right.png",
+      "sha256": "9cbef9ec8d91eca99119f6829291b420036f3d7a7076cc5f9a206af744826820"
+    },
+    {
+      "path": "milestones/actor_regen_input_research_20260909/evidence/cleanup.json",
+      "sha256": "65b0f39de2394ab5d485511e685fd8b28093ce12248b74f338e7a0742b7efe6b"
+    },
+    {
+      "path": "milestones/actor_regen_input_research_20260909/evidence/crop_equivalence.json",
+      "sha256": "d0f48e39c0b57a65cd678a204908313a87f93d29bde59d1ab9da11a98547fa88"
+    },
+    {
+      "path": "milestones/actor_regen_input_research_20260909/evidence/fixed_crop_audit.json",
+      "sha256": "b1b910fb62d4e8c1dae3bcf0374eac21ad459ecf21eb99d04594f23405d64c4a"
+    },
+    {
+      "path": "milestones/actor_regen_input_research_20260909/evidence/fixed_crop_foot_comparison.jpg",
+      "sha256": "b86288f97fc277d8d32bd536f828e154c52dbefcc2f90dad21122758b734a454"
+    },
+    {
+      "path": "milestones/actor_regen_input_research_20260909/evidence/fixed_crop_multiview.png",
+      "sha256": "65acfdeafedd6152a86247dacfd503faa8d17a199a2ffb9684fe99220478f5a6"
+    },
+    {
+      "path": "milestones/actor_regen_input_research_20260909/evidence/foot_alpha_review.png",
+      "sha256": "4f50635ebc62af6bd677c8ed800d3cca24a7521f00e092a32e2b1f1975e9728f"
+    },
+    {
+      "path": "milestones/actor_regen_input_research_20260909/evidence/generation_report.json",
+      "sha256": "e92880bf6e6fc109131777b37cbc95f4749ed7fd3705ba9c24df7dc16cf8edf2"
+    },
+    {
+      "path": "milestones/actor_regen_input_research_20260909/evidence/native_crop_foot_comparison.jpg",
+      "sha256": "40ea3d24f64ca242d45e3928750fb9ea71a36acc5952184f633dede43373e2e2"
+    },
+    {
+      "path": "milestones/actor_regen_input_research_20260909/fixed_crop_contract.json",
+      "sha256": "68cdc9346eb4232186a5740c0c6b19ce53b6a0b7f2c14a7200afff4281a5d790"
+    },
+    {
+      "path": "milestones/actor_regen_input_research_20260909/README.md",
+      "sha256": "8224225107e4a3814e2993e4dadc1c7527f6a523cae7fd9e5da214bdcc64fdea"
+    },
+    {
+      "path": "tools/model_test/actor_core_offline.py",
+      "sha256": "fb1bb5fe903ea36fa18e2f0bd5b912feabd4117e4aeec9ab5d35fe34e7458ead"
+    },
+    {
+      "path": "tools/model_test/audit_actor_regen_review.py",
+      "sha256": "9a0cc68a76b023f4c6412a85a91b24e5d69144d4f0c772a73c7f09bded75b3be"
+    },
+    {
+      "path": "tools/model_test/audit_regen_conditioning_ab.py",
+      "sha256": "5f320fc3112c81f1e71e9dfd0e5f50b171a6096d84ce91ac38c923b6100d4829"
+    },
+    {
+      "path": "tools/model_test/compare_regen_foot_ab.py",
+      "sha256": "87929de0e237f1351eb5284523cb495619e1eab59de45c30228717f0601f8fe7"
+    },
+    {
+      "path": "tools/model_test/hunyuan_environment.py",
+      "sha256": "e3f1e7981ab32dcd67b7fda6ee9a6b0134adea993c6cb2730d285aa80b430b61"
+    },
+    {
+      "path": "tools/model_test/prepare_regen_foot_ab.py",
+      "sha256": "732d5ccd247230ed91bcc660718be1d309ca418ba40037d426d1a7d57dd613c2"
+    },
+    {
+      "path": "tools/model_test/regen_research_checkpoint.py",
+      "sha256": "aa1d2c47adff8de40111fcd43e0a2d340d7e05ce23b6fb9b0204f927c37c1d91"
+    },
+    {
+      "path": "tools/model_test/render_actor_foot_review_blender.py",
+      "sha256": "efd520dc4cc08f36dc9220331fb2fc7d3554f11d01cec4b76cb82c5b46b73ec2"
+    },
+    {
+      "path": "tools/model_test/repair_actor_foot_local.py",
+      "sha256": "4665f12fafcebf274d5ac7d6f19ea030c74c734f51f95b17b85b7bd45f227e46"
+    },
+    {
+      "path": "tools/model_test/review_actor_regen_blender.py",
+      "sha256": "3fe6fddf87a93c7edab8ea638c51f1b222549b08c8091a3c34922cb49d45c47b"
+    },
+    {
+      "path": "tools/model_test/run_hunyuan3d_mv_shape.py",
+      "sha256": "a90dbe70adf02a6341c3ebe54d591a34d5f6546ae141c7d775900a315f099e9b"
+    },
+    {
+      "path": "tools/model_test/run_regen_fixed_crop.py",
+      "sha256": "899229ac6c483c3bf67d97f0aef8d3f893d960219c2a40aaa96b1b69dc3ce6eb"
+    },
+    {
+      "path": "tools/model_test/test_actor_regen_review.py",
+      "sha256": "4a7a2ee1d2b720cbac5a3b143eecb4c17d87338c91aa44b59e667488575fff7f"
+    },
+    {
+      "path": "tools/model_test/test_regen_foot_ab.py",
+      "sha256": "5e245cf5feb25f156c78cd6227952df282e98b0daae27d2d5b9d82d8883d77ff"
+    }
+  ],
+  "hash_policy": "LF normalized py/json/md; all others binary",
+  "allow_calibration": false
+}

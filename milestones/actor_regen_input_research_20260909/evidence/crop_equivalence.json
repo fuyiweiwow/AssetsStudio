@@ -1,0 +1,34 @@
+{
+  "status": "pass",
+  "views": {
+    "front": {
+      "gates": {
+        "native_rgb_exact": true,
+        "native_mask_exact": true,
+        "above_foot_rgb_exact": true,
+        "above_foot_mask_exact": true
+      },
+      "changed_rgb_pixels": 261
+    },
+    "left": {
+      "gates": {
+        "native_rgb_exact": true,
+        "native_mask_exact": true,
+        "above_foot_rgb_exact": true,
+        "above_foot_mask_exact": true
+      },
+      "changed_rgb_pixels": 126
+    },
+    "back": {
+      "gates": {
+        "native_rgb_exact": true,
+        "native_mask_exact": true,
+        "above_foot_rgb_exact": true,
+        "above_foot_mask_exact": true
+      },
+      "changed_rgb_pixels": 338
+    }
+  },
+  "qualification": "Preprocessing equivalence and locality only; not model/style approval",
+  "native_tensor_exact": true
+}

@@ -1,0 +1,292 @@
+{
+  "schema": "assetsstudio_hunyuan3d_2mv_shape_v1",
+  "model": "E:\\Env\\models\\Hunyuan3D-2mv",
+  "subfolder": "hunyuan3d-dit-v2-mv",
+  "inputs": {
+    "front": "E:\\WorkProject\\AssetsStudio\\workspace\\local_generation\\actor_regen_fixed_crop_20260909\\input_replay\\inputs\\front.png",
+    "left": "E:\\WorkProject\\AssetsStudio\\workspace\\local_generation\\actor_regen_fixed_crop_20260909\\input_replay\\inputs\\left.png",
+    "back": "E:\\WorkProject\\AssetsStudio\\workspace\\local_generation\\actor_regen_fixed_crop_20260909\\input_replay\\inputs\\back.png"
+  },
+  "output": "E:\\WorkProject\\AssetsStudio\\workspace\\local_generation\\actor_regen_fixed_crop_20260909\\shape_seed20260909\\shape.glb",
+  "seed": 20260909,
+  "steps": 40,
+  "guidance_scale": 5.0,
+  "octree_resolution": 256,
+  "num_chunks": 20000,
+  "cpu_offload": true,
+  "asset_kind": "base_actor",
+  "vertices": 132796,
+  "faces": 265588,
+  "peak_cuda_memory_bytes": 2900277248,
+  "mesh_audit": {
+    "geometry_count": 1,
+    "connected_components": 2,
+    "watertight": true,
+    "winding_consistent": true,
+    "euler_number": 2,
+    "all_components_watertight": true
+  },
+  "input_gate_manifest": {
+    "schema": "actor_core_offline_inputs_v1",
+    "profile": "biped_colored_neutral_v2",
+    "extension": "short_arm_bounded_foot_alpha_ab_v1",
+    "implementation_sha256": "732d5ccd247230ed91bcc660718be1d309ca418ba40037d426d1a7d57dd613c2",
+    "base_implementation_sha256": "3e0bfd6abaaeda8cc3270107376e0c50dd80e730a547ccae706acd5a2e17e0ac",
+    "status": "pass",
+    "qualification": "input_structure_only_not_art_or_rig_approval",
+    "views": {
+      "front": {
+        "role": "front",
+        "threshold_saturation": 53.0,
+        "bbox": [
+          186,
+          66,
+          583,
+          731
+        ],
+        "removed_fraction": 0.0010527599643088694,
+        "added_foreground_pixels": 5,
+        "leg_gap": {
+          "left": 375,
+          "right": 397,
+          "start_y": 615,
+          "floor_y": 732,
+          "evidence_rows": 77,
+          "bbox": [
+            186,
+            67,
+            583,
+            732
+          ]
+        },
+        "status": "pass",
+        "rgb_unchanged": true,
+        "upper_highlight_recovery": {
+          "added_pixels": 469,
+          "fraction": 0.003013712714140674,
+          "max_fraction": 0.12,
+          "head_scanlines_solid": true,
+          "lower_mask_unchanged": true,
+          "rgb_unchanged": true
+        },
+        "source": "E:\\WorkProject\\AssetsStudio\\milestones\\actor_regen_20260909\\source\\front.png",
+        "source_sha256": "1f125e7967f74a35c4ba315f55352a917ca527ddf4a99671302c9e692f23d9c7",
+        "file": "front.png",
+        "sha256": "a510d8d8dcbfa1af213abf2c99d12834035503324d0d951f1b7ca7b438f61be0"
+      },
+      "right": {
+        "role": "right",
+        "threshold_saturation": 50.0,
+        "bbox": [
+          214,
+          65,
+          569,
+          732
+        ],
+        "removed_fraction": 0.0,
+        "added_foreground_pixels": 4,
+        "leg_gap": null,
+        "status": "pass",
+        "rgb_unchanged": true,
+        "upper_highlight_recovery": {
+          "added_pixels": 323,
+          "fraction": 0.0023393930614905483,
+          "max_fraction": 0.12,
+          "head_scanlines_solid": true,
+          "lower_mask_unchanged": true,
+          "rgb_unchanged": true
+        },
+        "source": "E:\\WorkProject\\AssetsStudio\\milestones\\actor_regen_20260909\\source\\right.png",
+        "source_sha256": "464626d6b21eb8ed348735a04385797d8ea280f158f8089d07f8fad7a70181d6",
+        "file": "right.png",
+        "sha256": "9cbef9ec8d91eca99119f6829291b420036f3d7a7076cc5f9a206af744826820"
+      },
+      "back": {
+        "role": "back",
+        "threshold_saturation": 57.0,
+        "bbox": [
+          185,
+          64,
+          583,
+          732
+        ],
+        "removed_fraction": 0.0015259553042768941,
+        "added_foreground_pixels": 98,
+        "leg_gap": {
+          "left": 376,
+          "right": 396,
+          "start_y": 615,
+          "floor_y": 733,
+          "evidence_rows": 78,
+          "bbox": [
+            185,
+            65,
+            583,
+            733
+          ]
+        },
+        "status": "pass",
+        "rgb_unchanged": true,
+        "upper_highlight_recovery": {
+          "added_pixels": 15351,
+          "fraction": 0.10803944062440618,
+          "max_fraction": 0.12,
+          "head_scanlines_solid": true,
+          "lower_mask_unchanged": true,
+          "rgb_unchanged": true
+        },
+        "source": "E:\\WorkProject\\AssetsStudio\\milestones\\actor_regen_20260909\\source\\back.png",
+        "source_sha256": "cdde05ac00596c6f5f6ae7643de7e942c9fcb51c3f7488ec5be58712ee8d162d",
+        "file": "back.png",
+        "sha256": "f418315e60faa1081873a9479c79179aa97e861938f9ed6fe67d7190e311c441"
+      },
+      "left": {
+        "derived_from": "right",
+        "method": "horizontal_mirror_including_lighting",
+        "file": "left.png",
+        "sha256": "3f0bb3a644c5e7108f47f39477d4bbddbb47ce571eccc35ae31b3e02c162fccf"
+      }
+    },
+    "parent_manifest_sha256": "2a4255b07759d1b2e99fa6ed475b49f4868a4b72f56c068e36c29a088d8484cd",
+    "experimental_change": {
+      "roi_xyxy": [
+        290,
+        690,
+        480,
+        734
+      ],
+      "pixel_budget_per_view": 500,
+      "views": {
+        "front": {
+          "removed_pixels": 217,
+          "added_pixels": 0,
+          "rgb_exact": true,
+          "outside_roi_exact": true,
+          "bbox_before": [
+            186,
+            66,
+            583,
+            732
+          ],
+          "bbox_after": [
+            186,
+            66,
+            583,
+            731
+          ],
+          "floor_pixel_reduction": 1,
+          "parent_sha256": "3f977dfd80c6e5533086aad70c19a43a013b2cf490a1c878c75b24105c3092e4"
+        },
+        "right": {
+          "removed_pixels": 79,
+          "added_pixels": 0,
+          "rgb_exact": true,
+          "outside_roi_exact": true,
+          "bbox_before": [
+            214,
+            65,
+            569,
+            732
+          ],
+          "bbox_after": [
+            214,
+            65,
+            569,
+            732
+          ],
+          "floor_pixel_reduction": 0,
+          "parent_sha256": "46aae48aeeedd8af6e05bb90856a38a140bce3d5c92a6e8403bb922cbd6dde64"
+        },
+        "back": {
+          "removed_pixels": 293,
+          "added_pixels": 0,
+          "rgb_exact": true,
+          "outside_roi_exact": true,
+          "bbox_before": [
+            185,
+            64,
+            583,
+            733
+          ],
+          "bbox_after": [
+            185,
+            64,
+            583,
+            732
+          ],
+          "floor_pixel_reduction": 1,
+          "parent_sha256": "1ead236ed3a666edcd29a852230684c8e75029bfc9e73576194a5ac10a68f3d2"
+        }
+      }
+    }
+  },
+  "offline_mesh_gate": {
+    "schema": "actor_core_offline_mesh_v1",
+    "status": "fail",
+    "qualification": "structural_only_not_rig_approval",
+    "axis": "Y-up",
+    "gates": {
+      "single_component": false,
+      "watertight": true,
+      "euler_two": true,
+      "separated_feet": true,
+      "winding_consistent": true
+    },
+    "foot_slices": [
+      {
+        "height_fraction": 0.002,
+        "significant_loops": 2,
+        "crosses_center": false
+      },
+      {
+        "height_fraction": 0.005,
+        "significant_loops": 2,
+        "crosses_center": false
+      },
+      {
+        "height_fraction": 0.01,
+        "significant_loops": 2,
+        "crosses_center": false
+      },
+      {
+        "height_fraction": 0.02,
+        "significant_loops": 2,
+        "crosses_center": false
+      },
+      {
+        "height_fraction": 0.04,
+        "significant_loops": 2,
+        "crosses_center": false
+      },
+      {
+        "height_fraction": 0.08,
+        "significant_loops": 2,
+        "crosses_center": false
+      },
+      {
+        "height_fraction": 0.12,
+        "significant_loops": 2,
+        "crosses_center": false
+      }
+    ],
+    "euler_number": 2,
+    "components": 2,
+    "repair_policy": "revisit input first; no unbounded mesh cutting or whole-body smoothing"
+  },
+  "component_policy": {
+    "max_components": 16,
+    "min_component_face_fraction": 0.00025,
+    "raw_components": 2,
+    "kept_components": 2,
+    "discarded_components": []
+  },
+  "automatic_gates": {
+    "single_geometry": true,
+    "single_connected_component": false,
+    "watertight": true,
+    "winding_consistent": true,
+    "genus_zero_euler_two": true,
+    "offline_biped_structure": false
+  },
+  "status": "fail"
+}

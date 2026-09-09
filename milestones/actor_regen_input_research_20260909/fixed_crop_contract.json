@@ -1,0 +1,134 @@
+{
+  "checkpoint_commit": "28b19f5",
+  "authority": "milestones/actor_regen_20260909/recipe.json",
+  "scope": "Foot-alpha AB with frozen original per-view crop; native equivalence/locality passed; no art or rig approval",
+  "crop_authority": "milestones/actor_regen_20260909/inputs",
+  "crop_implementation": "tools/model_test/run_regen_fixed_crop.py",
+  "primary_view": "front",
+  "expected_body_components": 1,
+  "recipe": {
+    "backend": "Hunyuan3D-2mv",
+    "subfolder": "hunyuan3d-dit-v2-mv",
+    "seed": 20260909,
+    "steps": 40,
+    "guidance_scale": 5,
+    "octree_resolution": 256,
+    "device_initial_load": "cpu",
+    "cpu_offload": true
+  },
+  "input_sha256": {
+    "front": "a510d8d8dcbfa1af213abf2c99d12834035503324d0d951f1b7ca7b438f61be0",
+    "right": "9cbef9ec8d91eca99119f6829291b420036f3d7a7076cc5f9a206af744826820",
+    "back": "f418315e60faa1081873a9479c79179aa97e861938f9ed6fe67d7190e311c441",
+    "left": "3f0bb3a644c5e7108f47f39477d4bbddbb47ce571eccc35ae31b3e02c162fccf"
+  },
+  "registration": {
+    "canvas": [
+      768,
+      768
+    ],
+    "front_bbox_xyxy": [
+      186,
+      66,
+      583,
+      732
+    ],
+    "common_frame_center_px": [
+      384.5,
+      399
+    ],
+    "height_fraction": 0.8671875,
+    "side_authority": "right; left is mirrored, not independently validated",
+    "independent_view_rescaling_for_acceptance": false
+  },
+  "gates": {
+    "watertight": true,
+    "winding_consistent": true,
+    "euler_number": 2,
+    "separated_foot_slices": 7,
+    "minimum_per_view_iou": 0.9,
+    "maximum_relative_aspect_drift": 0.03,
+    "maximum_bbox_center_error_px": 12
+  },
+  "mandatory_visual_review": [
+    "super-Q proportions and shortened arms",
+    "crown continuity and cranium cavities",
+    "mitten hands without visible thumb",
+    "front/right/back and oblique",
+    "feet bottom and closeups; thin inner flanges even if closed"
+  ],
+  "known_input_risk": "Residual lower-edge alpha slivers; inspect geometry instead of treating input structural pass as approval",
+  "rig_policy": "New geometry requires new AccuRIG calibration after mesh review; old repaired rig is control only",
+  "experimental_change": {
+    "roi_xyxy": [
+      290,
+      690,
+      480,
+      734
+    ],
+    "pixel_budget_per_view": 500,
+    "views": {
+      "front": {
+        "removed_pixels": 217,
+        "added_pixels": 0,
+        "rgb_exact": true,
+        "outside_roi_exact": true,
+        "bbox_before": [
+          186,
+          66,
+          583,
+          732
+        ],
+        "bbox_after": [
+          186,
+          66,
+          583,
+          731
+        ],
+        "floor_pixel_reduction": 1,
+        "parent_sha256": "3f977dfd80c6e5533086aad70c19a43a013b2cf490a1c878c75b24105c3092e4"
+      },
+      "right": {
+        "removed_pixels": 79,
+        "added_pixels": 0,
+        "rgb_exact": true,
+        "outside_roi_exact": true,
+        "bbox_before": [
+          214,
+          65,
+          569,
+          732
+        ],
+        "bbox_after": [
+          214,
+          65,
+          569,
+          732
+        ],
+        "floor_pixel_reduction": 0,
+        "parent_sha256": "46aae48aeeedd8af6e05bb90856a38a140bce3d5c92a6e8403bb922cbd6dde64"
+      },
+      "back": {
+        "removed_pixels": 293,
+        "added_pixels": 0,
+        "rgb_exact": true,
+        "outside_roi_exact": true,
+        "bbox_before": [
+          185,
+          64,
+          583,
+          733
+        ],
+        "bbox_after": [
+          185,
+          64,
+          583,
+          732
+        ],
+        "floor_pixel_reduction": 1,
+        "parent_sha256": "1ead236ed3a666edcd29a852230684c8e75029bfc9e73576194a5ac10a68f3d2"
+      }
+    }
+  },
+  "parent_experiment": "workspace\\local_generation\\actor_regen_3060_20260909"
+}
