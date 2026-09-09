@@ -1,0 +1,22 @@
+{
+  "status": "user_accepted_proportion_direction; experimental_3d_authorized",
+  "source_stage": "frozen 2D approved-direction images; not an AccuRIG approval",
+  "shape": {
+    "backend": "Hunyuan3D-2mv",
+    "subfolder": "hunyuan3d-dit-v2-mv",
+    "seed": 20260909,
+    "steps": 40,
+    "guidance_scale": 5,
+    "octree_resolution": 256
+  },
+  "right_view": "original validated side authority retained after regenerated side failed dark-hole gate",
+  "left_view": "mirrored right including lighting, not independent evidence",
+  "mask_extension": "color-supported upper highlight recovery; preserves RGB and lower mask; scoped 12 percent growth budget",
+  "limitations": [
+    "side projection cannot establish hand depth",
+    "relaxed pose is a separate proportion illustration",
+    "new 3D requires own AccuRIG and animation validation",
+    "floor-edge residuals must be visually checked in 3D"
+  ],
+  "replay_authority": "source/*.png -> prepare_actor_regen_inputs.py -> inputs/*.png; then actor_core_offline.py generate"
+}

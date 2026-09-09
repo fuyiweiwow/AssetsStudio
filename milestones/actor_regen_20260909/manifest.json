@@ -1,0 +1,125 @@
+{
+  "stage": "01_frozen_2d_inputs",
+  "files": [
+    {
+      "path": "milestones/actor_regen_20260909/generation_evidence/back_b.metrics.json",
+      "hash_mode": "lf_normalized",
+      "sha256": "f6ae3fed182cb6cf434a3a2a9a95cdf14a79d6aa318005b59aa2ff37e99461d1"
+    },
+    {
+      "path": "milestones/actor_regen_20260909/generation_evidence/back_guide.png",
+      "hash_mode": "binary",
+      "sha256": "3488d018cc070fbe3c3f8845c4af9eaf71f6415fff2655edec877c9a655db91e"
+    },
+    {
+      "path": "milestones/actor_regen_20260909/generation_evidence/body_redraw_mask.png",
+      "hash_mode": "binary",
+      "sha256": "489c008e3239fa98f51ad9d43be680b1ada510b9425eb58411f66c4c3e2233d0"
+    },
+    {
+      "path": "milestones/actor_regen_20260909/generation_evidence/guided_front_a.metrics.json",
+      "hash_mode": "lf_normalized",
+      "sha256": "3f62ea1ba006a20473baca1202a0791b3ee4fe7c0e6b6a4844106ae6d0fb2bfb"
+    },
+    {
+      "path": "milestones/actor_regen_20260909/generation_evidence/proportion_guide.png",
+      "hash_mode": "binary",
+      "sha256": "86eb9dfbb1ad97f522d885897b4e19a6e653c88de6106916ddad6968bc34bf50"
+    },
+    {
+      "path": "milestones/actor_regen_20260909/generation_evidence/relaxed_final.metrics.json",
+      "hash_mode": "lf_normalized",
+      "sha256": "0c13aa87b2c368c7b46d3964d0c112cfb67c9fb4c8a9e8c6cf31a8b7613bd967"
+    },
+    {
+      "path": "milestones/actor_regen_20260909/generation_evidence/relaxed_guide.png",
+      "hash_mode": "binary",
+      "sha256": "d950a2f189b2329536ab4bd3861fadb22e1e0f1f2596e2464da88c009e7c582d"
+    },
+    {
+      "path": "milestones/actor_regen_20260909/inputs/back.png",
+      "hash_mode": "binary",
+      "sha256": "1ead236ed3a666edcd29a852230684c8e75029bfc9e73576194a5ac10a68f3d2"
+    },
+    {
+      "path": "milestones/actor_regen_20260909/inputs/front.png",
+      "hash_mode": "binary",
+      "sha256": "3f977dfd80c6e5533086aad70c19a43a013b2cf490a1c878c75b24105c3092e4"
+    },
+    {
+      "path": "milestones/actor_regen_20260909/inputs/input_manifest.json",
+      "hash_mode": "lf_normalized",
+      "sha256": "ebad6071287119531b1f37b91540efd29a1b46b0bec869fc830e3968f01067c6"
+    },
+    {
+      "path": "milestones/actor_regen_20260909/inputs/left.png",
+      "hash_mode": "binary",
+      "sha256": "9b79b94b0ed0cd5b242fc54d3bd98ef091609143479aecf3a8c9300f3e85a366"
+    },
+    {
+      "path": "milestones/actor_regen_20260909/inputs/review.jpg",
+      "hash_mode": "binary",
+      "sha256": "c0f46e087a45131fd55d5509a67355419b94e07278a16e28ccfbfde512984930"
+    },
+    {
+      "path": "milestones/actor_regen_20260909/inputs/right.png",
+      "hash_mode": "binary",
+      "sha256": "46aae48aeeedd8af6e05bb90856a38a140bce3d5c92a6e8403bb922cbd6dde64"
+    },
+    {
+      "path": "milestones/actor_regen_20260909/recipe.json",
+      "hash_mode": "lf_normalized",
+      "sha256": "5f20b73526ecf524f96ccdda051d1f25aea543b370a0e42e1730983a0f24d6e7"
+    },
+    {
+      "path": "milestones/actor_regen_20260909/source/back.png",
+      "hash_mode": "binary",
+      "sha256": "cdde05ac00596c6f5f6ae7643de7e942c9fcb51c3f7488ec5be58712ee8d162d"
+    },
+    {
+      "path": "milestones/actor_regen_20260909/source/front.png",
+      "hash_mode": "binary",
+      "sha256": "1f125e7967f74a35c4ba315f55352a917ca527ddf4a99671302c9e692f23d9c7"
+    },
+    {
+      "path": "milestones/actor_regen_20260909/source/relaxed.png",
+      "hash_mode": "binary",
+      "sha256": "932d9acf6da38ba9d9cf8967ff329ecacfd0d3884c08eec2b755b4638030a90f"
+    },
+    {
+      "path": "milestones/actor_regen_20260909/source/right.png",
+      "hash_mode": "binary",
+      "sha256": "464626d6b21eb8ed348735a04385797d8ea280f158f8089d07f8fad7a70181d6"
+    },
+    {
+      "path": "tools/model_test/actor_core_offline.py",
+      "hash_mode": "lf_normalized",
+      "sha256": "fb1bb5fe903ea36fa18e2f0bd5b912feabd4117e4aeec9ab5d35fe34e7458ead"
+    },
+    {
+      "path": "tools/model_test/actor_regen_checkpoint.py",
+      "hash_mode": "lf_normalized",
+      "sha256": "2ab417396606dc7f08d2ca3241c3f07c8f5d29ae4490678ff180d78e28950263"
+    },
+    {
+      "path": "tools/model_test/hunyuan_environment.py",
+      "hash_mode": "lf_normalized",
+      "sha256": "e3f1e7981ab32dcd67b7fda6ee9a6b0134adea993c6cb2730d285aa80b430b61"
+    },
+    {
+      "path": "tools/model_test/prepare_actor_regen_inputs.py",
+      "hash_mode": "lf_normalized",
+      "sha256": "6c436117837c1f5475f264f06a07b227229a90fbe1b4d29374416c9f0294c2bc"
+    },
+    {
+      "path": "tools/model_test/run_hunyuan3d_mv_shape.py",
+      "hash_mode": "lf_normalized",
+      "sha256": "a90dbe70adf02a6341c3ebe54d591a34d5f6546ae141c7d775900a315f099e9b"
+    },
+    {
+      "path": "tools/model_test/test_actor_regen_inputs.py",
+      "hash_mode": "lf_normalized",
+      "sha256": "c4bb0db1c7abb5afbd91a20f23ecb82abf65f6137d75e5439227fc289a098962"
+    }
+  ]
+}

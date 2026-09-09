@@ -1,0 +1,36 @@
+{
+  "schema": "assetsstudio_local_inference_probe_v1",
+  "backend": "flux2_klein_4b_distilled_fp8",
+  "server": "http://127.0.0.1:8190",
+  "prompt_id": "cf3cb776-5684-44b0-9ef9-d0806e5d7fc3",
+  "width": 768,
+  "height": 768,
+  "steps": 4,
+  "cfg": 1.0,
+  "seed": 202609109,
+  "prompt": "Render this exact peach clay chibi base model smoothly. Preserve the same short arms and small hands at upper hip level and the same relaxed low A pose. Smooth the shoulder roots. Keep the same huge earless featureless head, body and legs unchanged. No ears, no face, no hair, no clothes, no gloves. Same front view and gray background.",
+  "reference_image": "assetsstudio_regen_relaxed_guide.png",
+  "style_reference_image": null,
+  "style_reference_mode": "appearance_only",
+  "reference_roles": {
+    "image_1": "reference_authority"
+  },
+  "mask_image": "assetsstudio_regen_body_mask.png",
+  "mask_expand": 0,
+  "mask_feather": 4,
+  "composite_mask": true,
+  "lora": null,
+  "lora_strength": null,
+  "elapsed_seconds": 4.13,
+  "gpu": {
+    "name": "NVIDIA GeForce RTX 5070 Ti",
+    "total_mib": 16303,
+    "baseline_used_mib": 997,
+    "peak_used_mib": 12293,
+    "peak_delta_mib": 11296
+  },
+  "outputs": [
+    "actor_regen_20260909_relaxed_final_00002_.png"
+  ],
+  "qualification": "3060_memory_cap_prescreen_only"
+}
